@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+LC_ALL=C xrandr --prop | awk '
+    function print_hex_edid() {
+        getline
+        while (/^[[:blank:]]*[[:xdigit:]]+$/) {
+            sub(/[[:blank:]]*/, "")
+            printf "%s", $0
+            getline
+        }
+        print ""
+    }
+    /^[[:blank:]]*EDID.*:/ {
+        print_hex_edid()
+    }' | edid-decode

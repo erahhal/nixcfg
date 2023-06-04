@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+rm -f ${HOME}/DockerData/minecraft/data-lobby/server.properties
+rm -f ${HOME}/DockerData/minecraft/data-creative/server.properties
+rm -f ${HOME}/DockerData/minecraft/data-survival/server.properties
+# rm -f ${HOME}/DockerData/minecraft/server-bungeecord/BungeeCord-lastStableBuild.jar
+

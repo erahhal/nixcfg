@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if ! distrobox list | grep -q 'fedora'; then
+    # Only works with fedora-toolbox:35. Need to upgrade dcc package to work with newer versions
+    distrobox create -n fedora --image registry.fedoraproject.org/fedora-toolbox:35
+fi
+if ! distrobox enter fedora -- rpm -qa | grep -q command-configure; then
+    distrobox enter fedora -- "unzip -o -P dell-blocks-downloads ~/Code/nixcfg/flakes/dcc/dcc-fedora-el8.zip -d /tmp"
+    distrobox enter fedora -- "tar xvzf /tmp/command-configure-4.7.0-433.el8.x86_64.tar.gz -C /tmp"
+    distrobox enter fedora -- "rm /tmp/command-configure-4.7.0-433.el8.x86_64.tar.gz"
+    distrobox enter fedora -- "sudo rpm -ivh /tmp/srvadmin-hapi-9.5.0-4063.16816.el8.x86_64.rpm"
+    distrobox enter fedora -- "rm /tmp/srvadmin-hapi-9.5.0-4063.16816.el8.x86_64.rpm"
+    distrobox enter fedora -- "sudo rpm -ivh /tmp/command-configure-4.7.0-433.el8.x86_64.rpm"
+    distrobox enter fedora -- "rm /tmp/command-configure-4.7.0-433.el8.x86_64.rpm"
+fi
+distrobox enter fedora -- sudo /opt/dell/dcc/cctk $@
+
+if [ $# -eq 0 ]; then
+    echo ""
+    echo "example param:"
+    echo "    --primarybatterycfg=custom:50-85"
+fi

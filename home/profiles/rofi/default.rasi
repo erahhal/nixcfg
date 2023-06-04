@@ -1,0 +1,141 @@
+/*****----- Colors -----*****/
+
+* {
+    background:     #e2ce99ff; /*E6D4A8FF;*/
+    background-alt: #754A21ff; /* e2ce99ff; e0c891 dcc893FF;*/
+    foreground:     #282828FF;
+    selected:       #076678FF; /* ; 83A598*/
+    active:         #8f3f71FF; /*B8BB26*/
+    urgent:         #9d0006FF; /*FB4934*/
+}
+
+window {
+    background-color: @background-alt;
+    border:           0px;
+    border-radius:    8px;
+    border-color:     @background;
+    padding:          10;
+}
+listview {
+}
+mainbox {
+    border:  0;
+    padding: 0px;
+    spacing: 16px;
+}
+message {
+    border:       2px 0px;
+    border-color: @selected;
+    padding:      3px ;
+}
+textbox {
+    text-color: @foreground;
+}
+listview {
+    lines:            10;
+    columns:          1;
+    border:           0px;
+    border-radius:    8px;
+    background-color: @background;
+
+    fixed-height: 0;
+    border-color: @selected;
+    spacing:      0px ;
+    scrollbar:    false;
+    padding:      3px 0px;
+}
+element {
+    border:  0;
+    border-radius: 5px;
+    padding: 1px 5px;
+    margin: 1px 3px;
+}
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+}
+element.normal.normal {
+    background-color: @background;
+    text-color:       @foreground;
+}
+element.normal.urgent {
+    background-color: @urgent;
+    text-color:       @background;
+}
+element.normal.active {
+    background-color: @active;
+    text-color:       @background;
+}
+element.selected.normal {
+    background-color: @selected;
+    text-color:       @background;
+}
+element.selected.urgent {
+    background-color: @urgent;
+    text-color:       @background;
+}
+element.selected.active {
+    background-color: @selected;
+    text-color:       @background;
+}
+element.alternate.normal {
+    background-color: @background;
+    text-color:       @foreground;
+}
+element.alternate.urgent {
+    background-color: @urgent;
+    text-color:       @background;
+}
+element.alternate.active {
+    background-color: @active;
+    text-color:       @background;
+}
+mode-switcher {
+    border:       0px;
+    border-radius: 8px;
+    border-color: @selected;
+    background-color: @background;
+}
+button {
+    padding: 3px;
+    spacing:    0;
+    text-color: @foreground;
+}
+button.selected {
+    background-color: @selected;
+    text-color:       @background;
+}
+inputbar {
+    spacing:    0;
+    text-color: @background-alt;
+    padding:    0px ;
+}
+case-indicator {
+    spacing:    0;
+    text-color: @foreground;
+}
+entry {
+    spacing:    0;
+    padding: 5px 10px;
+    border: 0px;
+    border-color: @selected;
+    border-radius:               8px;
+    background-color:            @background;
+    cursor:                      text;
+    text-color: @foreground;
+    placeholder:                 "filter...";
+    placeholder-color:           @background-alt;
+}
+prompt {
+    spacing:    0;
+    text-color: @foreground;
+}
+inputbar {
+    children:   [ entry ];
+}
+textbox-prompt-colon {
+    expand:     false;
+    str:        ":";
+    margin:     0px 0.6em 0em 0em ;
+    text-color: @foreground;
+}

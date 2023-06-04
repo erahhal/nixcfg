@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Hardware Profiles\Current\Software\Fonts]
+"LogPixels"=dword:00000080
+
+[HKEY_USERS\S-1-5-21-0-0-0-1000\Control Panel\Desktop]
+"LogPixels"=dword:00000080
+
+[HKEY_USERS\S-1-5-21-0-0-0-1000\Software\Wine\Fonts]
+"LogPixels"=dword:00000080
+
+[HKEY_USERS\.Default\Control Panel\Desktop]
+"LogPixels"=dword:00000080
+
+[HKEY_USERS\.Default\Software\Wine\Fonts]
+"LogPixels"=dword:00000080

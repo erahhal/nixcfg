@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+LEFT_MONITOR_GEOMETRY="3840/346x2160/194+0+1100"
+MIDDLE_MONITOR_GEOMETRY="3840/600x2160/340+3840+0"
+RIGHT_MONITOR_GEOMETRY="3840/600x2160/340+7680+0"
+
+xrandr --delmonitor MON-LEFT
+xrandr --delmonitor MON-MIDDLE
+xrandr --delmonitor MON-RIGHT
+
+xrandr --setmonitor MON-LEFT $LEFT_MONITOR_GEOMETRY none
+xrandr --setmonitor MON-MIDDLE $MIDDLE_MONITOR_GEOMETRY none
+xrandr --setmonitor MON-RIGHT $RIGHT_MONITOR_GEOMETRY none

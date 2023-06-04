@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# @TODO: make work for X as well
+
+trap ctrl_c INT
+
+function ctrl_c() {
+    # reset brightness level
+    brightnessctl s $CURR_BRIGHTNESS
+}
+
+CURR_BRIGHTNESS=$(brightnessctl -m | cut -d',' -f3)
+brightnessctl s 100
+wlsunset -t 4000 -T 4001 -g 0.6

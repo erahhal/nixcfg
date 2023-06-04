@@ -1,0 +1,189 @@
+from commits resolving https://github.com/openzfs/zfs/pull/13575 :
+https://github.com/openzfs/zfs/commit/ff7e405f83fbfcd763c4b7ed8b68258227765731
+https://github.com/openzfs/zfs/commit/b0f7dd276c930129fef8575e15a36ec659e31cd2
+https://github.com/openzfs/zfs/commit/18df6afdfc63b7c27cbb2b6152d76c40196e9dbb
+
+diff --git i/include/sys/zil.h w/include/sys/zil.h
+index cefbccb32..a43823b60 100644
+--- i/include/sys/zil.h
++++ w/include/sys/zil.h
+@@ -221,6 +221,15 @@ typedef struct {
+ 	uint64_t	lr_foid;	/* object id */
+ } lr_ooo_t;
+ 
++/*
++ * Additional lr_attr_t fields.
++ */
++typedef struct {
++	uint64_t	lr_attr_attrs;		/* all of the attributes */
++	uint64_t	lr_attr_crtime[2];	/* create time */
++	uint8_t		lr_attr_scanstamp[32];
++} lr_attr_end_t;
++
+ /*
+  * Handle option extended vattr attributes.
+  *
+@@ -231,7 +240,7 @@ typedef struct {
+ typedef struct {
+ 	uint32_t	lr_attr_masksize; /* number of elements in array */
+ 	uint32_t	lr_attr_bitmap; /* First entry of array */
+-	/* remainder of array and any additional fields */
++	/* remainder of array and additional lr_attr_end_t fields */
+ } lr_attr_t;
+ 
+ /*
+diff --git i/module/icp/algs/edonr/edonr.c w/module/icp/algs/edonr/edonr.c
+index ee96e692e..7a3ba30c0 100644
+--- i/module/icp/algs/edonr/edonr.c
++++ w/module/icp/algs/edonr/edonr.c
+@@ -488,7 +488,7 @@ EdonRInit(EdonRState *state, size_t hashbitlen)
+ 		state->hashbitlen = 512;
+ 		state->bits_processed = 0;
+ 		state->unprocessed_bits = 0;
+-		bcopy(i512p2, hashState224(state)->DoublePipe,
++		bcopy(i512p2, hashState512(state)->DoublePipe,
+ 		    16 * sizeof (uint64_t));
+ 		break;
+ 	}
+diff --git i/module/zfs/dsl_bookmark.c w/module/zfs/dsl_bookmark.c
+index b8e3523ff..861dd9239 100644
+--- i/module/zfs/dsl_bookmark.c
++++ w/module/zfs/dsl_bookmark.c
+@@ -347,6 +347,8 @@ dsl_bookmark_set_phys(zfs_bookmark_phys_t *zbm, dsl_dataset_t *snap)
+ 	spa_t *spa = dsl_dataset_get_spa(snap);
+ 	objset_t *mos = spa_get_dsl(spa)->dp_meta_objset;
+ 	dsl_dataset_phys_t *dsp = dsl_dataset_phys(snap);
++
++	memset(zbm, 0, sizeof (zfs_bookmark_phys_t));
+ 	zbm->zbm_guid = dsp->ds_guid;
+ 	zbm->zbm_creation_txg = dsp->ds_creation_txg;
+ 	zbm->zbm_creation_time = dsp->ds_creation_time;
+@@ -380,10 +382,6 @@ dsl_bookmark_set_phys(zfs_bookmark_phys_t *zbm, dsl_dataset_t *snap)
+ 		    &zbm->zbm_compressed_freed_before_next_snap,
+ 		    &zbm->zbm_uncompressed_freed_before_next_snap);
+ 		dsl_dataset_rele(nextds, FTAG);
+-	} else {
+-		bzero(&zbm->zbm_flags,
+-		    sizeof (zfs_bookmark_phys_t) -
+-		    offsetof(zfs_bookmark_phys_t, zbm_flags));
+ 	}
+ }
+ 
+diff --git i/module/zfs/zfs_log.c w/module/zfs/zfs_log.c
+index c2f482103..a875c56bf 100644
+--- i/module/zfs/zfs_log.c
++++ w/module/zfs/zfs_log.c
+@@ -108,86 +108,79 @@ zfs_log_create_txtype(zil_create_t type, vsecattr_t *vsecp, vattr_t *vap)
+ static void
+ zfs_log_xvattr(lr_attr_t *lrattr, xvattr_t *xvap)
+ {
+-	uint32_t	*bitmap;
+-	uint64_t	*attrs;
+-	uint64_t	*crtime;
+-	xoptattr_t	*xoap;
+-	void		*scanstamp;
+-	int		i;
++	xoptattr_t *xoap;
+ 
+ 	xoap = xva_getxoptattr(xvap);
+ 	ASSERT(xoap);
+ 
+ 	lrattr->lr_attr_masksize = xvap->xva_mapsize;
+-	bitmap = &lrattr->lr_attr_bitmap;
+-	for (i = 0; i != xvap->xva_mapsize; i++, bitmap++) {
++	uint32_t *bitmap = &lrattr->lr_attr_bitmap;
++	for (int i = 0; i != xvap->xva_mapsize; i++, bitmap++)
+ 		*bitmap = xvap->xva_reqattrmap[i];
+-	}
+ 
+-	/* Now pack the attributes up in a single uint64_t */
+-	attrs = (uint64_t *)bitmap;
+-	*attrs = 0;
+-	crtime = attrs + 1;
+-	bzero(crtime, 2 * sizeof (uint64_t));
+-	scanstamp = (caddr_t)(crtime + 2);
+-	bzero(scanstamp, AV_SCANSTAMP_SZ);
++	lr_attr_end_t *end = (lr_attr_end_t *)bitmap;
++	end->lr_attr_attrs = 0;
++	end->lr_attr_crtime[0] = 0;
++	end->lr_attr_crtime[1] = 0;
++	bzero(end->lr_attr_scanstamp, AV_SCANSTAMP_SZ);
++
+ 	if (XVA_ISSET_REQ(xvap, XAT_READONLY))
+-		*attrs |= (xoap->xoa_readonly == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_readonly == 0) ? 0 :
+ 		    XAT0_READONLY;
+ 	if (XVA_ISSET_REQ(xvap, XAT_HIDDEN))
+-		*attrs |= (xoap->xoa_hidden == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_hidden == 0) ? 0 :
+ 		    XAT0_HIDDEN;
+ 	if (XVA_ISSET_REQ(xvap, XAT_SYSTEM))
+-		*attrs |= (xoap->xoa_system == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_system == 0) ? 0 :
+ 		    XAT0_SYSTEM;
+ 	if (XVA_ISSET_REQ(xvap, XAT_ARCHIVE))
+-		*attrs |= (xoap->xoa_archive == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_archive == 0) ? 0 :
+ 		    XAT0_ARCHIVE;
+ 	if (XVA_ISSET_REQ(xvap, XAT_IMMUTABLE))
+-		*attrs |= (xoap->xoa_immutable == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_immutable == 0) ? 0 :
+ 		    XAT0_IMMUTABLE;
+ 	if (XVA_ISSET_REQ(xvap, XAT_NOUNLINK))
+-		*attrs |= (xoap->xoa_nounlink == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_nounlink == 0) ? 0 :
+ 		    XAT0_NOUNLINK;
+ 	if (XVA_ISSET_REQ(xvap, XAT_APPENDONLY))
+-		*attrs |= (xoap->xoa_appendonly == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_appendonly == 0) ? 0 :
+ 		    XAT0_APPENDONLY;
+ 	if (XVA_ISSET_REQ(xvap, XAT_OPAQUE))
+-		*attrs |= (xoap->xoa_opaque == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_opaque == 0) ? 0 :
+ 		    XAT0_APPENDONLY;
+ 	if (XVA_ISSET_REQ(xvap, XAT_NODUMP))
+-		*attrs |= (xoap->xoa_nodump == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_nodump == 0) ? 0 :
+ 		    XAT0_NODUMP;
+ 	if (XVA_ISSET_REQ(xvap, XAT_AV_QUARANTINED))
+-		*attrs |= (xoap->xoa_av_quarantined == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_av_quarantined == 0) ? 0 :
+ 		    XAT0_AV_QUARANTINED;
+ 	if (XVA_ISSET_REQ(xvap, XAT_AV_MODIFIED))
+-		*attrs |= (xoap->xoa_av_modified == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_av_modified == 0) ? 0 :
+ 		    XAT0_AV_MODIFIED;
+ 	if (XVA_ISSET_REQ(xvap, XAT_CREATETIME))
+-		ZFS_TIME_ENCODE(&xoap->xoa_createtime, crtime);
++		ZFS_TIME_ENCODE(&xoap->xoa_createtime, end->lr_attr_crtime);
+ 	if (XVA_ISSET_REQ(xvap, XAT_AV_SCANSTAMP)) {
+ 		ASSERT(!XVA_ISSET_REQ(xvap, XAT_PROJID));
+ 
+-		bcopy(xoap->xoa_av_scanstamp, scanstamp, AV_SCANSTAMP_SZ);
++		bcopy(xoap->xoa_av_scanstamp, end->lr_attr_scanstamp, AV_SCANSTAMP_SZ);
+ 	} else if (XVA_ISSET_REQ(xvap, XAT_PROJID)) {
+ 		/*
+ 		 * XAT_PROJID and XAT_AV_SCANSTAMP will never be valid
+ 		 * at the same time, so we can share the same space.
+ 		 */
+-		bcopy(&xoap->xoa_projid, scanstamp, sizeof (uint64_t));
++		bcopy(&xoap->xoa_projid, end->lr_attr_scanstamp, sizeof (uint64_t));
+ 	}
+ 	if (XVA_ISSET_REQ(xvap, XAT_REPARSE))
+-		*attrs |= (xoap->xoa_reparse == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_reparse == 0) ? 0 :
+ 		    XAT0_REPARSE;
+ 	if (XVA_ISSET_REQ(xvap, XAT_OFFLINE))
+-		*attrs |= (xoap->xoa_offline == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_offline == 0) ? 0 :
+ 		    XAT0_OFFLINE;
+ 	if (XVA_ISSET_REQ(xvap, XAT_SPARSE))
+-		*attrs |= (xoap->xoa_sparse == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_sparse == 0) ? 0 :
+ 		    XAT0_SPARSE;
+ 	if (XVA_ISSET_REQ(xvap, XAT_PROJINHERIT))
+-		*attrs |= (xoap->xoa_projinherit == 0) ? 0 :
++		end->lr_attr_attrs |= (xoap->xoa_projinherit == 0) ? 0 :
+ 		    XAT0_PROJINHERIT;
+ }
+ 

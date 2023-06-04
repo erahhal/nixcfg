@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# To get to cli:
+#
+#    systemctl --user stop protonmail-bridge
+#    protonmail-bridge --cli
+#
+# To get password, in the cli, type "info"
+#
+
+echo "Select:"
+echo "    (1) RSA and RSA"
+echo "    2048 key size"
+echo "    0 = key does not expire"
+echo "    y this is correct"
+echo "    Real Name"
+echo "    Email address: Protonmail email address "
+echo "    Comment: protonmail"
+echo "    password: NONE"
+gpg --full-generate-key
+
+echo "Now run \"pass init <email address>\""
+

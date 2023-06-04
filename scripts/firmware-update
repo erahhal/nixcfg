@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+sudo fwupdmgr refresh
+sudo fwupdmgr update

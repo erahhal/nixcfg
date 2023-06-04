@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+systemctl --user stop wireplumber pipewire-pulse pipewire
+systemctl --user start pipewire pipewire-pulse wireplumber
+pkill waybar
+nohup waybar > /dev/null 2>&1 &

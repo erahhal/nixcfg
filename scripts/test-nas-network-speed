@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+iperf -c 10.0.0.93

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# sudo chmod -R 777 ~/Code/nflx-data-api/src
+sudo chmod -R 777 ~/.cache/Netflix
+sudo chmod -R 777 ~/.metatron

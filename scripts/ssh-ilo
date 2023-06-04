@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+ssh -o HostKeyAlgorithms=ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 Administrator@10.0.0.9

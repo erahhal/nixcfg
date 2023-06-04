@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+nix-store --gc
+nix-store --verify --repair --check-contents

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# THIS IS DEPRECATED, AS PLUGINS AND NODE DEPENDENCIES ARE NOW MANAGED BY NIX
+
+nvim -c "execute 'PlugClean!' | qa"
+nvim -c "execute 'PlugUpdate' | qa"
+nvim -c "execute 'PlugInstall' | qa"
+nvim -c "execute 'TSUpdate' | qa"
+nvim -c "execute 'UpdateRemotePlugins' | qa" 2>&1
+
+yarn global add eslint
+yarn global add prettier
+yarn global add typescript
+yarn global add typescript-language-server
+yarn global add vscode-langservers-extracted

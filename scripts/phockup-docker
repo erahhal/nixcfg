@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+IN=$1
+OUT=$2
+
+docker run -v "$1":/mnt/input -v "$2":/mnt/output ivandokov/phockup:latest /mnt/input /mnt/output -o --progress

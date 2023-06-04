@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+dd if=/dev/zero of=/mnt/ellis/dd-tempfile.dat conv=fdatasync bs=384k count=5k
+rm -f /mnt/ellis/dd-tempfile.dat
+
+fio --name TEST --eta-newline=5s --filename=/mnt/ellis/fio-tempfile.dat --rw=write --size=500m --io_size=10g --blocksize=1024k --ioengine=libaio --fsync=10000 --iodepth=32 --direct=1 --numjobs=1 --runtime=60 --group_reporting
+rm -f /mnt/ellis/fio-tempfile.dat

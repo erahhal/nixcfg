@@ -1,0 +1,44 @@
+libera.addresses = "irc.libera.chat/6697"
+libera.proxy
+libera.ipv6
+libera.ssl = on
+libera.ssl_cert
+libera.ssl_password
+libera.ssl_priorities
+libera.ssl_dhkey_size
+libera.ssl_fingerprint
+libera.ssl_verify
+libera.password
+libera.capabilities
+libera.sasl_mechanism
+libera.sasl_username = "colordrops"
+libera.sasl_password = "${sec.data.libera_password}"
+libera.sasl_key
+libera.sasl_timeout
+libera.sasl_fail
+libera.autoconnect = on
+libera.autoreconnect
+libera.autoreconnect_delay
+libera.nicks = "colordrops"
+libera.nicks_alternate
+libera.username
+libera.realname
+libera.local_hostname
+libera.usermode
+libera.command
+libera.command_delay
+libera.autojoin = "#nixos,#linux,#neovim,#javascript,#sway,#nextcloud,#lineageos,#zsh,#peertube,#opnsense,#lua,#blender"
+libera.autorejoin
+libera.autorejoin_delay
+libera.connection_timeout
+libera.anti_flood_prio_high
+libera.anti_flood_prio_low
+libera.away_check
+libera.away_check_max_nicks
+libera.msg_kick
+libera.msg_part
+libera.msg_quit
+libera.notify
+libera.split_msg_max_length
+libera.charset_message
+libera.default_chantypes

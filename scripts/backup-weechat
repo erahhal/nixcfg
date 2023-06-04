@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+BACKUP_DIR=~/Documents/backup/weechat
+
+mkdir -p $BACKUP_DIR
+
+rsync -avh ~/.weechat $BACKUP_DIR --delete

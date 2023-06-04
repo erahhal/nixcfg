@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+LC_ALL=C xrandr --prop | awk '
+    function print_hex_edid() {
+        getline
+        while (/^[[:blank:]]*[[:xdigit:]]+$/) {
+            sub(/[[:blank:]]*/, "")
+            printf "%s", $0
+            getline
+        }
+        print ""
+    }
+    /^.*[[:blank:]]connected.*$/ {
+        sub(/[[:blank:]]connected.*/, "")
+        printf "%s\n", $0
+    }
+    /^[[:blank:]]*EDID.*:/ {
+        print_hex_edid()
+    }'

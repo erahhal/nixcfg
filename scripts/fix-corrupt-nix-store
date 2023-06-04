@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+sudo nix-collect-garbage
+sudo nixos-rebuild boot

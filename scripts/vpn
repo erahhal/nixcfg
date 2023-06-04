@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+sudo openvpn --config /etc/openvpn/lt.ovpn.netflix.net.201908.ovpn

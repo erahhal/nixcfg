@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+glxinfo|egrep "OpenGL vendor|OpenGL renderer*"
+
+echo ""
+
+sudo inxi -G

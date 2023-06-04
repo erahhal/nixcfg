@@ -1,0 +1,54 @@
+{ pkgs, stdenv, fetchurl, bintools-unwrapped, autoPatchelfHook, gcc, ffmpeg_4, libXv, SDL2, ... }:
+
+let
+  video_downloader_version = "1.6.3";
+  archive_sha256 = "1wchkahanpyzfbljxis22hrxswp2fpg819y49rj44vj7r7azsyzf";
+in
+stdenv.mkDerivation rec {
+  pname = "net.downloadhelper.coapp-linux-64";
+  version = video_downloader_version;
+
+  src = fetchurl {
+    url = "https://github.com/mi-g/vdhcoapp/releases/download/v${video_downloader_version}/net.downloadhelper.coapp-${video_downloader_version}-1_amd64.tar.gz";
+    sha256 = archive_sha256;
+  };
+
+  nativeBuildInputs = [
+    autoPatchelfHook
+    gcc
+    ffmpeg_4
+    libXv
+    SDL2
+  ];
+
+  buildInputs = [ bintools-unwrapped ];
+
+#   phases = [ "installPhase" "fixupPhase" ];
+
+  installPhase = ''
+    echo $src
+    tar -xvzf $src
+    mkdir -p $out
+    BASE="net.downloadhelper.coapp-${video_downloader_version}"
+    cp -R $BASE/* $out/
+    install -m755 $BASE/bin/net.downloadhelper.coapp-linux-64 $out/bin/net.downloadhelper.coapp-linux-64
+    install -m755 $BASE/converter/build/linux/64/ffmpeg $out/converter/build/linux/64/ffmpeg
+    install -m755 $BASE/converter/build/linux/64/ffplay $out/converter/build/linux/64/ffplay
+    install -m755 $BASE/converter/build/linux/64/ffprobe $out/converter/build/linux/64/ffprobe
+  '';
+
+  # postFixup = ''
+  #   patchelf \
+  #     --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+  #     $out/bin/net.downloadhelper.coapp-linux-64
+  #   patchelf \
+  #     --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+  #     $out/converter/build/linux/64/ffmpeg
+  #   patchelf \
+  #     --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+  #     $out/converter/build/linux/64/ffplay
+  #   patchelf \
+  #     --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+  #     $out/converter/build/linux/64/ffprobe
+  # '';
+}

@@ -1,0 +1,33 @@
+diff --git a/data/scripts/wayland-session b/data/scripts/wayland-session
+--- a/data/scripts/wayland-session	2022-01-08 19:31:50.222651437 -0800
++++ b/data/scripts/wayland-session	2022-01-08 19:32:04.688599291 -0800
+@@ -8,11 +8,26 @@
+ # Note that the respective logout scripts are not sourced.
+ case $SHELL in
+   */bash)
+-    [ -z "$BASH" ] && exec $SHELL --login $0 "$@"
++    [ -z "$BASH" ] && exec $SHELL $0 "$@"
+     set +o posix
++    [ -f /etc/profile ] && . /etc/profile
++    if [ -f $HOME/.bash_profile ]; then
++      . $HOME/.bash_profile
++    elif [ -f $HOME/.bash_login ]; then
++      . $HOME/.bash_login
++    elif [ -f $HOME/.profile ]; then
++      . $HOME/.profile
++    fi
+     ;;
+-  */zsh)
+-    [ -z "$ZSH_NAME" ] && exec $SHELL --login $0 "$@"
++*/zsh)
++    [ -z "$ZSH_NAME" ] && exec $SHELL $0 "$@"
++    [ -d /etc/zsh ] && zdir=/etc/zsh || zdir=/etc
++    zhome=${ZDOTDIR:-$HOME}
++    # zshenv is always sourced automatically.
++    [ -f $zdir/zprofile ] && . $zdir/zprofile
++    [ -f $zhome/.zprofile ] && . $zhome/.zprofile
++    [ -f $zdir/zlogin ] && . $zdir/zlogin
++    [ -f $zhome/.zlogin ] && . $zhome/.zlogin
+     emulate -R sh
+     ;;
+   */csh|*/tcsh)
