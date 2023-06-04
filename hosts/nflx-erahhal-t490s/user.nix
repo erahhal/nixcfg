@@ -31,10 +31,11 @@ in
         streamlit
         vespa-cli
 
-        # python
-        python39Packages.jupyter_core
-        python39Packages.nbconvert
-        python39Packages.mistune
+        ## python
+        ## Currently broken
+        # python39Packages.jupyter_core
+        # python39Packages.nbconvert
+        # python39Packages.mistune
 
         ## unstable
         trunk.bitwig-studio
