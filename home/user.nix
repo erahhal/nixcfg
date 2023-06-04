@@ -137,6 +137,7 @@ in
         weechat
 
         ## dev
+        git-secrets
         go
         cargo
         cmake
