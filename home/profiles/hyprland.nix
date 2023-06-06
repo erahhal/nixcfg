@@ -68,12 +68,13 @@ in
       $term = ${pkgs.trunk.kitty}/bin/kitty
 
       ## Refresh services
-      exec = systemctl --user restart mako
+      exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
 
       exec-once = ${pkgs.hyprpaper}/bin/hyprpaper
 
+      ## @TODO: how does this work, if at all?
       ## scale Xorg apps
       exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1.5
 
@@ -167,6 +168,9 @@ in
       workspace = eDP-1, 6
 
       # telegram media viewer
+      windowrule = float, title:^(KCalc)$
+
+      # telegram media viewer
       windowrule = float, title:^(Media viewer)$
 
       # make Firefox PiP window floating and sticky
@@ -218,7 +222,6 @@ in
       bind = $mod SHIFT, P, exec, nag-graphical 'Power off?' 'swaymsg exec systemctl poweroff -i, mode \"default\"'
       bind = $mod SHIFT, R, exec, nag-graphical 'Reboot?' 'swaymsg exec systemctl reboot'";
       bind = $mod SHIFT, S, exec, nag-graphical 'Suspend?' 'swaymsg exec systemctl suspend, mode \"default\"'
-      bind = $mod, F, fullscreen,
       bind = $mod SHIFT CTRL, L, movecurrentworkspacetomonitor, r
       bind = $mod SHIFT CTRL, H, movecurrentworkspacetomonitor, l
       bind = $mod SHIFT CTRL, K, movecurrentworkspacetomonitor, u
@@ -240,26 +243,27 @@ in
       bind = $mod SHIFT, K, movewindow, u
       bind = $mod SHIFT, J, movewindow, d
 
-      # compositor commands
-      bind = $mod, G, togglegroup,
-      bind = $mod SHIFT, N, changegroupactive, f
-      bind = $mod SHIFT, P, changegroupactive, b
+      # workspaces
+      # binds mod + [shift +] {1..10} to [move to] ws {1..10}
+      ${builtins.concatStringsSep "\n" (builtins.genList (
+          x: let
+            ws = let
+              c = (x + 1) / 10;
+            in
+              builtins.toString (x + 1 - (c * 10));
+          in ''
+            bind = $mod, ${ws}, workspace, ${toString (x + 1)}
+            bind = $mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}
+          ''
+        )
+        10)}
+
+      bind = $mod, F, fullscreen,
       bind = $mod, SPACE, togglefloating,
-      # bind = $mod, P, pseudo,
-      bind = $mod ALT, , resizeactive,
-
-
-
-      # utility
-      # launcher
       bind = $mod, P, exec, ${launcher}
-      # terminal
-      # logout menu
+
       bind = $mod, Escape, exec, wlogout -p layer-shell
-      # lock screen
-      bind = $mod, X, exec, loginctl lock-session
-      # emoji picker
-      bind = $mod, E, exec, ${emoji}
+
       # select area to perform OCR on
       bind = $mod, O, exec, run-as-service wl-ocr
 
@@ -299,21 +303,6 @@ in
 
       bind = ALT, Print, exec, grimblast --notify --cursor copysave screen
       bind = $mod SHIFT ALT, R, exec, grimblast --notify --cursor copysave screen
-
-      # workspaces
-      # binds mod + [shift +] {1..10} to [move to] ws {1..10}
-      ${builtins.concatStringsSep "\n" (builtins.genList (
-          x: let
-            ws = let
-              c = (x + 1) / 10;
-            in
-              builtins.toString (x + 1 - (c * 10));
-          in ''
-            bind = $mod, ${ws}, workspace, ${toString (x + 1)}
-            bind = $mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}
-          ''
-        )
-        10)}
 
       # special workspace
       bind = $mod SHIFT, grave, movetoworkspace, special
