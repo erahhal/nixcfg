@@ -39,7 +39,6 @@ in
       ./user.nix
 
       # Display config
-      ./kanshi.nix
       ./launch-apps-config.nix
     ];
 

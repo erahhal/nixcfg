@@ -458,7 +458,7 @@
           vim.opt.clipboard:append {'unnamedplus'}
 
           vim.api.nvim_create_autocmd("TextYankPost", {
-            command = "if v:event.operator is 'y' && v:event.regname is \'\' | execute 'OSCYankReg \"' | endif",
+            command = "if v:event.operator is 'y' && v:event.regname is \'\' | execute 'OSCYankRegister \"' | endif",
           })
           EOF
         '';

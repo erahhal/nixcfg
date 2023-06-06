@@ -8,7 +8,7 @@ let
     lock '${swayLockCmd}' \
     timeout 600 '${swayLockCmd}' \
     timeout 600 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"; sleep 2; systemctl --user restart kanshi'
+    resume 'swaymsg "output * dpms on"; sleep 2'
   '';
 in
 {

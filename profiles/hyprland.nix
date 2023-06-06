@@ -1,25 +1,10 @@
 args@{ config, inputs, hostParams, pkgs, userParams, ... }:
-# let
-#   flake-compat = builtins.fetchTarball {
-#     url = "https://github.com/edolstra/flake-compat/archive/master.tar.gz";
-#     sha256 = "1prd9b1xx8c0sfwnyzkspplh30m613j42l1k789s521f4kv4c2z2";
-#   };
-#
-#   hyprland = (import flake-compat {
-#     src = builtins.fetchTarball {
-#       url = "https://github.com/hyprwm/Hyprland/archive/master.tar.gz";
-#       sha256 = "1vzk0kx7v4cvw75cabbbv96gl7lmjnm0mgwlw2l109awyg5ah39q";
-#     };
-#   }).defaultNix;
-# in
 {
-  # imports = [hyprland.nixosModules.default];
-
   config = if hostParams.defaultSession == "hyprland" then {
-    # nix.settings = {
-    #   substituters = ["https://hyprland.cachix.org"];
-    #   trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
-    # };
+
+    # Make sure that /etc/pam.d/swaylock is added.
+    # Otherwise swaylock doesn't unlock.
+    security.pam.services.swaylock = {};
 
     services.xserver.displayManager.sessionPackages = [ pkgs.hyprland ];
 
@@ -37,6 +22,17 @@ args@{ config, inputs, hostParams, pkgs, userParams, ... }:
       };
 
       nvidiaPatches = true;
+    };
+
+    # XDG portals - allow desktop apps to use resources outside their sandbox
+    xdg.portal = {
+      enable = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-wlr # wlroots screen capture
+        xdg-desktop-portal-gtk # gtk file dialogs
+        xdg-desktop-portal-hyprland # Hyprland specific
+      ];
+      # gtkUsePortal = true;
     };
 
     home-manager.sharedModules = [

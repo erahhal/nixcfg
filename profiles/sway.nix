@@ -3,6 +3,10 @@ args@{ config, pkgs, lib, hostParams, userParams, ... }:
 {
   config = if hostParams.defaultSession == "sway" then {
 
+    imports = [
+      ./kanshi.nix
+    ];
+
     ## Chromium Wayland support
     # nixpkgs.config.chromium.commandLineArgs = "--enable-features=UseOzonePlatform --ozone-platform=wayland";
     ## OR

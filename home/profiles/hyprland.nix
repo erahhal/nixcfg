@@ -1,16 +1,20 @@
-{ inputs, config, lib, pkgs, launchAppsConfig, hostParams, ... }:
+args@{ inputs, config, lib, pkgs, launchAppsConfig, hostParams, ... }:
 
 let
   emoji = "${pkgs.wofi-emoji}/bin/wofi-emoji";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   wofi = "${pkgs.wofi}/bin/wofi --show run -W 400 -H 300";
-  launcher = wofi;
+  launcher = rofi;
+  swayLockCmd = pkgs.writeShellScript "swaylock.sh" ''
+    ${pkgs.swaylock-effects}/bin/swaylock -c '#000000' --indicator-radius 100 --indicator-thickness 20 --show-failed-attempts
+  '';
 in
 {
   imports = [
-    ./mako.nix
+    ./swaynotificationcenter.nix
     ./network-manager-applet.nix
     ./rofi.nix
+    ( import ./sway-idle.nix (args // { swayLockCmd = swayLockCmd; }))
     ./waybar.nix
     ./wlsunset.nix
   ];
@@ -21,10 +25,39 @@ in
 
     # NVidia support
     LIBVA_DRIVER_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     WLR_NO_HARDWARE_CURSORS = "1";
+
+    ## Causes Hyprland to crash
+    # GBM_BACKEND = "nvidia-drm";
+    GBM_BACKEND = "nvidia";
   };
+
+  home.packages = with pkgs; [
+    gnome3.zenity
+    networkmanagerapplet
+    imv
+    i3status
+    wl-clipboard
+    gnome3.zenity
+    wdisplays
+    wlr-randr
+    (
+      pkgs.writeTextFile {
+        name = "nag-graphical";
+        destination = "/bin/nag-graphical";
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+
+          # export GDK_DPI_SCALE=2
+          if zenity --question --text="$1"; then
+            $2
+          fi
+        '';
+      }
+    )
+  ];
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -35,7 +68,6 @@ in
       $term = ${pkgs.trunk.kitty}/bin/kitty
 
       ## Refresh services
-      exec = systemctl --user restart kanshi
       exec = systemctl --user restart mako
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
@@ -43,7 +75,13 @@ in
       exec-once = ${pkgs.hyprpaper}/bin/hyprpaper
 
       ## scale Xorg apps
-      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1.75
+      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1.5
+
+      ## @TODO
+      ## 1. Is this already being set?
+      ## 2. Is it being set BEFORE portals are executed?
+      ## SEE: https://wiki.hyprland.org/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
+      # exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
       # exec-once = systemctl --user start clight
       # exec-once = eww open bar
@@ -117,13 +155,14 @@ in
       # monitor = DP-1, preferred, auto, 1
       # monitor = DP-2, preferred, auto, 1
       # monitor = eDP-1, preferred, auto, 2
-      # workspace = eDP-1, 1
-      # workspace = DP-1, 10
-      # workspace = DP-2, 10
-      workspace = LG Electronics LG Ultra HD, 1
-      workspace = LG Electronics LG Ultra HD, 4
-      workspace = LG Electronics LG Ultra HD, 5
-      workspace = LG Electronics LG HDR 4K, 22
+      monitor = eDP-1,preferred,0x910,2.0
+      monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,preferred,1920x0,1.5
+      monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,preferred,4480x0,1.5
+      workspace = DP-2, 1
+      workspace = DP-2, 4
+      workspace = DP-2, 5
+      workspace = DP-1, 2
+      workspace = DP-1, 7
       workspace = eDP-1, 3
       workspace = eDP-1, 6
 
@@ -140,12 +179,14 @@ in
 
       # workspace 1
       windowrule = workspace 1, silent, class:^(chromium)$
+      windowrule = workspace 1 silent, class:^(firefox)$
 
       # workspace 2
       windowrule = workspace 2, silent, class:^(kitty)$
 
       # workspace 3
       windowrule = workspace 3 silent, class:^(slack)$
+      windowrule = workspace 3, title:^(Signal)$
 
       # workspace 4
       windowrule = tile, class:^(Spotify)$
@@ -153,13 +194,8 @@ in
       windowrule = tile, class:^(Brave)$
       windowrule = workspace 4 silent, class:^(Brave)$
 
-      # workspace 5
-      windowrule = workspace 5 silent, class:^(firefox)$
-
-      # workspace 6
-      windowrule = workspace 6, title:^(.*Discord.*)$
-      windowrule = workspace 6, title:^(WebCord)$
-      windowrule = workspace 6, title:^(Signal)$
+      # workspace 7
+      windowrule = workspace 7, title:^(.*Discord.*)$
 
       # idle inhibit while watching videos
       windowrule = idleinhibit focus, class:^(mpv)$
@@ -173,24 +209,51 @@ in
       bindm = $mod, mouse:273, resizewindow
       bindm = $mod ALT, mouse:272, resizewindow
 
-      # compositor commands
-      bind = $mod SHIFT, E, exec, pkill Hyprland
-      bind = $mod, Q, killactive,
+      bind = $mod, Return, exec, $term
+      bind = $mod, X, exec, ${swayLockCmd}
+      bind = $mod, C, killactive
+      bind = $mod, R, forcerendererreload
+      bind = $mod, T, togglegroup
+      bind = $mod SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'
+      bind = $mod SHIFT, P, exec, nag-graphical 'Power off?' 'swaymsg exec systemctl poweroff -i, mode \"default\"'
+      bind = $mod SHIFT, R, exec, nag-graphical 'Reboot?' 'swaymsg exec systemctl reboot'";
+      bind = $mod SHIFT, S, exec, nag-graphical 'Suspend?' 'swaymsg exec systemctl suspend, mode \"default\"'
       bind = $mod, F, fullscreen,
+      bind = $mod SHIFT CTRL, L, movecurrentworkspacetomonitor, r
+      bind = $mod SHIFT CTRL, H, movecurrentworkspacetomonitor, l
+      bind = $mod SHIFT CTRL, K, movecurrentworkspacetomonitor, u
+      bind = $mod SHIFT CTRL, J, movecurrentworkspacetomonitor, d
+
+      bind = $mod CTRL, L, resizeactive, 10 0
+      bind = $mod CTRL, H, resizeactive, -10 0
+      bind = $mod CTRL, K, resizeactive, 0 -10
+      bind = $mod CTRL, J, resizeactive, 0 10
+
+      # move focus
+      bind = $mod, H, movefocus, l
+      bind = $mod, L, movefocus, r
+      bind = $mod, K, movefocus, u
+      bind = $mod, J, movefocus, d
+
+      bind = $mod SHIFT, L, movewindow, r
+      bind = $mod SHIFT, H, movewindow, l
+      bind = $mod SHIFT, K, movewindow, u
+      bind = $mod SHIFT, J, movewindow, d
+
+      # compositor commands
       bind = $mod, G, togglegroup,
       bind = $mod SHIFT, N, changegroupactive, f
       bind = $mod SHIFT, P, changegroupactive, b
-      bind = $mod, T, togglesplit,
       bind = $mod, SPACE, togglefloating,
       # bind = $mod, P, pseudo,
       bind = $mod ALT, , resizeactive,
+
+
 
       # utility
       # launcher
       bind = $mod, P, exec, ${launcher}
       # terminal
-      # bind = $mod, Return, exec, run-as-service $term
-      bind = $mod, Return, exec, $term
       # logout menu
       bind = $mod, Escape, exec, wlogout -p layer-shell
       # lock screen
@@ -200,17 +263,8 @@ in
       # select area to perform OCR on
       bind = $mod, O, exec, run-as-service wl-ocr
 
-      # move focus
-      bind = $mod, H, movefocus, l
-      bind = $mod, L, movefocus, r
-      bind = $mod, K, movefocus, u
-      bind = $mod, J, movefocus, d
-
       # window resize
       bind = $mod, S, submap, resize
-
-      # Close window
-      bind = $mod, C, killactive
 
       submap = resize
       binde = , right, resizeactive, 10 0
@@ -239,7 +293,6 @@ in
       # stop animations while screenshotting; makes black border go away
       $screenshotarea = hyprctl keyword animation "fadeOut,0,0,default"; grimblast --notify copysave area; hyprctl keyword animation "fadeOut,1,4,default"
       bind = , Print, exec, $screenshotarea
-      bind = $mod SHIFT, R, exec, $screenshotarea
 
       bind = CTRL, Print, exec, grimblast --notify --cursor copysave output
       bind = $mod SHIFT CTRL, R, exec, grimblast --notify --cursor copysave output
