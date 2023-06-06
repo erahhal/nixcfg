@@ -54,8 +54,10 @@ in
     _module.args.hostParams = hostParams;
 
     imports = [
-      # ./profiles/firefox.nix
       ./profiles/kitty.nix
+      ## Should be handled by wayland scaling now
+      # ./profiles/firefox.nix
+      ## Should be handled by wayland scaling now
       # ./profiles/qt4-hidpi.nix
     ];
 
@@ -233,40 +235,6 @@ in
     };
 
     home.sessionVariables = {
-      # ---------------------------------------------------------------------------
-      # DPI-related
-      # ---------------------------------------------------------------------------
-      GDK_SCALE = "1";
-      # @TODO: HACK, why are the machines acting differently?
-      # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
-      GDK_DPI_SCALE = "1";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "0";
-      QT_SCALE_FACTOR = "1.5";
-      # QT_SCALE_FACTOR = "1";
-      # QT_FONT_DPI = "96";
-      QT_FONT_DPI = "80";
-
-      # ---------------------------------------------------------------------------
-      # Wayland-related
-      # ---------------------------------------------------------------------------
-      GDK_BACKEND = "wayland";
-      MOZ_ENABLE_WAYLAND = "1";
-      MOZ_USE_XINPUT2 = "1";
-      WLR_DRM_NO_MODIFIERS = "1";
-      ## Steam doesn't work with this enabled
-      # SDL_VIDEODRIVER = "wayland";
-
-      ## using "wayland" makes menus disappear in kde apps
-      # QT_QPA_PLATFORM = "wayland";
-      QT_QPA_PLATFORM = "xcb";
-
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      XDG_SESSION_TYPE = "wayland";
-      XDG_CURRENT_DESKTOP = "sway";
-
-      # Used to inform discord and other apps that we are using wayland
-      NIXOS_OZONE_WL = "1";
-
       # ---------------------------------------------------------------------------
       # IME
       # ---------------------------------------------------------------------------

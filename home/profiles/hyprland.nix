@@ -20,18 +20,68 @@ in
   ];
 
   home.sessionVariables = {
+    # ---------------------------------------------------------------------------
+    # Desktop
+    # ---------------------------------------------------------------------------
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
+    XDG_CURRENT_DESKTOP = "Hyprland";
 
+    # ---------------------------------------------------------------------------
+    # GPU
+    # ---------------------------------------------------------------------------
     # NVidia support
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     WLR_NO_HARDWARE_CURSORS = "1";
+    __GL_GSYNC_ALLOWED = "0";
+    __GL_VRR_ALLOWED = "0";
+    SDL_VIDEODRIVER = "x11";
 
     ## Causes Hyprland to crash
     # GBM_BACKEND = "nvidia-drm";
     GBM_BACKEND = "nvidia";
+    ## Causes Hyperland to start with black screen
+    # WLR_DRM_NO_ATOMIC = "1";
+
+    # ---------------------------------------------------------------------------
+    # DPI-related
+    # ---------------------------------------------------------------------------
+    GDK_SCALE = "1";
+    # @TODO: HACK, why are the machines acting differently?
+    # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
+    GDK_DPI_SCALE = "1";
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    QT_SCALE_FACTOR = "1.5";
+    # QT_SCALE_FACTOR = "1";
+    # QT_FONT_DPI = "96";
+    QT_FONT_DPI = "80";
+
+    # ---------------------------------------------------------------------------
+    # Wayland-related
+    # ---------------------------------------------------------------------------
+    CLUTTER_BACKEND = "wayland";
+    GDK_BACKEND = "wayland";
+    ## Can run GDK apps in X if necessary
+    # GDK_BACKEND = "x11";
+    MOZ_ENABLE_WAYLAND = "1";
+    MOZ_USE_XINPUT2 = "1";
+    WLR_DRM_NO_MODIFIERS = "1";
+    ## Steam doesn't work with this enabled
+    # SDL_VIDEODRIVER = "wayland";
+    ## using "wayland" makes menus disappear in kde apps
+    QT_QPA_PLATFORM = "wayland;xcb";
+    # QT_QPA_PLATFORM = "xcb";
+    ## Conflicts with QT package
+    ## Could try lib.mkDefault...
+    # QT_QPA_PLATFORMTHEME = "qt5ct";
+
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+
+    # Used to inform discord and other apps that we are using wayland
+    NIXOS_OZONE_WL = "1";
   };
+
 
   home.packages = with pkgs; [
     gnome3.zenity
@@ -67,6 +117,9 @@ in
 
       $term = ${pkgs.trunk.kitty}/bin/kitty
 
+      # Set mouse cursor size
+      exec-once=hyprctl setcursor Adwaita 24
+
       ## Refresh services
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
@@ -76,7 +129,7 @@ in
 
       ## @TODO: how does this work, if at all?
       ## scale Xorg apps
-      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1.5
+      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
 
       ## @TODO
       ## 1. Is this already being set?
@@ -137,7 +190,7 @@ in
       }
 
       animations {
-        enabled = 1
+        enabled = 0
         animation = border, 1, 2, default
         animation = fade, 1, 4, default
         animation = windows, 1, 3, default, popin 80%
@@ -156,16 +209,23 @@ in
       # monitor = DP-1, preferred, auto, 1
       # monitor = DP-2, preferred, auto, 1
       # monitor = eDP-1, preferred, auto, 2
-      monitor = eDP-1,preferred,0x910,2.0
-      monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,preferred,1920x0,1.5
-      monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,preferred,4480x0,1.5
-      workspace = DP-2, 1
-      workspace = DP-2, 4
-      workspace = DP-2, 5
-      workspace = DP-1, 2
-      workspace = DP-1, 7
+      monitor = eDP-1,3840X2160@60,0x910,2.0
+      monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840X2160@60,1920x0,1.5
+      monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840X2160@60,4480x0,1.5
+      workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 1
+      workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 4
+      workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 5
+      workspace = desc:LG Electronics LG HDR 4K 0x00020F5B, 2
+      workspace = desc:LG Electronics LG HDR 4K 0x00020F5B, 7
       workspace = eDP-1, 3
       workspace = eDP-1, 6
+      # workspace = DP-2, 1
+      # workspace = DP-2, 4
+      # workspace = DP-2, 5
+      # workspace = DP-1, 2
+      # workspace = DP-1, 7
+      # workspace = eDP-1, 3
+      # workspace = eDP-1, 6
 
       # telegram media viewer
       windowrule = float, title:^(KCalc)$
@@ -219,9 +279,9 @@ in
       bind = $mod, R, forcerendererreload
       bind = $mod, T, togglegroup
       bind = $mod SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'
-      bind = $mod SHIFT, P, exec, nag-graphical 'Power off?' 'swaymsg exec systemctl poweroff -i, mode \"default\"'
-      bind = $mod SHIFT, R, exec, nag-graphical 'Reboot?' 'swaymsg exec systemctl reboot'";
-      bind = $mod SHIFT, S, exec, nag-graphical 'Suspend?' 'swaymsg exec systemctl suspend, mode \"default\"'
+      bind = $mod SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'
+      bind = $mod SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'";
+      bind = $mod SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend, mode \"default\"'
       bind = $mod SHIFT CTRL, L, movecurrentworkspacetomonitor, r
       bind = $mod SHIFT CTRL, H, movecurrentworkspacetomonitor, l
       bind = $mod SHIFT CTRL, K, movecurrentworkspacetomonitor, u
@@ -258,8 +318,8 @@ in
         )
         10)}
 
-      bind = $mod, F, fullscreen,
-      bind = $mod, SPACE, togglefloating,
+      bind = $mod, F, fullscreen
+      bind = $mod, SPACE, togglefloating
       bind = $mod, P, exec, ${launcher}
 
       bind = $mod, Escape, exec, wlogout -p layer-shell
