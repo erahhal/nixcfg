@@ -914,10 +914,10 @@
                           -- Ctrl-space is used by Tmux, so remap to Ctrl-e
                           ["<c-e>"] = actions.to_fuzzy_refine,
 
-                          ["<c-t>"] = trouble.open_with_trouble,
+                          ["<c-o>"] = trouble.open_with_trouble,
                       },
                       n = {
-                        ["<c-t>"] = trouble.open_with_trouble,
+                        ["<c-o>"] = trouble.open_with_trouble,
                       },
                   },
               },

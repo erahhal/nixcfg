@@ -19,7 +19,7 @@
         desk = {
           outputs = [
             {
-              criteria = "Goldstar Company Ltd LG Ultra HD 0x00003EAD";
+              criteria = "LG Electronics LG Ultra HD 0x00003EAD";
               status = "enable";
               mode = "3840x2160";
               position = "0,0";
@@ -27,7 +27,7 @@
               scale = 1.5;
             }
             {
-              criteria = "Goldstar Company Ltd LG HDR 4K 0x00000F5B";
+              criteria = "LG Electronics LG HDR 4K 0x00000F5B";
               status = "enable";
               mode = "3840x2160";
               position = "2560,0";
@@ -45,7 +45,7 @@
         desk-left = {
           outputs = [
             {
-              criteria = "Goldstar Company Ltd LG Ultra HD 0x00003EAD";
+              criteria = "LG Electronics LG Ultra HD 0x00003EAD";
               status = "enable";
               mode = "3840x2160";
               position = "0,0";
@@ -64,7 +64,7 @@
         desk-right = {
           outputs = [
             {
-              criteria = "Goldstar Company Ltd LG HDR 4K 0x00000F5B";
+              criteria = "LG Electronics LG HDR 4K 0x00000F5B";
               status = "enable";
               mode = "3840x2160";
               position = "0,0";
