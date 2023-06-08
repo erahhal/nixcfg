@@ -1,7 +1,6 @@
 args@{ inputs, config, lib, pkgs, launchAppsConfig, hostParams, ... }:
 
 let
-  emoji = "${pkgs.wofi-emoji}/bin/wofi-emoji";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   wofi = "${pkgs.wofi}/bin/wofi --show run -W 400 -H 300";
   launcher = rofi;
@@ -82,7 +81,6 @@ in
     NIXOS_OZONE_WL = "1";
   };
 
-
   home.packages = with pkgs; [
     gnome3.zenity
     networkmanagerapplet
@@ -124,12 +122,13 @@ in
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
+      exec = systemctl --user restart sway-idle
 
       exec-once = ${pkgs.hyprpaper}/bin/hyprpaper
 
       ## @TODO: how does this work, if at all?
       ## scale Xorg apps
-      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
+      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1
 
       ## @TODO
       ## 1. Is this already being set?
@@ -240,26 +239,6 @@ in
       # throw sharing indicators away
       windowrule = workspace special silent, title:^(Firefox — Sharing Indicator)$
       windowrule = workspace special silent, title:^(.*is sharing (your screen|a window)\.)$
-
-      # workspace 1
-      windowrule = workspace 1, silent, class:^(chromium)$
-      windowrule = workspace 1 silent, class:^(firefox)$
-
-      # workspace 2
-      windowrule = workspace 2, silent, class:^(kitty)$
-
-      # workspace 3
-      windowrule = workspace 3 silent, class:^(slack)$
-      windowrule = workspace 3, title:^(Signal)$
-
-      # workspace 4
-      windowrule = tile, class:^(Spotify)$
-      windowrule = workspace 4 silent, class:^(Spotify)$
-      windowrule = tile, class:^(Brave)$
-      windowrule = workspace 4 silent, class:^(Brave)$
-
-      # workspace 7
-      windowrule = workspace 7, title:^(.*Discord.*)$
 
       # idle inhibit while watching videos
       windowrule = idleinhibit focus, class:^(mpv)$
@@ -375,6 +354,8 @@ in
       # cycle monitors
       bind = $mod SHIFT, braceleft, focusmonitor, l
       bind = $mod SHIFT, braceright, focusmonitor, r
+
+      ${launchAppsConfig}
     '';
   };
 }

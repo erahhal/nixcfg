@@ -384,6 +384,8 @@ in
       stop-screensaver=yes
       hwdec=auto
       ytdl-format=bestvideo+bestaudio
+      gpu-context=wayland
+      # profile=gpu-hq
     '';
 
     # @TODO: move to a home.activation script

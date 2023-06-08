@@ -12,7 +12,6 @@ let
   '';
 in
 {
-
   systemd.user.services."sway-idle" = {
     Unit = {
       Description = "Idle lock";

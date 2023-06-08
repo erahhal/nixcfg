@@ -36,10 +36,6 @@
     # Secrets management
     agenix.url = "github:ryantm/agenix";
 
-    # sway/wlroots
-    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    nixpkgs-wayland.inputs.nixpkgs.follows = "nixpkgs-unstable";
-
     # # Wine wrapper
     # erosanix.url = github:emmanuelrosa/erosanix;
     # erosanix.inputs.nixpkgs.follows = "nixpkgs";
@@ -81,10 +77,10 @@
       url = "github:hyprwm/hyprland";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    hyprland-contrib = {
-      url = "github:hyprwm/contrib";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # hyprland-contrib = {
+    #   url = "github:hyprwm/contrib";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
 
     nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
 
@@ -96,9 +92,6 @@
     userParams = import ./user-params.nix {};
     recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
   in {
-    # Secrets
-    modules = [
-    ];
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
       modules = [
         inputs.hyprland.homeManagerModules.default

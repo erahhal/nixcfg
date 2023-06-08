@@ -11,11 +11,6 @@ args@{ config, inputs, hostParams, pkgs, userParams, ... }:
     programs.hyprland = {
       enable = true;
 
-      package = pkgs.hyprland.overrideAttrs (oldAttrs: {
-        hidpiXWayland = true;
-        nvidiaPatches = true;
-      });
-
       xwayland = {
         enable = true;
         hidpi = true;
