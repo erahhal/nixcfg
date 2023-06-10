@@ -233,6 +233,7 @@ in
         size = 10000;
         path = "${config.xdg.dataHome}/zsh/history";
       };
+
       oh-my-zsh = {
         enable = true;
 
@@ -268,6 +269,8 @@ in
           ## Expands globs. Makes command line slow and messy sometimes, especially with a lot of matches
           # "globalias"
           "history-substring-search"
+          ## Not great as it requires manual toggling between local and global history
+          ## use ctrl-g to toggle to global
           "per-directory-history"
           "percol"
           "safe-paste"

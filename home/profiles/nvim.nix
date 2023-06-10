@@ -96,7 +96,6 @@
   # @TODO: organize config by files like this:
   # https://www.reddit.com/r/NixOS/comments/xa30jq/homemanager_nvim_lua_config_for_plugins/
 
-
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -533,7 +532,7 @@
         config = ''
           lua << EOF
           vim.g.org_heading_highlight_colors = {'Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special'}
-          vim.g.org_agenda_files = {"~/Documents/org-mode/agenda.org"}
+          vim.g.org_agenda_files = vim.fn.expand('~/Documents/org-mode/agenda.org')
           EOF
         '';
       }
@@ -1201,93 +1200,93 @@
       # Custom unsupported plugins
       # =======================
 
-      {
-        plugin = let kui-nvim-plugin = pkgs.vimUtils.buildVimPlugin {
-          name = "kui-nvim-plugin";
-          src = pkgs.fetchFromGitHub {
-            owner = "romgrk";
-            repo = "kui.nvim";
-            rev = "ac04753b03b0b5e13c2b4ba858b88611d3f02834";
-            sha256 = "1830q9p51xzn4i5p4ma1m0r08c9lyiglndxlzszxipl6mfzn08v7";
-          };
-          buildInputs = [ pkgs.cairo ];
-          extraPackages = [
-            pkgs.cairo
-          ];
-        }; in pkgs.buildFHSUserEnv {
-          # @TODO: There has to be a better way of including runtime dependencies here
-          # buildFHSUserEnv is too crude
-          # Some say makeWrapper better for runtime dependencies
-          name = "kui-nvim";
-          targetPkgs = pkgs: with pkgs; [
-            cairo
-            kui-nvim-plugin
-          ];
-        };
-
-        config = ''
-        '';
-      }
-
-      {
-        plugin = pkgs.vimUtils.buildVimPlugin {
-          name = "fzy-lua-native";
-          src = pkgs.fetchFromGitHub {
-            owner = "romgrk";
-            repo = "fzy-lua-native";
-            rev = "820f745b7c442176bcc243e8f38ef4b985febfaf";
-            sha256 = "1zhrql0ym0l24jvdjbz6qsf6j896cklazgksssa384gfd8s33bi5";
-          };
-
-          buildPhase = ''
-            make
-          '';
-
-        };
-
-        config = ''
-        '';
-      }
-
-      {
-        plugin = pkgs.vimUtils.buildVimPlugin {
-          name = "kirby-nvim";
-          src = pkgs.fetchFromGitHub {
-            owner = "romgrk";
-            repo = "kirby.nvim";
-            rev = "6069b141f7ef6a33fa9f649fea1208b3c33581bf";
-            sha256 = "0cbkb1dbbi3ir41yva517sk4q4hil0px7b40hp2jqn7fq6l2ygz6";
-          };
-        };
-
-        # config = ''
-        #   lua << EOF
-        #   local kirby = require('kirby')
-        #
-        #   kirby.register({
-        #     id = 'git-branch',
-        #     name = 'Git checkout',
-        #     values = function() return vim.fn['fugitive#CompleteObject']("", ' ', "") end,
-        #     onAccept = 'Git checkout',
-        #   })
-        #
-        #   kirby.register({
-        #     id = 'session',
-        #     name = 'Open session',
-        #     values = function() return vim.fn['xolox#session#complete_names']("", 'OpenSession ', 0) end,
-        #     onAccept = 'OpenSession',
-        #   })
-        #
-        #   kirby.register({
-        #     id = 'note',
-        #     name = 'Open note',
-        #     values = function() return vim.fn['xolox#notes#cmd_complete']("", 'Note ', 0) end,
-        #     onAccept = 'Note',
-        #   })
-        #   EOF
-        # '';
-      }
-
+      # {
+      #   plugin = let kui-nvim-plugin = pkgs.vimUtils.buildVimPlugin {
+      #     name = "kui-nvim-plugin";
+      #     src = pkgs.fetchFromGitHub {
+      #       owner = "romgrk";
+      #       repo = "kui.nvim";
+      #       rev = "ac04753b03b0b5e13c2b4ba858b88611d3f02834";
+      #       sha256 = "1830q9p51xzn4i5p4ma1m0r08c9lyiglndxlzszxipl6mfzn08v7";
+      #     };
+      #     buildInputs = [ pkgs.cairo ];
+      #     extraPackages = [
+      #       pkgs.cairo
+      #     ];
+      #   }; in pkgs.buildFHSUserEnv {
+      #     # @TODO: There has to be a better way of including runtime dependencies here
+      #     # buildFHSUserEnv is too crude
+      #     # Some say makeWrapper better for runtime dependencies
+      #     name = "kui-nvim";
+      #     targetPkgs = pkgs: with pkgs; [
+      #       cairo
+      #       kui-nvim-plugin
+      #     ];
+      #   };
+      #
+      #   config = ''
+      #   '';
+      # }
+      #
+      # {
+      #   plugin = pkgs.vimUtils.buildVimPlugin {
+      #     name = "fzy-lua-native";
+      #     src = pkgs.fetchFromGitHub {
+      #       owner = "romgrk";
+      #       repo = "fzy-lua-native";
+      #       rev = "820f745b7c442176bcc243e8f38ef4b985febfaf";
+      #       sha256 = "1zhrql0ym0l24jvdjbz6qsf6j896cklazgksssa384gfd8s33bi5";
+      #     };
+      #
+      #     buildPhase = ''
+      #       make
+      #     '';
+      #
+      #   };
+      #
+      #   config = ''
+      #   '';
+      # }
+      #
+      # {
+      #   plugin = pkgs.vimUtils.buildVimPlugin {
+      #     name = "kirby-nvim";
+      #     src = pkgs.fetchFromGitHub {
+      #       owner = "romgrk";
+      #       repo = "kirby.nvim";
+      #       rev = "6069b141f7ef6a33fa9f649fea1208b3c33581bf";
+      #       sha256 = "0cbkb1dbbi3ir41yva517sk4q4hil0px7b40hp2jqn7fq6l2ygz6";
+      #     };
+      #   };
+      #
+      #   config = ''
+      #     lua << EOF
+      #     local kirby = require('kirby')
+      #
+      #     kirby.register({
+      #       id = 'git-branch',
+      #       name = 'Git checkout',
+      #       values = function() return vim.fn['fugitive#CompleteObject']("", ' ', "") end,
+      #       onAccept = 'Git checkout',
+      #     })
+      #
+      #     kirby.register({
+      #       id = 'session',
+      #       name = 'Open session',
+      #       values = function() return vim.fn['xolox#session#complete_names']("", 'OpenSession ', 0) end,
+      #       onAccept = 'OpenSession',
+      #     })
+      #
+      #     kirby.register({
+      #       id = 'note',
+      #       name = 'Open note',
+      #       values = function() return vim.fn['xolox#notes#cmd_complete']("", 'Note ', 0) end,
+      #       onAccept = 'Note',
+      #     })
+      #     EOF
+      #   '';
+      # }
+      #
     ];
     # ripgrep, silver-searcher and fd is needed for fzf
     extraPackages = with pkgs; [
@@ -1300,6 +1299,7 @@
       nodePackages.eslint
       nodePackages.prettier
       nodePackages.typescript
+      nodePackages.neovim
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
     ];
@@ -1348,7 +1348,7 @@
       vim.o.signcolumn = "yes"                            -- always show two column sign column on left
       vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
-      vim.o.undodir = "~/.config/nvim/undo/"
+      vim.o.undodir = vim.fn.expand('~/.local/share/nvim/undo/')
       vim.o.undofile = true
 
       -- - enables filetype detection,
