@@ -121,6 +121,7 @@ window#waybar.empty #window {
 #tray {
     background: #1a1a1a;
     padding: 0 10px;
+    border-left: #262626;
 }
 
 

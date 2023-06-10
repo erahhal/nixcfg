@@ -57,62 +57,18 @@ in
           "sway/workspaces"
           "sway/mode"
           "sway/window"
-
-          "custom/right-arrow-cap"
         ];
         modules-right = [
-          "custom/left-arrow-cap"
-
           "network"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "backlight"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "pulseaudio"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "battery"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "cpu"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "memory"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "temperature"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "clock"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "idle_inhibitor"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "tray"
-
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-
           "custom/power"
         ];
 
@@ -205,8 +161,8 @@ in
 
         temperature = {
           critical-threshold = 80;
-          format = "{icon} {temperatureC}°C";
-          format-icons = [ "" "" "" ];
+          format = "{temperatureC}°C";
+          format-icons = [ "" "" "" ];
         };
 
         battery = {
@@ -244,13 +200,13 @@ in
 
         cpu = {
           interval = 15;
-          format = "  {}%";
+          format = " {}%";
           max-length = 10;
         };
 
         memory = {
           interval = 30;
-          format = "  {}%";
+          format = " {}%";
           max-length = 10;
         };
 
