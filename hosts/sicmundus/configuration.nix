@@ -75,7 +75,6 @@ in
 
   boot.loader.grub = {
     enable = true;
-    version = 2;
     device = "/dev/sda";
     useOSProber = true;
     # "Using NixOS on a ZFS root file system might result in the boot error external

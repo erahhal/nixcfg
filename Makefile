@@ -15,6 +15,10 @@ switch:
 offline:
 	nixos-rebuild --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
 
+gc:
+	nix-store --gc
+	nix-env --delete-generations old
+
 boot:
 	nixos-rebuild --use-remote-sudo boot --flake .#${HOSTNAME} -L
 
