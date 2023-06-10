@@ -96,6 +96,7 @@
   # @TODO: organize config by files like this:
   # https://www.reddit.com/r/NixOS/comments/xa30jq/homemanager_nvim_lua_config_for_plugins/
 
+
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -1195,6 +1196,98 @@
           EOF
         '';
       }
+
+      # =======================
+      # Custom unsupported plugins
+      # =======================
+
+      {
+        plugin = let kui-nvim-plugin = pkgs.vimUtils.buildVimPlugin {
+          name = "kui-nvim-plugin";
+          src = pkgs.fetchFromGitHub {
+            owner = "romgrk";
+            repo = "kui.nvim";
+            rev = "ac04753b03b0b5e13c2b4ba858b88611d3f02834";
+            sha256 = "1830q9p51xzn4i5p4ma1m0r08c9lyiglndxlzszxipl6mfzn08v7";
+          };
+          buildInputs = [ pkgs.cairo ];
+          extraPackages = [
+            pkgs.cairo
+          ];
+        }; in pkgs.buildFHSUserEnv {
+          # @TODO: There has to be a better way of including runtime dependencies here
+          # buildFHSUserEnv is too crude
+          # Some say makeWrapper better for runtime dependencies
+          name = "kui-nvim";
+          targetPkgs = pkgs: with pkgs; [
+            cairo
+            kui-nvim-plugin
+          ];
+        };
+
+        config = ''
+        '';
+      }
+
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          name = "fzy-lua-native";
+          src = pkgs.fetchFromGitHub {
+            owner = "romgrk";
+            repo = "fzy-lua-native";
+            rev = "820f745b7c442176bcc243e8f38ef4b985febfaf";
+            sha256 = "1zhrql0ym0l24jvdjbz6qsf6j896cklazgksssa384gfd8s33bi5";
+          };
+
+          buildPhase = ''
+            make
+          '';
+
+        };
+
+        config = ''
+        '';
+      }
+
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          name = "kirby-nvim";
+          src = pkgs.fetchFromGitHub {
+            owner = "romgrk";
+            repo = "kirby.nvim";
+            rev = "6069b141f7ef6a33fa9f649fea1208b3c33581bf";
+            sha256 = "0cbkb1dbbi3ir41yva517sk4q4hil0px7b40hp2jqn7fq6l2ygz6";
+          };
+        };
+
+        # config = ''
+        #   lua << EOF
+        #   local kirby = require('kirby')
+        #
+        #   kirby.register({
+        #     id = 'git-branch',
+        #     name = 'Git checkout',
+        #     values = function() return vim.fn['fugitive#CompleteObject']("", ' ', "") end,
+        #     onAccept = 'Git checkout',
+        #   })
+        #
+        #   kirby.register({
+        #     id = 'session',
+        #     name = 'Open session',
+        #     values = function() return vim.fn['xolox#session#complete_names']("", 'OpenSession ', 0) end,
+        #     onAccept = 'OpenSession',
+        #   })
+        #
+        #   kirby.register({
+        #     id = 'note',
+        #     name = 'Open note',
+        #     values = function() return vim.fn['xolox#notes#cmd_complete']("", 'Note ', 0) end,
+        #     onAccept = 'Note',
+        #   })
+        #   EOF
+        # '';
+      }
+
     ];
     # ripgrep, silver-searcher and fd is needed for fzf
     extraPackages = with pkgs; [
@@ -1212,47 +1305,79 @@
     ];
     # @TODO: Move to lua
     extraConfig = ''
-      " -----------------------------------------------------
-      " General settings
-      " -----------------------------------------------------
+      lua << EOF
 
-      let mapleader=" "                       " Set leader
-      let maplocalleader=" "                  " Set local leader
-      set nowrap
-      " set tw=80                               " Text wraping
-      set ruler
-      " set number
-      set mouse-=a
-      set signcolumn=yes
-      set foldexpr=nvim_treesitter#foldexpr()
+      --------- OPTIONS AND VARS
 
-      set undodir=~/.config/nvim/undo/
-      set undofile
+      -- The following replace vim "set"
+      -- vim.o        -- option, like :set, sets both local and global
+      -- vim.go       -- global option, like :setglobal
+      -- vim.bo       -- buffer local
+      -- vim.wo       -- window local
+      -- vim.opt      -- like vim.o, with objects, tables, and OO methods
+      -- vim.g        -- global var, like :let
 
-      " - enables filetype detection,
-      " - enables filetype-specific scripts (ftplugins),
-      " - enables filetype-specific indent scripts.
-      " Things like ctrl-w ctrl-] won't find custom ctag files without this
-      filetype plugin indent on
+      --------- MODES
 
-      if system("echo -n $HOSTNAME") != 'sicmundus' && system("echo -n $HOST") != 'sicmundus'
-          "" Messes up colors over mosh, so don't set this for the server
-          set termguicolors
-      endif
+      -- n            -- normal (esc)
+      -- i            -- insert (i)
+      -- v            -- visual/select (v/gh)
+      -- x            -- visual (v)
+      -- s            -- select (gh)
+      -- c            -- command (:)
+      -- r            -- replace (R)
+      -- o            -- operator pending
 
-      " -----------------------------------------------------
-      " Key mappings
-      " -----------------------------------------------------
+      --------- MAPPINGS
 
-      " Next buffer
-      noremap <Tab> :bn<CR>
-      " Previous buffer
-      noremap <S-Tab> :bp<CR>
-      " Close buffer
-      noremap <Space><Tab> :bd<CR>
-      noremap <Space><S-Tab> :bd!<CR>
-      " New tab
-      noremap <Space>t :tabnew split<CR>
+      -- map          -- will map recursively e.g. with j --> gg, Q --> j becomes Q --> gg
+                      -- works in normal, visual, select, and operator pending modes
+      -- map!         -- works in insert and command modes
+      -- nnoremap     -- n/x (normal/visual mode) no (not) re (recursive) map
+
+      -------------------------------------------------------
+      -- General settings
+      -------------------------------------------------------
+
+      -- leaders give you 1 second to enter command
+      vim.g.mapleader = " "                               -- global
+      vim.g.maplocalleader = " "                          -- per buffer, e.g. can change behavior per filetype
+      vim.o.wrap = false                                  -- don't wrap lines
+      vim.o.ruler = true                                  -- displays line, column, and cursor position at bottom
+      vim.o.mouse = "a"                                   -- enable mouse for "all" modes
+      vim.o.signcolumn = "yes"                            -- always show two column sign column on left
+      vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+
+      vim.o.undodir = "~/.config/nvim/undo/"
+      vim.o.undofile = true
+
+      -- - enables filetype detection,
+      -- - enables filetype-specific scripts (ftplugins),
+      -- - enables filetype-specific indent scripts.
+      -- Things like ctrl-w ctrl-] won't find custom ctag files without this
+      -- ** Not needed as this is default for nvim
+      -- vim.cmd [[filetype plugin indent on]]
+
+      if vim.fn.system('echo -n $HOSTNAME'):gsub('\n', "") ~= 'sicmundus' and vim.fn.system('echo -n $HOST'):gsub('\n', "") ~= 'sicmundus' then
+        -- Messes up colors over mosh, so don't set this for the server
+        vim.o.termguicolors = true
+      end
+
+      -------------------------------------------------------
+      -- Key mappings
+      -------------------------------------------------------
+
+      -- Next buffer
+      vim.api.nvim_set_keymap("", '<Tab>', ':bn<CR>', { noremap = true })
+      -- Previous buffer
+      vim.api.nvim_set_keymap("", '<S-Tab>', ':bp<CR>', { noremap = true })
+      -- Close buffer
+      vim.api.nvim_set_keymap("", '<leader><Tab>', ':bd<CR>', { noremap = true })
+      vim.api.nvim_set_keymap("", '<leader><S-Tab>', ':bd!<CR>', { noremap = true })
+      -- New tab
+      vim.api.nvim_set_keymap("", '<leader>t', ':tabnew split<CR>', { noremap = true })
+
+      EOF
 
       " -----------------------------------------------------
       " Inline functions and config

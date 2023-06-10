@@ -30,9 +30,9 @@ let
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
 in
 {
-  imports = [
-    ../../overlays/waybar-hyprland.nix
-  ];
+  # imports = [
+  #   ../../overlays/waybar-hyprland.nix
+  # ];
 
   home.packages = with pkgs; [
     waybar
@@ -44,19 +44,113 @@ in
     systemd.enable = false;
     # ${builtins.readFile "${pkgs.waybar}/etc/xdg/waybar/style.css"}
     style = ''
-      ${builtins.readFile ./waybar/waybar.css}
+      ${builtins.readFile ./waybar/waybar-angular.css}
     '';
     settings = {
       mainBar = {
         layer = "top";
 
         position = "bottom";
-        margin-bottom = 6;
 
-        modules-left = [ "custom/launcher" "sway/workspaces" "sway/mode" "sway/window" ];
-        modules-right = [ "network" "backlight" "pulseaudio" "battery" "cpu" "memory" "temperature" "clock" "idle_inhibitor" "tray" "custom/power" ];
+        modules-left = [
+          "custom/launcher"
+          "sway/workspaces"
+          "sway/mode"
+          "sway/window"
+
+          "custom/right-arrow-cap"
+        ];
+        modules-right = [
+          "custom/left-arrow-cap"
+
+          "network"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "backlight"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "pulseaudio"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "battery"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "cpu"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "memory"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "temperature"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "clock"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "idle_inhibitor"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "tray"
+
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+
+          "custom/power"
+        ];
+
+        "custom/left-arrow-dark" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/left-arrow-cap" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/left-arrow-light" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/right-arrow-dark" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/right-arrow-cap" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/right-arrow-light" = {
+          format = "";
+          tooltip = false;
+        };
 
         "sway/mode" = { format = ''<span style="italic">{}</span>''; };
+
+        "sway/workspaces" = {
+          all-outputs = true;
+        };
 
         pulseaudio = {
           tooltip = false;
@@ -67,12 +161,16 @@ in
           format-bluetooth = "{icon} {volume}% {format_source}";
           format-bluetooth-muted = "🔇 {icon} {format_source}";
 
-          on-click = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
-          on-click-right = "pavucontrol";
+          on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
 
           format-icons = {
             car = "";
-            default = [ "" "" "" ];
+            default = [
+              "󰕿"
+              "󰖀"
+              "󰕾"
+            ];
             handsfree = "";
             headphones = "";
             headset = "";
@@ -117,7 +215,7 @@ in
             warning = 30;
             critical = 20;
           };
-          format = "{icon}  {capacity}%";
+          format = "{icon} {capacity}%";
           format-charging = "  {capacity}%";
           format-plugged = "  {capacity}%";
           format-alt = "{time} {icon}";
@@ -141,7 +239,7 @@ in
         };
 
         clock = {
-          format = "{: %I:%M %p   %m/%d/%Y}";
+          format = "{:%I:%M %p   %m/%d/%Y}";
         };
 
         cpu = {
@@ -172,7 +270,7 @@ in
 
         "custom/launcher" ={
           tooltip = false;
-          format = "ꅾ ";
+          format = "ꅾ";
           on-click = launch;
           on-click-right = "pkill wofi";
         };

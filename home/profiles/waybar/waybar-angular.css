@@ -1,0 +1,202 @@
+* {
+    border: none;
+    font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+}
+
+window#waybar {
+    color: #fdf6e3;
+    border-bottom: none;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#window {
+    transition: none;
+    padding: 0 20px;
+    background: #1a1a1a;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+window#waybar.empty #window {
+    background: transparent;
+}
+
+#custom-right-arrow-dark,
+#custom-left-arrow-dark {
+    color: #1a1a1a;
+    background: #292b2e;
+}
+#custom-right-arrow-light,
+#custom-left-arrow-light {
+    color: #292b2e;
+    background: #1a1a1a;
+}
+#custom-right-arrow-cap,
+#custom-left-arrow-cap {
+    font-size: 16px;
+    color: #1a1a1a;
+    background: transparent;
+}
+
+#workspaces button {
+    padding: 0 2px;
+    color: #fdf6e3;
+    /* Use box-shadow instead of border so the text isn't offset */
+    /* box-shadow: inset 0 -2px transparent; */
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#workspaces button:hover {
+    background: #1a1a1a;
+    border: #1a1a1a;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+#workspaces button.focused {
+    background-color: #64727D;
+    /* box-shadow: inset 0 -3px #ffffff; */
+}
+
+#workspaces button.urgent {
+    background-color: #eb4d4b;
+}
+
+#workspaces {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#tags {
+    font-size: 3px;
+    background: #161320;
+    transition: none;
+}
+
+#tags button {
+    transition: none;
+    color: #B5E8E0;
+    background: transparent;
+    font-size: 16px;
+}
+
+#tags button.occupied {
+    transition: none;
+    color: #F28FAD;
+    background: transparent;
+    font-size: 3px;
+}
+
+#tags button.focused {
+    color: #ABE9B3;
+    border-top: 2px solid #ABE9B3;
+    border-bottom: 2px solid #ABE9B3;
+}
+
+#tags button:hover {
+    transition: none;
+    box-shadow: inherit;
+    text-shadow: inherit;
+    color: #FAE3B0;
+    border-color: #E8A2AF;
+    color: #E8A2AF;
+}
+
+#tags button.focused:hover {
+    color: #E8A2AF;
+}
+
+#network,
+#temperature,
+#pulseaudio,
+#battery,
+#backlight,
+#clock,
+#memory,
+#cpu,
+#idle_inhibitor,
+#custom-launcher,
+#custom-power,
+#custom-wallpaper,
+#custom-updates,
+#custom-media,
+#tray {
+    background: #1a1a1a;
+    padding: 0 10px;
+}
+
+
+#network {
+    color: #bd93f9;
+}
+
+#temperature {
+    color: #f5aa42;
+}
+
+#pulseaudio {
+    color: #FAE3B0;
+}
+
+#battery {
+    color: #B5E8E0;
+}
+
+#battery.charging, #battery.plugged {
+    color: #B5E8E0;
+}
+
+#battery.critical:not(.charging) {
+    color: #B5E8E0;
+}
+
+@keyframes blink {
+    to {
+        background-color: #BF616A;
+        color: #B5E8E0;
+    }
+}
+
+#backlight {
+    color: #F8BD96;
+}
+
+#clock {
+    color: #ABE9B3;
+}
+
+#memory {
+    color: #DDB6F2;
+}
+
+#cpu {
+    color: #96CDFB;
+}
+
+#idle_inhibitor {
+    padding: 0 16px 0 8px;
+    color: #8F8F81;
+}
+
+#idle_inhibitor.activated {
+    color: #EEF205;
+}
+
+#custom-launcher {
+    color: #C6C3C0;
+}
+
+#custom-power {
+    color: #F28FAD;
+}
+
+#custom-wallpaper {
+    color: #C9CBFF;
+}
+
+#custom-updates {
+    color: #E8A2AF;
+}
+
+#custom-media {
+    color: #F2CDCD;
+}
+
