@@ -234,6 +234,13 @@ in
         path = "${config.xdg.dataHome}/zsh/history";
       };
 
+      zplug = {
+        enable = true;
+        plugins = [
+          { name = "erahhal/zsh-directory-history"; }
+        ];
+      };
+
       oh-my-zsh = {
         enable = true;
 
@@ -271,7 +278,7 @@ in
           "history-substring-search"
           ## Not great as it requires manual toggling between local and global history
           ## use ctrl-g to toggle to global
-          "per-directory-history"
+          # "per-directory-history"
           "percol"
           "safe-paste"
           ## hit ESC twice to prefix previous command with sudo
