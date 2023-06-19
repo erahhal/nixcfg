@@ -9,7 +9,7 @@ endif
 switch:
 	make clear-sddm-cache
 	make clear-mimeapps
-	nixos-rebuild --use-remote-sudo switch --show-trace --flake .#${HOSTNAME} -L
+	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 
 offline:

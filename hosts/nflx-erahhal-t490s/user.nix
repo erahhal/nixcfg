@@ -7,13 +7,10 @@ in
 {
   imports = [
     ../../profiles/signal.nix
+    ../../profiles/syncthing.nix
   ];
 
   home-manager.users.${userParams.username} = {
-    imports = [
-      # ../../home/profiles/gimp-hidpi.nix
-    ];
-
     home = {
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 

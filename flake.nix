@@ -82,6 +82,8 @@
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
     # };
 
+    nixd.url = "github:nix-community/nixd";
+
     nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";

@@ -3,8 +3,8 @@
 let
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
 
-  gnome-calculator-hidpi = pkgs.callPackage ../pkgs/gnome-calculator-hidpi {};
-  sweethome3d-hidpi = pkgs.callPackage ../pkgs/sweethome3d-hidpi {};
+  gnome-calculator-hidpi = pkgs.callPackage ../pkgs/gnome-calculator-hidpi { };
+  sweethome3d-hidpi = pkgs.callPackage ../pkgs/sweethome3d-hidpi { };
 
   xwayland_settings = ''
     Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
@@ -18,8 +18,8 @@ let
 in
 {
   imports = [
-  #   # ../overlays/spotify-hidpi.nix
-  #   ../overlays/zoom-us.nix
+    #   # ../overlays/spotify-hidpi.nix
+    #   ../overlays/zoom-us.nix
     ../overlays/brave-wayland.nix
     ../overlays/chromium-wayland.nix
   ];
@@ -50,7 +50,6 @@ in
   services.dbus.enable = true;
 
   home-manager.users.${userParams.username} = {
-    _module.args.inputs = inputs;
     _module.args.hostParams = hostParams;
 
     imports = [
@@ -70,70 +69,70 @@ in
       enable = true;
       # Make sure VSCode doesn't take over file mimetype
       associations.added = {
-        "inode/directory" = ["nemo.desktop"];
-        "x-scheme-handler/http" = [defaultBrowserApp];
-        "x-scheme-handler/https" = [defaultBrowserApp];
-        "x-scheme-handler/about" = [defaultBrowserApp];
-        "x-scheme-handler/unknown" = [defaultBrowserApp];
-        "x-scheme-handler/chrome" = [defaultBrowserApp];
-        "text/html" = [defaultBrowserApp];
-        "application/x-extension-htm" = [defaultBrowserApp];
-        "application/x-extension-html" = [defaultBrowserApp];
-        "application/x-extension-shtml" = [defaultBrowserApp];
-        "application/xhtml+xml" = [defaultBrowserApp];
-        "application/x-extension-xhtml" = [defaultBrowserApp];
-        "application/x-extension-xht" = [defaultBrowserApp];
-        "application/x-www-browser" = [defaultBrowserApp];
-        "x-www-browser" = [defaultBrowserApp];
-        "x-scheme-handler/webcal" = [defaultBrowserApp];
-        "image/png" = ["org.gnome.gThumb.desktop"];
-        "image/jpg" = ["org.gnome.gThumb.desktop"];
-        "image/jpeg" = ["org.gnome.gThumb.desktop"];
-        "image/tiff" = ["org.gnome.gThumb.desktop"];
-        "image/webm" = ["org.gnome.gThumb.desktop"];
-        "image/gif" = ["org.gnome.gThumb.desktop"];
-        "video/x-flv" = ["mpv.desktop"];
-        "video/mp4" = ["mpv.desktop"];
-        "application/x-mpegURL" = ["mpv.desktop"];
-        "video/MP2T" = ["mpv.desktop"];
-        "video/3gpp" = ["mpv.desktop"];
-        "video/quicktime" = ["mpv.desktop"];
-        "video/x-msvideo" = ["mpv.desktop"];
-        "video/x-ms-wmv" = ["mpv.desktop"];
+        "inode/directory" = [ "nemo.desktop" ];
+        "x-scheme-handler/http" = [ defaultBrowserApp ];
+        "x-scheme-handler/https" = [ defaultBrowserApp ];
+        "x-scheme-handler/about" = [ defaultBrowserApp ];
+        "x-scheme-handler/unknown" = [ defaultBrowserApp ];
+        "x-scheme-handler/chrome" = [ defaultBrowserApp ];
+        "text/html" = [ defaultBrowserApp ];
+        "application/x-extension-htm" = [ defaultBrowserApp ];
+        "application/x-extension-html" = [ defaultBrowserApp ];
+        "application/x-extension-shtml" = [ defaultBrowserApp ];
+        "application/xhtml+xml" = [ defaultBrowserApp ];
+        "application/x-extension-xhtml" = [ defaultBrowserApp ];
+        "application/x-extension-xht" = [ defaultBrowserApp ];
+        "application/x-www-browser" = [ defaultBrowserApp ];
+        "x-www-browser" = [ defaultBrowserApp ];
+        "x-scheme-handler/webcal" = [ defaultBrowserApp ];
+        "image/png" = [ "org.gnome.gThumb.desktop" ];
+        "image/jpg" = [ "org.gnome.gThumb.desktop" ];
+        "image/jpeg" = [ "org.gnome.gThumb.desktop" ];
+        "image/tiff" = [ "org.gnome.gThumb.desktop" ];
+        "image/webm" = [ "org.gnome.gThumb.desktop" ];
+        "image/gif" = [ "org.gnome.gThumb.desktop" ];
+        "video/x-flv" = [ "mpv.desktop" ];
+        "video/mp4" = [ "mpv.desktop" ];
+        "application/x-mpegURL" = [ "mpv.desktop" ];
+        "video/MP2T" = [ "mpv.desktop" ];
+        "video/3gpp" = [ "mpv.desktop" ];
+        "video/quicktime" = [ "mpv.desktop" ];
+        "video/x-msvideo" = [ "mpv.desktop" ];
+        "video/x-ms-wmv" = [ "mpv.desktop" ];
       };
       defaultApplications = {
-        "inode/directory" = ["nemo.desktop"];
-        "x-scheme-handler/http" = [defaultBrowserApp];
-        "x-scheme-handler/https" = [defaultBrowserApp];
-        "x-scheme-handler/about" = [defaultBrowserApp];
-        "x-scheme-handler/unknown" = [defaultBrowserApp];
-        "x-scheme-handler/chrome" = [defaultBrowserApp];
-        "text/html" = [defaultBrowserApp];
-        "application/x-extension-htm" = [defaultBrowserApp];
-        "application/x-extension-html" = [defaultBrowserApp];
-        "application/x-extension-shtml" = [defaultBrowserApp];
-        "application/xhtml+xml" = [defaultBrowserApp];
-        "application/x-extension-xhtml" = [defaultBrowserApp];
-        "application/x-extension-xht" = [defaultBrowserApp];
-        "application/x-www-browser" = [defaultBrowserApp];
-        "x-www-browser" = [defaultBrowserApp];
-        "x-scheme-handler/webcal" = [defaultBrowserApp];
-        "image/png" = ["org.gnome.gThumb.desktop"];
-        "image/jpg" = ["org.gnome.gThumb.desktop"];
-        "image/jpeg" = ["org.gnome.gThumb.desktop"];
-        "image/tiff" = ["org.gnome.gThumb.desktop"];
-        "image/webm" = ["org.gnome.gThumb.desktop"];
-        "image/gif" = ["org.gnome.gThumb.desktop"];
-        "video/x-flv" = ["mpv.desktop"];
-        "video/mp4" = ["mpv.desktop"];
-        "application/x-mpegURL" = ["mpv.desktop"];
-        "video/MP2T" = ["mpv.desktop"];
-        "video/3gpp" = ["mpv.desktop"];
-        "video/quicktime" = ["mpv.desktop"];
-        "video/x-msvideo" = ["mpv.desktop"];
-        "video/x-ms-wmv" = ["mpv.desktop"];
-        "x-scheme-handler/zoommtg" = ["Zoom.desktop"];
-        "application/x-zoom" = ["Zoom.desktop"];
+        "inode/directory" = [ "nemo.desktop" ];
+        "x-scheme-handler/http" = [ defaultBrowserApp ];
+        "x-scheme-handler/https" = [ defaultBrowserApp ];
+        "x-scheme-handler/about" = [ defaultBrowserApp ];
+        "x-scheme-handler/unknown" = [ defaultBrowserApp ];
+        "x-scheme-handler/chrome" = [ defaultBrowserApp ];
+        "text/html" = [ defaultBrowserApp ];
+        "application/x-extension-htm" = [ defaultBrowserApp ];
+        "application/x-extension-html" = [ defaultBrowserApp ];
+        "application/x-extension-shtml" = [ defaultBrowserApp ];
+        "application/xhtml+xml" = [ defaultBrowserApp ];
+        "application/x-extension-xhtml" = [ defaultBrowserApp ];
+        "application/x-extension-xht" = [ defaultBrowserApp ];
+        "application/x-www-browser" = [ defaultBrowserApp ];
+        "x-www-browser" = [ defaultBrowserApp ];
+        "x-scheme-handler/webcal" = [ defaultBrowserApp ];
+        "image/png" = [ "org.gnome.gThumb.desktop" ];
+        "image/jpg" = [ "org.gnome.gThumb.desktop" ];
+        "image/jpeg" = [ "org.gnome.gThumb.desktop" ];
+        "image/tiff" = [ "org.gnome.gThumb.desktop" ];
+        "image/webm" = [ "org.gnome.gThumb.desktop" ];
+        "image/gif" = [ "org.gnome.gThumb.desktop" ];
+        "video/x-flv" = [ "mpv.desktop" ];
+        "video/mp4" = [ "mpv.desktop" ];
+        "application/x-mpegURL" = [ "mpv.desktop" ];
+        "video/MP2T" = [ "mpv.desktop" ];
+        "video/3gpp" = [ "mpv.desktop" ];
+        "video/quicktime" = [ "mpv.desktop" ];
+        "video/x-msvideo" = [ "mpv.desktop" ];
+        "video/x-ms-wmv" = [ "mpv.desktop" ];
+        "x-scheme-handler/zoommtg" = [ "Zoom.desktop" ];
+        "application/x-zoom" = [ "Zoom.desktop" ];
       };
     };
 
@@ -188,31 +187,34 @@ in
       iconTheme.package = pkgs.gnome3.adwaita-icon-theme;
       iconTheme.name = "Adwaita";
 
-      gtk2.extraConfig = if hostParams.defaultSession == "none+i3" then ''
-        gtk-cursor-theme-name="Adwaita"
-        gtk-cursor-theme-size=48
-        gtk-application-prefer-dark-theme=1
-      '' else ''
-        gtk-cursor-theme-name="Adwaita"
-        gtk-cursor-theme-size=24
-        gtk-application-prefer-dark-theme=1
-      '';
-      gtk3.extraConfig = if hostParams.defaultSession == "none+i3" then {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 48;
-        "gtk-application-prefer-dark-theme" = 1;
-      } else {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 24;
-        "gtk-application-prefer-dark-theme" = 1;
-      };
-      gtk4.extraConfig = if hostParams.defaultSession == "none+i3" then {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 48;
-      } else {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 24;
-      };
+      gtk2.extraConfig =
+        if hostParams.defaultSession == "none+i3" then ''
+          gtk-cursor-theme-name="Adwaita"
+          gtk-cursor-theme-size=48
+          gtk-application-prefer-dark-theme=1
+        '' else ''
+          gtk-cursor-theme-name="Adwaita"
+          gtk-cursor-theme-size=24
+          gtk-application-prefer-dark-theme=1
+        '';
+      gtk3.extraConfig =
+        if hostParams.defaultSession == "none+i3" then {
+          "gtk-cursor-theme-name" = "Adwaita";
+          "gtk-cursor-theme-size" = 48;
+          "gtk-application-prefer-dark-theme" = 1;
+        } else {
+          "gtk-cursor-theme-name" = "Adwaita";
+          "gtk-cursor-theme-size" = 24;
+          "gtk-application-prefer-dark-theme" = 1;
+        };
+      gtk4.extraConfig =
+        if hostParams.defaultSession == "none+i3" then {
+          "gtk-cursor-theme-name" = "Adwaita";
+          "gtk-cursor-theme-size" = 48;
+        } else {
+          "gtk-cursor-theme-name" = "Adwaita";
+          "gtk-cursor-theme-size" = 24;
+        };
     };
 
     dconf = {

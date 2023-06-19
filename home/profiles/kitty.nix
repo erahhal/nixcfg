@@ -21,7 +21,7 @@
       cursor                #e9e9e9
       selection_background  #424242
       color0                #000000
-      color8                #000000
+      color8                #777777
       color1                #d44d53
       color9                #d44d53
       color2                #b9c949

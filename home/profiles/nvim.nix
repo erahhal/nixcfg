@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
   home.packages = with pkgs; [
-    # neovide
+    inputs.nixd.packages.${pkgs.system}.default
     rnix-lsp
     tree-sitter
     nodePackages.eslint
@@ -151,19 +151,6 @@
       # =======================
       # File tree
       # =======================
-
-#       {
-#         plugin = nerdtree;
-#         config = ''
-#           " Show hidden files
-#           let NERDTreeShowHidden=1
-#           nmap ,n :NERDTreeFind<CR>
-#           nmap ,m :NERDTreeToggle<CR>
-#         '';
-#       }
-#       vim-nerdtree-tabs
-#       " NERDTree integration with ack
-#       Plug 'erahhal/nerdtree-ack'
 
       ## Check out:
       ##   https://github.com/nvim-tree/nvim-tree.lua/wiki/Recipes
@@ -382,6 +369,7 @@
           vim.g.signify_vcs_cmds = {
               git = "git diff --no-color --no-ext-diff -U0 master -- %f",
           }
+          vim.g.signify_priority = 1
           vim.cmd[[highlight SignColumn ctermbg=237]]
           EOF
         '';
@@ -588,6 +576,20 @@
           lua << EOF
           local nvim_lsp = require "lspconfig"
 
+          --Change diagnostic symbols in the sign column (gutter)
+          local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+          for type, icon in pairs(signs) do
+            local hl = "DiagnosticSign" .. type
+            vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+          end
+          vim.diagnostic.config({
+            virtual_text = false,
+            signs = true,
+            underline = true,
+            update_in_insert = true,
+            severity_sort = false,
+          })
+
           local on_attach = function(client, bufnr)
             local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
             local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -618,6 +620,21 @@
             buf_set_keymap('n', ',j', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
             buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
             buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+            vim.api.nvim_create_autocmd("CursorHold", {
+              buffer = bufnr,
+              callback = function()
+                local opts = {
+                  focusable = false,
+                  close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+                  border = "rounded",
+                  source = "always",
+                  prefix = " ",
+                  scope = "line",
+                }
+                vim.diagnostic.open_float(nil, opts)
+              end,
+            })
           end
 
           -- Use a loop to conveniently call 'setup' on multiple servers and
@@ -642,6 +659,22 @@
             -- for servers with generic config
             nvim_lsp[lsp].setup(base_config)
           end
+
+          local configs = require 'lspconfig.configs'
+          if not configs.nixd then
+            configs.nixd = {
+              default_config = {
+                cmd = { 'nixd' },
+                filetypes = { 'nix' },
+                name = 'nixd',
+                root_dir = nvim_lsp.util.root_pattern('.nixd.json', 'flake.nix', '.git'),
+                single_file_support = true,
+                settings = {}
+              }
+            }
+          end
+
+          nvim_lsp.nixd.setup(base_config)
 
           local tsserver_config = {
             on_attach = on_attach,
@@ -989,13 +1022,41 @@
 
           local select_opts = {behavior = cmp.SelectBehavior.Select}
 
+          local kind_icons = {
+            Text = "󰊄",
+            Method = "",
+            Function = "󰡱",
+            Constructor = "",
+            Field = "",
+            Variable = "󱀍",
+            Class = "",
+            Interface = "",
+            Module = "󰕳",
+            Property = "",
+            Unit = "",
+            Value = "",
+            Enum = "",
+            Keyword = "",
+            Snippet = "",
+            Color = "",
+            File = "",
+            Reference = "",
+            Folder = "",
+            EnumMember = "",
+            Constant = "",
+            Struct = "",
+            Event = "",
+            Operator = "",
+            TypeParameter = "",
+          }
+
           cmp.setup({
             snippet = {
               -- REQUIRED - you must specify a snippet engine
               expand = function(args)
-                vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+                -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
                 -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-                -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
                 -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
               end,
             },
@@ -1015,14 +1076,29 @@
               ['<C-p>'] = cmp.mapping.select_prev_item(select_opts),
               ['<C-n>'] = cmp.mapping.select_next_item(select_opts),
             },
+            formatting = {
+              fields = { "kind", "abbr", "menu" },
+              format = function(entry, vim_item)
+              vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+              vim_item.menu = ({
+                path = "[Path]",
+                nvim_lua = "[NVIM_LUA]",
+                nvim_lsp = "[LSP]",
+                luasnip = "[Snippet]",
+                buffer = "[Buffer]",
+              })[entry.source.name]
+              return vim_item
+              end,
+            },
             sources = cmp.config.sources({
+              { name = 'path' },
+              { name = 'nvim_lua' },
               { name = 'nvim_lsp' },
-              { name = 'vsnip' }, -- For vsnip users.
-              -- { name = 'luasnip' }, -- For luasnip users.
+              { name = 'buffer' },
+              -- { name = 'vsnip' }, -- For vsnip users.
+              { name = 'luasnip' }, -- For luasnip users.
               -- { name = 'ultisnips' }, -- For ultisnips users.
               -- { name = 'snippy' }, -- For snippy users.
-            }, {
-              { name = 'buffer' },
             })
           })
 
@@ -1350,6 +1426,10 @@
 
       vim.o.undodir = vim.fn.expand('~/.local/share/nvim/undo/')
       vim.o.undofile = true
+
+      vim.o.cursorline = true                             -- Highlight line cursor sits on
+      vim.o.number = true
+      vim.o.relativenumber = true
 
       -- - enables filetype detection,
       -- - enables filetype-specific scripts (ftplugins),

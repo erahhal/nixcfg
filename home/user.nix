@@ -137,6 +137,7 @@ in
         weechat
 
         ## dev
+        devbox
         git-secrets
         go
         cargo

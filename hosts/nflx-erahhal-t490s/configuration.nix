@@ -27,9 +27,9 @@ in
       ../../profiles/laptop-hardware.nix
 
       # host specific
+      ../../profiles/mullvad.nix
       ../../profiles/udev.nix
       ../../profiles/wireguard.nix
-      ../../profiles/mullvad.nix
 
       # user specific
       ./user.nix
