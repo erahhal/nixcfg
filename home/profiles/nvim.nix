@@ -583,8 +583,8 @@
             vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
           end
           vim.diagnostic.config({
-            virtual_text = false,
-            signs = true,
+            virtual_text = true,          -- whether to show errors inline
+            signs = true,                 -- whether to show error signs in gutter
             underline = true,
             update_in_insert = true,
             severity_sort = false,
