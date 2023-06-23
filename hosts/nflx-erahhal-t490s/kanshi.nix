@@ -264,11 +264,10 @@
         desk-netflix-lg-dual = {
           outputs = [
             {
-              criteria = "Goldstar Company Ltd LG ULTRAWIDE 0x00008194";
-              # criteria = "Goldstar Company Ltd LG ULTRAWIDE 0x00008194 (DP-2 via HDMI)";
+              criteria = "LG Electronics LG ULTRAWIDE 0x00008194";
               status = "enable";
               mode = "3440x1440@49.987000Hz";
-              position = "0,0";
+              position = "420,709 ";
               scale = 1.0;
             }
             {

@@ -23,7 +23,7 @@ let
     names = [ swayfont ];
     # names = [ "Terminus (TTF)" "FontAwesome" ];
     style = "Medium";
-    size = 12.0;
+    size = 10.0;
   };
   swayLockCmd = pkgs.writeShellScript "swaylock.sh" ''
     ${pkgs.swaylock}/bin/swaylock -c '#000000' --indicator-radius 100 --indicator-thickness 20 --show-failed-attempts

@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, system, hostParams, userParams, self, recursiveMerge, ... }:
+{ config, pkgs, hostParams, recursiveMerge, ... }:
 
 let
   thinkpad-dock-udev-rules = pkgs.callPackage ../../pkgs/thinkpad-dock-udev-rules { };
@@ -285,9 +285,10 @@ in
       # STOP_CHARGE_THRESH_BAT1=95;
 
       ## Travel settings
-      START_CHARGE_THRESH_BAT0=100;
+      ## START can't be above 99
+      START_CHARGE_THRESH_BAT0=99;
       STOP_CHARGE_THRESH_BAT0=100;
-      START_CHARGE_THRESH_BAT1=100;
+      START_CHARGE_THRESH_BAT1=99;
       STOP_CHARGE_THRESH_BAT1=100;
     };
   };

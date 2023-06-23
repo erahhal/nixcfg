@@ -167,6 +167,11 @@
           require("nvim-tree").setup({
             -- sort_by = "case_sensitive",
             disable_netrw = true,
+            actions = {
+              remove_file = {
+                close_window = false,
+              },
+            },
             view = {
               mappings = {
                list = {
