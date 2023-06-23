@@ -10,8 +10,8 @@ let
     export __VK_LAYER_NV_optimus=NVIDIA_only
 
     ## experimental
-    # export WLR_RENDERER=vulkan
-    # export GBM_BACKEND=nvidia-drm
+    export WLR_RENDERER=vulkan
+    export GBM_BACKEND=nvidia-drm
     ## maybe helps with stutters
     export __GL_GSYNC_ALLOWED=0
     export __GL_VRR_ALLOWED=0
@@ -58,8 +58,6 @@ in
   hardware.bumblebee.enable = false;
 
   hardware.nvidia = {
-    # package = config.boot.kernelPackages.nvidiaPackages.stable;
-    # package = pkgs.linuxKernel.packages.linux_6_2.nvidia_x11_beta;
     nvidiaPersistenced = true;
     modesetting.enable = true;
     prime = {
