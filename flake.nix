@@ -55,8 +55,8 @@
     # Pulse Secure
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    pulse-secure.url = "path:flakes/pulse-secure";
-    pulse-secure.inputs.nixpkgs.follows = "nixpkgs";
+    # pulse-secure.url = "path:flakes/pulse-secure";
+    # pulse-secure.inputs.nixpkgs.follows = "nixpkgs";
 
     # Base16 color schemes
     base16.url = "github:SenchoPens/base16.nix";
@@ -84,7 +84,10 @@
 
     nixd.url = "github:nix-community/nixd";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    comma.url = "github:nix-community/comma";
+
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
   };

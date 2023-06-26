@@ -84,9 +84,16 @@ in
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ thinkpad-dock-udev-rules ];
 
+  # Disable IPv6
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.all.disable_ipv6" = 1;
+    "net.ipv6.conf.default.disable_ipv6" = 1;
+    "net.ipv6.conf.lo.disable_ipv6" = 1;
+  };
+  networking.enableIPv6 = false;
+
   networking = {
     hostName = "nflx-erahhal-t490s";
-    enableIPv6 = false;
     useNetworkd = true;
     networkmanager = {
       enable = true;

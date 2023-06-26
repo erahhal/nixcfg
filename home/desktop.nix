@@ -323,7 +323,7 @@ in
         gnome3.evince # PDF viewer
         gnome3.nautilus
         cinnamon.nemo
-        unstable.element-desktop
+        element-desktop
         obs-studio
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date

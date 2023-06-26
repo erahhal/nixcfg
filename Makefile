@@ -29,7 +29,10 @@ update:
 	nix flake update
 
 update-local:
-	nix flake lock --update-input remarkable --update-input dcc --update-input pulse-secure
+	nix flake lock --update-input remarkable --update-input dcc
+
+update-nflx:
+	nix flake lock --update-input nflx
 
 upgrade:
 	make update && make switch

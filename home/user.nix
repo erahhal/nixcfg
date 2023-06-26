@@ -54,7 +54,8 @@ in
     imports = [
       # ./profiles/captive-browser.nix
       ./profiles/node-modules.nix
-      ./profiles/nvim.nix # ./profiles/syncthing.nix
+      ./profiles/nvim.nix
+      # ./profiles/syncthing.nix
       ./profiles/tmux.nix
       ./profiles/vifm.nix
       # ./profiles/weechat.nix
@@ -176,42 +177,45 @@ in
 
     programs.bash = {
       enable = true;
-      initExtra = builtins.readFile ../dotfiles/bashrc;
       bashrcExtra = ''
-        export EDITOR=vim
-
-        mach-shell() {
-          pypiApps=$(for arg; do printf '.%s' "$arg"; done)
-          nix shell github:davhau/mach-nix#gen.pythonWith$pypiApps
-        }
-
-        # Prints a list of webm urls for a given 4chan thread link
-        getwebm() {
-          ${pkgs.curl}/bin/curl -sL "$1.json" | ${pkgs.jq}/bin/jq -r '.posts[] | select(.ext == ".webm") | "https://i.4cdn.org/'"$(echo "$1" | sed -r 's/.*(4chan|4channel).org\/([a-zA-Z0-9]+)\/.*/\2/')"'/\(.tim)\(.ext)"';
-        }
-
-        # Makes `nix inate` as an alias of `nix shell`.
-        nix() {
-          case $1 in
-            inate)
-              shift
-              command nix shell "$@"
-              ;;
-            *)
-              command nix "$@";;
-          esac
-        }
+        TERM=xterm-256color
       '';
-      shellAliases = {
-        something = "${pkgs.ffmpeg}/bin/ffmpeg --someoption";
-        n = "nix-shell -p";
-        # r = "nix repl ${inputs.flake-utils-plus.lib.repl}";
-        ssh = "env TERM=xterm-256color ssh";
-        ipv6off = "sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 -w net.ipv6.conf.default.disable_ipv6=1 -w net.ipv6.conf.lo.disable_ipv6=1";
-        ipv6on = "sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0 -w net.ipv6.conf.default.disable_ipv6=0 -w net.ipv6.conf.lo.disable_ipv6=0";
-        ls = "lsd";
-        cheat = "function cheat_fn() { curl cht.sh/$1; }; cheat_fn";
-      };
+      # initExtra = builtins.readFile ../dotfiles/bashrc;
+      # bashrcExtra = ''
+      #   export EDITOR=vim
+      #
+      #   mach-shell() {
+      #     pypiApps=$(for arg; do printf '.%s' "$arg"; done)
+      #     nix shell github:davhau/mach-nix#gen.pythonWith$pypiApps
+      #   }
+      #
+      #   # Prints a list of webm urls for a given 4chan thread link
+      #   getwebm() {
+      #     ${pkgs.curl}/bin/curl -sL "$1.json" | ${pkgs.jq}/bin/jq -r '.posts[] | select(.ext == ".webm") | "https://i.4cdn.org/'"$(echo "$1" | sed -r 's/.*(4chan|4channel).org\/([a-zA-Z0-9]+)\/.*/\2/')"'/\(.tim)\(.ext)"';
+      #   }
+      #
+      #   # Makes `nix inate` as an alias of `nix shell`.
+      #   nix() {
+      #     case $1 in
+      #       inate)
+      #         shift
+      #         command nix shell "$@"
+      #         ;;
+      #       *)
+      #         command nix "$@";;
+      #     esac
+      #   }
+      # '';
+      # shellAliases = {
+      #   something = "${pkgs.ffmpeg}/bin/ffmpeg --someoption";
+      #   n = "nix-shell -p";
+      #   # r = "nix repl ${inputs.flake-utils-plus.lib.repl}";
+      #   ssh = "env TERM=xterm-256color ssh";
+      #   ipv6off = "sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 -w net.ipv6.conf.default.disable_ipv6=1 -w net.ipv6.conf.lo.disable_ipv6=1";
+      #   ipv6on = "sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0 -w net.ipv6.conf.default.disable_ipv6=0 -w net.ipv6.conf.lo.disable_ipv6=0";
+      #   ls = "lsd";
+      #   cheat = "function cheat_fn() { curl cht.sh/$1; }; cheat_fn";
+      # };
     };
 
     ## zsh doesn't source .profile by default.

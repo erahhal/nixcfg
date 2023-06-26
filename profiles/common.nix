@@ -138,6 +138,7 @@
   # Gives access to the NUR (Nix User Repository): https://github.com/nix-community/NUR
   nixpkgs.overlays = [
     inputs.nur.overlay
+    inputs.comma.overlays.default
   ];
 
   # --------------------------------------------------------------------------------------

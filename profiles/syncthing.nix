@@ -6,7 +6,8 @@
   home-manager.users.${userParams.username} = {
     services.syncthing = {
       enable = true;
-      tray.enable = true;
+      ## Causes an error on startup
+      # tray.enable = true;
     };
   };
 }

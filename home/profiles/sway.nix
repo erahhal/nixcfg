@@ -78,7 +78,8 @@ in
     MOZ_ENABLE_WAYLAND = "1";
     MOZ_USE_XINPUT2 = "1";
     WLR_DRM_NO_MODIFIERS = "1";
-    WLR_RENDERER = "vulkan";
+    ## Doesn't work on Thinkpad
+    # WLR_RENDERER = "vulkan";
     ## Steam doesn't work with this enabled
     # SDL_VIDEODRIVER = "wayland";
 
