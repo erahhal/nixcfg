@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+sudo /opt/pulsesecure/bin/setup_cef.sh install
+jamCommand /ImportFile ~/Code/nixcfg-nflx/pkgs/pulsesecure/fte_compset_20200301.pulsepreconfig

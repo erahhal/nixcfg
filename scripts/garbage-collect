@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+nix-store --gc
+nix-collect-garbage -d
+nix-env --delete-generations 7d

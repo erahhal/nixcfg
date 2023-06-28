@@ -4,8 +4,8 @@
     launchAppsConfig = lib.mkOption {
       type = lib.types.lines;
       default = ''
-        set $homeLeft "Goldstar Company Ltd LG Ultra HD 0x00003EAD"
-        set $homeRight "Goldstar Company Ltd LG HDR 4K 0x00000F5B"
+        set $homeLeft "LG Electronics LG Ultra HD 0x00003EAD"
+        set $homeRight "LG Electronics LG HDR 4K 0x00000F5B"
         set $laptop "eDP-1"
         set $portableLg "Goldstar Company Ltd 16MQ70"
         set $officeSamsung "Samsung Electric Company C34H89x"

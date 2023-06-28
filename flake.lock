@@ -486,8 +486,8 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1687761997,
-        "narHash": "sha256-rk35BJDAXTLzLQqb6FwGKkNrbDE8VxEQ8izzjPKvs9g=",
+        "lastModified": 1687934773,
+        "narHash": "sha256-7EMoEm8eqGN8xU5A2H+Ukb/4n+GROTKyqsVrvQVbiD0=",
         "path": "/home/erahhal/Code/nixcfg-nflx",
         "type": "path"
       },
