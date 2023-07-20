@@ -53,7 +53,9 @@ in
     _module.args.hostParams = hostParams;
 
     imports = [
+      ./profiles/element.nix
       ./profiles/kitty.nix
+      ./profiles/signal.nix
       ## Should be handled by wayland scaling now
       # ./profiles/firefox.nix
       ## Should be handled by wayland scaling now
@@ -387,6 +389,13 @@ in
       ytdl-format=bestvideo+bestaudio
       gpu-context=wayland
       # profile=gpu-hq
+    '';
+
+    xdg.configFile."mpv/input.conf".text = ''
+      k seek 60
+      j seek -60
+      h seek -10
+      l seek 10
     '';
 
     # @TODO: move to a home.activation script

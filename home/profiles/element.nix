@@ -1,7 +1,7 @@
 # Temporary fix for the following crash:
 # https://github.com/NixOS/nixpkgs/issues/238416
 
-{ pkgs, userParams, ... }:
+{ pkgs, ... }:
 let
   elementFix = pkgs.element-desktop.overrideAttrs (oldAttrs: {
     buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.makeWrapper ];
@@ -12,9 +12,7 @@ let
   });
 in
 {
-  home-manager.users.${userParams.username} = {
-    home.packages = [
-      elementFix
-    ];
-  };
+  home.packages = [
+    elementFix
+  ];
 }

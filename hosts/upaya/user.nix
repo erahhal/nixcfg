@@ -10,10 +10,6 @@ let
   whatsapp-scaled = pkgs.callPackage ../../pkgs/whatsapp-scaled {};
 in
 {
-  imports = [
-    ../../profiles/signal.nix
-  ];
-
   home-manager.users.${userParams.username} = {
     _module.args.userParams = userParams;
 
@@ -56,6 +52,7 @@ in
         trunk.tdesktop
         vdhcoapp
         whatsapp-scaled
+        unstable.chromium
 
         ## dev
         android-studio

@@ -1,4 +1,4 @@
-{ pkgs, userParams, ... }:
+{ pkgs, ... }:
 let
   # pkgs.symlinkJoin doesn't work, probably due to desktopfile pointing to the wrong binary
 
@@ -12,9 +12,7 @@ let
   });
 in
 {
-  home-manager.users.${userParams.username} = {
-    home.packages = [
-      signalWayland
-    ];
-  };
+  home.packages = [
+    signalWayland
+  ];
 }

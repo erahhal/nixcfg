@@ -486,8 +486,8 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1687934773,
-        "narHash": "sha256-7EMoEm8eqGN8xU5A2H+Ukb/4n+GROTKyqsVrvQVbiD0=",
+        "lastModified": 1687971466,
+        "narHash": "sha256-OuOJOxNJiA5ybJfTPW2uyjTZEd7Jnuo/95JbMsnYMgk=",
         "path": "/home/erahhal/Code/nixcfg-nflx",
         "type": "path"
       },
@@ -720,10 +720,10 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1687466461,
-        "narHash": "sha256-oupXI7g7RPzlpGUfAu1xG4KBK53GrZH8/xeKgKDB4+Q=",
-        "path": "/nix/store/yd0l7092ykql0k60fn1jxlqxl16wp4vn-source",
-        "rev": "ecb441f22067ba1d6312f4932a7c64efa8d19a7b",
+        "lastModified": 1687379288,
+        "narHash": "sha256-cSuwfiqYfeVyqzCRkU9AvLTysmEuSal8nh6CYr+xWog=",
+        "path": "/nix/store/i0khph5yzbnvj0821clr20x1ir2ilpgs-source",
+        "rev": "ef0bc3976340dab9a4e087a0bcff661a8b2e87f3",
         "type": "path"
       },
       "original": {
