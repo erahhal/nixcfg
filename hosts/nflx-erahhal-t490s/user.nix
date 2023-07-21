@@ -6,8 +6,6 @@ let
 in
 {
   imports = [
-    ../../profiles/element.nix
-    ../../profiles/signal.nix
     ../../profiles/syncthing.nix
   ];
 

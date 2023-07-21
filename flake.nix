@@ -28,11 +28,6 @@
     flake-utils-plus.url = "github:gytis-ivaskevicius/flake-utils-plus";
     flake-utils-plus.inputs.flake-utils.follows = "flake-utils";
 
-    # Run unpatched dynamic binaries
-    # Set NIX_LD_LIBRARY_PATH and NIX_LD
-    nix-ld.url = "github:Mic92/nix-ld";
-    nix-ld.inputs.nixpkgs.follows = "nixpkgs";
-
     # Secrets management
     agenix.url = "github:ryantm/agenix";
 
@@ -82,6 +77,9 @@
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
     # };
 
+    swayfx.url = "github:willpower3309/swayfx";
+    swayfx.inputs.nixpkgs.follows = "nixpkgs";
+
     nixd.url = "github:nix-community/nixd";
 
     comma.url = "github:nix-community/comma";
@@ -125,7 +123,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
           }
-          inputs.nix-ld.nixosModules.nix-ld
           inputs.nflx.nixosModules.default
         ];
         specialArgs = {
@@ -158,7 +155,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
           }
-          inputs.nix-ld.nixosModules.nix-ld
 
           inputs.base16.nixosModule
           { scheme = "${inputs.base16-eva-scheme}/eva.yaml"; }
@@ -191,7 +187,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
           }
-          inputs.nix-ld.nixosModules.nix-ld
         ];
         specialArgs = {
           inherit inputs;

@@ -13,6 +13,8 @@ let
 in
 {
   home.packages = [
-    signalWayland
+    ## Often crashes with Sway.  Try again later
+    # signalWayland
+    pkgs.signal-desktop
   ];
 }

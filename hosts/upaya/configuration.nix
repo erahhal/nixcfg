@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, hostParams, userParams, recursiveMerge, ... }:
+{ pkgs, hostParams, recursiveMerge, ... }:
 
 let
   dell-dock-udev-rules = pkgs.callPackage ../../pkgs/dell-dock-udev-rules {};
@@ -32,8 +32,8 @@ in
       ../../profiles/mullvad.nix
       ../../profiles/nfs-mounts.nix
       ../../profiles/udev.nix
-      ../../profiles/virtual-machines.nix
       ../../profiles/wireguard.nix
+      ../../profiles/virtual-machines.nix
 
       # user specific
       ./user.nix

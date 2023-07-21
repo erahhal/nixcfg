@@ -28,7 +28,9 @@ in
 
       # host specific
       ../../profiles/mullvad.nix
+      ../../profiles/totp.nix
       ../../profiles/udev.nix
+      ../../profiles/virtual-machines.nix
       ../../profiles/wireguard.nix
 
       # user specific
@@ -255,9 +257,9 @@ in
   #   - Either adding these kernel modules and params,
   #     or turning off power saving on wifi fixed an intermittent
   #     hard freeze when on battery.
-  boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call tp_smapi ];
-  boot.kernelModules = [ "acpi" "thinkpad-acpi" "tp_smapi" "acpi_call" ];
-  boot.initrd.kernelModules = [ "acpi" "thinkpad-acpi" "acpi_call" ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
+  boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
   boot.kernelParams = [
     "msr.allow_writes=on"
     "cpuidle.governor=teo"
@@ -267,6 +269,11 @@ in
   services.tlp = {
     enable = true;
     settings = {
+      # Control battery feature drivers:
+      NATACPI_ENABLE = 1;
+      TPACPI_ENABLE = 1;
+      TPSMAPI_ENABLE = 1;
+
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 

@@ -279,6 +279,8 @@ in
         captive-browser
         gucharmap
         xorg.xdpyinfo
+        # Dbus viewer
+        dfeet
 
         ## disk space
         baobab

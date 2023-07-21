@@ -111,8 +111,7 @@
         desk-portable-left = {
           outputs = [
             {
-              # criteria = "Goldstar Company Ltd 16MQ70";
-              criteria = "DP-1";
+              criteria = "LG Electronics 16MQ70 204NZKZ005285";
               status = "enable";
               mode = "2560x1600@59.972000Hz";
               position = "0,0";
@@ -127,39 +126,12 @@
             }
           ];
           exec = [
-            "swaymsg workspace 1, move workspace to DP-1"
+            "swaymsg workspace 1, move workspace to output left"
             "swaymsg workspace 2, move workspace to eDP-1"
-            "swaymsg workspace 3, move workspace to DP-1"
-            "swaymsg workspace 4, move workspace to DP-1"
-            "swaymsg workspace 5, move workspace to DP-1"
-            "swaymsg workspace 6, move workspace to DP-1"
-          ];
-        };
-        desk-portable-left-dp-2 = {
-          outputs = [
-            {
-              criteria = "Goldstar Company Ltd 16MQ70";
-              # criteria = "DP-2";
-              status = "enable";
-              mode = "2560x1600@59.972000Hz";
-              position = "0,0";
-              scale = 1.5;
-            }
-            {
-              criteria = "eDP-1";
-              status = "enable";
-              mode = "2560x1440";
-              position = "1706,100";
-              scale = 1.5;
-            }
-          ];
-          exec = [
-            "swaymsg workspace 1, move workspace to DP-2"
-            "swaymsg workspace 2, move workspace to eDP-1"
-            "swaymsg workspace 3, move workspace to DP-2"
-            "swaymsg workspace 4, move workspace to DP-2"
-            "swaymsg workspace 5, move workspace to DP-2"
-            "swaymsg workspace 6, move workspace to DP-2"
+            "swaymsg workspace 3, move workspace to output left"
+            "swaymsg workspace 4, move workspace to output left"
+            "swaymsg workspace 5, move workspace to output left"
+            "swaymsg workspace 6, move workspace to output left"
           ];
         };
         desk-netflix-viewsonic-dual = {

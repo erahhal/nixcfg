@@ -147,7 +147,8 @@ in
       fonts = swayfonts;
       bars = [
         {
-          command = "pkill waybar || true; ${pkgs.waybar}/bin/waybar";
+          # command = "pkill waybar || true; ${pkgs.waybar}/bin/waybar";
+          command = "${pkgs.waybar}/bin/waybar";
         }
       ];
       # focus.followMouse = "always";
@@ -411,6 +412,18 @@ in
           Down      $nag_select prev
         }
       }
+
+      ### SwayFX
+
+      # corner_radius 10
+      # smart_corner_radius enable
+      # layer_effects "waybar" blur enable; shadows enable;
+      # layer_effects notifications blur enable; shadows enable;
+      # blur enable
+      # shadows enable
+      # shadow_blur_radius 20
+      # shadow_color #0000007F
+      # default_dim_inactive 0.20
 
       ${launchAppsConfig}
     '';

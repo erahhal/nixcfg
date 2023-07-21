@@ -13,6 +13,8 @@ let
 in
 {
   home.packages = [
-    elementFix
+    ## Broken in wayland for now
+    # elementFix
+    pkgs.unstable.element-desktop
   ];
 }

@@ -139,6 +139,10 @@
   nixpkgs.overlays = [
     inputs.nur.overlay
     inputs.comma.overlays.default
+    (final: prev: {
+      ## Use SwayFX
+      # sway-unwrapped = inputs.swayfx.packages.${prev.system}.default;
+    })
   ];
 
   # --------------------------------------------------------------------------------------
@@ -264,6 +268,8 @@
   # --------------------------------------------------------------------------------------
   # Base Packages
   # --------------------------------------------------------------------------------------
+
+  programs.nix-ld.enable = true;
 
   programs.command-not-found.enable = true;
   programs.command-not-found.dbPath = "${inputs.nixpkgs}/programs.sqlite";
