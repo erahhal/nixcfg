@@ -31,6 +31,9 @@
         workspace 7 output $homeRight $laptop
         workspace 7
         exec discord
+        workspace 8 output $laptop
+        workspace 8
+        exec waydroid session start
         workspace 1 output $homeLeft
         workspace 1
         exec chromium

@@ -103,7 +103,7 @@ in
           exec kitty tmux a -dt code
           workspace 3 output eDP-1
           workspace 3
-          exec signal-desktop
+          exec joplin-desktop
           workspace 4 output "LG Electronics LG Ultra HD 0x00003EAD"
           workspace 4
           exec spotify
@@ -111,12 +111,15 @@ in
           workspace 5 output "LG Electronics LG Ultra HD 0x00003EAD"
           workspace 5
           exec thunderbird
-          workspace 6 output "LG Electronics LG Ultra HD 0x00003EAD"
+          workspace 6 output eDP-1
           workspace 6
-          exec joplin-desktop
+          exec signal-desktop
           workspace 7 output "LG Electronics LG HDR 4K 0x00000F5B"
           workspace 7
           exec discord
+          workspace 8 output eDP-1
+          workspace 8
+          exec waydroid session start
           workspace 1 output "LG Electronics LG Ultra HD 0x00003EAD"
           workspace 1
           exec firefox

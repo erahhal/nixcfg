@@ -502,14 +502,17 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1689981333,
-        "narHash": "sha256-9BybdEp6vlcAYcqdsiHFHTRytPpfBrrlsVB4H8+8Wtg=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1690051965,
+        "narHash": "sha256-0mR+dA8DzvNC6+vcFXbvpP8lG0nY/lM4pTDQeEiFZE4=",
+        "ref": "refs/heads/master",
+        "rev": "f6f74b7f0cdb9ee2270ed75ddeb501ae4bb4c3e7",
+        "revCount": 8,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nix": {
