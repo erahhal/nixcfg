@@ -32,6 +32,7 @@ in
       ../../profiles/mullvad.nix
       ../../profiles/nfs-mounts.nix
       ../../profiles/udev.nix
+      ../../profiles/waydroid.nix
       ../../profiles/wireguard.nix
       ../../profiles/virtual-machines.nix
 

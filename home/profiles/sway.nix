@@ -354,6 +354,7 @@ in
       for_window [title="^Zoom.*"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Manage Licenses"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Bitwig Studio \d.*"] floating enable
+      for_window [app_id="Waydroid"] floating enable
 
       # Zoom Meeting App
       #

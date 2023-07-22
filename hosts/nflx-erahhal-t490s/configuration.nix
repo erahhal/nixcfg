@@ -31,6 +31,7 @@ in
       ../../profiles/totp.nix
       ../../profiles/udev.nix
       ../../profiles/virtual-machines.nix
+      ../../profiles/waydroid.nix
       ../../profiles/wireguard.nix
 
       # user specific

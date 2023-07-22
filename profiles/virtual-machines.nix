@@ -67,6 +67,9 @@ in
       #   x11 = true;
       # };
     } else {};
+
+    waydroid.enable = true;
+    lxd.enable = true;
   };
   environment.systemPackages = with pkgs; [
     unstable.quickemu

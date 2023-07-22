@@ -317,6 +317,7 @@ in
         unstable.bitwarden
         gimp-with-plugins
         zoom-us
+        waydroid
         webcamoid
         xournalpp
 
