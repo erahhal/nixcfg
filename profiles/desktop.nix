@@ -18,7 +18,6 @@
       xdg-desktop-portal-wlr # wlroots screen capture
       xdg-desktop-portal-gtk # gtk file dialogs
     ];
-    # gtkUsePortal = true;
   };
 
   environment.systemPackages = with pkgs; [

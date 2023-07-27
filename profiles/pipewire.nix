@@ -4,9 +4,8 @@
   # SEE: https://nixos.wiki/wiki/PipeWire
 
   # Using pipewire instead
-  hardware.pulseaudio.enable = false;
+  # hardware.pulseaudio.enable = false;
 
-  security.rtkit.enable = true;
   users.users."${userParams.username}" = {
     extraGroups = [
       "audio"
@@ -14,6 +13,8 @@
       "video"
     ];
   };
+
+  security.rtkit.enable = true;
 
   services.pipewire = {
     enable = true;
@@ -25,6 +26,5 @@
 
   environment.systemPackages = with pkgs; [
     pavucontrol
-    # pulseaudio
   ];
 }

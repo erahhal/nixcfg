@@ -33,6 +33,8 @@ in
       ../../profiles/virtual-machines.nix
       ../../profiles/waydroid.nix
       ../../profiles/wireguard.nix
+      ## Only needed if the docker version needs to be overridden for some reason
+      # ../../overlays/docker.nix
 
       # user specific
       ./user.nix

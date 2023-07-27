@@ -38,5 +38,10 @@
   wireguardIp = "192.168.1.3";
 
   virtualboxEnabled = false;
+
+  waydroid = {
+    width = 3820;
+    height = 2100;
+  };
 }
 

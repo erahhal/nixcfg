@@ -7,7 +7,7 @@
 # Download f-droid then install:
 # waydroid app install fdroid.apk
 
-{ userParams, ...}:
+{ userParams, hostParams, ...}:
 {
   virtualisation = {
     waydroid.enable = true;
@@ -17,8 +17,9 @@
   ## Make Steam use nvidia-offload
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
     home.activation.waydroid = lib.hm.dag.entryAfter [ "installPackages" ] ''
-      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.height 2100
-      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.width 3840
+      ## Settings allow small gaps around windows
+      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.width ${toString hostParams.waydroid.width}
+      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.height ${toString hostParams.waydroid.height}
     '';
   };
 }

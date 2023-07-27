@@ -14,7 +14,7 @@ in
 {
   home.packages = [
     ## Broken in wayland for now
-    # elementFix
-    pkgs.unstable.element-desktop
+    elementFix
+    # pkgs.unstable.element-desktop
   ];
 }
