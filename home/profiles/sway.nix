@@ -54,9 +54,9 @@ let
     executable = true;
 
     text = ''
-      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-      systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
-      systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+      systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
+      systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
     '';
   };
 in
@@ -222,7 +222,7 @@ in
         background = "${hostParams.wallpaper} fill";
       } else { };
       startup = [
-        { always = true; command = "${dbus-sway-environment}/bin/dbus-sway-environment"; }
+        # { always = true; command = "${dbus-sway-environment}/bin/dbus-sway-environment"; }
 
         # Bring in environment into systemd
         { always = true; command = "systemctl --user import-environment"; }

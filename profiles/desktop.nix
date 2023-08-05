@@ -1,4 +1,4 @@
-{ inputs, pkgs, system, userParams, ...}:
+{ pkgs, userParams, ...}:
 {
   imports =
     [
@@ -11,15 +11,6 @@
       ./fonts.nix
     ];
 
-  # XDG portals - allow desktop apps to use resources outside their sandbox
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr # wlroots screen capture
-      xdg-desktop-portal-gtk # gtk file dialogs
-    ];
-  };
-
   environment.systemPackages = with pkgs; [
     glxinfo
     inxi
@@ -27,10 +18,4 @@
 
     # inputs.nix-software-center.packages."${system}".nix-software-center
   ];
-
-  home-manager.users.${userParams.username} = {
-    imports = [
-      ../home/profiles/i3status.nix
-    ];
-  };
 }

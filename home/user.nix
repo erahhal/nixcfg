@@ -445,6 +445,9 @@ in
         date = "for-each-ref --sort=committerdate refs/heads/";
       };
       extraConfig = {
+        checkout = {
+          defaultRemote = "origin";
+        };
         color = {
           ui = "auto";
         };

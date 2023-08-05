@@ -269,6 +269,7 @@ in
   ];
 
   # Thinkpad power and performance management
+  # https://linrunner.de/tlp/settings/usb.html
   services.tlp = {
     enable = true;
     settings = {
@@ -276,6 +277,10 @@ in
       NATACPI_ENABLE = 1;
       TPACPI_ENABLE = 1;
       TPSMAPI_ENABLE = 1;
+
+      # USB_AUTOSUSPEND = 1;
+      # # Sometimes dock doesn't unuspend, causing USB to stop working
+      # USB_DENYLIST = "17ef:30b4 17ef:30b5 17ef:30b6 17ef:30b7 17ef:30b8 17ef:30b9 17ef:30ba 17ef:30bb";
 
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";

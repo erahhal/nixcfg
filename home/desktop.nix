@@ -47,7 +47,9 @@ in
 
   # For xdg-desktop-portal-wlr
   # GTK apps will hang for 30 seconds at start of sway and render strangely without this
-  services.dbus.enable = true;
+  services.dbus = {
+    enable = true;
+  };
 
   home-manager.users.${userParams.username} = {
     _module.args.hostParams = hostParams;
@@ -319,7 +321,11 @@ in
         zoom-us
         waydroid
         webcamoid
+        whatsapp-for-linux
         xournalpp
+
+        # games
+        wesnoth
 
         ## desktop
         flavours

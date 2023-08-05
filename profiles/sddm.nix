@@ -40,9 +40,9 @@ in
           enable = true;
           enableHidpi = true;
           settings = {
-            X11 = {
-              ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
-            };
+            # X11 = {
+            #   ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
+            # };
 
             #---------------------------------------------------------------------------
             # Using Wayland
@@ -50,13 +50,13 @@ in
             # - Requires an overlay upgrading to the develop branch
             # - Fails with a strange error, possibly due to using nVidia driver
             #---------------------------------------------------------------------------
-            # General = {
-            #   DisplayServer = "wayland";
-            # };
-            # Wayland = {
-            #   EnableHiDPI = "true";
-            #   CompositorCommand = "sway";
-            # };
+            General = {
+              DisplayServer = "wayland";
+            };
+            Wayland = {
+              EnableHiDPI = "true";
+              CompositorCommand = "sway";
+            };
           };
           theme = hostParams.sddmTheme;
         };
