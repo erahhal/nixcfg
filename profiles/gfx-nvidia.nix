@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, userParams, ... }:
 
 # See: https://nixos.wiki/wiki/Nvidia
 
@@ -12,9 +12,7 @@ let
     ## experimental
     # export WLR_RENDERER=vulkan
     # export GBM_BACKEND=nvidia-drm
-
-    # export GBM_BACKEND=nvidia
-    # ## maybe helps with stutters
+# export GBM_BACKEND=nvidia ## maybe helps with stutters
     # export __GL_GSYNC_ALLOWED=0
     # export __GL_VRR_ALLOWED=0
 
@@ -24,21 +22,24 @@ in
 {
   nixpkgs.config.allowUnfree = true;
 
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+  };
+
   services.xserver.videoDrivers = [ "nvidia" ];
+
   boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ];
 
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true;
-
-  services.xserver = {
-    # @TODO: Are these still needed?
-    screenSection = ''
-      Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-      Option         "AllowIndirectGLXProtocol" "off"
-      Option         "TripleBuffer" "on"
-    '';
-  };
+  # services.xserver = {
+  #   # @TODO: Are these still needed?
+  #   screenSection = ''
+  #     Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+  #     Option         "AllowIndirectGLXProtocol" "off"
+  #     Option         "TripleBuffer" "on"
+  #   '';
+  # };
 
   environment.systemPackages = [
     pkgs.intel-gpu-tools
@@ -62,13 +63,20 @@ in
   hardware.nvidia = {
     nvidiaPersistenced = true;
     modesetting.enable = true;
-    open = true;
+    open = false;
     nvidiaSettings = true;
     prime = {
       # sync.enable = true;
       offload.enable = true;
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+
+  home-manager.users.${userParams.username} = { pkgs, ... }: {
+    home.sessionVariables = {
+      GBM_BACKEND = "nvidia";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
   };
 }

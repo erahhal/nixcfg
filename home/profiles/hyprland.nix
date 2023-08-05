@@ -37,9 +37,6 @@ in
     __GL_VRR_ALLOWED = "0";
     SDL_VIDEODRIVER = "x11";
 
-    ## Causes Hyprland to crash
-    # GBM_BACKEND = "nvidia-drm";
-    GBM_BACKEND = "nvidia";
     ## Causes Hyperland to start with black screen
     # WLR_DRM_NO_ATOMIC = "1";
 

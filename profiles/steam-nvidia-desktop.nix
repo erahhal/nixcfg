@@ -8,11 +8,9 @@ let
     export __VK_LAYER_NV_optimus=NVIDIA_only
 
     ## experimental
-    # export WLR_RENDERER=vulkan
-    # export GBM_BACKEND=nvidia-drm
     ## maybe helps with stutters
-    export __GL_GSYNC_ALLOWED=0
-    export __GL_VRR_ALLOWED=0
+    # export __GL_GSYNC_ALLOWED=0
+    # export __GL_VRR_ALLOWED=0
 
     # UI scaling
     export GDK_SCALE=2
