@@ -20,8 +20,7 @@ in
   imports = [
     #   # ../overlays/spotify-hidpi.nix
     #   ../overlays/zoom-us.nix
-    ../overlays/brave-wayland.nix
-    ../overlays/chromium-wayland.nix
+    # ../overlays/brave-wayland.nix
   ];
 
   environment.systemPackages = with pkgs; [
