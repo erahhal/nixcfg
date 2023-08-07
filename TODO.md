@@ -1,34 +1,38 @@
 TODOs
 =====
 
-Functionality/Fixes
--------------------
+Warts/Issues
+------------
 
-* Figure out why IPv6 needs to be disabled for docker for portal client to be accessible
-* hyperland
-  * https://git.sr.ht/~misterio/nix-config/tree/main/item/home/misterio/features/desktop/hyprland/config.nix
+* Screen sharing through chrome/firefox
+  * https://gitlab.freedesktop.org/pipewire/wireplumber/-/issues/491#related-issues
+  * https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3413
+  * Look into a script that does the same as fix-desktop-sharing automatically
+* Openconnect VPN
+  * Run as global systemd service
+  * Embeddable browser with yubikey support
+  * Auto-reconnect on disconnect or network change
+* Use wayland for Blender (should be version 3.4)
+* Steam games not really working with nVidia
+  * Slow
+  * Screen artifacts / bad aspect ratio
+* Force XWayland to run unscaled, like Hyprland
+* On reboot, mouse disappears or hangs, and requires movement for a few seconds to recover.  Same with keyboard.
+  * WORKAROUND: Have to unplug and replug to fix
+
+Improvments
+-----------
+
 * Setting up multiple upstream repos
   * https://jigarius.com/blog/multiple-git-remote-repositories
   * git remote add all <url1>
   * git remote set-url --add --push all <url1>
   * git remote set-url --add --push all <url2>
-* Use wayland for Blender (should be version 3.4)
 * Look into native nixos containers
   * https://nixos.wiki/wiki/NixOS_Containers
-* Move secrets to a flake
-* Move NFLX code to a flake
 * Look at protonmail-bridge docker image for email service for various servers
   * https://hub.docker.com/r/shenxn/protonmail-bridge
-* Still some issues with xdg-portal-* / gtk / dbus hangs on sway startup
-  * Only happens on second and subsequent logins
-  * There might be some things left behind on exit...
-  * What else related to gtk/xdg-portal/dbus?
-    * Do a ps aux capture then compare
-* Try remarkable app again
-  * https://github.com/emmanuelrosa/sumatrapdf-nix/issues/1
 * Terminal
-  * ZSH
-    * https://github.com/zplug/zplug
   * Base16
     * https://github.com/SenchoPens/base16.nix
 * Network Manager profiles
@@ -75,14 +79,6 @@ Functionality/Fixes
     * sudo iscsiadm --mode node --targetname iqn.2000-01.com.synology:nas.default-target.e4b1877b03a
     * sudo iscsiadm --mode node --targetname iqn.2000-01.com.synology:nas.default-target.e4b1877b03a --portal nas --login
     * To log out: iscsiadm --mode node --logout
-* Xorg log - failed to load libinput. Check other logs
-* i3
-  * Create script that creates "virtual" monitors, either using EDID or xrandr position after autorandr
-    * https://chipsenkbeil.com/notes/linux-virtual-monitors-with-xrandr/
-    * Then use virtual monitor names in i3 config
-    * Added scripts to do this, but behaves weirdly - i3 doesn't seem to fully recognize
-  * make sure workspaces on right monitor
-    * https://www.reddit.com/r/i3wm/comments/hjiwtv/is_there_a_way_to_have_different_workspace_output/
 * SDDM
   * monitor order/position config (xrandr?)
     * https://wiki.archlinux.org/title/SDDM#Rotate_display
@@ -93,47 +89,9 @@ Functionality/Fixes
   * Sway is able to connect to existing wayland session from SDDM, but it's tiny - how to remedy this?
 * Nvidia
   * Look into lutris
-  * Look into Regolith
+  * Look into Regolith on Sway
 * Setup caching server (hydra)
   * https://www.reddit.com/r/Nix/comments/tv1ax7/can_one_self_host_a_nix_package_repo/
-* General Desktop
-  * Try pop-shell
-  * Switch to a bar that can be shared across x-windows and wayland
-    * back to i3status-rs with better config?
-    * yambar
-  * De-dupe i3 and sway settings as much as possible
-  * SMB Browsing
-    * https://nixos.wiki/wiki/Samba#links
-    * Need to launch sway with dbus
-  * Try other Launchers/menus
-    - rofi
-    - wofi
-  * Trackpad gestures like Mac (e.g. switch workspaces)
-* xserver
-  * "xrandr output names" change on disconnect/connect
-    * Create script that creates "virtual" monitors, either using EDID or xrandr position after autorandr
-      * https://chipsenkbeil.com/notes/linux-virtual-monitors-with-xrandr/
-      * Then use virtual monitor names in i3 config
-    * https://github.com/i3/i3/discussions/4830
-    * https://www.reddit.com/r/i3wm/comments/sic67s/xrandr_outputs_change_names/
-    * not an issue for autorandr since it uses EDID
-    * Issue for i3, since it uses output name for workspace assignment
-    * Slow mouse scrolling after wake from suspend
-      * https://askubuntu.com/questions/1136187/how-do-i-fix-very-slow-scrolling-usb-wheel-mouse-after-waking-from-suspend-whi
-  * investigate setupCommands for default monitor layout
-    * https://discourse.nixos.org/t/proper-way-to-configure-monitors/12341
-  * investigate autorandr-rs
-    * https://github.com/theotherjimmy/autorandr-rs/
-* i3
-  * No idle lock
-    * https://wiki.archlinux.org/title/I3
-  * i3 spinning mouse cursor on startup
-    * https://faq.i3wm.org/question/6200/obtain-info-on-current-workspace-etc.1.html
-    * https://www.reddit.com/r/i3wm/comments/3n7txe/i_cant_get_rid_of_the_loading_mouse_cursor_on/
-  * bemenu positioned incorrectly on laptop screen
-  * Get bemenu to be larger on laptop screen
-    * Need to figure out which output is focused
-    * https://www.reddit.com/r/i3wm/comments/gsdrsy/can_i_get_the_currently_active_output_screen/
 * Sway
   * Get swaylock to work with both password and fprintd
    - https://github.com/swaywm/swaylock/issues/61
@@ -150,8 +108,6 @@ Functionality/Fixes
         - new session, but how to make it a wayland session instead of xsession?
     - does a new WM session need to be created that launches sway through systemd after sourcing the user environment?
 * hardware/peripherals
-  * On reboot, mouse disappears or hangs, and requires movement for a few seconds to recover.  Same with keyboard.
-    * WORKAROUND: Have to unplug and replug to fix
   * Add brother printer / scanner driver
     - https://discourse.nixos.org/t/install-cups-driver-for-brother-printer/7169
     - https://nixos.wiki/wiki/Scanners
@@ -165,7 +121,6 @@ Functionality/Fixes
     * https://github.com/NixOS/nixos-hardware/tree/master/dell/xps/15-9560
     * https://grahamc.com/blog/nixos-on-dell-9560
 * Apps/Software
-  * tmux - sometimes only pgup and pgdown work for navigating scrollback
   * platformio installation automation
     - https://nixos.wiki/wiki/Platformio
     - Automatically update settings
@@ -182,32 +137,8 @@ Functionality/Fixes
     - https://github.com/emmanuelrosa/sumatrapdf-nix
   * Get `nmtui` working without root again
     - disable wifi iwd if that doesn't help freezes?
-  * VIM updates
-    - Make another pass at Nix-managed vim plugin config
-      - READ: https://github.com/NixOS/nixpkgs/blob/master/pkgs/misc/vim-plugins/vim-utils.nix
-      - node modules installed through custom package are not found by nvim-lspconfig
-      - coq_nvim writes to its intallation path, which is read-only
-      - How to enable unstable vim plugins in home-manager? The plugins aren't in pack folder
-  * Node modules
-    - Where is the global `node_modules` path?
-      - with node itself?
-      - https://jingsi.space/post/2019/09/23/nix-install-npm-packages/
-      - do other packages get installed here?
-    - How to get apps to recognize this location?
-    - Add node-modules generate to makefile
   * Protoncheck
     - https://github.com/servusdei2018/protoncheck
-  * Personal VPN
-    - https://tailscale.com/
-  * Get Blender 3 additional libs compiled
-    - OSL - Open Shading Language - Sony
-      - https://github.com/AcademySoftwareFoundation/OpenShadingLanguage
-    - USD (Universal Scene Description) - Pixar
-      - https://github.com/PixarAnimationStudios/USD
-    - nanovdb
-      - https://github.com/AcademySoftwareFoundation/openvdb/tree/feature/nanovdb
-    - Jack library
-    - Pulse library
   * Get weechat config wrapped in Nix
     - https://gist.github.com/erahhal/f859602c4c1825769be8f11220a993cc
     - -r, --run-command <command>
@@ -268,4 +199,3 @@ Template System
   - https://github.com/pmiddend/nixos-manager
 * Mitchell Hashimoto's NixOS dev VM on macs
   - https://twitter.com/mitchellh/status/1452721115009191938
-

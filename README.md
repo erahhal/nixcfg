@@ -34,10 +34,6 @@ The setup is as follows:
 
 * run `nmtui`
 
-# To connect to the VPN
-
-* run `vpn`
-
 # To select audio output
 
 * GUI
@@ -101,32 +97,37 @@ or
 
 # Repo Layout
 
-- `home/` - [home-manager](https://github.com/nix-community/home-manager) modules and configuration.
+- `build/` - files used at nixos-rebuild time
 
-- `hosts/` - Machines/Hardware definitions.
-
-- `nixpkgs/` - Git Sub-module of nixpkgs fork.  Allows modifying of base packages, and potentially upstreaming them.
-
-- `pkgs/` - Custom [Packages/Derivations](https://nixos.org/manual/nix/unstable/expressions/derivations.html) that aren't in nixpkgs.
-
-- `profiles/` - Configurations intended to be imported into a given system.
-  They define the values for module options.
-  See [profiles](https://devos.divnix.com/concepts/profiles.html)
-
-- `suites/` - Collections of profiles
-  [suites](https://devos.divnix.com/concepts/suites.html)
-
-- `overlays/` - Valid overlays included in all hosts
-  [overlays](https://devos.divnix.com/outputs/overlays.html)
-
-- `secrets/` - [`age`](https://github.com/FiloSottile/age) encrypted secrets,
-  made possible by [`agenix`](https://github.com/ryantm/agenix)
+- `containers/` - Container configs, mainly docker setups for use on a server.
 
 - `dotfiles/` - Legacy [dotfile](https://wiki.archlinux.org/index.php/Dotfiles)
   configs that are not written in nix, but should be at a later date.
+
+- `flakes/` - Independent flakes, in development, before they are ready to be broken out into a separate repo
+
+- `helpers/` - Nix helper functions to assist with configuration
+
+- `home/` - [home-manager](https://github.com/nix-community/home-manager) modules and configuration.
+
+- `hosts/` - Configuration for individual machines.
+
+- `modules/` - Custom configurable Nix modules
+
+- `overlays/` - Existing package customizations.
+  [overlays](https://devos.divnix.com/outputs/overlays.html)
+
+- `pkgs/` - Custom [Packages/Derivations](https://nixos.org/manual/nix/unstable/expressions/derivations.html) that aren't in nixpkgs.
+
+- `profiles/` - Modular configurations for individual concerns.
+  See [profiles](https://devos.divnix.com/concepts/profiles.html)
+
+- `overlays/` - Valid overlays included in all hosts
 
 - `scripts/` - Scripts, or any other files to place in home directory,
   managed by [home-manager](https://github.com/nix-community/home-manager).
   This is done via `home.file."scripts".source = "${self}/scripts"`
 
 - `shells/` - Special Environments/Shells, for example with [Yocto](https://www.yoctoproject.org/).
+
+- `wallpapers/` - Background images

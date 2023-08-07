@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+pw-link -d .xdg-desktop-portal-wlr-wrapped:capture_1 chromium:input_1
+pw-link .xdg-desktop-portal-wlr-wrapped:capture_1 chromium:input_1
