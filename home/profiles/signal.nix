@@ -3,7 +3,7 @@ let
   # pkgs.symlinkJoin doesn't work, probably due to desktopfile pointing to the wrong binary
 
   # downside of overrideAttrs approach is that it rebuilds the package
-  signalWayland = pkgs.signal-desktop.overrideAttrs (oldAttrs: {
+  signalWayland = pkgs.unstable.signal-desktop.overrideAttrs (oldAttrs: {
     buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.makeWrapper ];
     postInstall = oldAttrs.postInstall or "" + ''
       wrapProgram $out/bin/signal-desktop \
@@ -15,6 +15,6 @@ in
   home.packages = [
     ## Often crashes with Sway.  Try again later
     # signalWayland
-    pkgs.signal-desktop
+    pkgs.unstable.signal-desktop
   ];
 }

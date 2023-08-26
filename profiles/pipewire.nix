@@ -1,10 +1,8 @@
 { pkgs, userParams, ... }:
 
 {
-  # SEE: https://nixos.wiki/wiki/PipeWire
-
-  # Using pipewire instead
-  # hardware.pulseaudio.enable = false;
+  # @TODO: Revert this when stable is at least 0.3.77
+  services.pipewire.package = pkgs.unstable.pipewire;
 
   users.users."${userParams.username}" = {
     extraGroups = [
@@ -26,5 +24,7 @@
 
   environment.systemPackages = with pkgs; [
     pavucontrol
+    # for pactl
+    pulseaudio
   ];
 }

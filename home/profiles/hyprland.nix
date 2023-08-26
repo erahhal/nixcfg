@@ -172,10 +172,6 @@ in
 
       decoration {
         rounding = 8
-        blur = 1
-        blur_size = 3
-        blur_passes = 3
-        blur_new_optimizations = 1
 
         drop_shadow = 1
         shadow_ignore_window = 1

@@ -4,10 +4,18 @@ TODOs
 Warts/Issues
 ------------
 
-* Screen sharing through chrome/firefox
-  * https://gitlab.freedesktop.org/pipewire/wireplumber/-/issues/491#related-issues
-  * https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3413
-  * Look into a script that does the same as fix-desktop-sharing automatically
+* DNS doesn't work for some public wifi APs with captive portals
+  * https://github.com/NixOS/nixpkgs/issues/24433
+  * https://github.com/NixOS/nixpkgs/issues/63754
+  * https://www.reddit.com/r/Ubuntu/comments/11puao9/i_cant_connect_to_captive_portals_but_i_can/
+* Slack screen sharing crashes slack
+  * https://github.com/flathub/com.slack.Slack/issues/195
+  * https://github.com/flathub/com.slack.Slack/issues/196
+  * 4.29 worked, 4.31 broke
+* Sharing of individual windows in Sway
+  * https://github.com/emersion/xdg-desktop-portal-wlr/issues/107
+  * https://github.com/emersion/xdg-desktop-portal-wlr/issues/12#issuecomment-770377796
+  * https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests/187
 * Openconnect VPN
   * Run as global systemd service
   * Embeddable browser with yubikey support
@@ -23,6 +31,7 @@ Warts/Issues
 Improvments
 -----------
 
+* Get rid of pipewire package override when stable version is at least 0.3.77
 * Setting up multiple upstream repos
   * https://jigarius.com/blog/multiple-git-remote-repositories
   * git remote add all <url1>

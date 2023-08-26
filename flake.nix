@@ -102,6 +102,34 @@
       ];
     };
     nixosConfigurations = {
+      mediaserver =
+      let
+        system = "aarch64-linux";
+        hostParams = import ./hosts/mediaserver/params.nix {};
+      in
+      inputs.nixpkgs.lib.nixosSystem {
+        system = system;
+        modules = [
+          (import ./hosts/mediaserver/configuration.nix)
+          inputs.agenix.nixosModules.default
+          inputs.secrets.nixosModules.default
+          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+          inputs.nixos-hardware.nixosModules.raspberry-pi-4
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+          }
+          inputs.nflx.nixosModules.default
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit system;
+          inherit hostParams;
+          inherit userParams;
+          inherit recursiveMerge;
+        };
+      };
       nflx-erahhal-t490s =
       let
         system = "x86_64-linux";

@@ -140,6 +140,19 @@
       }
 
       # =======================
+      # Editor Config files
+      # =======================
+
+      {
+        plugin = editorconfig-vim;
+        config = ''
+          lua << EOF
+          vim.g.EditorConfig_exclude_patterns = { 'fugitive://.*' }
+          EOF
+        '';
+      }
+
+      # =======================
       # Maximize panes
       # =======================
 

@@ -278,8 +278,8 @@ in
       TPACPI_ENABLE = 1;
       TPSMAPI_ENABLE = 1;
 
-      # USB_AUTOSUSPEND = 1;
       # # Sometimes dock doesn't unuspend, causing USB to stop working
+      USB_AUTOSUSPEND = 0;
       # USB_DENYLIST = "17ef:30b4 17ef:30b5 17ef:30b6 17ef:30b7 17ef:30b8 17ef:30b9 17ef:30ba 17ef:30bb";
 
       CPU_SCALING_GOVERNOR_ON_AC = "performance";

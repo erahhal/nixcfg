@@ -23,7 +23,6 @@ args@{ config, inputs, hostParams, pkgs, userParams, ... }:
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [
-        xdg-desktop-portal-wlr # wlroots screen capture
         xdg-desktop-portal-gtk # gtk file dialogs
         xdg-desktop-portal-hyprland # Hyprland specific
       ];

@@ -1,6 +1,9 @@
 # Temporary fix for the following crash:
 # https://github.com/NixOS/nixpkgs/issues/238416
 
+## Potential Workaround:
+# https://github.com/vector-im/element-desktop/issues/1026
+
 { pkgs, ... }:
 let
   elementFix = pkgs.element-desktop.overrideAttrs (oldAttrs: {

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+echo "--------------------------------------------------------------"
+echo "( nmcli  dev list || nmcli dev show ) 2>/dev/null | grep  DNS"
+echo "--------------------------------------------------------------"
+echo ""
+( nmcli  dev list || nmcli dev show ) 2>/dev/null | grep  DNS
+
+echo ""
+echo "--------------------------------------------------------------"
+echo "systemd-resolve --status"
+echo " (also resolvectl)"
+echo "--------------------------------------------------------------"
+echo ""
+systemd-resolve --status

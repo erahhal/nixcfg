@@ -1,0 +1,13 @@
+error: builder for '/nix/store/8xnnc185zxqm8rfxb6wg4fw1qhbimlh1-openal-soft-1.22.2.drv' failed with exit code 2;
+       last 10 log lines:
+       >  1184 |     EnumeratedHrtfs.emplace_back(HrtfEntry{newname, filename});
+       >       |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       > [ 93%] Linking CXX shared library libopenal.so
+       > /nix/store/20ga3mnkncjgl70bgdhrinw28wz1mfyc-binutils-2.40/bin/ld: skipping incompatible /nix/store/ahsyfz5gv5cpnij5nzhaghdbksbmp203-pipewire-0.3.77-lib/lib/libpipewire-0.3.so when searching for -lpipewire-0.3
+       > /nix/store/20ga3mnkncjgl70bgdhrinw28wz1mfyc-binutils-2.40/bin/ld: cannot find -lpipewire-0.3: No such file or directory
+       > /nix/store/20ga3mnkncjgl70bgdhrinw28wz1mfyc-binutils-2.40/bin/ld: skipping incompatible /nix/store/ahsyfz5gv5cpnij5nzhaghdbksbmp203-pipewire-0.3.77-lib/lib/libpipewire-0.3.so when searching for -lpipewire-0.3
+       > collect2: error: ld returned 1 exit status
+       > make[2]: *** [CMakeFiles/OpenAL.dir/build.make:1466: libopenal.so.1.22.2] Error 1
+       > make[1]: *** [CMakeFiles/Makefile2:134: CMakeFiles/OpenAL.dir/all] Error 2
+       > make: *** [Makefile:136: all] Error 2
+       For full logs, run 'nix log /nix/store/8xnnc185zxqm8rfxb6wg4fw1qhbimlh1-openal-soft-1.22.2.drv'.

@@ -15,7 +15,6 @@
     glxinfo
     inxi
     libcamera
-    pulseaudio
 
     # inputs.nix-software-center.packages."${system}".nix-software-center
   ];
