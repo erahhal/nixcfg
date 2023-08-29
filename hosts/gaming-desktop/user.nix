@@ -7,8 +7,13 @@ let
   prismlauncher-nvidia = pkgs.callPackage ../../pkgs/prismlauncher-nvidia {};
   teensy-loader-gui = pkgs.callPackage ../../pkgs/teensy-loader-gui {};
   vdhcoapp = pkgs.callPackage ../../pkgs/vdhcoapp {};
+  whatsapp-scaled = pkgs.callPackage ../../pkgs/whatsapp-scaled {};
 in
 {
+  imports = [
+    ../../profiles/signal.nix
+  ];
+
   home-manager.users.${userParams.username} = {
     _module.args.userParams = userParams;
 
@@ -50,7 +55,7 @@ in
         transmission-gtk
         trunk.tdesktop
         vdhcoapp
-        unstable.chromium
+        whatsapp-scaled
 
         ## dev
         android-studio

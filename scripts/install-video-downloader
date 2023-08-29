@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sudo net.downloadhelper.coapp install
+mkdir -p ~/.mozilla/native-messaging-hosts
+# This is the crucial update across builds, as it points to a different nix store path with each update
+cp -rf /usr/lib/mozilla/native-messaging-hosts/net.downloadhelper.coapp.json ~/.mozilla/native-messaging-hosts
+sudo rm -rf /usr/lib/mozilla/native-messaging-hosts/net.downloadhelper.coapp.json

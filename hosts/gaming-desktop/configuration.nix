@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, hostParams, recursiveMerge, ... }:
+{ pkgs, hostParams, userParams, recursiveMerge, ... }:
 
 let
   dell-dock-udev-rules = pkgs.callPackage ../../pkgs/dell-dock-udev-rules {};
@@ -32,9 +32,8 @@ in
       ../../profiles/mullvad.nix
       ../../profiles/nfs-mounts.nix
       ../../profiles/udev.nix
-      ../../profiles/waydroid.nix
-      ../../profiles/wireguard.nix
       ../../profiles/virtual-machines.nix
+      ../../profiles/wireguard.nix
 
       # user specific
       ./user.nix
@@ -61,7 +60,7 @@ in
   };
 
   # Kernel 6.2 currently breaks nvidia
-  boot.kernelPackages = pkgs.linuxPackages_6_1_42;
+  # boot.kernelPackages = pkgs.linuxPackages_6_1;
 
   # --------------------------------------------------------------------------------------
   # File system

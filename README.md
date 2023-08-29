@@ -1,20 +1,15 @@
 NixOS Config
 ============
 
-This is a somewhat opinionated setup for on a Thinkpad T490s laptop at Netflix.
+This is a somewhat opinionated setup for my personal machines and servers, as well as a work laptop.
 The setup is as follows:
 
-* Desktop environment: wayland / sway / i3status / bemenu / kitty
-  * No scaling - apps configured for HiDPI
+* Desktop environment: wayland / sway / kitty
+  * 2x scaling - apps configured for HiDPI
 * Audio: pipewire
 * Wireless: network manager
 * Browsers: Brave, Firefox
-* Other configured apps: Spotify, Gimp, VSCodium, Discord, prismlauncher, Blender
-* Netflix specific apps
-  * Slack
-  * OpenVPN coniguration
-  * newt
-  * metatron
+* Other configured apps: Spotify, Gimp, Neovim, VSCodium, Discord, prismlauncher, Blender
 
 # To use yourself
 

@@ -16,7 +16,7 @@ let
     # export __GL_GSYNC_ALLOWED=0
     # export __GL_VRR_ALLOWED=0
 
-    exec -a "$0" "$@"
+    "$@"
   '';
 in
 {
