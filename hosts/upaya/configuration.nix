@@ -60,8 +60,8 @@ in
     };
   };
 
-  # Kernel 6.2 currently breaks nvidia
-  boot.kernelPackages = pkgs.linuxPackages_6_1_42;
+  ## Take latest kernel rather than default
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
   # File system
