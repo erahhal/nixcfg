@@ -12,6 +12,12 @@ switch:
 	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 
+show-trace:
+	make clear-sddm-cache
+	make clear-mimeapps
+	nixos-rebuild --use-remote-sudo switch --show-trace --flake .#${HOSTNAME} -L
+	make update-gnupg-perms
+
 offline:
 	nixos-rebuild --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
 
