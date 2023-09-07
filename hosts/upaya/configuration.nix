@@ -60,8 +60,14 @@ in
     };
   };
 
+  ## SD card reader causing the following error with newer kernels, so disable it:
+  ##   "nvme unable to change power state from d3cold to d0, device inaccessible"
+  ## See: https://bbs.archlinux.org/viewtopic.php?id=288140
+  ## See: https://bbs.archlinux.org/viewtopic.php?id=288095
+  boot.blacklistedKernelModules = [ "rtsx_pci" "rtsx_pci_sdmmc" ];
+
   ## Take latest kernel rather than default
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
   # File system

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+sudo nix-store --gc
+sudo nix-collect-garbage -d
+sudo nix-env --delete-generations 70d
 nix-store --gc
 nix-collect-garbage -d
-nix-env --delete-generations 7d
+nix-env --delete-generations 70d
