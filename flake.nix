@@ -84,8 +84,8 @@
 
     comma.url = "github:nix-community/comma";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
   };

@@ -320,6 +320,7 @@
     nix-index
     openssl
     # openjdk16-bootstrap
+    p7zip
     pciutils
     powertop
     networkmanager

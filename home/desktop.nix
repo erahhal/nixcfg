@@ -327,6 +327,7 @@ in
         wesnoth
 
         ## desktop
+        # unstable.ardour
         flavours
         gnome3.adwaita-icon-theme
         gnome3.eog # image viewer
@@ -343,6 +344,7 @@ in
         qt4
         libsForQt5.qtstyleplugins
         playerctl
+        teams-for-linux
 
         # Pipewire connection tool
         qpwgraph

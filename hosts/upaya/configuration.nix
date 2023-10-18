@@ -148,20 +148,6 @@ in
     };
     wireless = {
       enable = false;
-      interfaces = [ "wlan0" "wlp2s0" "wlp0s20f3" ];
-      userControlled.enable = true;
-    };
-
-    # Having useDHCP set to true for interfaces that don't exist can cause the network
-    # to hang while coming up
-    interfaces = {
-      "wlp2s0".useDHCP = true;
-      "dock_eth0".useDHCP = true;
-
-      # "enp0s31f6".useDHCP = true;
-      # "enp12s0".useDHCP = true;
-      # "wlan0".useDHCP = true;
-      # "wlp0s20f3".useDHCP = true;
     };
 
     ## Wireguard

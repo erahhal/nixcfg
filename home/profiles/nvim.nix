@@ -68,6 +68,7 @@
   # viwp      - select word then replace
   # vi"p      - select between quotes and replace
   # viw"0p    - select word then replace with first selection rather than last replaced word
+  # o         - switch sides of visual selection
   # :cn       - next in quickfix list
   # :cp       - previous in quickfix list
   # :copen    - open quickfix list

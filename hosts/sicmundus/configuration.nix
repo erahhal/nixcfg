@@ -135,15 +135,19 @@ in
     networkmanager = {
       enable = true;
     };
-    enableIPv6 = false;
-    interfaces = {
-      ${hostParams.mainInterface} = {
-        useDHCP = true;
-        ipv4.addresses = [
-          { address = "10.0.0.2"; prefixLength = 8; }
-        ];
-      };
-    };
+
+    ## This shouldn't work anymore
+    # enableIPv6 = false;
+
+    ## This shouldn't be needed, and conflicts with network manager anyway
+    # interfaces = {
+    #   ${hostParams.mainInterface} = {
+    #     useDHCP = true;
+    #     ipv4.addresses = [
+    #       { address = "10.0.0.2"; prefixLength = 8; }
+    #     ];
+    #   };
+    # };
   };
 
   systemd.services.disable-unused-adapters = {

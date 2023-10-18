@@ -42,6 +42,9 @@ in
       # Display config
       ./kanshi.nix
       ./launch-apps-config.nix
+
+      # Temporary
+      # ../../profiles/nfs-mounts.nix
     ];
 
   # --------------------------------------------------------------------------------------
@@ -112,35 +115,19 @@ in
         scanRandMacAddress = false;
       };
       # If not set to unmanaged, NetworkManager-wait-online.service will fail
+      # Update: it still seems to fail even with this disabled
       # @TODO: How to use unmanaged wireguard?
       unmanaged = [
         "wg0"
       ];
     };
     wireless = {
+      # Disable wpa_supplicant
       enable = false;
-      interfaces = [ "wlan0" "wlp0s20f3" ];
-      userControlled.enable = true;
     };
-    # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-    # Per-interface useDHCP will be mandatory in the future, so this generated config
-    # replicates the default behaviour.
-    useDHCP = false;
-    interfaces = {
-      # Built-in interface
-      "enp0s31f6".useDHCP = true;
-      # Named in pkgs/thinkpad-dock-udev-rules/default.nix
-      "dock_eth0".useDHCP = true;
-      # Default name of thinkpad dock interface
-      "enp7s0u1u4u4u3".useDHCP = true;
-      # Wifi
-      "wlan0" = {
-        useDHCP = true;
-      };
-      "wlp0s20f3" = {
-        useDHCP = true;
-      };
-    };
+    ## Don't include this line - it will add an additional default route.
+    ## It's not necessary.
+    # interfaces."wlp0s20f3".useDHCP = true;
   };
 
   # Enable fingerprint reading daemon.
@@ -236,7 +223,7 @@ in
             "experimental" = true;
             "default-cgroupns-mode" = "host";
             "cgroup-parent" = "docker.slice";
-            "mtu" = 1460;
+            "mtu" = 1400;
           };
         };
       };

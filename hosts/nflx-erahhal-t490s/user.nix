@@ -22,6 +22,7 @@ in
         # nodejs-16_x
         trunk.prismlauncher
         trunk.jetbrains.datagrip
+        transmission-gtk
 
         # AI
         streamlit

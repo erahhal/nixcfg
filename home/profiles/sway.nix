@@ -273,6 +273,9 @@ in
         "XF86AudioPrev" = "exec ${playerctl} pevious";
         "XF86AudioNext" = "exec ${playerctl} next";
 
+        # Capture full screen
+        "ctrl+shift+3" = "exec ${pkgs.grim}/bin/grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png";
+        # Capture selection
         "ctrl+shift+4" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -d)\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png";
 
         "${modifier}+Return" = "exec ${terminal}";

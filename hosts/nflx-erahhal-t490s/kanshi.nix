@@ -1,4 +1,4 @@
-{ pkgs, userParams, ... }:
+{ userParams, ... }:
 {
   home-manager.users.${userParams.username} = {
     services.kanshi = {
@@ -35,7 +35,7 @@
             }
             {
               criteria = "eDP-1";
-              status = "enable";
+              status = "disable";
               mode = "2560x1440";
               position = "5120,810";
               scale = 1.5;
@@ -82,58 +82,58 @@
         };
         ## Only left or right can be enabled at the same time, not both
         #
-        # desk-portable-right = {
-        #   outputs = [
-        #     {
-        #       criteria = "eDP-1";
-        #       status = "enable";
-        #       mode = "2560x1440";
-        #       position = "0,150";
-        #       scale = 1.0;
-        #     }
-        #     {
-        #       criteria = "Goldstar Company Ltd 16MQ70";
-        #       status = "enable";
-        #       mode = "2560x1600@59.972000Hz";
-        #       position = "2560,0";
-        #       scale = 1.0;
-        #     }
-        #   ];
-        #   exec = [
-        #     "swaymsg workspace 1, move workspace to DP-1"
-        #     "swaymsg workspace 2, move workspace to eDP-1"
-        #     "swaymsg workspace 3, move workspace to DP-1"
-        #     "swaymsg workspace 4, move workspace to DP-1"
-        #     "swaymsg workspace 5, move workspace to DP-1"
-        #     "swaymsg workspace 6, move workspace to DP-1"
-        #   ];
-        # };
-        desk-portable-left = {
+        desk-portable-right = {
           outputs = [
-            {
-              criteria = "LG Electronics 16MQ70 204NZKZ005285";
-              status = "enable";
-              mode = "2560x1600@59.972000Hz";
-              position = "0,0";
-              scale = 1.5;
-            }
             {
               criteria = "eDP-1";
               status = "enable";
               mode = "2560x1440";
-              position = "1706,100";
+              position = "0,100";
+              scale = 1.5;
+            }
+            {
+              criteria = "LG Electronics 16MQ70 204NZKZ005285";
+              status = "enable";
+              mode = "2560x1600@59.972000Hz";
+              position = "1706,0";
               scale = 1.5;
             }
           ];
           exec = [
-            "swaymsg workspace 1, move workspace to output left"
+            "swaymsg workspace 1, move workspace to output right"
             "swaymsg workspace 2, move workspace to eDP-1"
-            "swaymsg workspace 3, move workspace to output left"
-            "swaymsg workspace 4, move workspace to output left"
-            "swaymsg workspace 5, move workspace to output left"
-            "swaymsg workspace 6, move workspace to output left"
+            "swaymsg workspace 3, move workspace to output right"
+            "swaymsg workspace 4, move workspace to output right"
+            "swaymsg workspace 5, move workspace to output right"
+            "swaymsg workspace 6, move workspace to output right"
           ];
         };
+        # desk-portable-left = {
+        #   outputs = [
+        #     {
+        #       criteria = "LG Electronics 16MQ70 204NZKZ005285";
+        #       status = "enable";
+        #       mode = "2560x1600@59.972000Hz";
+        #       position = "0,0";
+        #       scale = 1.5;
+        #     }
+        #     {
+        #       criteria = "eDP-1";
+        #       status = "enable";
+        #       mode = "2560x1440";
+        #       position = "1706,100";
+        #       scale = 1.5;
+        #     }
+        #   ];
+        #   exec = [
+        #     "swaymsg workspace 1, move workspace to output left"
+        #     "swaymsg workspace 2, move workspace to eDP-1"
+        #     "swaymsg workspace 3, move workspace to output left"
+        #     "swaymsg workspace 4, move workspace to output left"
+        #     "swaymsg workspace 5, move workspace to output left"
+        #     "swaymsg workspace 6, move workspace to output left"
+        #   ];
+        # };
         desk-netflix-viewsonic-dual = {
           outputs = [
             {
@@ -236,10 +236,10 @@
         desk-netflix-lg-dual = {
           outputs = [
             {
-              criteria = "LG Electronics LG ULTRAWIDE 0x00008194";
+              criteria = "LG Electronics LG ULTRAWIDE 0x0000FAF6";
               status = "enable";
               mode = "3440x1440@49.987000Hz";
-              position = "420,709 ";
+              position = "420,709";
               scale = 1.0;
             }
             {
@@ -250,22 +250,23 @@
               scale = 1.5;
             }
           ];
+          exec = [
+            "swaymsg workspace 1, move workspace to output up"
+            "swaymsg workspace 2, move workspace to eDP-1"
+            "swaymsg workspace 3, move workspace to eDP-1"
+            "swaymsg workspace 4, move workspace to eDP-1"
+            "swaymsg workspace 5, move workspace to eDP-1"
+            "swaymsg workspace 6, move workspace to eDP-1"
+          ];
         };
         desk-netflix-lg-triple = {
           outputs = [
             {
-              criteria = "Goldstar Company Ltd LG ULTRAWIDE";
+              criteria = "LG Electronics LG ULTRAWIDE 0x0000FAF6";
               status = "enable";
               mode = "3440x1440@59.973000Hz";
-              position = "0,0";
+              position = "420,709";
               scale = 1.0;
-            }
-            {
-              criteria = "Goldstar Company Ltd 16MQ70";
-              status = "enable";
-              mode = "2560x1600@59.972000Hz";
-              position = "3847,2149";
-              scale = 1.5;
             }
             {
               criteria = "eDP-1";
@@ -274,6 +275,22 @@
               position = "1287,2149";
               scale = 1.5;
             }
+            {
+              criteria = "LG Electronics 16MQ70 204NZKZ005285";
+              status = "enable";
+              mode = "2560x1600@59.972000Hz";
+              position = "2993,2149";
+              scale = 1.5;
+            }
+          ];
+          exec = [
+            "swaymsg workspace 1, move workspace to output up"
+            "swaymsg workspace 2, move workspace to eDP-1"
+            "swaymsg workspace 3, move workspace to output right"
+            "swaymsg workspace 4, move workspace to eDP-1"
+            "swaymsg workspace 5, move workspace to eDP-1"
+            "swaymsg workspace 6, move workspace to output right"
+            "swaymsg workspace 7, move workspace to output right"
           ];
         };
       };

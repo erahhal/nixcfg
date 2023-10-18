@@ -4,6 +4,8 @@ TODOs
 Warts/Issues
 ------------
 
+* Need to unplug/plug USB peripherals after reboot due to quick "sleeping" of mouse/keyboard
+  * https://bbs.archlinux.org/viewtopic.php?id=251866
 * DNS doesn't work for some public wifi APs with captive portals
   * https://github.com/NixOS/nixpkgs/issues/24433
   * https://github.com/NixOS/nixpkgs/issues/63754

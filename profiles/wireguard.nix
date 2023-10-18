@@ -42,6 +42,7 @@ in
       [wireguard-peer.EpIitQWn0xHvMj0q8MgKgrDA8lqqm+saDdgk8PwiQXw=]
       fwmark=1280
       endpoint=rahh.al:${wg-port}
+      # endpoint=104.182.229.64:${wg-port}
       persistent-keepalive=120
       allowed-ips=10.0.0.0/24;192.168.2.0/24;
 
