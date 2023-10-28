@@ -72,7 +72,8 @@ in
       enable = true;
       # Make sure VSCode doesn't take over file mimetype
       associations.added = {
-        "inode/directory" = [ "nemo.desktop" ];
+        # "inode/directory" = [ "nemo.desktop" ];
+        "inode/directory" = [ "nautilus.desktop" ];
         "x-scheme-handler/http" = [ defaultBrowserApp ];
         "x-scheme-handler/https" = [ defaultBrowserApp ];
         "x-scheme-handler/about" = [ defaultBrowserApp ];
@@ -104,7 +105,8 @@ in
         "video/x-ms-wmv" = [ "mpv.desktop" ];
       };
       defaultApplications = {
-        "inode/directory" = [ "nemo.desktop" ];
+        # "inode/directory" = [ "nemo.desktop" ];
+        "inode/directory" = [ "nautilus.desktop" ];
         "x-scheme-handler/http" = [ defaultBrowserApp ];
         "x-scheme-handler/https" = [ defaultBrowserApp ];
         "x-scheme-handler/about" = [ defaultBrowserApp ];
@@ -333,7 +335,7 @@ in
         gnome3.eog # image viewer
         gnome3.evince # PDF viewer
         gnome3.nautilus
-        cinnamon.nemo
+        # cinnamon.nemo
         obs-studio
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
