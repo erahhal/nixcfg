@@ -1210,11 +1210,12 @@
         '';
       }
 
-      {
-        plugin = ultisnips;
-        config = ''
-        '';
-      }
+      ## Disabled as it slows editing significantly
+      # {
+      #   plugin = ultisnips;
+      #   config = ''
+      #   '';
+      # }
 
       {
         plugin = friendly-snippets;
