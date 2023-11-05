@@ -37,7 +37,8 @@ in
    set -g @continuum-save-interval '5' # minutes
    run-shell ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux
 
-   set-option -sa terminal-overrides ',xterm-kitty:RGB'
+   # set-option -sa terminal-overrides ',xterm-kitty:RGB'
+   set-option -sa terminal-features ',xterm-kitty:RGB'
 
    # set-option -g default-shell /bin/zsh
 

@@ -10,6 +10,17 @@
   ];
 
   # -----------------------------------------------------
+  # Profiling performance issues
+  # -----------------------------------------------------
+
+  # :profile start profile.log
+  # :profile func *
+  # :profile file *
+  # " At this point do slow actions
+  # :profile pause
+  # :noautocmd qall!
+
+  # -----------------------------------------------------
   # Notes
   # -----------------------------------------------------
 
@@ -97,6 +108,15 @@
   # @TODO: organize config by files like this:
   # https://www.reddit.com/r/NixOS/comments/xa30jq/homemanager_nvim_lua_config_for_plugins/
 
+  ## Add this if raw lua is desired
+  #   home.file."./.config/nvim/lua" = {
+  #     source = ./nvim/lua;
+  #     recursive = true;
+  #   };
+
+  ## THEN add the following beloe:
+  #   extraConfig = ":luafile ~/.config/nvim/lua/init.lua";
+
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -113,6 +133,15 @@
       {
         plugin = vim-startify;
         config = ''
+          lua << EOF
+          vim.opt.termguicolors = true
+
+          -- if vim.fn.system('echo -n $HOSTNAME'):gsub('\n', "") ~= 'sicmundus' and vim.fn.system('echo -n $HOST'):gsub('\n', "") ~= 'sicmundus' then
+          --   -- Messes up colors over mosh, so don't set this for the server
+          --   vim.op.termguicolors = true
+          -- end
+
+          EOF
         '';
       }
 
@@ -309,14 +338,41 @@
       # =======================
 
       {
-        plugin = auto-pairs;
+        plugin = nvim-autopairs;
         config = ''
+          lua << EOF
+          require("nvim-autopairs").setup {}
+          EOF
         '';
       }
 
       {
-        plugin = nvim-ts-rainbow;
+        plugin = pkgs.unstable.vimPlugins.rainbow-delimiters-nvim;
         config = ''
+          lua << EOF
+          -- This module contains a number of default definitions
+          local rainbow_delimiters = require 'rainbow-delimiters'
+
+          vim.g.rainbow_delimiters = {
+              strategy = {
+                  ['''] = rainbow_delimiters.strategy['global'],
+                  vim = rainbow_delimiters.strategy['local'],
+              },
+              query = {
+                  ['''] = 'rainbow-delimiters',
+                  lua = 'rainbow-blocks',
+              },
+              highlight = {
+                  'RainbowDelimiterRed',
+                  'RainbowDelimiterYellow',
+                  'RainbowDelimiterBlue',
+                  'RainbowDelimiterOrange',
+                  'RainbowDelimiterGreen',
+                  'RainbowDelimiterViolet',
+                  'RainbowDelimiterCyan',
+              },
+          }
+          EOF
         '';
       }
 
@@ -343,6 +399,16 @@
       {
         plugin = vim-fugitive;
         config = ''
+        '';
+      }
+
+      {
+        plugin = gitsigns-nvim;
+        config = ''
+          lua << EOF
+          require('gitsigns').setup {
+          }
+          EOF
         '';
       }
 
@@ -507,18 +573,45 @@
       # Status line
       # =======================
 
+      ## airline seems to have performance problems
+      # {
+      #   plugin = vim-airline;
+      #   config = ''
+      #     lua << EOF
+      #     vim.g.airline_powerline_fonts = 1
+      #     EOF
+      #   '';
+      # }
+      #
+      # {
+      #   plugin = vim-airline-themes;
+      #   config = ''
+      #   '';
+      # }
+
       {
-        plugin = vim-airline;
+        plugin = lualine-lsp-progress;
         config = ''
           lua << EOF
-          vim.g.airline_powerline_fonts = 1
+          require('lualine').setup {
+            options = { theme = 'gruvbox' },
+            sections = {
+              lualine_c = {
+                'lsp_progress'
+              }
+            }
+          }
           EOF
         '';
       }
-
       {
-        plugin = vim-airline-themes;
+        plugin = lualine-nvim;
         config = ''
+          lua << EOF
+          require('lualine').setup {
+            options = { theme = 'gruvbox' }
+          }
+          EOF
         '';
       }
 
@@ -767,31 +860,57 @@
           EOF
         '';
       }
-      {
-        # Needed by nvim-lightbulb but soon to be implemented in nvim
-        # @TODO: See git page for plugin as to which version if nvim doesn't need it
-        plugin = FixCursorHold-nvim;
-        config = ''
-        '';
-      }
+      # {
+      #   # Needed by nvim-lightbulb but soon to be implemented in nvim
+      #   # @TODO: See git page for plugin as to which version if nvim doesn't need it
+      #   plugin = FixCursorHold-nvim;
+      #   config = ''
+      #   '';
+      # }
 
       # @TODO: Add incremental selection
       {
+        # plugin = nvim-treesitter;
         plugin = nvim-treesitter.withAllGrammars;
         config = ''
           lua << EOF
+
+          -- Need to disable treesitter for large JS files
+          -- See: https://github.com/nvim-treesitter/nvim-treesitter/issues/2996
+
+          local function treesitter_disable_func(lang, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local js_max_filesize = 50 * 1024 -- 50 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and (stats.size > max_filesize or lang == 'js' and stats.size > js_max_filesize) then
+              return true
+            end
+          end
+
           require 'nvim-treesitter.configs'.setup {
             indent = {
               enable = true,
+              additional_vim_regex_highlighting = false,
+              use_languagetree = false,
+              disable = treesitter_disable_func,
             },
 
             highlight = {
               enable = true,
+              additional_vim_regex_highlighting = false,
+              use_languagetree = false,
+              disable = treesitter_disable_func,
             },
 
             refactor = {
-              highlight_definitions = { enable = true },
-              highlight_current_scope = { enable = true },
+              highlight_definitions = {
+                enable = true,
+                disable = treesitter_disable_func,
+              },
+              highlight_current_scope = {
+                enable = true,
+                disable = treesitter_disable_func,
+              },
               smart_rename = {
                 enable = true,
                 keymaps = {
@@ -803,6 +922,38 @@
           EOF
         '';
       }
+      # { plugin = nvim-treesitter-parsers.awk; }
+      # { plugin = nvim-treesitter-parsers.c; }
+      # { plugin = nvim-treesitter-parsers.cmake; }
+      # { plugin = nvim-treesitter-parsers.comment; }
+      # { plugin = nvim-treesitter-parsers.cpp; }
+      # { plugin = nvim-treesitter-parsers.css; }
+      # { plugin = nvim-treesitter-parsers.diff; }
+      # { plugin = nvim-treesitter-parsers.dockerfile; }
+      # { plugin = nvim-treesitter-parsers.git_config; }
+      # { plugin = nvim-treesitter-parsers.git_rebase; }
+      # { plugin = nvim-treesitter-parsers.gitattributes; }
+      # { plugin = nvim-treesitter-parsers.gitcommit; }
+      # { plugin = nvim-treesitter-parsers.gitignore; }
+      # { plugin = nvim-treesitter-parsers.graphql; }
+      # { plugin = nvim-treesitter-parsers.html; }
+      # { plugin = nvim-treesitter-parsers.java; }
+      # { plugin = nvim-treesitter-parsers.javascript; }
+      # { plugin = nvim-treesitter-parsers.json; }
+      # { plugin = nvim-treesitter-parsers.lua; }
+      # { plugin = nvim-treesitter-parsers.luadoc; }
+      # { plugin = nvim-treesitter-parsers.make; }
+      # { plugin = nvim-treesitter-parsers.markdown; }
+      # { plugin = nvim-treesitter-parsers.markdown_inline; }
+      # { plugin = nvim-treesitter-parsers.nix; }
+      # { plugin = nvim-treesitter-parsers.org; }
+      # { plugin = nvim-treesitter-parsers.python; }
+      # { plugin = nvim-treesitter-parsers.regex; }
+      # { plugin = nvim-treesitter-parsers.tsx; }
+      # { plugin = nvim-treesitter-parsers.typescript; }
+      # { plugin = nvim-treesitter-parsers.vim; }
+      # { plugin = nvim-treesitter-parsers.vimdoc; }
+      # { plugin = nvim-treesitter-parsers.yaml; }
 
       {
         plugin = nvim-treesitter-context;
@@ -1458,10 +1609,6 @@
       -- ** Not needed as this is default for nvim
       -- vim.cmd [[filetype plugin indent on]]
 
-      if vim.fn.system('echo -n $HOSTNAME'):gsub('\n', "") ~= 'sicmundus' and vim.fn.system('echo -n $HOST'):gsub('\n', "") ~= 'sicmundus' then
-        -- Messes up colors over mosh, so don't set this for the server
-        vim.o.termguicolors = true
-      end
 
       -------------------------------------------------------
       -- Key mappings

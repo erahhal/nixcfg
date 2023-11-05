@@ -88,6 +88,8 @@ in
 
   # Prevent hanging when waiting for network to be up
   systemd.network.wait-online.anyInterface = true;
+  ## @TODO: Any ramifications of this?
+  systemd.network.wait-online.enable = false;
 
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ thinkpad-dock-udev-rules ];
