@@ -67,13 +67,19 @@ in
     # MIME apps
     # ---------------------------------------------------------------------------
 
+    ## Desktop file locations:
+    # ~/.local/share/applications
+    # /run/current-system/sw/share/applications
+    # $XDG_DATA_DIRS
+    #   /etc/profiles/per-user/erahhal/share/applications
+
     xdg.enable = true;
     xdg.mimeApps = {
       enable = true;
       # Make sure VSCode doesn't take over file mimetype
       associations.added = {
         # "inode/directory" = [ "nemo.desktop" ];
-        "inode/directory" = [ "nautilus.desktop" ];
+        "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
         "x-scheme-handler/http" = [ defaultBrowserApp ];
         "x-scheme-handler/https" = [ defaultBrowserApp ];
         "x-scheme-handler/about" = [ defaultBrowserApp ];
@@ -106,7 +112,7 @@ in
       };
       defaultApplications = {
         # "inode/directory" = [ "nemo.desktop" ];
-        "inode/directory" = [ "nautilus.desktop" ];
+        "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
         "x-scheme-handler/http" = [ defaultBrowserApp ];
         "x-scheme-handler/https" = [ defaultBrowserApp ];
         "x-scheme-handler/about" = [ defaultBrowserApp ];

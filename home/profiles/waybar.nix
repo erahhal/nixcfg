@@ -35,14 +35,15 @@ in
   # ];
 
   home.packages = with pkgs; [
-    waybar
+    unstable.waybar
   ];
 
   programs.waybar = {
     enable = true;
+    package = pkgs.unstable.waybar;
     # If enabled, this will load waybar separately from sway's own config, leading to two bars being loaded
     systemd.enable = false;
-    # ${builtins.readFile "${pkgs.waybar}/etc/xdg/waybar/style.css"}
+    # ${builtins.readFile "${pkgs.unstable.waybar}/etc/xdg/waybar/style.css"}
     style = ''
       ${builtins.readFile ./waybar/waybar-angular.css}
     '';

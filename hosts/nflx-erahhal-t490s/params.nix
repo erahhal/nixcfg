@@ -25,8 +25,10 @@
   virtualboxEnabled = false;
 
   waydroid = {
-    width = 3400;
-    height = 1860;
+    # width = 3400;
+    # height = 1860;
+    width = 1700;
+    height = 930;
   };
 }
 

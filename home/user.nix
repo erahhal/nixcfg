@@ -44,7 +44,8 @@ in
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
-    "python3.9-mistune-0.8.4"
+    "electron-24.8.6"
+    # "python3.9-mistune-0.8.4"
     # "polymc-1.4.2"
   ];
 

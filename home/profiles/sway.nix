@@ -165,7 +165,7 @@ in
       bars = [
         {
           # command = "pkill waybar || true; ${pkgs.waybar}/bin/waybar";
-          command = "${pkgs.waybar}/bin/waybar";
+          command = "${pkgs.unstable.waybar}/bin/waybar";
         }
       ];
       # focus.followMouse = "always";
