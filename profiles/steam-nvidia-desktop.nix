@@ -13,10 +13,10 @@ let
     # export __GL_VRR_ALLOWED=0
 
     # UI scaling
-    export GDK_SCALE=2
+    # export GDK_SCALE=2
 
     # Proton support
-    STEAM_EXTRA_COMPAT_TOOLS_PATHS=~/.steam/root/compatibilitytools.d
+    # STEAM_EXTRA_COMPAT_TOOLS_PATHS=~/.steam/root/compatibilitytools.d
 
     steam $@
   '';
@@ -33,5 +33,9 @@ in
       mkdir -p ~/.local/share/applications
       sed 's#^Exec=steam#Exec=${steam-nvidia}/bin/steam-nvidia#g' /run/current-system/sw/share/applications/steam.desktop > ~/.local/share/applications/steam.desktop
     '';
+
+    home.packages = with pkgs; [
+      gamescope
+    ];
   };
 }

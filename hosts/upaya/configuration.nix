@@ -16,7 +16,8 @@ in
       ../../profiles/common.nix
       ../../profiles/desktop.nix
       ../../profiles/pipewire.nix
-      ../../profiles/steam-nvidia-desktop.nix
+      # ../../profiles/steam-nvidia-desktop.nix
+      ../../profiles/steam.nix
       ../../profiles/wireless.nix
 
       # device specific

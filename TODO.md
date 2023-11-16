@@ -26,6 +26,8 @@ Warts/Issues
 * Steam games not really working with nVidia
   * Slow
   * Screen artifacts / bad aspect ratio
+  * https://github.com/swaywm/sway/issues/6422
+  * https://www.reddit.com/r/archlinux/comments/upns2v/how_to_use_prime_nvidia_driver_with_sway_and_steam/
 * Force XWayland to run unscaled, like Hyprland
 * On reboot, mouse disappears or hangs, and requires movement for a few seconds to recover.  Same with keyboard.
   * WORKAROUND: Have to unplug and replug to fix
@@ -33,6 +35,12 @@ Warts/Issues
 Improvments
 -----------
 
+* Raspberry Pi
+  * https://nix.dev/tutorials/nixos/installing-nixos-on-a-raspberry-pi
+  * https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-4-boot-eeprom
+* Command line package search
+  * https://github.com/nix-community/nix-index
+  * https://discourse.nixos.org/t/which-package-provides-ifconfig/25824/9
 * Get rid of pipewire package override when stable version is at least 0.3.77
 * Setting up multiple upstream repos
   * https://jigarius.com/blog/multiple-git-remote-repositories

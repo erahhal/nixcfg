@@ -95,7 +95,7 @@ in
     MOZ_ENABLE_WAYLAND = "1";
     MOZ_USE_XINPUT2 = "1";
     WLR_DRM_NO_MODIFIERS = "1";
-    ## Doesn't work on Thinkpad
+    ## Sway doesn't load with this
     # WLR_RENDERER = "vulkan";
     ## Steam doesn't work with this enabled
     # SDL_VIDEODRIVER = "wayland";
@@ -377,6 +377,9 @@ in
       for_window [class="com.bitwig.BitwigStudio" title="Manage Licenses"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Bitwig Studio \d.*"] floating enable
       for_window [title="Firefox — Sharing Indicator"] floating enable
+      for_window [app_id="firefox" title="Extension.*Bitwarden.*"] floating enable
+      for_window [app_id="brave-.*" title="Bitwarden"] floating enable
+      for_window [app_id="chrome-.*" title="Bitwarden"] floating enable
       # for_window [app_id="Waydroid"] floating enable
 
       # Zoom Meeting App
