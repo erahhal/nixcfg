@@ -58,6 +58,7 @@ in
     imports = [
       ./profiles/element.nix
       ./profiles/kitty.nix
+      ./profiles/gthumb.nix
       ./profiles/signal.nix
       ## Should be handled by wayland scaling now
       # ./profiles/firefox.nix
@@ -102,7 +103,7 @@ in
         "image/jpg" = [ "org.gnome.gThumb.desktop" ];
         "image/jpeg" = [ "org.gnome.gThumb.desktop" ];
         "image/tiff" = [ "org.gnome.gThumb.desktop" ];
-        "image/webm" = [ "org.gnome.gThumb.desktop" ];
+        "image/webp" = [ "org.gnome.gThumb.desktop" ];
         "image/gif" = [ "org.gnome.gThumb.desktop" ];
         "video/x-flv" = [ "mpv.desktop" ];
         "video/mp4" = [ "mpv.desktop" ];
@@ -110,6 +111,7 @@ in
         "video/MP2T" = [ "mpv.desktop" ];
         "video/3gpp" = [ "mpv.desktop" ];
         "video/quicktime" = [ "mpv.desktop" ];
+        "video/webm" = [ "mpv.desktop" ];
         "video/x-msvideo" = [ "mpv.desktop" ];
         "video/x-ms-wmv" = [ "mpv.desktop" ];
         "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
@@ -139,7 +141,7 @@ in
         "image/jpg" = [ "org.gnome.gThumb.desktop" ];
         "image/jpeg" = [ "org.gnome.gThumb.desktop" ];
         "image/tiff" = [ "org.gnome.gThumb.desktop" ];
-        "image/webm" = [ "org.gnome.gThumb.desktop" ];
+        "image/webp" = [ "org.gnome.gThumb.desktop" ];
         "image/gif" = [ "org.gnome.gThumb.desktop" ];
         "video/x-flv" = [ "mpv.desktop" ];
         "video/mp4" = [ "mpv.desktop" ];
@@ -147,6 +149,7 @@ in
         "video/MP2T" = [ "mpv.desktop" ];
         "video/3gpp" = [ "mpv.desktop" ];
         "video/quicktime" = [ "mpv.desktop" ];
+        "view/webm" = [ "mpv.desktop" ];
         "video/x-msvideo" = [ "mpv.desktop" ];
         "video/x-ms-wmv" = [ "mpv.desktop" ];
         "x-scheme-handler/zoommtg" = [ "Zoom.desktop" ];
@@ -318,7 +321,6 @@ in
         gnome.gnome-todo
         gnome3.cheese
         gnome3.gnome-calculator
-        gthumb
         joplin-desktop
         kcalc
         # Not yet available in stable

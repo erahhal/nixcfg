@@ -231,14 +231,16 @@
     fileviewer {*.[1-8]},<text/troff> man ./%c | col -b
 
     " Images
-    filextype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
+    filextype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm,*.webp},<image/*>
+            \ {View in default viewer}
+            \ xdg-open %f,
             \ {View in sxiv}
             \ sxiv %f,
             \ {View in gpicview}
             \ gpicview %c,
             \ {View in shotwell}
             \ shotwell,
-    fileviewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
+    fileviewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm,*.webp},<image/*>
              \ identify %f
 
     " OpenRaster
