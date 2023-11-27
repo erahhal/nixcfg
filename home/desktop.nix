@@ -112,6 +112,9 @@ in
         "video/quicktime" = [ "mpv.desktop" ];
         "video/x-msvideo" = [ "mpv.desktop" ];
         "video/x-ms-wmv" = [ "mpv.desktop" ];
+        "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
+        "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
+
       };
       defaultApplications = {
         # "inode/directory" = [ "nemo.desktop" ];
@@ -148,6 +151,8 @@ in
         "video/x-ms-wmv" = [ "mpv.desktop" ];
         "x-scheme-handler/zoommtg" = [ "Zoom.desktop" ];
         "application/x-zoom" = [ "Zoom.desktop" ];
+        "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
+        "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
       };
     };
 

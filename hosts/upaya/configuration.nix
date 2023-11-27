@@ -15,6 +15,7 @@ in
       ../../home/desktop.nix
       ../../profiles/common.nix
       ../../profiles/desktop.nix
+      ../../profiles/sway-nvidia.nix
       ../../profiles/pipewire.nix
       # ../../profiles/steam-nvidia-desktop.nix
       ../../profiles/steam.nix

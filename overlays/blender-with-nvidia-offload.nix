@@ -6,6 +6,7 @@ let erahhalOverlay = self: super: {
       mkdir $out/Applications
       mv $out/Blender.app $out/Applications
     '' + ''
+      mv $out/share/blender/${lib.versions.majorMinor oldAttrs.version}/python{,-ext}
       buildPythonPath "$pythonPath"
       wrapProgram $blenderExecutable \
         --prefix PATH : $program_PATH \
