@@ -120,6 +120,7 @@ in
 
           on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
           on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
+          on-click-middle = "${pkgs.qpwgraph}/bin/qpwgraph";
 
           format-icons = {
             car = "";

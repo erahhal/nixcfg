@@ -14,7 +14,10 @@ in
 {
   home.packages = [
     ## Often crashes with Sway.  Try again later
+    ## See: https://github.com/signalapp/Signal-Desktop/issues/6247
+
     # signalWayland
+
     pkgs.unstable.signal-desktop
   ];
 }

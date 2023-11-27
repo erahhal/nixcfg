@@ -19,7 +19,8 @@ let
 in
 {
   imports = [
-    ../overlays/sddm-with-env.nix
+    ## This doesn't seem necessary anymore
+    # ../overlays/sddm-with-env.nix
   ];
 
   config = if hostParams.displayManager == "sddm" then {
@@ -47,16 +48,16 @@ in
             #---------------------------------------------------------------------------
             # Using Wayland
             #
-            # - Requires an overlay upgrading to the develop branch
-            # - Fails with a strange error, possibly due to using nVidia driver
+            # @TODO: Seems to work now with 23.11 - figure out if it can be used
             #---------------------------------------------------------------------------
-            General = {
-              DisplayServer = "wayland";
-            };
-            Wayland = {
-              EnableHiDPI = "true";
-              CompositorCommand = "sway";
-            };
+
+            # General = {
+            #   DisplayServer = "wayland";
+            # };
+            # Wayland = {
+            #   EnableHiDPI = "true";
+            #   CompositorCommand = "sway";
+            # };
           };
           theme = hostParams.sddmTheme;
         };

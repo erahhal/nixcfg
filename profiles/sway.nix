@@ -79,7 +79,7 @@ args@{ config, pkgs, lib, hostParams, userParams, ... }:
       ];
     };
 
-    fonts.fonts = with pkgs; [ terminus_font_ttf font-awesome ];
+    fonts.packages = with pkgs; [ terminus_font_ttf font-awesome ];
 
     environment.systemPackages = with pkgs; [
       egl-wayland

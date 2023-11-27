@@ -238,6 +238,8 @@
 
     ## Fixes broken pam for screen lockers but requires rebuild of everything
     # ../overlays/pam-patched.nix
+
+    ../profiles/overrides.nix
   ];
 
   # --------------------------------------------------------------------------------------
@@ -316,6 +318,7 @@
     memtest86plus
     minicom
     neofetch
+    nixos-generators
     unstable.nil
     nix-index
     openssl

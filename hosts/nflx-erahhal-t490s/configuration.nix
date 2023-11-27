@@ -30,11 +30,11 @@ in
       ../../profiles/mullvad.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix
-      ../../profiles/virtual-machines.nix
       ../../profiles/waydroid.nix
       ../../profiles/wireguard.nix
       ## Only needed if the docker version needs to be overridden for some reason
       # ../../overlays/docker.nix
+      ./virtualization.nix
 
       # user specific
       ./user.nix
@@ -117,12 +117,11 @@ in
         # powersave = false;
         scanRandMacAddress = false;
       };
-      # If not set to unmanaged, NetworkManager-wait-online.service will fail
-      # Update: it still seems to fail even with this disabled
-      # @TODO: How to use unmanaged wireguard?
-      unmanaged = [
-        "wg0"
-      ];
+      ## When NtworkManager-wait-online.service is enabled, having wg0
+      ## as a managed interface may interfere with the service coming up.
+      # unmanaged = [
+      #   "wg0"
+      # ];
     };
     wireless = {
       # Disable wpa_supplicant
@@ -199,43 +198,6 @@ in
       host = 10.0.0.93
     '';
   };
-
-  # Enable containers
-  virtualisation = (
-    let
-      baseConfig = {
-        oci-containers.backend = hostParams.containerBackend;
-        containers = {
-          enable = true;
-        };
-      };
-      podmanConfig = {
-        podman = {
-          enable = true;
-          dockerCompat = true;
-          extraPackages = [ pkgs.zfs ];
-        };
-      };
-      dockerConfig = {
-        docker = {
-          enable = true;
-          daemon.settings = {
-            "ipv6" = false;
-            "exec-opts" = [ "native.cgroupdriver=systemd" ];
-            "features" = { "buildkit" = true; };
-            "experimental" = true;
-            "default-cgroupns-mode" = "host";
-            "cgroup-parent" = "docker.slice";
-            "mtu" = 1400;
-          };
-        };
-      };
-    in
-    if hostParams.containerBackend == "podman" then
-      recursiveMerge [ baseConfig podmanConfig ]
-    else
-      recursiveMerge [ baseConfig dockerConfig ]
-  );
 
   # --------------------------------------------------------------------------------------
   # Hardware specific

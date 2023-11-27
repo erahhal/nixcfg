@@ -11,10 +11,10 @@ buildGoModule rec {
     sha256 = "1dqrv3qy33hkn4avqkzhyg9g6flfnsirva7gvbk0xdymsmcddn9s";
   };
 
-  vendorSha256 = "sha256-mnE+Kvif4v/RvDck1Gda4uS2gr9Ohj3MOfRcR67R2UY=";
+  vendorHash = "sha256-mnE+Kvif4v/RvDck1Gda4uS2gr9Ohj3MOfRcR67R2UY=";
 
-  ## use the following to determine vendorSha256:
-  #  vendorSha256 = lib.fakeSha256;
+  ## use the following to determine vendorHash:
+  #  vendorHash = lib.fakeSha256;
   #  doCheck = false;
   ## then run the build and see what the value should be
 

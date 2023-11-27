@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 {
-  fonts.enableDefaultFonts = true;
-  fonts.fonts = with pkgs; [
+  fonts.enableDefaultPackages = true;
+  fonts.packages = with pkgs; [
     corefonts
     fira-code fira-code-symbols
     terminus_font

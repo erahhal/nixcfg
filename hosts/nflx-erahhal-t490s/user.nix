@@ -15,6 +15,7 @@ in
 
       packages = with pkgs; [
         awscli
+        blender
         chromium
         unstable.jetbrains.idea-ultimate
         lutris

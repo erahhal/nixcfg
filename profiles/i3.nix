@@ -20,7 +20,7 @@ in
 
     programs.light.enable = true;
 
-    fonts.fonts = with pkgs; [ terminus_font_ttf font-awesome ];
+    fonts.packages = with pkgs; [ terminus_font_ttf font-awesome ];
 
     services.xserver = {
       enable = true;

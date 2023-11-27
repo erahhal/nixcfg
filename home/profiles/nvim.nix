@@ -10,6 +10,14 @@
   ];
 
   # -----------------------------------------------------
+  # @TODO
+  #
+  # - codify any state possible in ~/.local/share/nvim
+  # - update large file handling logic
+  #   - https://www.reddit.com/r/neovim/comments/z85s1l/disable_lsp_for_very_large_files/
+  # -----------------------------------------------------
+
+  # -----------------------------------------------------
   # Profiling performance issues
   # -----------------------------------------------------
 
@@ -860,13 +868,6 @@
           EOF
         '';
       }
-      # {
-      #   # Needed by nvim-lightbulb but soon to be implemented in nvim
-      #   # @TODO: See git page for plugin as to which version if nvim doesn't need it
-      #   plugin = FixCursorHold-nvim;
-      #   config = ''
-      #   '';
-      # }
 
       # @TODO: Add incremental selection
       {
@@ -887,12 +888,22 @@
             end
           end
 
+          local function is_supported_func()
+            if vim.fn.strwidth(vim.fn.getline('.')) > 300
+              or vim.fn.getfsize(vim.fn.expand('%')) > 100 * 1024 then
+              return false
+            else
+              return true
+            end
+          end
+
           require 'nvim-treesitter.configs'.setup {
             indent = {
               enable = true,
               additional_vim_regex_highlighting = false,
               use_languagetree = false,
               disable = treesitter_disable_func,
+              is_supported = is_supported_func,
             },
 
             highlight = {
@@ -900,16 +911,19 @@
               additional_vim_regex_highlighting = false,
               use_languagetree = false,
               disable = treesitter_disable_func,
+              is_supported = is_supported_func,
             },
 
             refactor = {
               highlight_definitions = {
                 enable = true,
                 disable = treesitter_disable_func,
+                is_supported = is_supported_func,
               },
               highlight_current_scope = {
                 enable = true,
                 disable = treesitter_disable_func,
+                is_supported = is_supported_func,
               },
               smart_rename = {
                 enable = true,
@@ -1076,6 +1090,43 @@
 
       {
         plugin = fzf-lsp-nvim;
+        config = ''
+        '';
+      }
+
+      {
+        plugin = plenary-nvim;
+        config = ''
+        '';
+      }
+
+      {
+        # plugin = pkgs.unstable.vimPlugins.sg-nvim;
+        plugin = inputs.sg-nvim.packages.${pkgs.system}.sg-nvim;
+        config = ''
+          lua << EOF
+
+          require("sg").setup {
+            use_cody = true,
+            -- token = '***REMOVED***',
+            -- user = '***REMOVED***',
+            accept_tos = true,
+            tos_accepted = true,
+            endpoint = 'https://sourcegraph.netflix.net',
+          }
+          vim.keymap.set('n', '<leader>cs', require('sg.extensions.telescope').fuzzy_search_results, { noremap = true, desc = 'cody search' })
+          -- vim.api.nvim_set_keymap('n', '<leader>cs', require('sg.extensions.telescope').fuzzy_search_results, { noremap = true, desc = 'cody search'})
+          -- vim.api.nvim_set_keymap('n', '<leader>cc', [[<cmd>CodyToggle<CR>]], { noremap = true, desc = 'CodyChat'})
+          -- vim.api.nvim_set_keymap('v', '<leader>cc', [[:CodyAsk ]], { noremap = true, desc = 'CodyAsk'})
+          vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>CodyToggle<CR>', { noremap = true, desc = 'CodyChat'})
+          vim.api.nvim_set_keymap('v', '<leader>cc', ':CodyAsk', { noremap = true, desc = 'CodyAsk'})
+
+          EOF
+        '';
+      }
+
+      {
+        plugin = pkgs.unstable.vimPlugins.sg-nvim;
         config = ''
         '';
       }

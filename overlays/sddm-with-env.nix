@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+#--------------------------------------------------------
+## DEPRECATED - this appears to be fixed in 23.11
+#--------------------------------------------------------
+
+{ ... }:
 let sddm-with-env = final: prev: {
   sddm = prev.sddm.overrideAttrs (old: {
     patches = (old.patches or []) ++ [

@@ -33,7 +33,9 @@ in
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
-      enabled = "fcitx5";
+      # enabled = "fcitx5";
+      enabled = "ibus";
+      ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
       fcitx5.addons = with pkgs; [
         fcitx5-chinese-addons
         fcitx5-gtk
@@ -93,6 +95,7 @@ in
         "application/x-extension-xhtml" = [ defaultBrowserApp ];
         "application/x-extension-xht" = [ defaultBrowserApp ];
         "application/x-www-browser" = [ defaultBrowserApp ];
+        "application/pdf" = [ defaultBrowserApp ];
         "x-www-browser" = [ defaultBrowserApp ];
         "x-scheme-handler/webcal" = [ defaultBrowserApp ];
         "image/png" = [ "org.gnome.gThumb.desktop" ];
@@ -126,6 +129,7 @@ in
         "application/x-extension-xhtml" = [ defaultBrowserApp ];
         "application/x-extension-xht" = [ defaultBrowserApp ];
         "application/x-www-browser" = [ defaultBrowserApp ];
+        "application/pdf" = [ defaultBrowserApp ];
         "x-www-browser" = [ defaultBrowserApp ];
         "x-scheme-handler/webcal" = [ defaultBrowserApp ];
         "image/png" = [ "org.gnome.gThumb.desktop" ];
@@ -324,7 +328,9 @@ in
         unstable.stellarium
         vlc
         unstable.bitwarden
-        gimp-with-plugins
+        # gimp-with-plugins
+        # pr67576-gimp-wayland.gimp-with-plugins
+        pr67576-gimp-wayland.gimp
         zoom-us
         waydroid
         webcamoid
@@ -349,7 +355,8 @@ in
         xfce.thunar
         xfce.xfconf # Needed to save the preferences
         xfce.exo # Used by default for `open terminal here`, but can be changed
-        qt4
+        # qt5
+        # qt6
         libsForQt5.qtstyleplugins
         playerctl
         teams-for-linux

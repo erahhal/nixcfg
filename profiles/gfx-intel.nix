@@ -14,8 +14,13 @@
       driSupport = true;
       extraPackages = []
       ++ lib.optionals (pkgs.system=="x86_64-linux") (with pkgs; [
+
+          ## Conflicts with another page (hardware flake?)
+          # vaapiIntel
+          ## Should this really be used instead?
+          intel-vaapi-driver
+
           intel-media-driver
-          vaapiIntel
           vaapiVdpau
           libvdpau-va-gl
       ]);

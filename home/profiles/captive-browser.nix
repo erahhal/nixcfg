@@ -9,7 +9,7 @@ let
       sha256 = "1xhz009f01a55fm5p191h1gqfasmbhwrgbrcawzl64v9kfilz6gb";
     } + "/cmd/systemd-networkd-dns";
 
-    vendorSha256 = "blah";
+    vendorHash = "blah";
   };
 in
 {

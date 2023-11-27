@@ -83,7 +83,7 @@ in
     # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
     GDK_DPI_SCALE = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "0";
-    QT_SCALE_FACTOR = "1.5";
+    QT_SCALE_FACTOR = "1.25";
     # QT_SCALE_FACTOR = "1";
     QT_FONT_DPI = "96";
     # QT_FONT_DPI = "80";
@@ -101,6 +101,8 @@ in
     # SDL_VIDEODRIVER = "wayland";
 
     ## using "wayland" makes menus disappear in kde apps
+    ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
+    ##         and borders between elements are sometimes transparent, showing the background.
     # QT_QPA_PLATFORM = "wayland";
     QT_QPA_PLATFORM = "xcb";
 
@@ -377,7 +379,8 @@ in
       for_window [class="com.bitwig.BitwigStudio" title="Manage Licenses"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Bitwig Studio \d.*"] floating enable
       for_window [title="Firefox — Sharing Indicator"] floating enable
-      for_window [app_id="firefox" title="Extension.*Bitwarden.*"] floating enable
+      ## Doesn't work properly, messes with main firefox window as well
+      # for_window [app_id="firefox" title="Extension.*Bitwarden.*"] floating enable
       for_window [app_id="brave-.*" title="Bitwarden"] floating enable
       for_window [app_id="chrome-.*" title="Bitwarden"] floating enable
       # for_window [app_id="Waydroid"] floating enable

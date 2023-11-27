@@ -3,10 +3,10 @@
 
   inputs = {
     # Use stable for main
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
 
     # Should match nixpkgs version
-    home-manager.url = "github:nix-community/home-manager/release-23.05";
+    home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Trails trunk - latest packages with broken commits filtered out
@@ -83,6 +83,8 @@
     nixd.url = "github:nix-community/nixd";
 
     comma.url = "github:nix-community/comma";
+
+    sg-nvim.url = "github:sourcegraph/sg.nvim";
 
     nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
     # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
