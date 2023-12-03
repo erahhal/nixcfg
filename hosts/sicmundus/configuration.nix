@@ -49,6 +49,7 @@ in
       ../../containers/grist.nix
       ../../containers/jellyfin.nix
       ../../containers/joplin.nix
+      ../../containers/logseq.nix
       ../../containers/mariadb.nix
       ../../containers/minecraft.nix
       ../../containers/minio.nix
@@ -139,15 +140,15 @@ in
     ## This shouldn't work anymore
     # enableIPv6 = false;
 
-    ## This shouldn't be needed, and conflicts with network manager anyway
-    # interfaces = {
-    #   ${hostParams.mainInterface} = {
-    #     useDHCP = true;
-    #     ipv4.addresses = [
-    #       { address = "10.0.0.2"; prefixLength = 8; }
-    #     ];
-    #   };
-    # };
+    ## This is needed for a fixed IP
+    interfaces = {
+      ${hostParams.mainInterface} = {
+        useDHCP = true;
+        ipv4.addresses = [
+          { address = "10.0.0.2"; prefixLength = 8; }
+        ];
+      };
+    };
   };
 
   systemd.services.disable-unused-adapters = {
