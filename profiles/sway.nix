@@ -69,14 +69,8 @@ args@{ config, pkgs, lib, hostParams, userParams, ... }:
       ];
       wrapperFeatures = {
         base = true; # run extraSessionCommands
+        gtk = true;
       };
-      ## This doesn't appear to do anything
-      # extraSessionCommands = ''
-      # '';
-      extraPackages = with pkgs; [
-        # @TODO: this is repeated - figure out where it makes the most sense to live
-        kanshi
-      ];
     };
 
     fonts.packages = with pkgs; [ terminus_font_ttf font-awesome ];

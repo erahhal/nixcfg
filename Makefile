@@ -9,6 +9,7 @@ endif
 switch:
 	make clear-sddm-cache
 	make clear-mimeapps
+	make clear-gpu-cache
 	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 
@@ -20,6 +21,9 @@ show-trace:
 
 offline:
 	nixos-rebuild --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
+
+clear-gpu-cache:
+	find ~/.config/. -type d -name GPUCache -exec rm -rf {} +
 
 gc:
 	nix-store --gc
