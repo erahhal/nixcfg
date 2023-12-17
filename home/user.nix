@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, hostParams, userParams, ... }:
+{ pkgs, inputs, hostParams, userParams, ... }:
 
 let
   env_vars = {
@@ -41,6 +41,7 @@ in
   imports = [
     ../overlays/ranger-image-preview.nix
     ../overlays/weechat.nix
+    ../profiles/system-theme.nix
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -57,7 +58,6 @@ in
       ./profiles/node-modules.nix
       ./profiles/nvim.nix
       # ./profiles/syncthing.nix
-      ./profiles/tmux.nix
       ./profiles/vifm.nix
       # ./profiles/weechat.nix
     ];

@@ -56,19 +56,51 @@
         "type": "github"
       }
     },
-    "base16-eva-scheme": {
+    "base16-schemes": {
       "flake": false,
       "locked": {
-        "lastModified": 1589840056,
-        "narHash": "sha256-+52BPv/3f4vqG+p37XSxyf9w0CPkBSvCo6x1O/JE6Lg=",
-        "owner": "kjakapat",
-        "repo": "base16-eva-scheme",
-        "rev": "595ea6eff814ae462709f222e7af3492ee804e88",
+        "lastModified": 1702718998,
+        "narHash": "sha256-VTczZi1C4WSzejpTFbneMonAdarRLtDnFehVxWs6ad0=",
+        "owner": "tinted-theming",
+        "repo": "base16-schemes",
+        "rev": "2b6f2d0677216ddda50c9cabd6ee70fae4665f81",
         "type": "github"
       },
       "original": {
-        "owner": "kjakapat",
-        "repo": "base16-eva-scheme",
+        "owner": "tinted-theming",
+        "repo": "base16-schemes",
+        "type": "github"
+      }
+    },
+    "base16-vim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702716776,
+        "narHash": "sha256-Z/VZFxyRqw9s6ekuEr8LyxbV5XX6WMs08jQSUBppYoY=",
+        "owner": "tinted-theming",
+        "repo": "base16-vim",
+        "rev": "5e94162c37e5612977a23e65a10f88a2c031883d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tinted-theming",
+        "repo": "base16-vim",
+        "type": "github"
+      }
+    },
+    "base16-zathura": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1643130739,
+        "narHash": "sha256-nVJoygnytYN40VHXpAFwO7ruVbaSydeR547MU45VSuY=",
+        "owner": "haozeke",
+        "repo": "base16-zathura",
+        "rev": "9f148b4001dc67d399e645919225943d47e50125",
+        "type": "github"
+      },
+      "original": {
+        "owner": "haozeke",
+        "repo": "base16-zathura",
         "type": "github"
       }
     },
@@ -1183,7 +1215,9 @@
       "inputs": {
         "agenix": "agenix",
         "base16": "base16",
-        "base16-eva-scheme": "base16-eva-scheme",
+        "base16-schemes": "base16-schemes",
+        "base16-vim": "base16-vim",
+        "base16-zathura": "base16-zathura",
         "comma": "comma",
         "dcc": "dcc",
         "flake-utils": "flake-utils",

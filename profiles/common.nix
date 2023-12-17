@@ -137,7 +137,6 @@
 
   # Gives access to the NUR (Nix User Repository): https://github.com/nix-community/NUR
   nixpkgs.overlays = [
-    inputs.nur.overlay
     inputs.comma.overlays.default
     (final: prev: {
       ## Use SwayFX
@@ -284,10 +283,12 @@
 
   environment.systemPackages = with pkgs; [
     at-spi2-core
+    axel
     backblaze-b2
     bashmount
     bfg-repo-cleaner
     bind
+    cdrkit           # provides genisoimage
     cpufrequtils
     distrobox
     dmidecode
@@ -308,6 +309,7 @@
     inetutils
     iotop
     iperf3
+    libarchive   # provides bsdtar
     luarocks
     lshw
     lsof
@@ -338,6 +340,7 @@
     vulnix
     wireguard-tools
     wget
+    xorriso
     xz
     zip
     zsh

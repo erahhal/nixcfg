@@ -581,47 +581,7 @@
       # Status line
       # =======================
 
-      ## airline seems to have performance problems
-      # {
-      #   plugin = vim-airline;
-      #   config = ''
-      #     lua << EOF
-      #     vim.g.airline_powerline_fonts = 1
-      #     EOF
-      #   '';
-      # }
-      #
-      # {
-      #   plugin = vim-airline-themes;
-      #   config = ''
-      #   '';
-      # }
-
-      {
-        plugin = lualine-lsp-progress;
-        config = ''
-          lua << EOF
-          require('lualine').setup {
-            options = { theme = 'gruvbox' },
-            sections = {
-              lualine_c = {
-                'lsp_progress'
-              }
-            }
-          }
-          EOF
-        '';
-      }
-      {
-        plugin = lualine-nvim;
-        config = ''
-          lua << EOF
-          require('lualine').setup {
-            options = { theme = 'gruvbox' }
-          }
-          EOF
-        '';
-      }
+      # Status line config is in ../profiles/system-theme.nix
 
       # =======================
       # vim-orgmode
@@ -805,8 +765,6 @@
             cmd = {
               "${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server",
               "--stdio",
-              "--tsserver-path",
-              "${pkgs.nodePackages.typescript}/lib/node_modules/typescript/lib/",
             },
           }
           nvim_lsp.tsserver.setup(tsserver_config)
@@ -888,7 +846,7 @@
             end
           end
 
-          local function is_supported_func()
+          local function is_supported_func(lang)
             if vim.fn.strwidth(vim.fn.getline('.')) > 300
               or vim.fn.getfsize(vim.fn.expand('%')) > 100 * 1024 then
               return false
@@ -897,13 +855,16 @@
             end
           end
 
+          -- disable:       takes a list of languages that this module is disabled for. This is usually overridden by the user.
+          --                can also take a function with (lang, buf) as params and returns true or false
+          -- is_supported:  takes a function that takes a language and determines if this module supports that language.
           require 'nvim-treesitter.configs'.setup {
             indent = {
               enable = true,
               additional_vim_regex_highlighting = false,
               use_languagetree = false,
               disable = treesitter_disable_func,
-              is_supported = is_supported_func,
+              -- is_supported = is_supported_func,
             },
 
             highlight = {
@@ -911,19 +872,19 @@
               additional_vim_regex_highlighting = false,
               use_languagetree = false,
               disable = treesitter_disable_func,
-              is_supported = is_supported_func,
+              -- is_supported = is_supported_func,
             },
 
             refactor = {
               highlight_definitions = {
                 enable = true,
                 disable = treesitter_disable_func,
-                is_supported = is_supported_func,
+                -- is_supported = is_supported_func,
               },
               highlight_current_scope = {
                 enable = true,
                 disable = treesitter_disable_func,
-                is_supported = is_supported_func,
+                -- is_supported = is_supported_func,
               },
               smart_rename = {
                 enable = true,
@@ -1100,36 +1061,30 @@
         '';
       }
 
-      {
-        # plugin = pkgs.unstable.vimPlugins.sg-nvim;
-        plugin = inputs.sg-nvim.packages.${pkgs.system}.sg-nvim;
-        config = ''
-          lua << EOF
+      # {
+      #   # plugin = pkgs.unstable.vimPlugins.sg-nvim;
+      #   plugin = inputs.sg-nvim.packages.${pkgs.system}.sg-nvim;
+      #   config = ''
+      #     lua << EOF
 
-          require("sg").setup {
-            use_cody = true,
-            -- token = '***REMOVED***',
-            -- user = '***REMOVED***',
-            accept_tos = true,
-            tos_accepted = true,
-            endpoint = 'https://sourcegraph.netflix.net',
-          }
-          vim.keymap.set('n', '<leader>cs', require('sg.extensions.telescope').fuzzy_search_results, { noremap = true, desc = 'cody search' })
-          -- vim.api.nvim_set_keymap('n', '<leader>cs', require('sg.extensions.telescope').fuzzy_search_results, { noremap = true, desc = 'cody search'})
-          -- vim.api.nvim_set_keymap('n', '<leader>cc', [[<cmd>CodyToggle<CR>]], { noremap = true, desc = 'CodyChat'})
-          -- vim.api.nvim_set_keymap('v', '<leader>cc', [[:CodyAsk ]], { noremap = true, desc = 'CodyAsk'})
-          vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>CodyToggle<CR>', { noremap = true, desc = 'CodyChat'})
-          vim.api.nvim_set_keymap('v', '<leader>cc', ':CodyAsk', { noremap = true, desc = 'CodyAsk'})
+      #     require("sg").setup {
+      #       use_cody = true,
+      #       -- token = '***REMOVED***',
+      #       -- user = '***REMOVED***',
+      #       accept_tos = true,
+      #       tos_accepted = true,
+      #       endpoint = 'https://sourcegraph.netflix.net',
+      #     }
+      #     vim.keymap.set('n', '<leader>cs', require('sg.extensions.telescope').fuzzy_search_results, { noremap = true, desc = 'cody search' })
+      #     -- vim.api.nvim_set_keymap('n', '<leader>cs', require('sg.extensions.telescope').fuzzy_search_results, { noremap = true, desc = 'cody search'})
+      #     -- vim.api.nvim_set_keymap('n', '<leader>cc', [[<cmd>CodyToggle<CR>]], { noremap = true, desc = 'CodyChat'})
+      #     -- vim.api.nvim_set_keymap('v', '<leader>cc', [[:CodyAsk ]], { noremap = true, desc = 'CodyAsk'})
+      #     vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>CodyToggle<CR>', { noremap = true, desc = 'CodyChat'})
+      #     vim.api.nvim_set_keymap('v', '<leader>cc', ':CodyAsk', { noremap = true, desc = 'CodyAsk'})
 
-          EOF
-        '';
-      }
-
-      {
-        plugin = pkgs.unstable.vimPlugins.sg-nvim;
-        config = ''
-        '';
-      }
+      #     EOF
+      #   '';
+      # }
 
       # =======================
       # Fuzzy finding
@@ -1464,20 +1419,6 @@
       }
 
       # =======================
-      # Themes
-      # =======================
-
-      {
-        plugin = gruvbox;
-        config = ''
-          lua << EOF
-          -- vim.g.solarized_termcolors=256   -- only needed if terminal is not solarized
-          vim.cmd [[colorscheme gruvbox]]
-          EOF
-        '';
-      }
-
-      # =======================
       # Icons
       # =======================
 
@@ -1596,7 +1537,6 @@
       nodejs
       nodePackages.eslint
       nodePackages.prettier
-      nodePackages.typescript
       nodePackages.neovim
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted

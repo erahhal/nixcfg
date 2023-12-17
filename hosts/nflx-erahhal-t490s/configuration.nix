@@ -25,6 +25,7 @@ in
       ../../profiles/exclusive-lan.nix
       ../../profiles/gfx-intel.nix
       ../../profiles/laptop-hardware.nix
+      ../../profiles/steam.nix
 
       # host specific
       ../../profiles/mullvad.nix

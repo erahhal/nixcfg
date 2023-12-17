@@ -55,6 +55,7 @@ in
   environment.systemPackages = with pkgs; [
     unstable.quickemu
     virt-manager
+    virt-viewer
     virtiofsd         # needed for file system sharing
 
     run-homefree
@@ -71,13 +72,13 @@ in
   # allow nested virtualization inside guests
   boot.extraModprobeConfig = "options kvm_intel nested=1";
 
-
   virtualisation.libvirtd = {
     enable = true;
 
     allowedBridges = [
       "nm-bridge"
       "virbr0"
+      "hfbr0"
     ];
 
     qemu = {
@@ -87,6 +88,52 @@ in
         packages = [ pkgs.OVMFFull.fd ];
       };
       swtpm.enable = true;
+    };
+  };
+
+  # Start default network
+  systemd.services = {
+    virsh-start-default = {
+      description = "Start default network at startup";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig.Type = "oneshot";
+      serviceConfig.Restart = "on-failure";
+      script =  ''
+        VIRSH=${pkgs.libvirt}/bin/virsh
+        GREP=${pkgs.gnugrep}/bin/grep
+        AWK=${pkgs.gawk}/bin/awk
+        state=$($VIRSH net-list | $GREP default | $AWK '{print $2}')
+        if [ $state != 'active' ]; then
+          $VIRSH net-start default
+        fi
+      '';
+    };
+  };
+
+  # Start bridge for HomeFree
+  ## See: https://www.spad.uk/posts/really-simple-network-bridging-with-qemu/
+  systemd.services = {
+    create-hfbr0 = {
+      description = "Create second libvirt bridge - hfbr0";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig.Type = "oneshot";
+      serviceConfig.Restart = "on-failure";
+      script =  ''
+        ETHTOOL=${pkgs.ethtool}/bin/ethtool
+        IP=${pkgs.iproute2}/bin/ip
+        GREP=${pkgs.gnugrep}/bin/grep
+        if $ETHTOOL hfbr0 | $GREP -q "Link detected"; then
+          echo "hfbr0 already up."
+        else
+          $IP link add hfbr0 type bridge
+          # $IP addr add 192.168.123.1/24 dev hfbr0
+          $IP link set hfbr0 up
+        fi
+      '';
     };
   };
 
@@ -103,14 +150,34 @@ in
     enable = true;
   };
 
+  # Used by HomeFree
+  # networking.bridges = {
+  #   br0 = {
+  #     interfaces = [ "wlp0s20f3" ];
+  #   };
+  # };
+
+  # networking.interfaces = {
+  #
+  #   # br0.useDHCP = true;
+  #   # wlp0s20f3.useDHCP = true;
+  #
+  #   tap-lan = {
+  #     virtual = true;
+  #     virtualType = "tap";
+  #   };
+  #
+  #   tap-wan = {
+  #     virtual = true;
+  #     virtualType = "tap";
+  #   };
+  # };
+
   #-------------------------------------------
   ## virt-manager settings
   #
   # https://nixos.wiki/wiki/Virt-manager
   #-------------------------------------------
-
-  ## @TODO: Enable with NixOS 23.11
-  # programs.virt-manager.enable = true;
 
   # virt-manager requires dconf to remember settings
   ## @TODO: remove with 23.11, as it is automatically set by the setting above
@@ -157,4 +224,13 @@ in
   #-------------------------------------------
 
   virtualisation.lxd.enable = true;
+
+  #-------------------------------------------
+  ## Homefree dev
+  #-------------------------------------------
+
+  networking.extraHosts = ''
+    127.0.0.1 homefree.lan
+    127.0.0.1 radicale.homefree.lan
+  '';
 }
