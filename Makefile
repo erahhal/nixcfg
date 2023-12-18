@@ -1,5 +1,4 @@
 HOSTNAME = $(shell hostname)
-THEME = dark-mode
 
 NIX_FILES = $(shell find . -name '*.nix' -type f)
 
@@ -11,16 +10,8 @@ switch:
 	make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
-	echo Building ${THEME}
-	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L --specialisation ${THEME}
+	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
-	tmux source-file ~/.tmux.conf
-
-dark-mode: THEME=dark-mode
-dark-mode: switch
-
-light-mode: THEME=light-mode
-light-mode: switch
 
 show-trace:
 	make clear-sddm-cache

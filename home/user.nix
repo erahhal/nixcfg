@@ -41,7 +41,6 @@ in
   imports = [
     ../overlays/ranger-image-preview.nix
     ../overlays/weechat.nix
-    ../profiles/system-theme.nix
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -54,6 +53,7 @@ in
     _module.args.inputs = inputs;
 
     imports = [
+      ./profiles/system-theme.nix
       # ./profiles/captive-browser.nix
       ./profiles/node-modules.nix
       ./profiles/nvim.nix

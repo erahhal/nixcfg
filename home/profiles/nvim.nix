@@ -581,7 +581,31 @@
       # Status line
       # =======================
 
-      # Status line config is in ../profiles/system-theme.nix
+      {
+        plugin = lualine-lsp-progress;
+        config = ''
+          lua << EOF
+          require('lualine').setup {
+            options = { theme = 'gruvbox' },
+            sections = {
+              lualine_c = {
+                'lsp_progress'
+              }
+            }
+          }
+          EOF
+        '';
+      }
+      {
+        plugin = lualine-nvim;
+        config = ''
+          lua << EOF
+          require('lualine').setup {
+            options = { theme = 'gruvbox' }
+          }
+          EOF
+        '';
+      }
 
       # =======================
       # vim-orgmode
