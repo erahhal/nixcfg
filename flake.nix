@@ -53,23 +53,8 @@
     # pulse-secure.url = "path:flakes/pulse-secure";
     # pulse-secure.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Base16 color schemes
-    base16.url = "github:SenchoPens/base16.nix";
-
-    base16-schemes = {
-      url = "github:tinted-theming/base16-schemes";
-      flake = false;
-    };
-
-    base16-vim = {
-      url = "github:tinted-theming/base16-vim";
-      flake = false;
-    };
-
-    base16-zathura = {
-      url = "github:haozeke/base16-zathura";
-      flake = false;
-    };
+    # Home-manager theming
+    nix-colors.url = "github:misterio77/nix-colors";
 
     mms.url = "github:mkaito/nixos-modded-minecraft-servers";
     mms.inputs.nixpkgs.follows = "nixpkgs";
@@ -127,7 +112,6 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.raspberry-pi-4
           inputs.nur.nixosModules.nur
-          inputs.base16.nixosModule
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           inputs.home-manager.nixosModules.home-manager
           {
@@ -161,7 +145,6 @@
           inputs.nixos-hardware.nixosModules.common-cpu-intel
           inputs.nixos-hardware.nixosModules.common-pc-laptop
           inputs.nur.nixosModules.nur
-          inputs.base16.nixosModule
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           inputs.home-manager.nixosModules.home-manager
           {
@@ -198,17 +181,12 @@
           inputs.nixos-hardware.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.nixosModules.nur
-          inputs.base16.nixosModule
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
-
-          inputs.base16.nixosModule
-          { scheme = "${inputs.base16-eva-scheme}/eva.yaml"; }
-          hosts/upaya/theming.nix
         ];
         specialArgs = {
           inherit inputs;
@@ -234,7 +212,6 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.nixosModules.nur
-          inputs.base16.nixosModule
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           {
             home-manager.useGlobalPkgs = true;

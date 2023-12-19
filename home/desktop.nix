@@ -2,19 +2,6 @@
 
 let
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
-
-  gnome-calculator-hidpi = pkgs.callPackage ../pkgs/gnome-calculator-hidpi { };
-  sweethome3d-hidpi = pkgs.callPackage ../pkgs/sweethome3d-hidpi { };
-
-  xwayland_settings = ''
-    Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
-    Xcursor.theme: Adwaita
-    Xft.dpi: 100
-    xterm*background: black
-    xterm*faceName: Monospace
-    xterm*faceSize: 12
-    xterm*foreground: lightgray
-  '';
 in
 {
   imports = [
@@ -186,79 +173,6 @@ in
 
     home.file."Wallpapers".source = ../wallpapers;
 
-    # For X
-    home.file.".Xresources".text = xwayland_settings;
-    # For sway
-    home.file.".Xdefaults".text = xwayland_settings;
-
-    gtk = {
-      enable = true;
-
-      # Used by Zenity and Firefox menus and tabs
-      # GDK_DPI_SCALE is used in conjunction with this
-      font = {
-        name = "DejaVu Sans";
-        size = 10;
-      };
-
-      theme.name = "Arc-Dark";
-      theme.package = pkgs.arc-theme;
-      # theme.name = "SolArc-Dark";
-      # theme.package = pkgs.solarc-gtk-theme;
-      # theme.name = "Materia";
-      # theme.package = pkgs.materia-theme;
-      iconTheme.package = pkgs.gnome3.adwaita-icon-theme;
-      iconTheme.name = "Adwaita";
-
-      gtk2.extraConfig =
-        if hostParams.defaultSession == "none+i3" then ''
-          gtk-cursor-theme-name="Adwaita"
-          gtk-cursor-theme-size=48
-          gtk-application-prefer-dark-theme=1
-        '' else ''
-          gtk-cursor-theme-name="Adwaita"
-          gtk-cursor-theme-size=24
-          gtk-application-prefer-dark-theme=1
-        '';
-      gtk3.extraConfig =
-        if hostParams.defaultSession == "none+i3" then {
-          "gtk-cursor-theme-name" = "Adwaita";
-          "gtk-cursor-theme-size" = 48;
-          "gtk-application-prefer-dark-theme" = 1;
-        } else {
-          "gtk-cursor-theme-name" = "Adwaita";
-          "gtk-cursor-theme-size" = 24;
-          "gtk-application-prefer-dark-theme" = 1;
-        };
-      gtk4.extraConfig =
-        if hostParams.defaultSession == "none+i3" then {
-          "gtk-cursor-theme-name" = "Adwaita";
-          "gtk-cursor-theme-size" = 48;
-        } else {
-          "gtk-cursor-theme-name" = "Adwaita";
-          "gtk-cursor-theme-size" = 24;
-        };
-    };
-
-    dconf = {
-      enable = true;
-      settings = {
-        "org/gnome/desktop/interface" = {
-          "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
-          "color-scheme" = "prefer-dark";
-        };
-      };
-    };
-
-    qt = {
-      enable = true;
-      platformTheme = "gnome";
-      style = {
-        name = "adwaita-dark";
-        package = pkgs.adwaita-qt;
-      };
-    };
-
     home.sessionVariables = {
       # ---------------------------------------------------------------------------
       # IME
@@ -428,31 +342,6 @@ in
       j seek -60
       h seek -10
       l seek 10
-    '';
-
-    # @TODO: move to a home.activation script
-    xdg.configFile.kcalcrc.text = ''
-      [Colors]
-      BackColor=35,38,41
-      ConstantsButtonsColor=35,38,41
-      ConstantsFontsColor=252,252,252
-      ForeColor=255,255,255
-      FunctionButtonsColor=35,38,41
-      FunctionFontsColor=252,252,252
-      HexButtonsColor=35,38,41
-      HexFontsColor=252,252,252
-      MemoryButtonsColor=35,38,41
-      MemoryFontsColor=252,252,252
-      NumberButtonsColor=35,38,41
-      NumberFontsColor=252,252,252
-      OperationButtonsColor=35,38,41
-      OperationFontsColor=252,252,252
-      StatButtonsColor=35,38,41
-      StatFontsColor=252,252,252
-
-      [General]
-      CalculatorMode=science
-      ShowHistory=true
     '';
   };
 }

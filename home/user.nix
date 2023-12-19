@@ -53,6 +53,7 @@ in
     _module.args.inputs = inputs;
 
     imports = [
+      inputs.nix-colors.homeManagerModules.default
       ./profiles/system-theme.nix
       # ./profiles/captive-browser.nix
       ./profiles/node-modules.nix

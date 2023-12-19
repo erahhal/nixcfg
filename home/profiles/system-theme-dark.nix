@@ -1,5 +1,15 @@
-args@{ pkgs, lib, inputs, ... }:
+args@{ config, inputs, pkgs, lib, hostParams, ... }:
 let
+xwayland_settings = ''
+  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
+  Xcursor.theme: Adwaita
+  Xft.dpi: 100
+  xterm*background: black
+  xterm*faceName: Monospace
+  xterm*faceSize: 12
+  xterm*foreground: lightgray
+'';
+
 theme-colors = ''
   # default theme
   tmux_conf_theme_colour_1="#080808"    # dark gray
@@ -72,7 +82,83 @@ in
     ( import ./tmux.nix (args // { theme-colors = theme-colors; theme-status = theme-status; }))
   ];
 
-  programs.zathura.extraConfig = builtins.readFile "${inputs.base16-zathura}/build_schemes/colors/base16-nord.config";
+  ## Example custom color scheme
+  # colorScheme = {
+  #   slug = "pasque";
+  #   name = "Pasque";
+  #   author = "Gabriel Fontes (https://github.com/Misterio77)";
+  #   colors = {
+  #     base00 = "#271C3A";
+  #     base01 = "#100323";
+  #     base02 = "#3E2D5C";
+  #     base03 = "#5D5766";
+  #     base04 = "#BEBCBF";
+  #     base05 = "#DEDCDF";
+  #     base06 = "#EDEAEF";
+  #     base07 = "#BBAADD";
+  #     base08 = "#A92258";
+  #     base09 = "#918889";
+  #     base0A = "#804ead";
+  #     base0B = "#C6914B";
+  #     base0C = "#7263AA";
+  #     base0D = "#8E7DC6";
+  #     base0E = "#953B9D";
+  #     base0F = "#59325C";
+  #   };
+  # };
+
+  ## Example from yaml
+  # colorScheme = nix-colors.lib.schemeFromYAML "cool-scheme" (builtins.readFile ./cool-scheme.yaml);
+
+  colorScheme = inputs.nix-colors.colorSchemes.dracula;
+
+  # For X
+  home.file.".Xresources".text = xwayland_settings;
+  # For sway
+  home.file.".Xdefaults".text = xwayland_settings;
+
+  programs = {
+    kitty = {
+      enable = true;
+      settings = {
+        foreground =            "#${config.colorScheme.colors.base05}";
+        background =            "#${config.colorScheme.colors.base00}";
+        selection_foreground =  "#${config.colorScheme.colors.base05}";
+        selection_background =  "#${config.colorScheme.colors.base02}";
+        cursor =                "#${config.colorScheme.colors.base05}";
+        cursor_text_color =     "#${config.colorScheme.colors.base00}";
+        url_color =             "#${config.colorScheme.colors.base09}";
+        active_border_color =   "#${config.colorScheme.colors.base00}";
+        # inactive_border_color = "";
+        # bell_border_color     = "";
+        # visual_bell_color     = "";
+      };
+    };
+  };
+
+  # programs.kitty.extraConfig = ''
+  #   background            #000000
+  #   foreground            #e9e9e9
+  #   cursor                #e9e9e9
+  #   selection_background  #424242
+  #   color0                #000000
+  #   color8                #777777
+  #   color1                #d44d53
+  #   color9                #d44d53
+  #   color2                #b9c949
+  #   color10               #b9c949
+  #   color3                #e6c446
+  #   color11               #e6c446
+  #   color4                #79a6da
+  #   color12               #79a6da
+  #   color5                #c396d7
+  #   color13               #c396d7
+  #   color6                #70c0b1
+  #   color14               #70c0b1
+  #   color7                #fffefe
+  #   color15               #fffefe
+  #   selection_foreground  #000000
+  # '';
 
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
@@ -88,28 +174,97 @@ in
     ];
   };
 
-  programs.kitty.extraConfig = ''
-    background            #000000
-    foreground            #e9e9e9
-    cursor                #e9e9e9
-    selection_background  #424242
-    color0                #000000
-    color8                #777777
-    color1                #d44d53
-    color9                #d44d53
-    color2                #b9c949
-    color10               #b9c949
-    color3                #e6c446
-    color11               #e6c446
-    color4                #79a6da
-    color12               #79a6da
-    color5                #c396d7
-    color13               #c396d7
-    color6                #70c0b1
-    color14               #70c0b1
-    color7                #fffefe
-    color15               #fffefe
-    selection_foreground #000000
+  gtk = {
+    enable = true;
+
+    # Used by Zenity and Firefox menus and tabs
+    # GDK_DPI_SCALE is used in conjunction with this
+    font = {
+      name = "DejaVu Sans";
+      size = 10;
+    };
+
+    theme.name = "Arc-Dark";
+    theme.package = pkgs.arc-theme;
+    # theme.name = "SolArc-Dark";
+    # theme.package = pkgs.solarc-gtk-theme;
+    # theme.name = "Materia";
+    # theme.package = pkgs.materia-theme;
+    iconTheme.package = pkgs.gnome3.adwaita-icon-theme;
+    iconTheme.name = "Adwaita";
+
+    gtk2.extraConfig =
+      if hostParams.defaultSession == "none+i3" then ''
+        gtk-cursor-theme-name="Adwaita"
+        gtk-cursor-theme-size=48
+        gtk-application-prefer-dark-theme=1
+      '' else ''
+        gtk-cursor-theme-name="Adwaita"
+        gtk-cursor-theme-size=24
+        gtk-application-prefer-dark-theme=1
+      '';
+    gtk3.extraConfig =
+      if hostParams.defaultSession == "none+i3" then {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 48;
+        "gtk-application-prefer-dark-theme" = 1;
+      } else {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 24;
+        "gtk-application-prefer-dark-theme" = 1;
+      };
+    gtk4.extraConfig =
+      if hostParams.defaultSession == "none+i3" then {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 48;
+      } else {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 24;
+      };
+  };
+
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
+        "color-scheme" = "prefer-dark";
+      };
+    };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = {
+      name = "adwaita-dark";
+      package = pkgs.adwaita-qt;
+    };
+  };
+
+  # @TODO: move to a home.activation script?
+  xdg.configFile.kcalcrc.text = ''
+    [Colors]
+    BackColor=35,38,41
+    ConstantsButtonsColor=35,38,41
+    ConstantsFontsColor=252,252,252
+    ForeColor=255,255,255
+    FunctionButtonsColor=35,38,41
+    FunctionFontsColor=252,252,252
+    HexButtonsColor=35,38,41
+    HexFontsColor=252,252,252
+    MemoryButtonsColor=35,38,41
+    MemoryFontsColor=252,252,252
+    NumberButtonsColor=35,38,41
+    NumberFontsColor=252,252,252
+    OperationButtonsColor=35,38,41
+    OperationFontsColor=252,252,252
+    StatButtonsColor=35,38,41
+    StatFontsColor=252,252,252
+
+    [General]
+    CalculatorMode=science
+    ShowHistory=true
   '';
 
   services.random-background.imageDirectory =

@@ -1,5 +1,14 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, hostParams, ... }:
 let
+xwayland_settings = ''
+  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
+  Xcursor.theme: Adwaita
+  Xft.dpi: 100
+  xterm*background: #efefef
+  xterm*faceName: Monospace
+  xterm*faceSize: 12
+  xterm*foreground: black
+'';
 
 # tmux cannot handle colors in the F ranges, e.g. #FNFNFN.
 # They cause misalignment issues in the status bar for some unknown reason
@@ -80,6 +89,7 @@ in
   };
 
   # @TODO: this shouldn't be duplicated
+  # @TODO: home.file."filename".text = "blah"; CAN be duplicated. use lib.mkBefore / lib.mkAfter to order
   home.file.".tmux.conf.local" = lib.mkForce { text = builtins.replaceStrings ["[THEME_COLORS_TOKEN]"] [theme-colors] localConf + ''
     # -- Ellis' Settings -----------------------------------------------------------
 
@@ -127,7 +137,10 @@ in
  '';
  };
 
-  programs.zathura.extraConfig = builtins.readFile "${inputs.base16-zathura}/build_schemes/colors/base16-nord.config";
+  # For X
+  home.file.".Xresources".text = xwayland_settings;
+  # For sway
+  home.file.".Xdefaults".text = xwayland_settings;
 
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
@@ -144,6 +157,8 @@ in
       }
     ];
   };
+
+  colorScheme = inputs.nix-colors.colorSchemes.atelier-forest-light;
 
   programs.kitty.extraConfig = lib.mkForce ''
     background            #efefef
@@ -213,6 +228,99 @@ in
       renamed: dark_green
       modified: dark_yellow
       conflicted: dark_red
+  '';
+
+  gtk = lib.mkForce {
+    enable = true;
+
+    # Used by Zenity and Firefox menus and tabs
+    # GDK_DPI_SCALE is used in conjunction with this
+    font = {
+      name = "DejaVu Sans";
+      size = 10;
+    };
+
+    theme.name = "Arc-Light";
+    theme.package = pkgs.arc-theme;
+    # theme.name = "SolArc-Dark";
+    # theme.package = pkgs.solarc-gtk-theme;
+    # theme.name = "Materia";
+    # theme.package = pkgs.materia-theme;
+    iconTheme.package = pkgs.gnome3.adwaita-icon-theme;
+    iconTheme.name = "Adwaita";
+
+    gtk2.extraConfig =
+      if hostParams.defaultSession == "none+i3" then ''
+        gtk-cursor-theme-name="Adwaita"
+        gtk-cursor-theme-size=48
+        gtk-application-prefer-dark-theme=0
+      '' else ''
+        gtk-cursor-theme-name="Adwaita"
+        gtk-cursor-theme-size=24
+        gtk-application-prefer-dark-theme=0
+      '';
+    gtk3.extraConfig =
+      if hostParams.defaultSession == "none+i3" then {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 48;
+        "gtk-application-prefer-dark-theme" = 0;
+      } else {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 24;
+        "gtk-application-prefer-dark-theme" = 0;
+      };
+    gtk4.extraConfig =
+      if hostParams.defaultSession == "none+i3" then {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 48;
+      } else {
+        "gtk-cursor-theme-name" = "Adwaita";
+        "gtk-cursor-theme-size" = 24;
+      };
+  };
+
+  dconf = lib.mkForce {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
+        "color-scheme" = "prefer-light";
+      };
+    };
+  };
+
+  qt = lib.mkForce {
+    enable = true;
+    platformTheme = "gnome";
+    style = {
+      name = "adwaita-light";
+      package = pkgs.adwaita-qt;
+    };
+  };
+
+  # @TODO: move to a home.activation script?
+  xdg.configFile.kcalcrc.text = lib.mkForce ''
+    # [Colors]
+    # BackColor=35,38,41
+    # ConstantsButtonsColor=35,38,41
+    # ConstantsFontsColor=252,252,252
+    # ForeColor=255,255,255
+    # FunctionButtonsColor=35,38,41
+    # FunctionFontsColor=252,252,252
+    # HexButtonsColor=35,38,41
+    # HexFontsColor=252,252,252
+    # MemoryButtonsColor=35,38,41
+    # MemoryFontsColor=252,252,252
+    # NumberButtonsColor=35,38,41
+    # NumberFontsColor=252,252,252
+    # OperationButtonsColor=35,38,41
+    # OperationFontsColor=252,252,252
+    # StatButtonsColor=35,38,41
+    # StatFontsColor=252,252,252
+
+    [General]
+    CalculatorMode=science
+    ShowHistory=true
   '';
 
   services.random-background.imageDirectory =
