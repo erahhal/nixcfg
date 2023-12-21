@@ -1,17 +1,22 @@
 HOSTNAME = $(shell hostname)
-
 NIX_FILES = $(shell find . -name '*.nix' -type f)
+CURR_THEME = $(shell cat ~/.system-theme)
 
 ifndef HOSTNAME
  $(error Hostname unknown)
 endif
 
-switch:
+switch: 
 	make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
 	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
+	# Building defaults to dark, so switch back if it was light before
+	NEW_THEME=$$(cat ~/.system-theme) ;\
+	if [ "$(CURR_THEME)" != "$$NEW_THEME" ]; then \
+		toggle-theme ;\
+	fi
 
 show-trace:
 	make clear-sddm-cache

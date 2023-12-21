@@ -8,7 +8,6 @@ let
     repeat_rate = "50";
     repeat_delay = "250";
   };
-  singleExternalOutput = "swaymsg output eDP-1 disable; swaymsg output \"Goldstar Company Ltd LG HDR 4K 0x00000F5B\" disable";
   swayfont = "Iosevka Bold 18";
   terminal = "${pkgs.trunk.kitty}/bin/kitty";
   light = "${pkgs.light}/bin/light";
@@ -182,7 +181,6 @@ in
         { criteria = { app_id = "dropdown"; }; command = "move scratchpad"; }
         { criteria = { app_id = "dropdown"; }; command = "border pixel 1"; }
       ];
-      colors.focused = { background = "#4c7899"; border = "#4c7899"; childBorder = "#4c7899"; indicator = "#2e9ef4"; text = "#ffffff"; };
 
       # https://www.mankier.com/5/sway-input
       input = {
@@ -287,7 +285,6 @@ in
         "${modifier}+r" = "reload";
         "${modifier}+t" = "layout toggle tabbed split";
         "${modifier}+y" = "exec systemctl --user restart kanshi";
-        "${modifier}+g" = "exec ${singleExternalOutput}";
         # "${modifier}+Shift+e" = "exec swaynagmode -t 'warning' -m 'Exit sway?' -b 'Yes' 'swaymsg exit'";
         # "${modifier}+Shift+p" = "exec swaynagmode -t 'warning' -m 'Power off?' -b 'Yes' 'swaymsg exec systemctl poweroff -i, mode\"default\"'";
         # "${modifier}+Shift+r" = "exec swaynagmode -t 'warning' -m 'Reboot?' -b 'Yes' 'swaymsg exec systemctl reboot'";
@@ -379,8 +376,7 @@ in
       for_window [class="com.bitwig.BitwigStudio" title="Manage Licenses"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Bitwig Studio \d.*"] floating enable
       for_window [title="Firefox — Sharing Indicator"] floating enable
-      ## Doesn't work properly, messes with main firefox window as well
-      # for_window [app_id="firefox" title="Extension.*Bitwarden.*"] floating enable
+      for_window [app_id="firefox" title="Extension.*Bitwarden.*"] floating enable
       for_window [app_id="brave-.*" title="Bitwarden"] floating enable
       for_window [app_id="chrome-.*" title="Bitwarden"] floating enable
       # for_window [app_id="Waydroid"] floating enable

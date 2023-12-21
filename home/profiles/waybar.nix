@@ -43,10 +43,6 @@ in
     package = pkgs.unstable.waybar;
     # If enabled, this will load waybar separately from sway's own config, leading to two bars being loaded
     systemd.enable = false;
-    # ${builtins.readFile "${pkgs.unstable.waybar}/etc/xdg/waybar/style.css"}
-    style = ''
-      ${builtins.readFile ./waybar/waybar-angular.css}
-    '';
     settings = {
       mainBar = {
         layer = "top";
@@ -69,6 +65,7 @@ in
           "temperature"
           "clock"
           "idle_inhibitor"
+          "custom/toggletheme"
           "tray"
           "custom/power"
         ];
@@ -190,7 +187,16 @@ in
           };
         };
 
-        tray ={
+        # @TODO: Doesn't finish running script
+        "custom/toggletheme" = {
+          tooltip = false;
+          # @TODO: This doesn't really work properly.
+          # It bombs out after switching the home-manager generation,
+          # without error.
+          on-click = "toggle-theme";
+        };
+
+        tray = {
           icon-size = 18;
           spacing = 10;
         };

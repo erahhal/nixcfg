@@ -22,5 +22,4 @@
   };
 
   xdg.configFile."rofi/default.rasi".source = ./rofi/default.rasi;
-  xdg.configFile."rofi/launcher.rasi".source = ./rofi/launcher.rasi;
 }

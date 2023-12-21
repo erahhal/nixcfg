@@ -19,20 +19,30 @@
   };
 
   home.packages = with pkgs; [
-    (writeShellApplication {
-      name = "toggle-theme";
-      runtimeInputs = with pkgs; [ home-manager coreutils ripgrep ];
-      text =
-        ''
-          SYSTEM_THEME=$(cat ~/.system-theme)
-          if [ "$SYSTEM_THEME" == "light-mode" ]; then
-            "$(home-manager generations | head -2 | tail -1 | rg -o '/[^ ]*')"/activate
-          else
-            "$(home-manager generations | head -1 | rg -o '/[^ ]*')"/specialisation/light-mode/activate
-          fi
-          tmux source-file ~/.tmux.conf
-        '';
-    })
+    (writeShellScriptBin "toggle-theme" ''
+      set +e
+
+      HOME_MANAGER=${pkgs.home-manager}/bin/home-manager
+      PKILL=${pkgs.procps}/bin/pkill
+      SYSTEMCTL=${pkgs.systemd}/bin/systemctl
+      SWAYMSG=${pkgs.sway}/bin/sway
+      HEAD=${pkgs.coreutils}/bin/head
+      TAIL=${pkgs.coreutils}/bin/tail
+      RG=${pkgs.ripgrep}/bin/rg
+      SYSTEM_THEME=$(cat ~/.system-theme)
+      if [ "$SYSTEM_THEME" == "light-mode" ]; then
+        GENERATION=$($HOME_MANAGER generations | $HEAD -2 | $TAIL -1 | $RG -o '/[^ ]*')
+      else
+        GENERATION=$($HOME_MANAGER generations | $HEAD -1 | $RG -o '/[^ ]*')/specialisation/light-mode
+      fi
+      "$GENERATION"/activate
+      # @TODO: Make these part of a script shared with Makefile
+      $PKILL waybar
+      ## Using full path to tmux fails, so use one in $PATH
+      tmux source-file ~/.tmux.conf
+      $SYSTEMCTL --user restart swaynotificationcenter
+      $SWAYMSG reload
+    '')
   ];
 
   ## base16 guide

@@ -117,48 +117,48 @@ in
   # For sway
   home.file.".Xdefaults".text = xwayland_settings;
 
-  programs = {
-    kitty = {
-      enable = true;
-      settings = {
-        foreground =            "#${config.colorScheme.colors.base05}";
-        background =            "#${config.colorScheme.colors.base00}";
-        selection_foreground =  "#${config.colorScheme.colors.base05}";
-        selection_background =  "#${config.colorScheme.colors.base02}";
-        cursor =                "#${config.colorScheme.colors.base05}";
-        cursor_text_color =     "#${config.colorScheme.colors.base00}";
-        url_color =             "#${config.colorScheme.colors.base09}";
-        active_border_color =   "#${config.colorScheme.colors.base00}";
-        # inactive_border_color = "";
-        # bell_border_color     = "";
-        # visual_bell_color     = "";
-      };
-    };
-  };
+  # programs = {
+  #   kitty = {
+  #     enable = true;
+  #     settings = {
+  #       foreground =            "#${config.colorScheme.colors.base05}";
+  #       background =            "#${config.colorScheme.colors.base00}";
+  #       selection_foreground =  "#${config.colorScheme.colors.base05}";
+  #       selection_background =  "#${config.colorScheme.colors.base02}";
+  #       cursor =                "#${config.colorScheme.colors.base05}";
+  #       cursor_text_color =     "#${config.colorScheme.colors.base00}";
+  #       url_color =             "#${config.colorScheme.colors.base09}";
+  #       active_border_color =   "#${config.colorScheme.colors.base00}";
+  #       # inactive_border_color = "";
+  #       # bell_border_color     = "";
+  #       # visual_bell_color     = "";
+  #     };
+  #   };
+  # };
 
-  # programs.kitty.extraConfig = ''
-  #   background            #000000
-  #   foreground            #e9e9e9
-  #   cursor                #e9e9e9
-  #   selection_background  #424242
-  #   color0                #000000
-  #   color8                #777777
-  #   color1                #d44d53
-  #   color9                #d44d53
-  #   color2                #b9c949
-  #   color10               #b9c949
-  #   color3                #e6c446
-  #   color11               #e6c446
-  #   color4                #79a6da
-  #   color12               #79a6da
-  #   color5                #c396d7
-  #   color13               #c396d7
-  #   color6                #70c0b1
-  #   color14               #70c0b1
-  #   color7                #fffefe
-  #   color15               #fffefe
-  #   selection_foreground  #000000
-  # '';
+  programs.kitty.extraConfig = ''
+    background            #000000
+    foreground            #e9e9e9
+    cursor                #e9e9e9
+    selection_background  #424242
+    color0                #000000
+    color8                #777777
+    color1                #d44d53
+    color9                #d44d53
+    color2                #b9c949
+    color10               #b9c949
+    color3                #e6c446
+    color11               #e6c446
+    color4                #79a6da
+    color12               #79a6da
+    color5                #c396d7
+    color13               #c396d7
+    color6                #70c0b1
+    color14               #70c0b1
+    color7                #fffefe
+    color15               #fffefe
+    selection_foreground  #000000
+  '';
 
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
@@ -266,6 +266,35 @@ in
     CalculatorMode=science
     ShowHistory=true
   '';
+
+
+  wayland.windowManager.sway.config.colors = {
+    focused = {
+      background = "#285577";
+      border = "#4a7697";
+      childBorder = "#4a7697";
+      indicator = "#ee7e04";
+      text = "#ffffff";
+    };
+    unfocused = {
+      background = "#2b2b2b";
+      border = "#2b2b2b";
+      childBorder = "#2b2b2b";
+      indicator = "#2e9ef4";
+      text = "#848484";
+    };
+  };
+
+  programs.waybar.style = ''
+    ${builtins.readFile ./waybar/waybar-angular.css}
+  '';
+
+  programs.waybar.settings.mainBar."custom/toggletheme".format = "☽";
+
+  # @TODO: split this up so only the color bits are not shared
+  xdg.configFile."rofi/launcher.rasi".source = ./rofi/launcher.rasi;
+
+
 
   services.random-background.imageDirectory =
     lib.mkForce "%h/backgrounds/dark";

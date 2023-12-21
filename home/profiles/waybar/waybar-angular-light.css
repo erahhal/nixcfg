@@ -5,16 +5,16 @@
 }
 
 window#waybar {
-    color: #fdf6e3;
+    color: #0d0603;
     border-bottom: none;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(255, 255, 255, 0.7);
 }
 
 #window {
     transition: none;
     padding: 0 20px;
-    background: #1a1a1a;
-    background: rgba(0, 0, 0, 0.7);
+    background: #efefef;
+    background: rgba(255, 255, 255, 0.7);
 }
 
 window#waybar.empty #window {
@@ -23,37 +23,39 @@ window#waybar.empty #window {
 
 #custom-right-arrow-dark,
 #custom-left-arrow-dark {
-    color: #1a1a1a;
-    background: #292b2e;
+    color: #efefef;
+    background: #d9dbde;
 }
 #custom-right-arrow-light,
 #custom-left-arrow-light {
     color: #292b2e;
-    background: #1a1a1a;
+    background: #efefef;
 }
 #custom-right-arrow-cap,
 #custom-left-arrow-cap {
     font-size: 16px;
-    color: #1a1a1a;
+    color: #efefef;
     background: transparent;
 }
 
 #workspaces button {
     padding: 0 2px;
-    color: #fdf6e3;
+    color: #0d0613;
     /* Use box-shadow instead of border so the text isn't offset */
     /* box-shadow: inset 0 -2px transparent; */
 }
 
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 #workspaces button:hover {
-    background: #1a1a1a;
-    border: #1a1a1a;
-    box-shadow: inset 0 -3px #ffffff;
+    background: #bbbbbb;
+    border: #bbbbbb;
+    color: #000000;
+    box-shadow: inset 0 -3px #000000;
 }
 
 #workspaces button.focused {
-    background-color: #64727D;
+    background-color: #44424D;
+    color: #cccccc;
     /* box-shadow: inset 0 -3px #ffffff; */
 }
 
@@ -62,7 +64,7 @@ window#waybar.empty #window {
 }
 
 #workspaces {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(205, 205, 205, 0.7);
 }
 
 #tags {
@@ -120,34 +122,34 @@ window#waybar.empty #window {
 #custom-updates,
 #custom-media,
 #tray {
-    background: #1a1a1a;
+    background: #efefef;
     padding: 0 10px;
     border-left: #262626;
 }
 
 
 #network {
-    color: #bd93f9;
+    color: #342647;
 }
 
 #temperature {
-    color: #f5aa42;
+    color: #5c401b;
 }
 
 #pulseaudio {
-    color: #FAE3B0;
+    color: #6b624d;
 }
 
 #battery {
-    color: #B5E8E0;
+    color: #3c4f4c;
 }
 
 #battery.charging, #battery.plugged {
-    color: #B5E8E0;
+    color: #3c4f4c;
 }
 
 #battery.critical:not(.charging) {
-    color: #B5E8E0;
+    color: #701523;
 }
 
 @keyframes blink {
@@ -158,52 +160,51 @@ window#waybar.empty #window {
 }
 
 #backlight {
-    color: #F8BD96;
+    color: #5e4839;
 }
 
 #clock {
-    color: #ABE9B3;
+    color: #394d3c;
 }
 
 #memory {
-    color: #DDB6F2;
+    color: #5f4e69;
 }
 
 #cpu {
-    color: #96CDFB;
+    color: #263440;
 }
 
 #idle_inhibitor {
     padding: 0 16px 0 8px;
-    color: #8F8F81;
+    color: #4f4f47;
 }
 
 #idle_inhibitor.activated {
-    color: #EEF205;
+    color: #9c9e18;
 }
 
 #custom-toggletheme {
     padding: 0 8px 0 6px;
-    color: #f5f29a;
+    color: #4a4811;
 }
 
 #custom-launcher {
-    color: #C6C3C0;
+    color: #2b2b2a;
 }
 
 #custom-power {
-    color: #F28FAD;
+    color: #382228;
 }
 
 #custom-wallpaper {
-    color: #C9CBFF;
+    color: #393a47;
 }
 
 #custom-updates {
-    color: #E8A2AF;
+    color: #3d2b2e;
 }
 
 #custom-media {
-    color: #F2CDCD;
+    color: #362e2e;
 }
-

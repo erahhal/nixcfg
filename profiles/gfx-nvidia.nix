@@ -45,7 +45,7 @@
   hardware.bumblebee.enable = false;
 
   hardware.nvidia = {
-    # nvidiaPersistenced = true;
+    nvidiaPersistenced = true;
 
     # Modesetting is required.
     modesetting.enable = true;

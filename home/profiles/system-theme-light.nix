@@ -323,6 +323,34 @@ in
     ShowHistory=true
   '';
 
+  wayland.windowManager.sway.config.colors = lib.mkForce {
+    focused = {
+      background = "#bdd5fc";
+      border = "#bdd5fc";
+      childBorder = "#bdd5fc";
+      indicator = "#2e9ef4";
+      text = "#000000";
+    };
+    unfocused = {
+      background = "#ababab";
+      border = "#ababab";
+      childBorder = "#ababab";
+      indicator = "#2e9ef4";
+      text = "#444444";
+    };
+  };
+
+  programs.waybar.style = lib.mkForce ''
+    ${builtins.readFile ./waybar/waybar-angular-light.css}
+  '';
+
+  programs.waybar.settings.mainBar."custom/toggletheme".format = lib.mkForce "☼";
+
+  xdg.configFile."swaync/style.css".source = lib.mkForce swaynotificationcenter/style-light.css;
+
+  # @TODO: split this up so only the color bits are not shared
+  xdg.configFile."rofi/launcher.rasi".source = lib.mkForce ./rofi/launcher-light.rasi;
+
   services.random-background.imageDirectory =
     lib.mkForce "%h/backgrounds/light";
 }
