@@ -1,15 +1,18 @@
-{ config, hostParams, pkgs, ... }:
+{ hostParams, pkgs, ... }:
 {
   # This theme switching mechanism heavily inspired by the following post:
   # https://discourse.nixos.org/t/home-manager-toggle-between-themes/32907
+
+  # @TODOs
+  # - Get Slack to change themes with system
+  # - Automatically restart Discord if running, as it doesn't kick in without restart
+  # - Fix tmux config split
+  # - Fix other config splits (swaync, launcher.rasi, waybar)
 
   imports = [
     ./system-theme-dark.nix
   ];
 
-  # @TODO: move this into flake.nix,
-  # loading configuration.nix with an argument as
-  # to which theme is used
   specialisation = {
     light-mode.configuration = {
       imports = [
@@ -19,7 +22,7 @@
   };
 
   home.packages = with pkgs; [
-    (writeShellScriptBin "toggle-theme" ''
+    (writeShellScriptBin "toggle-theme" (''
       set +e
 
       HOME_MANAGER=${pkgs.home-manager}/bin/home-manager
@@ -43,7 +46,7 @@
       tmux source-file ~/.tmux.conf
       $SYSTEMCTL --user restart swaynotificationcenter
       $SWAYMSG reload
-    '' else ""))
+    '' else "")))
   ];
 
   ## base16 guide

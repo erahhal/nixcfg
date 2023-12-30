@@ -20,12 +20,13 @@ in
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
-      # enabled = "fcitx5";
-      enabled = "ibus";
-      ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
+      enabled = "fcitx5";
+      # enabled = "ibus";
+      # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
       fcitx5.addons = with pkgs; [
         fcitx5-chinese-addons
         fcitx5-gtk
+        fcitx5-mozc
         fcitx5-rime
         libsForQt5.fcitx5-qt
         rime-data

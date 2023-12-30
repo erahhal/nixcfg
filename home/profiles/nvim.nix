@@ -12,6 +12,8 @@
   # -----------------------------------------------------
   # @TODO
   #
+  # - Look at Lazy-Nix-Helper
+  #   - https://www.reddit.com/r/NixOS/comments/18skfx9/introducing_lazynixhelper_use_your_existing/
   # - codify any state possible in ~/.local/share/nvim
   # - update large file handling logic
   #   - https://www.reddit.com/r/neovim/comments/z85s1l/disable_lsp_for_very_large_files/
@@ -50,6 +52,7 @@
   # ^wgf      - Go to file in new tab
   # ~         - Swap case
   # g~        - Swap case for <modifier>
+  # gi        - Go to last insertion point
   # gu        - Lower case
   # gU        - Upper case
   # %         - Move to matching item for bracket under or after cursor.
@@ -69,6 +72,10 @@
   # ]M        - Go to [count] next end of a method (for Java or similar structured language)
   # [m        - Go to [count] previous start of a method (for Java or similar structured language)
   # [M        - Go to [count] previous end of a method (for Java or similar structured language)
+  # ]s        - Go to next spelling error
+  # [s        - Go to previous spelling error
+  # z=        - List spelling suggestions
+  # 1z=       - Choose first spelling suggestion without seeing them
   # [* or [/  - go to [count] previous start of a C comment "/*".
   # ]* or ]/  - go to [count] next end of a C comment "*/".
   # m{a-zA-Z} - Set mark {a-zA-Z} at cursor position

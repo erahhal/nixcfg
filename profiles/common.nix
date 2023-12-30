@@ -288,6 +288,7 @@
     bashmount
     bfg-repo-cleaner
     bind
+    ccze             # readable system log parser
     cdrkit           # provides genisoimage
     cpufrequtils
     distrobox

@@ -20,7 +20,7 @@
 #
 #   Connect
 
-{ lib, pkgs, hostParams, userParams, ...}:
+{ pkgs, hostParams, userParams, ...}:
 let
   run-homefree = pkgs.writeScriptBin "run-homefree" ''
     #!${pkgs.stdenv.shell}
@@ -71,6 +71,9 @@ in
 
   # allow nested virtualization inside guests
   boot.extraModprobeConfig = "options kvm_intel nested=1";
+  boot.kernelParams = [
+    "intel_iommu=on"
+  ];
 
   virtualisation.libvirtd = {
     enable = true;
