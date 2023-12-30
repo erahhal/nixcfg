@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, hostParams, pkgs, ... }:
 {
   # This theme switching mechanism heavily inspired by the following post:
   # https://discourse.nixos.org/t/home-manager-toggle-between-themes/32907
@@ -25,7 +25,6 @@
       HOME_MANAGER=${pkgs.home-manager}/bin/home-manager
       PKILL=${pkgs.procps}/bin/pkill
       SYSTEMCTL=${pkgs.systemd}/bin/systemctl
-      SWAYMSG=${pkgs.sway}/bin/sway
       HEAD=${pkgs.coreutils}/bin/head
       TAIL=${pkgs.coreutils}/bin/tail
       RG=${pkgs.ripgrep}/bin/rg
@@ -36,13 +35,15 @@
         GENERATION=$($HOME_MANAGER generations | $HEAD -1 | $RG -o '/[^ ]*')/specialisation/light-mode
       fi
       "$GENERATION"/activate
-      # @TODO: Make these part of a script shared with Makefile
+
+    '' + (if hostParams.defaultSession == "sway" then ''
+      SWAYMSG=${pkgs.sway}/bin/sway
       $PKILL waybar
       ## Using full path to tmux fails, so use one in $PATH
       tmux source-file ~/.tmux.conf
       $SYSTEMCTL --user restart swaynotificationcenter
       $SWAYMSG reload
-    '')
+    '' else ""))
   ];
 
   ## base16 guide

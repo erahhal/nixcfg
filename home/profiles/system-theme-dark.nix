@@ -294,8 +294,6 @@ in
   # @TODO: split this up so only the color bits are not shared
   xdg.configFile."rofi/launcher.rasi".source = ./rofi/launcher.rasi;
 
-
-
   services.random-background.imageDirectory =
     lib.mkForce "%h/backgrounds/dark";
 

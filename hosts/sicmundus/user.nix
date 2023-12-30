@@ -5,6 +5,7 @@ in
 {
 
   home-manager.users.${userParams.username} = {
+    _module.args.hostParams = hostParams;
     _module.args.userParams = userParams;
 
     # ---------------------------------------------------------------------------
@@ -12,8 +13,8 @@ in
     # ---------------------------------------------------------------------------
 
     imports = [
-      ../../home/profiles/protonmail-bridge.nix
       ../../home/profiles/aruba-shell.nix
+      ../../home/profiles/protonmail-bridge.nix
     ];
 
     home = {

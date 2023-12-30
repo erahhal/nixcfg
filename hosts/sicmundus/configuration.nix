@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, system, hostParams, userParams, self, recursiveMerge, ... }:
+{ config, pkgs, hostParams, userParams, recursiveMerge, ... }:
 
 let
   fanSettingsScript = pkgs.writeShellScriptBin "fan-settings" ''
@@ -60,6 +60,7 @@ in
       ../../containers/smokeping.nix
       ../../containers/syncthing.nix
       ../../containers/vaultwarden.nix
+      ../../containers/wekan.nix
       ../../containers/wikijs.nix
       ../../containers/xbrowsersync.nix
 

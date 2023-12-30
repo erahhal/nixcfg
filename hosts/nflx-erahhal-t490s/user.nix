@@ -1,4 +1,4 @@
-{ pkgs, userParams, ... }:
+{ pkgs, hostParams, userParams, ... }:
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
@@ -10,6 +10,9 @@ in
   ];
 
   home-manager.users.${userParams.username} = {
+    _module.args.hostParams = hostParams;
+    _module.args.userParams = userParams;
+
     home = {
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
