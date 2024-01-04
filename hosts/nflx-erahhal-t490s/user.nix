@@ -1,6 +1,12 @@
-{ pkgs, hostParams, userParams, ... }:
+{ pkgs, copyDesktopIcons, copyDesktopItems, mkWindowsApp, userParams, ... }:
 
 let
+  fusion360 = pkgs.callPackage ../../pkgs/fusion360 {
+    inherit copyDesktopItems;
+    inherit copyDesktopIcons;
+    inherit mkWindowsApp;
+  };
+  bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   vespa-cli = pkgs.callPackage ../../pkgs/vespa-cli {};
 in
@@ -17,6 +23,7 @@ in
 
       packages = with pkgs; [
         awscli
+        bambu-studio
         blender
         chromium
         unstable.jetbrains.idea-ultimate

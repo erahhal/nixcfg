@@ -4,7 +4,7 @@ let
   env_vars = {
     EDITOR = "vim";
     # PATH = "$HOME/Scripts:$HOME/.yarn/bin:$HOME/.local/bin:$PATH";
-    PATH = "$HOME/Scripts:$HOME/.local/bin:$PATH";
+    PATH = "$HOME/Scripts:$HOME/.local/bin:$PATH:/snap/bin";
     # NODE_PATH = "$HOME/.local/share/yarn/global/node_modules";
     XMODIFIERS = "@im=fcitx";
     GTK_IM_MODULE = "fcitx";

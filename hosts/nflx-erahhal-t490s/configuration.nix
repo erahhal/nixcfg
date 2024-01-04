@@ -33,6 +33,7 @@ in
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
       ../../profiles/wireguard.nix
+      # ../../profiles/bambu-studio.nix
       ## Only needed if the docker version needs to be overridden for some reason
       # ../../overlays/docker.nix
       ./virtualization.nix

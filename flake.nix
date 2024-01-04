@@ -28,12 +28,15 @@
     flake-utils-plus.url = "github:gytis-ivaskevicius/flake-utils-plus";
     flake-utils-plus.inputs.flake-utils.follows = "flake-utils";
 
+    nix-snapd.url = "github:io12/nix-snapd";
+    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+
     # Secrets management
     agenix.url = "github:ryantm/agenix";
 
-    # # Wine wrapper
-    # erosanix.url = github:emmanuelrosa/erosanix;
-    # erosanix.inputs.nixpkgs.follows = "nixpkgs";
+    # Wine wrapper
+    erosanix.url = "github:emmanuelrosa/erosanix";
+    erosanix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Remarkable 2 Tablet Desktop App WINE wrapper
     # See the following about why relative paths can cause build issues:
@@ -91,6 +94,13 @@
     userParams = import ./user-params.nix {};
     recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
   in {
+    # lib.pkgsParameters = {
+    #   overlays = [ ];
+    #   buildSystem = null; # same as host system
+    #   config = {
+    #     allowUnsupportedSystem = true;
+    #   };
+    # };
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
       modules = [
         inputs.hyprland.homeManagerModules.default
@@ -124,14 +134,17 @@
           inherit inputs;
           inherit system;
           inherit hostParams;
-          inherit userParams;
           inherit recursiveMerge;
+          inherit userParams;
         };
       };
       nflx-erahhal-t490s =
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/nflx-erahhal-t490s/params.nix {};
+        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        mkWindowsApp = inputs.erosanix.lib.i686-linux.mkWindowsApp;
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
@@ -152,14 +165,21 @@
             home-manager.useUserPackages = true;
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
+          inputs.nix-snapd.nixosModules.default
+          {
+            services.snap.enable = true;
+          }
           inputs.nflx.nixosModules.default
         ];
         specialArgs = {
           inherit inputs;
           inherit system;
           inherit hostParams;
-          inherit userParams;
+          inherit copyDesktopIcons;
+          inherit copyDesktopItems;
+          inherit mkWindowsApp;
           inherit recursiveMerge;
+          inherit userParams;
         };
       };
       upaya =
@@ -192,8 +212,8 @@
           inherit inputs;
           inherit system;
           inherit hostParams;
-          inherit userParams;
           inherit recursiveMerge;
+          inherit userParams;
         };
       };
       sicmundus =
@@ -223,8 +243,8 @@
           inherit inputs;
           inherit system;
           inherit hostParams;
-          inherit userParams;
           inherit recursiveMerge;
+          inherit userParams;
         };
       };
     };
