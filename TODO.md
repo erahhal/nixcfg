@@ -4,12 +4,13 @@ TODOs
 Warts/Issues
 ------------
 
+* Erase your darlings / Impermanence
+  * https://grahamc.com/blog/erase-your-darlings/
+  * https://nixos.wiki/wiki/Impermanence
+* Nvim todos in nvim.nix
 * Need to unplug/plug USB peripherals after reboot due to quick "sleeping" of mouse/keyboard
   * https://bbs.archlinux.org/viewtopic.php?id=251866
-* DNS doesn't work for some public wifi APs with captive portals
-  * https://github.com/NixOS/nixpkgs/issues/24433
-  * https://github.com/NixOS/nixpkgs/issues/63754
-  * https://www.reddit.com/r/Ubuntu/comments/11puao9/i_cant_connect_to_captive_portals_but_i_can/
+  * Seems to have gone away...
 * Slack screen sharing crashes slack
   * https://github.com/flathub/com.slack.Slack/issues/195
   * https://github.com/flathub/com.slack.Slack/issues/196
@@ -20,21 +21,38 @@ Warts/Issues
   * https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests/187
 * Openconnect VPN
   * Run as global systemd service
-  * Embeddable browser with yubikey support
   * Auto-reconnect on disconnect or network change
-* Use wayland for Blender (should be version 3.4)
 * Steam games not really working with nVidia
   * Slow
   * Screen artifacts / bad aspect ratio
   * https://github.com/swaywm/sway/issues/6422
   * https://www.reddit.com/r/archlinux/comments/upns2v/how_to_use_prime_nvidia_driver_with_sway_and_steam/
+* Gaming
+  * Get gamescope to work
+    * https://news.ycombinator.com/item?id=38825621
+    * https://github.com/NixOS/nixpkgs/issues/162562
+    * https://github.com/NixOS/nixpkgs/issues/214275
 * Force XWayland to run unscaled, like Hyprland
 * On reboot, mouse disappears or hangs, and requires movement for a few seconds to recover.  Same with keyboard.
   * WORKAROUND: Have to unplug and replug to fix
+  * Doesn't seem to happen anymore - may be able to remove switch
+* Get autodesk fusion to work
+  * Snap: https://github.com/Thermionix/fusion360
+  * https://github.com/Thermionix/fusion360/issues/25
+  * Try running with env vars: https://github.com/Thermionix/fusion360/issues/21#issuecomment-1687528814
+  * Use qemu with windows if nothing else works
+* Get Fcitx 5 or some Chinese IME working
+  * https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#Fcitx_managed_XKB_layout
 
 Improvments
 -----------
 
+* Gnome Keyring in sway
+  * https://news.ycombinator.com/item?id=36740062
+* Sway updates and upgrades
+  * https://github.com/swaywm/sway/wiki/Useful-add-ons-for-sway
+* Install synergy alternative
+  * https://github.com/feschber/lan-mouse
 * Raspberry Pi
   * https://nix.dev/tutorials/nixos/installing-nixos-on-a-raspberry-pi
   * https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-4-boot-eeprom

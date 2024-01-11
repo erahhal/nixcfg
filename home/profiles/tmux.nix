@@ -12,6 +12,7 @@ in
     tmuxPlugins.open
     tmuxPlugins.resurrect
     tmuxPlugins.sensible
+    tmuxPlugins.yank
   ];
   home.file.".tmux.conf".text = conf;
   home.file.".tmux.conf.local".text = builtins.replaceStrings ["[THEME_COLORS_TOKEN]"] [theme-colors] localConf + ''
@@ -33,6 +34,7 @@ in
     set -g @continuum-restore 'on'
     set -g @continuum-save-interval '5' # minutes
     run-shell ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux
+    run-shell ${pkgs.tmuxPlugins.yank}/share/tmux-plugins/yank/yank.tmux
 
     # set-option -sa terminal-overrides ',xterm-kitty:RGB'
     set-option -sa terminal-features ',xterm-kitty:RGB'

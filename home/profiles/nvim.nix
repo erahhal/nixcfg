@@ -12,11 +12,23 @@
   # -----------------------------------------------------
   # @TODO
   #
+  # - Get Cody for Sourcegraph working
+  #   - https://docs.sourcegraph.com/cody/overview/install-neovim
+  #   - https://github.com/sourcegraph/sourcegraph/blob/f93a6e46a33acd0a4000a57078949986104d5756/shell.nix#L49
+  # - Get Github copilot working
+  #   - https://github.com/github/copilot.vim
+  #   - https://www.reddit.com/r/neovim/comments/twe45i/copilotlua_copilotcmp_pure_lua_plugins_for_github/
+  # - treesitter textobject aware comments
+  #   - https://github.com/numToStr/Comment.nvim
+  # - location and syntax aware textobjects
+  #   - https://github.com/RRethy/nvim-treesitter-textsubject
   # - Look at Lazy-Nix-Helper
   #   - https://www.reddit.com/r/NixOS/comments/18skfx9/introducing_lazynixhelper_use_your_existing/
   # - codify any state possible in ~/.local/share/nvim
   # - update large file handling logic
   #   - https://www.reddit.com/r/neovim/comments/z85s1l/disable_lsp_for_very_large_files/
+  # - CodeGTP plugin
+  #   - https://github.com/dpayne/CodeGPT.nvim
   # -----------------------------------------------------
 
   # -----------------------------------------------------

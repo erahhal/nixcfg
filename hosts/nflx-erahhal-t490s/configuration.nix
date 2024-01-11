@@ -97,14 +97,6 @@ in
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ thinkpad-dock-udev-rules ];
 
-  ## Disable IPv6 - these don't work
-  # boot.kernel.sysctl = {
-  #   "net.ipv6.conf.all.disable_ipv6" = 1;
-  #   "net.ipv6.conf.default.disable_ipv6" = 1;
-  #   "net.ipv6.conf.lo.disable_ipv6" = 1;
-  # };
-  # networking.enableIPv6 = false;
-
   networking = {
     hostName = "nflx-erahhal-t490s";
     useNetworkd = true;
@@ -139,40 +131,6 @@ in
   security.pam.services.login.fprintAuth = true;
   security.pam.services.xscreensaver.fprintAuth = true;
 
-  /*
-  services.rkvm = {
-    server = {
-      enable = true;
-      configFile = pkgs.writeTextFile {
-        name = "server.toml";
-        text = ''
-          listen-address = "0.0.0.0:5258"
-          # Switch to next client by pressing the left alt key.
-          switch-keys = ["LeftAlt"]
-          identity-path = "${config.age.secrets.rkvm-identity.path}"
-          ## Leave unset if no password is set.
-          # identity-password = "123456789"
-        '';
-      };
-      autoStart = true;
-    };
-  };
-
-  services.rkvm = {
-    client = {
-      enable = true;
-      configFile = pkgs.writeTextFile {
-        name = "client.toml";
-        text = ''
-          server = "localhost:5258"
-          certificate-path = "${config.age.secrets.rkvm-certificate.path}"
-        '';
-      };
-      autoStart = true;
-    };
-  };
-  */
-
   services.smokeping = {
     enable = false;
     hostName = "localhost";
@@ -197,7 +155,7 @@ in
       menu = Home
       title = Home Network
       ++ nasserver
-      host = 10.0.0.93
+      host = nas.localdomain
     '';
   };
 

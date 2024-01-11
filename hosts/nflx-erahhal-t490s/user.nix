@@ -1,11 +1,12 @@
 { pkgs, copyDesktopIcons, copyDesktopItems, mkWindowsApp, userParams, ... }:
 
 let
-  fusion360 = pkgs.callPackage ../../pkgs/fusion360 {
-    inherit copyDesktopItems;
-    inherit copyDesktopIcons;
-    inherit mkWindowsApp;
-  };
+  # fusion360 = pkgs.callPackage ../../pkgs/fusion360 {
+  #   inherit copyDesktopItems;
+  #   inherit copyDesktopIcons;
+  #   inherit mkWindowsApp;
+  # };
+  fusion360 = pkgs.callPackage ../../pkgs/fusion360 { };
   bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   vespa-cli = pkgs.callPackage ../../pkgs/vespa-cli {};
@@ -27,6 +28,7 @@ in
         blender
         chromium
         unstable.jetbrains.idea-ultimate
+        # fusion360
         lutris
         mcreator
         # nodejs-16_x

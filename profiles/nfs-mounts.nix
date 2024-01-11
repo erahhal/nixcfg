@@ -29,21 +29,21 @@ in
   };
 
   fileSystems."/mnt/ellis" = {
-    device = "10.0.0.93:/volume1/ellis";
+    device = "10.0.0.42:/volume1/ellis";
     fsType = "nfs";
     # mount when share first used rather than at start, and disconnect after timeout
     options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
   };
 
   fileSystems."/mnt/family-files" = {
-    device = "10.0.0.93:/volume1/family-files";
+    device = "10.0.0.42:/volume1/family-files";
     fsType = "nfs";
     # mount when share first used rather than at start, and disconnect after timeout
     options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
   };
 
   fileSystems."/mnt/nas-home" = {
-    device = "10.0.0.93:/volume1/homes";
+    device = "10.0.0.42:/volume1/homes";
     fsType = "nfs";
     # mount when share first used rather than at start, and disconnect after timeout
     options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];

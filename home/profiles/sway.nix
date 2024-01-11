@@ -363,6 +363,7 @@ in
       for_window [app_id="org.gnome.Calculator"] floating enable
       for_window [app_id="thunar"] floating enable
       for_window [app_id="thunar"] resize set 1024 768
+      for_window [app_id="vlc"] floating enable
       for_window [app_id="org.gnome.Nautilus"] floating enable
       for_window [app_id="org.gnome.Nautilus"] resize set 1024 768
       for_window [app_id="nemo"] floating enable

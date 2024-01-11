@@ -1,17 +1,25 @@
+# Documentation for install script:
+# https://github.com/cryinkfly/Autodesk-Fusion-360-for-Linux/wiki/Documentation
+#
+# Troubleshooting error on install
+# https://www.reddit.com/r/linuxquestions/comments/17d8vr2/how_do_i_get_fusion_360/
+
 { pkgs
 , stdenv
 , lib
-, mkWindowsApp
+, fetchurl
 , makeDesktopItem
 , imagemagick
-, copyDesktopIcons
-, copyDesktopItems
+, makeWrapper
 }:
 let
-  version = "16.5.0.2083";
+  version = "v7.6.9";
 
   srcs = {
-    fusionzip = ./fusion360.zip;
+    fusion360-installer = fetchurl {
+      url = "https://raw.githubusercontent.com/cryinkfly/Autodesk-Fusion-360-for-Linux/0df56158500bc1c8bb19c209e14747fef76b411f/files/builds/stable-branch/bin/install.sh";
+      sha256 = "0c0qlw2qr1xyn3lax033pwh8q12l4x1l46vw7cajwcbklig5m9s1";
+    };
   };
 
   icons = stdenv.mkDerivation {
@@ -30,40 +38,57 @@ let
       done;
     '';
   };
-
-  wine = pkgs.wineWowPackages.stable;
-in mkWindowsApp rec {
-  inherit version wine;
-
-  pname = "fusion360";
-
-  src = srcs.fusionzip;
-
-  nativeBuildInputs = [
-    copyDesktopItems
-    copyDesktopIcons
+  # fake pacman since script expects a standard distro
+  # like Arch
+  pacman = pkgs.writeShellScriptBin "pacman" ''
+    exit 0
+  '';
+  runtime-paths = lib.makeBinPath [
+    pacman
+    # pkgs.wineWowPackages.waylandFull
+    pkgs.wineWowPackages.stagingFull
+    pkgs.winetricks
+    pkgs.yad
+    pkgs.cabextract
+    pkgs.curl
+    pkgs.samba
+    pkgs.p7zip
+    pkgs.ppp
   ];
+in
+stdenv.mkDerivation rec {
+  name = "fusion360";
+  src = srcs.fusion360-installer;
+
   dontUnpack = true;
 
-  winAppInstall = ''
-    pwd
-    ${pkgs.unzip}/bin/unzip ${src}
-    wine start /unix "Fusion 360 Client Downloader.exe" /S
-    wineserver -w
-  '';
-
-  winAppRun = ''
-   rm -fR "$WINEPREFIX/drive_c/users/$USER/Application Data/fusion360"
-   mkdir -p "$HOME/.config/fusion360"
-   ln -s -v "$HOME/.config/fusion360" "$WINEPREFIX/drive_c/users/$USER/Application Data/"
-
-   wine start /unix "$WINEPREFIX/drive_c/Program Files/fusion360/fusion360.exe" "$ARGS"
-  '';
+  nativeBuildInputs = [
+    makeWrapper
+  ];
 
   installPhase = ''
     runHook preInstall
 
-    ln -s $out/bin/.launcher $out/bin/fusion360
+    mkdir -p $out/bin
+    cp ${src} $out/bin/fusion360-installer
+    chmod +x $out/bin/fusion360-installer
+    ${pkgs.gnused}/bin/sed -i 's#/bin/bash#/usr/bin/env bash#g' $out/bin/fusion360-installer
+
+    cat > $out/bin/fusion360 << EOF
+      if [ -f ~/.fusion360/bin/launcher.sh ]; then
+        ${pkgs.bashInteractive}/bin/bash ~/.fusion360/bin/launcher.sh
+      else
+        $out/bin/fusion360-installer
+      fi
+    EOF
+
+    chmod +x $out/bin/fusion360
+
+    wrapProgram "$out/bin/fusion360" \
+      --suffix PATH : ${runtime-paths} \
+      --set FUSION_IDSDK false \
+      --set WINEPREFIX ~/.fusion360
+
     mkdir -p $out/share/icons
     ln -s ${icons}/hicolor $out/share/icons
 
@@ -71,18 +96,16 @@ in mkWindowsApp rec {
   '';
 
   desktopItems = let
-    # See for full list of file types:
-    # https://help.autodesk.com/view/fusion360/ENU/?guid=TPD-SUPPORTED-FILE-FORMATS
     mimeTypes = [
       "x-world/x-3dmf"
     ];
   in [
-    (makeDesktopItem {
+    (makeDesktopItem rec {
       inherit mimeTypes;
+      inherit name;
 
-      name = "fusion360";
-      exec = pname;
-      icon = pname;
+      exec = name;
+      icon = name;
       desktopName = "Fusion 360";
       genericName = "3D Model Editor";
       categories = [
@@ -98,7 +121,7 @@ in mkWindowsApp rec {
     license = licenses.unfree;
     maintainers = [ "erahhal" ];
     platforms = [
-      "i686-linux"
+      "x86_64-linux"
     ];
   };
 }

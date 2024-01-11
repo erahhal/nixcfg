@@ -138,9 +138,6 @@ in
       enable = true;
     };
 
-    ## This shouldn't work anymore
-    # enableIPv6 = false;
-
     ## This is needed for a fixed IP
     interfaces = {
       ${hostParams.mainInterface} = {
@@ -175,7 +172,7 @@ in
     enable = true;
     name = "sicmundus";
     extraConfig = ''
-      DiscoveryAddress = 10.0.0.93
+      DiscoveryAddress = 10.0.0.42
     '';
   };
 

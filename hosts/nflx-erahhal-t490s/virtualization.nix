@@ -26,7 +26,6 @@
         docker = {
           enable = true;
           daemon.settings = {
-            "ipv6" = false;
             "exec-opts" = [ "native.cgroupdriver=systemd" ];
             "features" = { "buildkit" = true; };
             "experimental" = true;

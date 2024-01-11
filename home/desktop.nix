@@ -5,9 +5,7 @@ let
 in
 {
   imports = [
-    #   # ../overlays/spotify-hidpi.nix
-    #   ../overlays/zoom-us.nix
-    # ../overlays/brave-wayland.nix
+    ../profiles/vlc-wayland.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -59,10 +57,10 @@ in
     # ---------------------------------------------------------------------------
 
     ## Desktop file locations:
-    # ~/.local/share/applications
-    # /run/current-system/sw/share/applications
-    # $XDG_DATA_DIRS
-    #   /etc/profiles/per-user/erahhal/share/applications
+    # system:           /run/current-system/sw/share/applications
+    # home-manager:     /etc/profiles/per-user/erahhal/share/applications
+    # manual overrides: ~/.local/share/applications
+    # echo $XDG_DATA_DIRS to see full list
 
     xdg.enable = true;
     xdg.mimeApps = {
@@ -248,12 +246,11 @@ in
         spotify
         sxiv # image viewer with vim bindings
         unstable.stellarium
-        vlc
         unstable.bitwarden
         # gimp-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins
         pr67576-gimp-wayland.gimp
-        zoom-us
+        unstable.zoom-us
         waydroid
         webcamoid
         whatsapp-for-linux
@@ -289,8 +286,9 @@ in
         ## Wine
         ## wine-staging (version with experimental features)
         ## winetricks and other programs depending on wine need to use the same wine version
-        # wineWowPackages.staging
-        # (winetricks.override { wine = wineWowPackages.staging; })
+        bottles
+        wineWowPackages.stagingFull
+        winetricks
         # wineWowPackages.stable
         # winetricks
         # wineWowPackages.waylandFull

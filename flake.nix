@@ -144,7 +144,7 @@
         hostParams = import ./hosts/nflx-erahhal-t490s/params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        mkWindowsApp = inputs.erosanix.lib.i686-linux.mkWindowsApp;
+        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
