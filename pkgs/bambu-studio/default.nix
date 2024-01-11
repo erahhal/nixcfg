@@ -2,7 +2,9 @@
 , stdenv
 , lib
 , fetchurl
+, copyDesktopItems
 , makeDesktopItem
+, makeWrapper
 , imagemagick
 }:
 let
@@ -42,7 +44,10 @@ stdenv.mkDerivation rec {
 
   dontUnpack = true;
 
-  buildInputs = [ pkgs.makeWrapper ];
+  nativeBuildInputs = [
+    makeWrapper
+    copyDesktopItems
+  ];
 
   # @TODO: determine why runtimeInputs doesn't work, and LD_PRELOAD is necessary below
   runtimeInputs = with pkgs; [
@@ -68,6 +73,8 @@ stdenv.mkDerivation rec {
 
     mkdir -p $out/share/icons
     ln -s ${icons}/hicolor $out/share/icons
+
+    copyDesktopItems
 
     runHook postInstall
   '';

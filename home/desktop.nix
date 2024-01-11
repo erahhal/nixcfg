@@ -1,6 +1,7 @@
 { pkgs, inputs, hostParams, userParams, ... }:
 
 let
+  bambu-studio = pkgs.callPackage ../pkgs/bambu-studio { };
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
 in
 {
@@ -39,8 +40,6 @@ in
   };
 
   home-manager.users.${userParams.username} = {
-    _module.args.hostParams = hostParams;
-
     imports = [
       ./profiles/element.nix
       ./profiles/kitty.nix
@@ -212,6 +211,7 @@ in
         ## system
         captive-browser
         gucharmap
+        solaar           # for logitech unifying receiver setup
         xorg.xdpyinfo
         # Dbus viewer
         dfeet
@@ -223,6 +223,7 @@ in
 
         ## apps
         audacity
+        bambu-studio
         czkawka
         brave
         unstable.digikam

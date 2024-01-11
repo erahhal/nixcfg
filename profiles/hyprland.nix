@@ -13,10 +13,9 @@ args@{ config, inputs, hostParams, pkgs, userParams, ... }:
 
       xwayland = {
         enable = true;
-        hidpi = true;
       };
 
-      nvidiaPatches = true;
+      enableNvidiaPatches = true;
     };
 
     # XDG portals - allow desktop apps to use resources outside their sandbox
@@ -24,7 +23,8 @@ args@{ config, inputs, hostParams, pkgs, userParams, ... }:
       enable = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk # gtk file dialogs
-        xdg-desktop-portal-hyprland # Hyprland specific
+        ## seems to be already installed by hyperland?
+        # xdg-desktop-portal-hyprland # Hyprland specific
       ];
       # gtkUsePortal = true;
     };

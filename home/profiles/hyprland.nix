@@ -27,20 +27,6 @@ in
     XDG_CURRENT_DESKTOP = "Hyprland";
 
     # ---------------------------------------------------------------------------
-    # GPU
-    # ---------------------------------------------------------------------------
-    # NVidia support
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    WLR_NO_HARDWARE_CURSORS = "1";
-    __GL_GSYNC_ALLOWED = "0";
-    __GL_VRR_ALLOWED = "0";
-    SDL_VIDEODRIVER = "x11";
-
-    ## Causes Hyperland to start with black screen
-    # WLR_DRM_NO_ATOMIC = "1";
-
-    # ---------------------------------------------------------------------------
     # DPI-related
     # ---------------------------------------------------------------------------
     GDK_SCALE = "1";
@@ -57,22 +43,12 @@ in
     # Wayland-related
     # ---------------------------------------------------------------------------
     CLUTTER_BACKEND = "wayland";
-    GDK_BACKEND = "wayland";
     ## Can run GDK apps in X if necessary
     # GDK_BACKEND = "x11";
     MOZ_ENABLE_WAYLAND = "1";
     MOZ_USE_XINPUT2 = "1";
     WLR_DRM_NO_MODIFIERS = "1";
     ## Steam doesn't work with this enabled
-    # SDL_VIDEODRIVER = "wayland";
-    ## using "wayland" makes menus disappear in kde apps
-    QT_QPA_PLATFORM = "wayland;xcb";
-    # QT_QPA_PLATFORM = "xcb";
-    ## Conflicts with QT package
-    ## Could try lib.mkDefault...
-    # QT_QPA_PLATFORMTHEME = "qt5ct";
-
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
     # Used to inform discord and other apps that we are using wayland
     NIXOS_OZONE_WL = "1";
@@ -201,7 +177,9 @@ in
       # monitor = DP-1, preferred, auto, 1
       # monitor = DP-2, preferred, auto, 1
       # monitor = eDP-1, preferred, auto, 2
+      # monitor = eDP-1,3840X2160@60,2210xl440,2.0
       monitor = eDP-1,3840X2160@60,0x910,2.0
+      # monitor = eDP-1,disable
       monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840X2160@60,1920x0,1.5
       monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840X2160@60,4480x0,1.5
       workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 1

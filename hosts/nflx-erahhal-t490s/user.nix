@@ -6,7 +6,7 @@ let
   #   inherit copyDesktopIcons;
   #   inherit mkWindowsApp;
   # };
-  fusion360 = pkgs.callPackage ../../pkgs/fusion360 { };
+  # fusion360 = pkgs.callPackage ../../pkgs/fusion360 { };
   bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   vespa-cli = pkgs.callPackage ../../pkgs/vespa-cli {};
@@ -24,7 +24,6 @@ in
 
       packages = with pkgs; [
         awscli
-        bambu-studio
         blender
         chromium
         unstable.jetbrains.idea-ultimate

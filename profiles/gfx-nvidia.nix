@@ -2,6 +2,9 @@
 
 # See: https://nixos.wiki/wiki/Nvidia
 
+let
+  truecrack-cuda = pkgs.callPackage ../pkgs/truecrack-cuda { };
+in
 {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
@@ -25,9 +28,12 @@
   #   '';
   # };
 
-  environment.systemPackages = [
-    pkgs.intel-gpu-tools
-    pkgs.primus
+  environment.systemPackages = with pkgs; [
+    intel-gpu-tools
+    nvtop
+    primus
+    truecrack-cuda
+    unstable.cudaPackages_12_3.cudatoolkit
   ];
 
   # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
@@ -78,7 +84,7 @@
       ## expense of higher power consumption since the Nvidia GPU will not go to sleep
       ## completely unless called for, as is the case in Offload Mode.
 
-      # sync.enable = true;
+      sync.enable = true;
 
       ## With Reverse Prime the primary rendering device is the device's APU and the
       ## NVIDIA GPU acts as an offload device. This is done while also allowing to use
@@ -88,8 +94,8 @@
 
       # reverseSync.enable = true;
 
-      offload.enable = true;
-      offload.enableOffloadCmd = true;
+      # offload.enable = true;
+      # offload.enableOffloadCmd = true;
 
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
