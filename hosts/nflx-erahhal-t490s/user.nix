@@ -1,4 +1,4 @@
-{ pkgs, copyDesktopIcons, copyDesktopItems, mkWindowsApp, userParams, ... }:
+{ pkgs, copyDesktopIcons, copyDesktopItems, mkWindowsApp, hostParams, userParams, ... }:
 
 let
   # fusion360 = pkgs.callPackage ../../pkgs/fusion360 {
@@ -17,6 +17,7 @@ in
   ];
 
   home-manager.users.${userParams.username} = {
+    _module.args.hostParams = hostParams;
     _module.args.userParams = userParams;
 
     home = {
