@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+sudo mkdir -p /mnt/ellis/Backups/t490s-home
+sudo chown erahhal:users /mnt/ellisBackups/t490s-home
+
+wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
+
+rsync -aP \
+  --exclude=.BitwigStudio \
+  --exclude="VirtualBox VMs" \
+  --exclude=Android \
+  --exclude=.android \
+  --exclude=.gradle \
+  --exclude=.local/share/Steam \
+  --exclude-from=/var/tmp/ignorelist \
+  --progress /home/$USER /mnt/ellis/Backups/t490s-home

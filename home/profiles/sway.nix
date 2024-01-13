@@ -363,8 +363,7 @@ in
       for_window [app_id="thunar"] floating enable
       for_window [app_id="thunar"] resize set 1024 768
       for_window [app_id="vlc"] floating enable
-      for_window [app_id="org.gnome.Nautilus"] floating enable
-      for_window [app_id="org.gnome.Nautilus"] resize set 1024 768
+      for_window [app_id="org.gnome.Nautilus"] floating enable; resize set 1600 1200
       for_window [app_id="nemo"] floating enable
       for_window [app_id="nemo"] resize set 1600 1200
       for_window [class="kcalc"] floating enable
@@ -373,6 +372,7 @@ in
       for_window [title=".*QjackCtl.*"] floating enable
       for_window [title="Teensy"] floating enable
       for_window [title="^Zoom.*"] floating enable
+      for_window [title="^Minecraft 1.*"] floating enable; fullscreen enable
       for_window [class="com.bitwig.BitwigStudio" title="Manage Licenses"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Bitwig Studio \d.*"] floating enable
       for_window [title="Firefox — Sharing Indicator"] floating enable

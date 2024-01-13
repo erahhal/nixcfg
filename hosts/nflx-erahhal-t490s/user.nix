@@ -1,13 +1,6 @@
 { pkgs, copyDesktopIcons, copyDesktopItems, mkWindowsApp, hostParams, userParams, ... }:
 
 let
-  # fusion360 = pkgs.callPackage ../../pkgs/fusion360 {
-  #   inherit copyDesktopItems;
-  #   inherit copyDesktopIcons;
-  #   inherit mkWindowsApp;
-  # };
-  # fusion360 = pkgs.callPackage ../../pkgs/fusion360 { };
-  bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   vespa-cli = pkgs.callPackage ../../pkgs/vespa-cli {};
 in
@@ -28,7 +21,6 @@ in
         blender
         chromium
         unstable.jetbrains.idea-ultimate
-        # fusion360
         lutris
         mcreator
         # nodejs-16_x
@@ -39,6 +31,9 @@ in
         # AI
         streamlit
         vespa-cli
+
+        # Games
+        unstable.prismlauncher
 
         ## python
         ## Currently broken

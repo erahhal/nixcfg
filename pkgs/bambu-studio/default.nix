@@ -37,6 +37,7 @@ let
 in
 
 # @TODO: Build from source: https://github.com/bambulab/BambuStudio
+# https://github.com/bambulab/BambuStudio/wiki/Linux-Compile-Guide
 stdenv.mkDerivation rec {
   name = "bambu-studio";
 
@@ -82,6 +83,7 @@ stdenv.mkDerivation rec {
   desktopItems = let
     mimeTypes = [
       "x-world/x-3dmf"
+      "x-scheme-handler/bambustudio"
     ];
   in [
     (makeDesktopItem rec {

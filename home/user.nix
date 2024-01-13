@@ -111,6 +111,7 @@ in
 
         ## terminal tools
         bintools-unwrapped
+        btop
         cryptsetup
         ia
         jq
@@ -225,6 +226,15 @@ in
     ## but this is handled without this symlink by programs.zsh.sessionVariables above;
     # home.file.".zprofile".source = config.lib.file.mkOutOfStoreSymlink "/home/${userParams.username}/.profile";
 
+    programs.atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+        # ctrl-r to toggle through modes
+        filter_mode = "session";
+      };
+    };
+
     programs.zsh = {
       enable = if userParams.shell == "zsh" then true else false;
       shellAliases = {
@@ -233,19 +243,29 @@ in
         # r = "nix repl ${inputs.flake-utils-plus.lib.repl}";
         ssh = "env TERM=xterm-256color ssh";
         ls = "lsd";
+        htop = "btop";
         cheat = "function cheat_fn() { curl cht.sh/$1; }; cheat_fn";
       };
-      history = {
-        size = 10000;
-        path = "${config.xdg.dataHome}/zsh/history";
-      };
 
-      zplug = {
-        enable = true;
-        plugins = [
-          { name = "erahhal/zsh-directory-history"; }
-        ];
-      };
+      ## Now using atuin
+
+      # history = {
+      #   size = 10000;
+      #   path = "${config.xdg.dataHome}/zsh/history";
+      # };
+
+      ## Now using atuin
+      # zplug = {
+      #   enable = true;
+      #   plugins = [
+      #     { name = "erahhal/zsh-directory-history"; }
+      #   ];
+      # };
+
+      initExtra = ''
+        # Use ctrl-p in addition to the default up-arrow for activating atuin
+        bindkey '^p' _atuin_search_widget
+      '';
 
       oh-my-zsh = {
         enable = true;
@@ -265,6 +285,21 @@ in
         ## See: https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
         plugins = [
           #-----------------------------------
+          # History
+          # - All disabled, now using Atuin
+          #-----------------------------------
+
+          # "history-substring-search"
+
+          ## Not great as it requires manual toggling between local and global history
+          ## use ctrl-g to toggle to global
+          # "per-directory-history"
+
+          ## Aliases
+          ## e.g. h, hs, hsi
+          # "history"
+
+          #-----------------------------------
           # New shell functionality
           #-----------------------------------
 
@@ -281,10 +316,7 @@ in
           "fzf"
           ## Expands globs. Makes command line slow and messy sometimes, especially with a lot of matches
           # "globalias"
-          "history-substring-search"
-          ## Not great as it requires manual toggling between local and global history
-          ## use ctrl-g to toggle to global
-          # "per-directory-history"
+
           "percol"
           "safe-paste"
           ## hit ESC twice to prefix previous command with sudo
@@ -324,8 +356,6 @@ in
           "common-aliases"
           ## List recent files with v, o, and j
           "fasd"
-          ## e.g. h, hs, hsi
-          "history"
           ## See: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/nmap
           "nmap"
           "python"

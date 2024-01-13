@@ -109,6 +109,7 @@ in
     set -g @continuum-restore 'on'
     set -g @continuum-save-interval '5' # minutes
     run-shell ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux
+    run-shell ${pkgs.tmuxPlugins.yank}/share/tmux-plugins/yank/yank.tmux
 
     # set-option -sa terminal-overrides ',xterm-kitty:RGB'
     set-option -sa terminal-features ',xterm-kitty:RGB'

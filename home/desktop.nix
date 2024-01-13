@@ -1,7 +1,6 @@
 { pkgs, inputs, hostParams, userParams, ... }:
 
 let
-  bambu-studio = pkgs.callPackage ../pkgs/bambu-studio { };
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
 in
 {
@@ -41,6 +40,7 @@ in
 
   home-manager.users.${userParams.username} = {
     imports = [
+      ./profiles/bambu-studio.nix
       ./profiles/element.nix
       ./profiles/kitty.nix
       ./profiles/gthumb.nix
@@ -66,7 +66,6 @@ in
       enable = true;
       # Make sure VSCode doesn't take over file mimetype
       associations.added = {
-        # "inode/directory" = [ "nemo.desktop" ];
         "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
         "x-scheme-handler/http" = [ defaultBrowserApp ];
         "x-scheme-handler/https" = [ defaultBrowserApp ];
@@ -101,10 +100,8 @@ in
         "video/x-ms-wmv" = [ "mpv.desktop" ];
         "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
-
       };
       defaultApplications = {
-        # "inode/directory" = [ "nemo.desktop" ];
         "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
         "x-scheme-handler/http" = [ defaultBrowserApp ];
         "x-scheme-handler/https" = [ defaultBrowserApp ];
@@ -223,7 +220,6 @@ in
 
         ## apps
         audacity
-        bambu-studio
         czkawka
         brave
         unstable.digikam

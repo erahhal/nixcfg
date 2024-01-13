@@ -1,4 +1,37 @@
 { config, lib, pkgs, hostParams, userParams, recursiveMerge, ... }:
+
+## @TODOS
+# - Move config files into nix, and out of DockerData
+# - Map config files on top of existing volumes
+# - Move plugins into nix as derivations
+# - Figure out how to snapshot worlds
+
+## Notes
+# - Buneecord - Run multiple servers behind one domain:port
+# - Advanced Portals - Allows creating portals across servers
+# - Portal Gun - Creates a portal gun that doesn't require mods
+# - Gyser - Allows Bedrock (mobile) clients to connect to Java server
+# - Floodgate - allows Minecraft: Bedrock Accounts to join
+#     Java servers without needing a Java Edition account
+# - LuckPerms - Allows granular permissions (Requires MySQL)
+
+## Portal setup
+# To recreate portals:
+# /portal portalblock
+# /portal wand
+# - Draw portal
+# - Select wand tool (special axe)
+# - Left click upper left
+# - Right click lower right
+# /portal create name:creative_to_lobby bungee:lobby
+
+## Troubleshooting
+# - If the bungeecord container doesn't start, it's probably because
+#   lobby, creative, or survival didn't start, and it's dependent on them
+# - If a bungee plugin is added to a spigot server, or vice versa, it won't start
+# - If too many creatures were spawned and the server keeps stopping, delete the world folders
+
+
 let
   containerDataPath = "/home/${userParams.username}/DockerData";
   service_ip = "10.0.0.84";
