@@ -240,8 +240,9 @@ in
       shellAliases = {
         something = "${pkgs.ffmpeg}/bin/ffmpeg --someoption";
         n = "nix-shell -p";
+        ns = "nix search nixpkgs";
         # r = "nix repl ${inputs.flake-utils-plus.lib.repl}";
-        ssh = "env TERM=xterm-256color ssh";
+        # ssh = "env TERM=xterm-256color ssh";
         ls = "lsd";
         htop = "btop";
         cheat = "function cheat_fn() { curl cht.sh/$1; }; cheat_fn";
@@ -254,13 +255,30 @@ in
       #   path = "${config.xdg.dataHome}/zsh/history";
       # };
 
-      ## Now using atuin
-      # zplug = {
-      #   enable = true;
-      #   plugins = [
-      #     { name = "erahhal/zsh-directory-history"; }
-      #   ];
-      # };
+      plugins = [
+        {
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+        }
+        {
+          name = "powerlevel10k-config";
+          src = ./profiles/zsh-p10k-config;
+          file = "p10k.zsh";
+        }
+      ];
+
+      zplug = {
+        enable = true;
+        plugins = [
+          { name = "chisui/zsh-nix-shell"; }
+
+          # { name = "romkatv/powerlevel10k"; }
+
+          ## Now using atuin
+          # { name = "erahhal/zsh-directory-history"; }
+        ];
+      };
 
       initExtra = ''
         # Use ctrl-p in addition to the default up-arrow for activating atuin
