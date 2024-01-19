@@ -110,6 +110,10 @@
         inputs.hyprland.homeManagerModules.default
         { wayland.windowManager.hyprland.enable = true; }
       ];
+      extraSpecialArgs = {
+        inherit userParams;
+        inherit recursiveMerge;
+      };
     };
     nixosConfigurations = {
       mediaserver =

@@ -4,6 +4,9 @@ TODOs
 Warts/Issues
 ------------
 
+* Look into replacing custom recursiveMerge with lib.recursiveMerge
+* Get rid of all references to Networkd?
+  * There is no GUI or tray applet for Networkd - NetworkManager is used for desktops, networkd for servers/headless
 * Erase your darlings / Impermanence
   * https://grahamc.com/blog/erase-your-darlings/
   * https://nixos.wiki/wiki/Impermanence
@@ -43,10 +46,13 @@ Warts/Issues
   * Use qemu with windows if nothing else works
 * Get Fcitx 5 or some Chinese IME working
   * https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#Fcitx_managed_XKB_layout
+  * Seems that you need a version of sway with "text-input-v3" (and maybe "text-input-v2") protocol compiled in
 
 Improvments
 -----------
 
+* Add nixos-infect install scripot
+ * Test with an ubuntu image, like done with the umbrel box
 * Gnome Keyring in sway
   * https://news.ycombinator.com/item?id=36740062
 * Sway updates and upgrades

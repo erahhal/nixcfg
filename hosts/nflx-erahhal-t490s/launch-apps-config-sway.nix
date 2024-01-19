@@ -1,7 +1,7 @@
 { lib, ... }:
 {
   options = {
-    launchAppsConfig = lib.mkOption {
+    launchAppsConfigSway = lib.mkOption {
       type = lib.types.lines;
       default = ''
         set $homeLeft "LG Electronics LG Ultra HD 0x00003EAD"

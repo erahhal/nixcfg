@@ -6,15 +6,7 @@ let
     # PATH = "$HOME/Scripts:$HOME/.yarn/bin:$HOME/.local/bin:$PATH";
     PATH = "$HOME/Scripts:$HOME/.local/bin:$PATH:/snap/bin";
     # NODE_PATH = "$HOME/.local/share/yarn/global/node_modules";
-    XMODIFIERS = "@im=fcitx";
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    SDL_IM_MODULE = "fcitx";
-    INPUT_METHOD = "fcitx";
-    XIM_SERVERS = "fcitx";
-    GLFW_IM_MODULE = "ibus";
   };
-  defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
   ia = pkgs.callPackage ../pkgs/ia {};
 in
 {
@@ -231,8 +223,23 @@ in
       enable = true;
       enableZshIntegration = true;
       settings = {
-        # ctrl-r to toggle through modes
+        # Show only history for current terminal. ctrl-r to toggle through modes
         filter_mode = "session";
+
+        # Enter runs command instead of just pasting it to command line
+        enter_accept = "true";
+
+        # Don't use full terminal height
+        inline_height = "25";
+
+        # Don't check for  updates
+        update_check = "false";
+
+        # Show command preview at bottom, for long commands
+        show_preview = "true";
+
+        # no borders
+        # style = "compact";
       };
     };
 
@@ -284,6 +291,10 @@ in
       initExtra = ''
         # Use ctrl-p in addition to the default up-arrow for activating atuin
         bindkey '^p' _atuin_search_widget
+
+        tree () {
+          ${pkgs.tree}/bin/tree -C $1 | less
+        }
       '';
 
       oh-my-zsh = {

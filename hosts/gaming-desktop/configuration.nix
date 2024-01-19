@@ -37,9 +37,6 @@ in
 
       # user specific
       ./user.nix
-
-      # Display config
-      ./launch-apps-config.nix
     ];
 
   # --------------------------------------------------------------------------------------

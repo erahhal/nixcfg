@@ -1,7 +1,6 @@
-args@{ config, inputs, hostParams, pkgs, userParams, ... }:
+{ config, inputs, hostParams, pkgs, userParams, ... }:
 {
-  config = if hostParams.defaultSession == "hyprland" then {
-
+  config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
     # Make sure that /etc/pam.d/swaylock is added.
     # Otherwise swaylock doesn't unlock.
     security.pam.services.swaylock = {};
@@ -33,9 +32,12 @@ args@{ config, inputs, hostParams, pkgs, userParams, ... }:
       inputs.hyprland.homeManagerModules.default
     ];
 
-    home-manager.users.${userParams.username} = { pkgs, ... }: {
+    home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
       imports = [
-        ( import ../home/profiles/hyprland.nix (args // { launchAppsConfig = config.launchAppsConfig; }))
+        ( import ../home/profiles/hyprland.nix (args // {
+          launchAppsConfig = config.launchAppsConfigHyprland;
+          hostParams = hostParams;
+        }))
       ];
     };
   } else {};

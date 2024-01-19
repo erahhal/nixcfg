@@ -1,4 +1,4 @@
-args@{ lib, pkgs, launchAppsConfig, hostParams, ... }:
+{ lib, pkgs, launchAppsConfig, hostParams, ... }:
 
 let
   swaynagmode = pkgs.callPackage ../../pkgs/swaynagmode {};
@@ -24,9 +24,7 @@ let
     style = "Medium";
     size = 10.0;
   };
-  swayLockCmd = pkgs.writeShellScript "swaylock.sh" ''
-    ${pkgs.swaylock}/bin/swaylock -c '#000000' --indicator-radius 100 --indicator-thickness 20 --show-failed-attempts
-  '';
+  swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
   dropdownTerminalCmd = pkgs.writeShellScript "launchkitty.sh" ''
     open=$(ps aux | grep -i "kitty --class=dropdown" | grep -v grep)
     if [[ $open -eq 0 ]]
@@ -65,53 +63,13 @@ in
     ./swaynotificationcenter.nix
     ./network-manager-applet.nix
     ./rofi.nix
-    ( import ./sway-idle.nix (args // { swayLockCmd = swayLockCmd; }))
+    ./sway-idle.nix
     ./waybar.nix
     ./wlsunset.nix
     ## Wayland Brightness/Volume overlay bar
     ## Doesn't work, system service keeps restarting
     # ./wob.nix
   ];
-
-  home.sessionVariables = {
-    # ---------------------------------------------------------------------------
-    # DPI-related
-    # ---------------------------------------------------------------------------
-    GDK_SCALE = "1";
-    # @TODO: HACK, why are the machines acting differently?
-    # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
-    GDK_DPI_SCALE = "1";
-    QT_AUTO_SCREEN_SCALE_FACTOR = "0";
-    QT_SCALE_FACTOR = "1.25";
-    # QT_SCALE_FACTOR = "1";
-    QT_FONT_DPI = "96";
-    # QT_FONT_DPI = "80";
-
-    # ---------------------------------------------------------------------------
-    # Wayland-related
-    # ---------------------------------------------------------------------------
-    MOZ_ENABLE_WAYLAND = "1";
-    MOZ_USE_XINPUT2 = "1";
-    WLR_DRM_NO_MODIFIERS = "1";
-    ## Sway doesn't load with this
-    # WLR_RENDERER = "vulkan";
-    ## Steam doesn't work with this enabled
-    # SDL_VIDEODRIVER = "wayland";
-
-    ## using "wayland" makes menus disappear in kde apps
-    ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
-    ##         and borders between elements are sometimes transparent, showing the background.
-    # QT_QPA_PLATFORM = "wayland";
-    QT_QPA_PLATFORM = "xcb";
-
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    XDG_SESSION_TYPE = "wayland";
-    XDG_CURRENT_DESKTOP = "sway";
-
-    # Used to inform discord and other apps that we are using wayland
-    NIXOS_OZONE_WL = "1";
-  };
-
 
   # Block auto-sway reload, Sway crashes if allowed to reload this way.
   xdg.configFile."sway/config".onChange = lib.mkForce "";
@@ -244,8 +202,10 @@ in
         # bluetooth applet
         { always = true; command = "${pkgs.blueman}/bin/blueman-applet"; }
 
-        # Load Chinese input method
+        ## Load Chinese input method
+        ## Neither of these work
         { always = true; command = "${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace"; }
+        # { always = true; command = "ibus-daemon -rxRd"; }
 
         # Night time dimming/coloration
         { always = true; command = "systemctl --user restart wlsunset"; }

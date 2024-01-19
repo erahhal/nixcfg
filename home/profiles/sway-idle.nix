@@ -1,6 +1,10 @@
-{ pkgs, swayLockCmd, ...}:
+{
+  pkgs,
+  ...
+}:
 
 let
+  swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
   idlecmd = pkgs.writeShellScript "swayidle.sh" ''
     pkill swayidle
     ${pkgs.swayidle}/bin/swayidle \

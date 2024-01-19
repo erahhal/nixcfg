@@ -1,4 +1,4 @@
-{  pkgs, ... }:
+{  pkgs, lib, hostParams, ... }:
 let
   # launch = pkgs.writeShellScript "launch.sh" ''
   #   if ${pkgs.procps}/bin/pgrep -x ".wofi-wrapped" >/dev/null; then
@@ -30,9 +30,9 @@ let
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
 in
 {
-  # imports = [
-  #   ../../overlays/waybar-hyprland.nix
-  # ];
+  imports = [
+    ../../overlays/waybar-hyprland.nix
+  ];
 
   home.packages = with pkgs; [
     unstable.waybar
@@ -54,7 +54,19 @@ in
           "sway/workspaces"
           "sway/mode"
           "sway/window"
+          "hyprland/workspaces"
+          "hyprland/mode"
+          "hyprland/window"
         ];
+
+        "sway/workspaces" = {
+          all-outputs = true;
+        };
+
+        "hyprland/workspaces" = {
+          all-outputs = true;
+        };
+
         modules-right = [
           "network"
           "backlight"
@@ -101,10 +113,6 @@ in
         };
 
         "sway/mode" = { format = ''<span style="italic">{}</span>''; };
-
-        "sway/workspaces" = {
-          all-outputs = true;
-        };
 
         pulseaudio = {
           tooltip = false;
@@ -247,5 +255,4 @@ in
     };
   };
 }
-
 

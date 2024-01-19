@@ -167,20 +167,20 @@ in
     cursor                #5e76c7
     selection_background  #6f6a4e
     color0                #414141
-    color8                #3e3e3e
     color1                #b23670
-    color9                #da3365
     color2                #66781d
-    color10               #829428
     color3                #cc6e33
-    color11               #cc6e33
     color4                #3b5ea7
-    color12               #3b5ea7
     color5                #a353b2
-    color13               #a353b2
     color6                #66781d
-    color14               #829428
     color7                #efefef
+    color8                #3e3e3e
+    color9                #da3365
+    color10               #829428
+    color11               #cc6e33
+    color12               #3b5ea7
+    color13               #a353b2
+    color14               #829428
     color15               #f1f1f1
     selection_foreground  #efefef
   '';

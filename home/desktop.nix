@@ -13,18 +13,22 @@ in
     # inputs.remarkable.packages."${system}".remarkable
   ];
 
+  environment.variables = {
+    XCURSOR_SIZE = "64";
+  };
+
   # i18n.inputMethod.enabled = "ibus";
   # i18n.inputMethod.ibus.engines = with pkgs.ibus-engines; [ libpinyin ];
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
-      enabled = "fcitx5";
       # enabled = "ibus";
       # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
+      enabled = "fcitx5";
       fcitx5.addons = with pkgs; [
+        fcitx5-configtool
         fcitx5-chinese-addons
         fcitx5-gtk
-        fcitx5-mozc
         fcitx5-rime
         libsForQt5.fcitx5-qt
         rime-data
@@ -47,8 +51,10 @@ in
       ./profiles/signal.nix
       ## Should be handled by wayland scaling now
       # ./profiles/firefox.nix
+
       ## Should be handled by wayland scaling now
-      # ./profiles/qt4-hidpi.nix
+      ## But left in for the theming
+      ./profiles/qt4-hidpi.nix
     ];
 
     # ---------------------------------------------------------------------------
@@ -178,7 +184,18 @@ in
       SDL_IM_MODULE = "fcitx";
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
+      XIM = "fcitx";
+      XIM_PROGRAM = "fcitx";
+
       GLFW_IM_MODULE = "ibus";
+
+      # XMODIFIERS = "@im=ibus";
+      # GTK_IM_MODULE = "ibus";
+      # QT_IM_MODULE = "ibus";
+      # SDL_IM_MODULE = "ibus";
+      # INPUT_METHOD = "ibus";
+      # XIM_SERVERS = "ibus";
+
 
       # ---------------------------------------------------------------------------
       # Browser
@@ -195,6 +212,53 @@ in
       # Command line
       # ---------------------------------------------------------------------------
       MANPAGER = "vim -c ASMANPAGER -";
+
+      # ---------------------------------------------------------------------------
+      # BELOW: Desktop Environment
+      # @TODO: How to load them conditionally at
+      #        runtime depending on selected DE?
+      # ---------------------------------------------------------------------------
+
+      # ---------------------------------------------------------------------------
+      # DPI-related
+      # ---------------------------------------------------------------------------
+      GDK_SCALE = "1";
+      # @TODO: HACK, why are the machines acting differently?
+      # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
+      GDK_DPI_SCALE = "1";
+      QT_AUTO_SCREEN_SCALE_FACTOR = "0";
+      QT_SCALE_FACTOR = "1.25";
+      # QT_SCALE_FACTOR = "1";
+      QT_FONT_DPI = "96";
+      # QT_FONT_DPI = "80";
+
+      # ---------------------------------------------------------------------------
+      # Wayland-related
+      # ---------------------------------------------------------------------------
+      MOZ_ENABLE_WAYLAND = "1";
+      MOZ_USE_XINPUT2 = "1";
+      WLR_DRM_NO_MODIFIERS = "1";
+      ## Sway doesn't load with this
+      # WLR_RENDERER = "vulkan";
+      ## Steam doesn't work with this enabled
+      # SDL_VIDEODRIVER = "wayland";
+
+      ## using "wayland" makes menus disappear in kde apps
+      ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
+      ##         and borders between elements are sometimes transparent, showing the background.
+      # QT_QPA_PLATFORM = "wayland";
+      QT_QPA_PLATFORM = "xcb";
+
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      XDG_SESSION_TYPE = "wayland";
+
+      ## @TODO: This should def be loaded at runtime.
+      #         This is cofigured in hyprland config.
+      ## @TODO: Verify that it's overriden in hyprland.
+      XDG_CURRENT_DESKTOP = "sway";
+
+      # Used to inform discord and other apps that we are using wayland
+      NIXOS_OZONE_WL = "1";
     };
 
     # ---------------------------------------------------------------------------

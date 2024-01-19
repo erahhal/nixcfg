@@ -1,10 +1,11 @@
-args@{ config, pkgs, lib, hostParams, userParams, ... }:
+{ config, pkgs, hostParams, userParams, ... }:
 
 {
   imports = [ ] ++ (if hostParams.defaultSession == "sway" then [
     ../hosts/${hostParams.hostName}/kanshi.nix
     # ../overlays/sway-with-dbus.nix
     # ../overlays/sway-with-nvidia-patches.nix
+    # ../overlays/sway-with-input-methods.nix
   ] else []);
 
   config = if hostParams.defaultSession == "sway" then {
@@ -79,9 +80,12 @@ args@{ config, pkgs, lib, hostParams, userParams, ... }:
       egl-wayland
     ];
 
-    home-manager.users.${userParams.username} = { pkgs, ... }: {
+    home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
       imports = [
-        ( import ../home/profiles/sway.nix (args // { launchAppsConfig = config.launchAppsConfig; }))
+        ( import ../home/profiles/sway.nix (args // {
+          launchAppsConfig = config.launchAppsConfigSway;
+          hostParams = hostParams;
+        }))
       ];
     };
   } else {};

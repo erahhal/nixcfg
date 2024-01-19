@@ -146,6 +146,26 @@ in
     };
   };
 
+  # See: https://www.reddit.com/r/NixOS/comments/knjxsb/adding_virtual_machines_to_physical_network/
+  # networking = {
+  #   bridges = {
+  #     hfbrwan = {
+  #       interfaces = [ "wlp0s20f3" ];
+  #     };
+  #   };
+  #
+  #   interfaces = {
+  #     hfbrwan = {
+  #       useDHCP = true;
+  #     };
+  #     hftap0 = {
+  #       virtual = true;
+  #       macAddress = "52:53:54:55:56:01";
+  #       useDHCP = true;
+  #     };
+  #   };
+  # };
+
   #-------------------------------------------
   ## QEMU/KVM
   #-------------------------------------------

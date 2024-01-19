@@ -39,40 +39,33 @@ let
 in
 {
   options = {
-    launchAppsConfig = lib.mkOption {
+    launchAppsConfigHyprland = lib.mkOption {
       type = lib.types.lines;
-      default =
-        ''
-          # Discord reloads after startup, so it jumps to the
-          # current workspace, so force it onto 3
-          assign      [class="discord"]         3
+      default = ''
+        exec = ${assignWorkspaces}
 
-          workspace 2 output "LG Electronics LG HDR 4K 0x00000F5B"
-          workspace 2
-          exec kitty tmux a -dt code
-          workspace 3 output eDP-1
-          workspace 3
-          exec joplin-desktop
-          workspace 4 output "LG Electronics LG Ultra HD 0x00003EAD"
-          workspace 4
-          exec spotify
-          exec brave
-          workspace 5 output "LG Electronics LG Ultra HD 0x00003EAD"
-          workspace 5
-          exec thunderbird
-          workspace 6 output eDP-1
-          workspace 6
-          exec signal-desktop
-          workspace 7 output "LG Electronics LG HDR 4K 0x00000F5B"
-          workspace 7
-          exec discord
-          workspace 8 output eDP-1
-          workspace 8
-          exec waydroid session start
-          workspace 1 output "LG Electronics LG Ultra HD 0x00003EAD"
-          workspace 1
-          exec firefox
-        '';
+        # workspace 1
+        windowrule = workspace 1, silent, class:^(firefox)$
+        exec-once = [workspace l silent] firefox
+
+        # workspace 2
+        windowrule = workspace 2, silent, class:^(kitty)$
+        exec-once = [workspace 2 silent] kitty tmux a -dt code
+
+        # workspace 4
+        windowrule = workspace 4 silent, title:^(Spotify)$
+        exec-once = [workspace 4 silent] spotify
+        windowrule = workspace 4 silent, class:^(brave-browser)$
+        exec-once = [workspace 4 silent] brave
+
+        # workspace 6
+        windowrule = workspace 6, class:^(signal)$
+        exec-once = [workspace 6 silent] signal-desktop
+
+        # workspace 7
+        windowrule = workspace 7, class:^(discord)$
+        exec-once = [workspace 7 silent] discord
+      '';
     };
   };
 }

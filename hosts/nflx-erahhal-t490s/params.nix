@@ -10,6 +10,7 @@
   displayManager = "sddm";
   sddmTheme = "nflx";
   defaultSession = "sway";
+  multipleSessions = true;
 
   kittyFontSize = 9;
   trolltechFontSize = 10;

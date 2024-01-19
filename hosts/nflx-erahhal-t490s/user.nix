@@ -24,7 +24,6 @@ in
         lutris
         mcreator
         # nodejs-16_x
-        trunk.prismlauncher
         trunk.jetbrains.datagrip
         transmission-gtk
 

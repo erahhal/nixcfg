@@ -88,14 +88,14 @@
               status = "enable";
               mode = "2560x1440";
               position = "0,100";
-              scale = 1.5;
+              scale = 1.6;
             }
             {
               criteria = "LG Electronics 16MQ70 204NZKZ005285";
               status = "enable";
               mode = "2560x1600@59.972000Hz";
-              position = "1706,0";
-              scale = 1.5;
+              position = "1598,0";
+              scale = 1.6;
             }
           ];
           exec = [

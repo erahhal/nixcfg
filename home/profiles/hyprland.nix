@@ -1,58 +1,20 @@
-args@{ inputs, config, lib, pkgs, launchAppsConfig, hostParams, ... }:
+{ pkgs, launchAppsConfig, hostParams, ... }:
 
 let
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   wofi = "${pkgs.wofi}/bin/wofi --show run -W 400 -H 300";
   launcher = rofi;
-  swayLockCmd = pkgs.writeShellScript "swaylock.sh" ''
-    ${pkgs.swaylock-effects}/bin/swaylock -c '#000000' --indicator-radius 100 --indicator-thickness 20 --show-failed-attempts
-  '';
+  swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
 in
 {
   imports = [
     ./swaynotificationcenter.nix
     ./network-manager-applet.nix
     ./rofi.nix
-    ( import ./sway-idle.nix (args // { swayLockCmd = swayLockCmd; }))
+    ./sway-idle.nix
     ./waybar.nix
     ./wlsunset.nix
   ];
-
-  home.sessionVariables = {
-    # ---------------------------------------------------------------------------
-    # Desktop
-    # ---------------------------------------------------------------------------
-    XDG_SESSION_TYPE = "wayland";
-    XDG_SESSION_DESKTOP = "Hyprland";
-    XDG_CURRENT_DESKTOP = "Hyprland";
-
-    # ---------------------------------------------------------------------------
-    # DPI-related
-    # ---------------------------------------------------------------------------
-    GDK_SCALE = "1";
-    # @TODO: HACK, why are the machines acting differently?
-    # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
-    GDK_DPI_SCALE = "1";
-    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    QT_SCALE_FACTOR = "1.5";
-    # QT_SCALE_FACTOR = "1";
-    # QT_FONT_DPI = "96";
-    QT_FONT_DPI = "80";
-
-    # ---------------------------------------------------------------------------
-    # Wayland-related
-    # ---------------------------------------------------------------------------
-    CLUTTER_BACKEND = "wayland";
-    ## Can run GDK apps in X if necessary
-    # GDK_BACKEND = "x11";
-    MOZ_ENABLE_WAYLAND = "1";
-    MOZ_USE_XINPUT2 = "1";
-    WLR_DRM_NO_MODIFIERS = "1";
-    ## Steam doesn't work with this enabled
-
-    # Used to inform discord and other apps that we are using wayland
-    NIXOS_OZONE_WL = "1";
-  };
 
   home.packages = with pkgs; [
     gnome3.zenity
@@ -80,6 +42,11 @@ in
     )
   ];
 
+  xdg.configFile."hypr/hyprpaper.conf".text = if builtins.hasAttr "wallpaper" hostParams then ''
+    preload = ${hostParams.wallpaper}
+    wallpaper = ,${hostParams.wallpaper}
+  '' else "";
+
   wayland.windowManager.hyprland = {
     enable = true;
 
@@ -96,12 +63,9 @@ in
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
       exec = systemctl --user restart sway-idle
-
-      exec-once = ${pkgs.hyprpaper}/bin/hyprpaper
-
-      ## @TODO: how does this work, if at all?
-      ## scale Xorg apps
-      exec-once = xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1
+      exec = pkill waybar; ${pkgs.waybar}/bin/waybar
+      exec = systemctl --user restart kanshi
+      exec = ${pkgs.hyprpaper}/bin/hyprpaper
 
       ## @TODO
       ## 1. Is this already being set?
@@ -110,8 +74,17 @@ in
       # exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
       # exec-once = systemctl --user start clight
-      # exec-once = eww open bar
-      exec = pkill waybar; ${pkgs.waybar}/bin/waybar
+
+      ## @TODO: Settings to not scale XWayland
+      # xwayland {
+      #   force_zero_scaling = true
+      # }
+      #
+      # env = GDK_SCALE, 2
+      # env = QT_SCALE_FACTOR, 1.6
+      # env = XCURSOR_SIZE, 64
+
+      env = XDG_CURRENT_DESKTOP, hyprland
 
       misc {
         ## enable Variable Frame Rate
@@ -174,13 +147,11 @@ in
       }
 
       # should be configured per-profile
-      # monitor = DP-1, preferred, auto, 1
-      # monitor = DP-2, preferred, auto, 1
-      # monitor = eDP-1, preferred, auto, 2
-      # monitor = eDP-1,3840X2160@60,2210xl440,2.0
-      monitor = eDP-1,3840X2160@60,0x910,2.0
+      # monitor = eDP-1,3840X2160@60,0x100,1.6,vrr,1
+      monitor = eDP-1,highres,auto,1.6,vrr,1
       # monitor = eDP-1,disable
-      monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840X2160@60,1920x0,1.5
+      monitor = desc:LG Electronics 16MQ70 20NKZ005285,2560X1600@60,1598x0,1.6,vrr,1
+      monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840X2160@60,1920x0,1.5,vrr,1
       monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840X2160@60,4480x0,1.5
       workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 1
       workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 4
@@ -221,26 +192,28 @@ in
       # mouse movements
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
-      bindm = $mod ALT, mouse:272, resizewindow
+      bindm = $mod_ALT, mouse:272, resizewindow
 
       bind = $mod, Return, exec, $term
       bind = $mod, X, exec, ${swayLockCmd}
+      # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
       bind = $mod, C, killactive
-      bind = $mod, R, forcerendererreload
+      # bind = $mod, R, forcerendererreload
+      bind = $mod, R, exec, hyprctl reload
       bind = $mod, T, togglegroup
-      bind = $mod SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'
-      bind = $mod SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'
-      bind = $mod SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'";
-      bind = $mod SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend, mode \"default\"'
-      bind = $mod SHIFT CTRL, L, movecurrentworkspacetomonitor, r
-      bind = $mod SHIFT CTRL, H, movecurrentworkspacetomonitor, l
-      bind = $mod SHIFT CTRL, K, movecurrentworkspacetomonitor, u
-      bind = $mod SHIFT CTRL, J, movecurrentworkspacetomonitor, d
+      bind = $mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'
+      bind = $mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'
+      bind = $mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'";
+      bind = $mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend, mode \"default\"'
+      bind = $mod_SHIFT_CTRL, L, movecurrentworkspacetomonitor, r
+      bind = $mod_SHIFT_CTRL, H, movecurrentworkspacetomonitor, l
+      bind = $mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u
+      bind = $mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor, d
 
-      bind = $mod CTRL, L, resizeactive, 10 0
-      bind = $mod CTRL, H, resizeactive, -10 0
-      bind = $mod CTRL, K, resizeactive, 0 -10
-      bind = $mod CTRL, J, resizeactive, 0 10
+      bind = $mod_CTRL, L, resizeactive, 10 0
+      bind = $mod_CTRL, H, resizeactive, -10 0
+      bind = $mod_CTRL, K, resizeactive, 0 -10
+      bind = $mod_CTRL, J, resizeactive, 0 10
 
       # move focus
       bind = $mod, H, movefocus, l
@@ -248,10 +221,10 @@ in
       bind = $mod, K, movefocus, u
       bind = $mod, J, movefocus, d
 
-      bind = $mod SHIFT, L, movewindow, r
-      bind = $mod SHIFT, H, movewindow, l
-      bind = $mod SHIFT, K, movewindow, u
-      bind = $mod SHIFT, J, movewindow, d
+      bind = $mod_SHIFT, L, movewindow, r
+      bind = $mod_SHIFT, H, movewindow, l
+      bind = $mod_SHIFT, K, movewindow, u
+      bind = $mod_SHIFT, J, movewindow, d
 
       # workspaces
       # binds mod + [shift +] {1..10} to [move to] ws {1..10}
@@ -263,7 +236,7 @@ in
               builtins.toString (x + 1 - (c * 10));
           in ''
             bind = $mod, ${ws}, workspace, ${toString (x + 1)}
-            bind = $mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}
+            bind = $mod_SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}
           ''
         )
         10)}
@@ -309,13 +282,13 @@ in
       bind = , Print, exec, $screenshotarea
 
       bind = CTRL, Print, exec, grimblast --notify --cursor copysave output
-      bind = $mod SHIFT CTRL, R, exec, grimblast --notify --cursor copysave output
+      bind = $mod_SHIFT_CTRL, R, exec, grimblast --notify --cursor copysave output
 
       bind = ALT, Print, exec, grimblast --notify --cursor copysave screen
-      bind = $mod SHIFT ALT, R, exec, grimblast --notify --cursor copysave screen
+      bind = $mod_SHIFT_ALT, R, exec, grimblast --notify --cursor copysave screen
 
       # special workspace
-      bind = $mod SHIFT, grave, movetoworkspace, special
+      bind = $mod_SHIFT, grave, movetoworkspace, special
       bind = $mod, grave, togglespecialworkspace, eDP-1
 
       # cycle workspaces
@@ -323,8 +296,8 @@ in
       bind = $mod, bracketright, workspace, m+1
 
       # cycle monitors
-      bind = $mod SHIFT, braceleft, focusmonitor, l
-      bind = $mod SHIFT, braceright, focusmonitor, r
+      bind = $mod_SHIFT, braceleft, focusmonitor, l
+      bind = $mod_SHIFT, braceright, focusmonitor, r
 
       ${launchAppsConfig}
     '';
