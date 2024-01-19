@@ -207,8 +207,6 @@
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
-          inputs.nixos-hardware.nixosModules.common-cpu-intel
-          inputs.nixos-hardware.nixosModules.common-pc-laptop
           inputs.nur.nixosModules.nur
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           inputs.home-manager.nixosModules.home-manager

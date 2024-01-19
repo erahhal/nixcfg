@@ -8,27 +8,25 @@
     intel-gpu-tools
     libva-utils
   ];
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override {
+      enableHybridCodec = true;
+    };
+  };
   hardware = {
     opengl = {
       enable = true;
       driSupport = true;
-      extraPackages = []
-      ++ lib.optionals (pkgs.system=="x86_64-linux") (with pkgs; [
+      extraPackages = with pkgs; [
+        intel-media-driver
+        vaapiVdpau
+        libvdpau-va-gl
 
-          ## Conflicts with another page (hardware flake?)
-          # vaapiIntel
-          ## Should this really be used instead?
-          intel-vaapi-driver
+        # vaapiIntel
 
-          intel-media-driver
-          vaapiVdpau
-          libvdpau-va-gl
-      ]);
-    };
-  };
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override {
-      enableHybridCodec = true;
+        ## Should this really be used instead?
+        intel-vaapi-driver
+      ];
     };
   };
 

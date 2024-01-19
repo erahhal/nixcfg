@@ -42,7 +42,8 @@ in
 
       # Display config
       ./kanshi.nix
-      ./launch-apps-config.nix
+      ./launch-apps-config-sway.nix
+      ./launch-apps-config-hyprland.nix
 
       # Temporary
       # ../../profiles/nfs-mounts.nix
@@ -62,8 +63,6 @@ in
     systemd-boot = {
       enable = true;
       configurationLimit = 10;
-      # Use maximum resolution in systemd-boot for hidpi
-      consoleMode = "max";
     };
     # Set font size early
     efi = {
@@ -71,8 +70,11 @@ in
     };
   };
 
-  ## Take latest kernel rather than default
+  ## Latest kernel doesn't always work with ZFS
   # boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  ## Latest ZFS compatible kernel has problems with dual external displays
+  # boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   # --------------------------------------------------------------------------------------
   # Device specific
@@ -155,6 +157,8 @@ in
   # Hardware specific
   # --------------------------------------------------------------------------------------
 
+  services.syslogd.enable = true;
+
   # Despite the generic name, this is Lenovo specific
   ## Doesn't currently work with x1c CPU
   services.throttled.enable = false;
@@ -165,13 +169,13 @@ in
   #   - Either adding these kernel modules and params,
   #     or turning off power saving on wifi fixed an intermittent
   #     hard freeze when on battery.
-  boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
-  boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
-  boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
-  boot.kernelParams = [
-    "msr.allow_writes=on"
-    "cpuidle.governor=teo"
-  ];
+  # boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
+  # boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  # boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  # boot.kernelParams = [
+  #   "msr.allow_writes=on"
+  #   "cpuidle.governor=teo"
+  # ];
 
   # Thinkpad power and performance management
   # https://linrunner.de/tlp/settings/usb.html

@@ -12,15 +12,18 @@
   # Console
   # --------------------------------------------------------------------------------------
 
+  # Use maximum resolution in systemd-boot for hidpi
+  boot.loader.systemd-boot.consoleMode = "max";
+
   console = {
-    earlySetup = true;
     keyMap = "us";
+    earlySetup = true;
     # font = "${pkgs.terminus_font}/share/consolefonts/ter-132b.psf.gz";
-    font = "ter-powerline-v24b";
-    packages = [
-      pkgs.terminus_font
-      pkgs.powerline-fonts
-    ];
+    # font = "ter-powerline-v24b";
+    # packages = [
+    #   pkgs.terminus_font
+    #   pkgs.powerline-fonts
+    # ];
 
     colors = [
       "1f1f1F"
@@ -53,7 +56,7 @@
       }
     ];
     extraOptions = ''
-      --login ${pkgs.shadow}/bin/login --xkb-layout us --term xterm-256color --font-name "DejaVu Sans Mono" --font-size 15
+      --login ${pkgs.shadow}/bin/login --xkb-layout us --term xterm-256color --font-name "DejaVu Sans Mono" --font-size 18
     '';
   };
 }

@@ -4,6 +4,13 @@ TODOs
 Warts/Issues
 ------------
 
+* Figure out ZFS trim schedule
+  * https://askubuntu.com/questions/1200172/should-i-turn-on-zfs-trim-on-my-pools-or-should-i-trim-on-a-schedule-using-syste
+  * Setup "zpool trim" same as scrub schedule
+    * Looks like services.zfs.trim.enable will do this
+  * Is scrub setup?
+* ZFS tuning
+  * zfs set atime=off rpool
 * Look into replacing custom recursiveMerge with lib.recursiveMerge
 * Get rid of all references to Networkd?
   * There is no GUI or tray applet for Networkd - NetworkManager is used for desktops, networkd for servers/headless

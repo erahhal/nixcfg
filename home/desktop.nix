@@ -394,6 +394,10 @@ in
       hwdec=auto
       ytdl-format=bestvideo+bestaudio
       gpu-context=wayland
+
+      ## From nixos wiki:
+      # hwdec=auto-safe
+      # vo=gpu
       # profile=gpu-hq
     '';
 

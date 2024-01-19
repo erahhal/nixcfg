@@ -1,7 +1,7 @@
 { lib, ... }:
 {
   options = {
-    launchAppsConfig = lib.mkOption {
+    launchAppsConfigSway = lib.mkOption {
       type = lib.types.lines;
       default = ''
         set $homeLeft "LG Electronics LG Ultra HD 0x00003EAD"
@@ -31,6 +31,7 @@
         workspace 7 output $homeRight $laptop
         workspace 7
         exec discord
+        exec element-desktop
         workspace 8 output $laptop
         workspace 8
         exec waydroid session start

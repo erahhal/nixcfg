@@ -10,8 +10,9 @@
   displayManager = "sddm";
   sddmTheme = "adapta";
   # defaultSession = "none+i3";
-  defaultSession = "sway";
   # defaultSession = "hyprland";
+  defaultSession = "sway";
+  multipleSessions = true;
 
   ## @TODO: make xorg-specific
   ## Xorg settings
