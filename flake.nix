@@ -83,14 +83,14 @@
 
     sg-nvim.url = "github:sourcegraph/sg.nvim";
 
-    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
-    # nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
-    nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
+    nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
+    # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
-    # secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
-    secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
+    secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
+    # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
   };
 
   outputs = { ... }@inputs:
@@ -173,6 +173,7 @@
           {
             services.snap.enable = true;
           }
+          inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
         ];
         specialArgs = {
