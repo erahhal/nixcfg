@@ -127,6 +127,7 @@ in
         acpi
         autojump
         fortune
+        fzf
         python39Packages.percol
         python39Packages.pygments
         ripgrep

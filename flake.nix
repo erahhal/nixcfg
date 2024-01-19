@@ -41,14 +41,14 @@
     # Remarkable 2 Tablet Desktop App WINE wrapper
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    remarkable.url = "path:flakes/remarkable";
-    remarkable.inputs.nixpkgs.follows = "nixpkgs";
+    # remarkable.url = "path:flakes/remarkable";
+    # remarkable.inputs.nixpkgs.follows = "nixpkgs";
 
     # DCC
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    dcc.url = "path:flakes/dcc";
-    dcc.inputs.nixpkgs.follows = "nixpkgs";
+    # dcc.url = "path:flakes/dcc";
+    # dcc.inputs.nixpkgs.follows = "nixpkgs";
 
     # Pulse Secure
     # See the following about why relative paths can cause build issues:
@@ -83,10 +83,14 @@
 
     sg-nvim.url = "github:sourcegraph/sg.nvim";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
-    secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
+    # nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
+    nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
+
+    # secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
+    secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
   };
 
   outputs = { ... }@inputs:
@@ -169,6 +173,50 @@
           {
             services.snap.enable = true;
           }
+          inputs.nflx.nixosModules.default
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit system;
+          inherit hostParams;
+          inherit copyDesktopIcons;
+          inherit copyDesktopItems;
+          inherit mkWindowsApp;
+          inherit recursiveMerge;
+          inherit userParams;
+        };
+      };
+      nflx-erahhal-x1c =
+      let
+        system = "x86_64-linux";
+        hostParams = import ./hosts/nflx-erahhal-x1c/params.nix {};
+        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
+      in
+      inputs.nixpkgs.lib.nixosSystem {
+        system = system;
+        modules = [
+          (import ./hosts/nflx-erahhal-x1c/configuration.nix)
+          inputs.agenix.nixosModules.default
+          inputs.secrets.nixosModules.default
+          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
+          inputs.nixos-hardware.nixosModules.common-cpu-intel
+          inputs.nixos-hardware.nixosModules.common-pc-laptop
+          inputs.nur.nixosModules.nur
+          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.overlays = [ inputs.nur.overlay ];
+          }
+          inputs.nix-snapd.nixosModules.default
+          {
+            services.snap.enable = true;
+          }
+          inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
         ];
         specialArgs = {

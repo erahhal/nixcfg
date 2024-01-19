@@ -10,7 +10,7 @@ in
 
   environment.systemPackages = with pkgs; [
     ##  mkWindowsApp apps together conflict in home-manager, so install globally
-    inputs.remarkable.packages."${system}".remarkable
+    # inputs.remarkable.packages."${system}".remarkable
   ];
 
   # i18n.inputMethod.enabled = "ibus";

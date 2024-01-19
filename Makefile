@@ -28,6 +28,7 @@ offline:
 	nixos-rebuild --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
 
 clear-gpu-cache:
+	mkdir -p ~/.config
 	find ~/.config/. -type d -name GPUCache -exec rm -rf {} +
 
 gc:
@@ -59,6 +60,7 @@ clear-mimeapps:
 	[ -L "${HOME}/.config/mimeapps.list" ] || rm -f ${HOME}/.config/mimeapps.list
 
 update-gnupg-perms:
+	mkdir -p ${HOME}/.gnupg
 	chmod 700 ${HOME}/.gnupg
 
 update-nixpkgs:
