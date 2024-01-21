@@ -74,7 +74,7 @@ in
   # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   ## Latest ZFS compatible kernel has problems with dual external displays
-  # boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   # --------------------------------------------------------------------------------------
   # Device specific
@@ -183,21 +183,29 @@ in
     enable = true;
     settings = {
       # Control battery feature drivers:
-      NATACPI_ENABLE = 1;
-      TPACPI_ENABLE = 1;
-      TPSMAPI_ENABLE = 1;
+      # NATACPI_ENABLE = 1;
+      # TPACPI_ENABLE = 1;
+      # TPSMAPI_ENABLE = 1;
 
       # # Sometimes dock doesn't unuspend, causing USB to stop working
-      USB_AUTOSUSPEND = 0;
+      # USB_AUTOSUSPEND = 0;
       # USB_DENYLIST = "17ef:30b4 17ef:30b5 17ef:30b6 17ef:30b7 17ef:30b8 17ef:30b9 17ef:30ba 17ef:30bb";
 
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      ## "performance" severely degrades IO performance on X1C. Leave as default ("powersave").
+      ## Options are "performance" and "powersave" when intel_pstate is active
+      ## cat /sys/devices/system/cpu/intel_pstate/status
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      # CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      # CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
       # 100 being the maximum, limit the speed of my CPU to reduce
       # heat and decrease battery usage:
       CPU_MAX_PERF_ON_AC = 100;
       CPU_MAX_PERF_ON_BAT = 50;
+
+      # Only works if intel_pstate is active
+      CPU_BOOST_ON_AC = 1;
+      CPU_BOOST_ON_BAT = 0;
 
       # The following prevents the battery from charging fully to
       # preserve lifetime. Run `tlp fullcharge` to temporarily force

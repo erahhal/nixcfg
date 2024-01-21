@@ -57,7 +57,7 @@
               criteria = "eDP-1";
               status = "enable";
               mode = "2880x1800@90.000999";
-              position = "2560,810";
+              position = "1678,1440";
               scale = 1.75;
             }
           ];
@@ -76,7 +76,7 @@
               criteria = "eDP-1";
               status = "enable";
               mode = "2880x1800@90.000999";
-              position = "2560,810";
+              position = "1678,1440";
               scale = 1.75;
             }
           ];

@@ -6,8 +6,8 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.initrd.kernelModules = [  ];
+  boot.kernelModules = [ "kvm-intel" "thinkpad-acpi" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
@@ -69,6 +69,4 @@
   networking.hostId = "2118a134";
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
-  # powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }

@@ -351,6 +351,8 @@
     sshpass
     steam-run
     steampipe
+    stress-ng
+    sysstat
     tmux
     unrar
     usbutils
