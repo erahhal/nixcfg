@@ -23,7 +23,7 @@
 
   wireguardIp = "192.168.2.5";
 
-  virtualboxEnabled = false;
+  virtualboxEnabled = true;
 
   waydroid = {
     # width = 3400;

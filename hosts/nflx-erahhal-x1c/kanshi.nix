@@ -12,7 +12,7 @@
               status = "enable";
               mode = "2880x1800@90.000999";
               position = "0,0";
-              scale = 1.75;
+              scale = 1.8;
             }
           ];
         };
@@ -88,14 +88,14 @@
               criteria = "eDP-1";
               status = "enable";
               mode = "2880x1800@90.000999";
-              position = "0,100";
-              scale = 1.75;
+              position = "0,67";
+              scale = 1.8;
             }
             {
               criteria = "LG Electronics 16MQ70 204NZKZ005285";
               status = "enable";
               mode = "2560x1600@59.972000Hz";
-              position = "1706,0";
+              position = "1599,0";
               scale = 1.5;
             }
           ];

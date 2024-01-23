@@ -241,6 +241,8 @@ in
         "${modifier}+Shift+Return" = "exec ${dropdownTerminalCmd}";
         "${modifier}+x" = "exec ${swayLockCmd}";
         "${modifier}+c" = "kill";
+        ## Force kill
+        "${modifier}+Shift+c" = "exec swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).pid' | xargs -L 1 kill -9";
         "${modifier}+r" = "reload";
         "${modifier}+t" = "layout toggle tabbed split";
         "${modifier}+y" = "exec systemctl --user restart kanshi";
@@ -323,7 +325,7 @@ in
       for_window [app_id="thunar"] floating enable
       for_window [app_id="thunar"] resize set 1024 768
       for_window [app_id="vlc"] floating enable
-      for_window [app_id="org.gnome.Nautilus"] floating enable; resize set 1600 1200
+      for_window [app_id="org.gnome.Nautilus"] floating enable; resize set 1400 1000
       for_window [app_id="nemo"] floating enable
       for_window [app_id="nemo"] resize set 1600 1200
       for_window [class="kcalc"] floating enable

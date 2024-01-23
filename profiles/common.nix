@@ -196,18 +196,12 @@
   # Setting to true will kill things like tmux on logout
   services.logind.killUserProcesses = false;
 
-  # network locator e.g. scanners and printers
+  # network locator e.g. scanners, printers, media devices, etc
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
 
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # @TODO: Move to "environment"?
-  services.printing.drivers = [ pkgs.brlaser ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -254,6 +248,7 @@
     # ../overlays/pam-patched.nix
 
     ../profiles/overrides.nix
+    ../profiles/printers-scanners.nix
   ];
 
   # --------------------------------------------------------------------------------------

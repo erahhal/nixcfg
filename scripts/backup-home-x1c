@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-sudo mkdir -p /mnt/ellis/Backups/t490s-home
-sudo chown erahhal:users /mnt/ellisBackups/t490s-home
+sudo mkdir -p /mnt/ellis/Backups/x1c-home
+sudo chown erahhal:users /mnt/ellisBackups/x1c-home
 
 wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
 
@@ -13,4 +13,4 @@ rsync -aP \
   --exclude=.gradle \
   --exclude=.local/share/Steam \
   --exclude-from=/var/tmp/ignorelist \
-  --progress /home/$USER /mnt/ellis/Backups/t490s-home
+  --progress /home/$USER /mnt/ellis/Backups/x1c-home

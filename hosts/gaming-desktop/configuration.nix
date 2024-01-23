@@ -102,19 +102,6 @@ in
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ dell-dock-udev-rules ];
 
-  hardware.sane = {
-    enable = true;
-    brscan5 = {
-      enable = true;
-      netDevices = {
-        brother = {
-          model = "MFC-L2710DW";
-          nodename = "BRW8CC84B1E2FC1";
-        };
-      };
-    };
-  };
-
   # Prevent hanging when waiting for network to be up
   systemd.network.wait-online.anyInterface = true;
 
