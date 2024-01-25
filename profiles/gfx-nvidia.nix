@@ -1,4 +1,4 @@
-{ lib, pkgs, userParams, ... }:
+{ config, lib, pkgs, userParams, ... }:
 
 # See: https://nixos.wiki/wiki/Nvidia
 
@@ -17,6 +17,8 @@ in
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
+  # boot.kernelModules = [ "nvidia-uvm" ];
+
   boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ];
 
   # services.xserver = {
@@ -32,8 +34,8 @@ in
     intel-gpu-tools
     nvtop
     primus
-    truecrack-cuda
-    unstable.cudaPackages_12_3.cudatoolkit
+    # truecrack-cuda
+    # unstable.cudaPackages_12_3.cudatoolkit
   ];
 
   # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
@@ -51,7 +53,10 @@ in
   hardware.bumblebee.enable = false;
 
   hardware.nvidia = {
-    nvidiaPersistenced = true;
+    # package = config.boot.kernelPackages.nvidiaPackages.beta;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
+
+    # nvidiaPersistenced = true;
 
     # Modesetting is required.
     modesetting.enable = true;

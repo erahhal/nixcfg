@@ -47,8 +47,8 @@
     # DCC
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    # dcc.url = "path:flakes/dcc";
-    # dcc.inputs.nixpkgs.follows = "nixpkgs";
+    dcc.url = "path:flakes/dcc";
+    dcc.inputs.nixpkgs.follows = "nixpkgs";
 
     # Pulse Secure
     # See the following about why relative paths can cause build issues:

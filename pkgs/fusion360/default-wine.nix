@@ -84,6 +84,7 @@ in mkWindowsApp rec {
     # https://help.autodesk.com/view/fusion360/ENU/?guid=TPD-SUPPORTED-FILE-FORMATS
     mimeTypes = [
       "x-world/x-3dmf"
+      "application/x-3dmf"
     ];
   in [
     (makeDesktopItem {

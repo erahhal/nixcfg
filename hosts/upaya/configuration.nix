@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, hostParams, recursiveMerge, ... }:
+{ config, pkgs, hostParams, recursiveMerge, ... }:
 
 let
   dell-dock-udev-rules = pkgs.callPackage ../../pkgs/dell-dock-udev-rules {};
@@ -40,6 +40,11 @@ in
 
       # user specific
       ./user.nix
+
+      # display
+      ./launch-apps-config-sway.nix
+      ./launch-apps-config-hyprland.nix
+      ./kanshi.nix
     ];
 
   # --------------------------------------------------------------------------------------
@@ -67,6 +72,9 @@ in
 
   ## Take latest kernel rather than default
   # boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  ## Latest ZFS compatible kernel has problems with dual external displays
+  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   # --------------------------------------------------------------------------------------
   # File system

@@ -98,6 +98,7 @@ stdenv.mkDerivation rec {
   desktopItems = let
     mimeTypes = [
       "x-world/x-3dmf"
+      "application/x-3dmf"
     ];
   in [
     (makeDesktopItem rec {

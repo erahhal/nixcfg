@@ -4,7 +4,7 @@ let
   dpiLaptopStr = toString hostParams.dpiLaptop;
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   phockup = pkgs.callPackage ../../pkgs/phockup {};
-  prismlauncher-nvidia = pkgs.callPackage ../../pkgs/prismlauncher-nvidia {};
+  # prismlauncher-nvidia = pkgs.callPackage ../../pkgs/prismlauncher-nvidia {};
   teensy-loader-gui = pkgs.callPackage ../../pkgs/teensy-loader-gui {};
   vdhcoapp = pkgs.callPackage ../../pkgs/vdhcoapp {};
 in
@@ -42,16 +42,24 @@ in
         ## apps
         cool-retro-term
         blender
-        lutris
-        mcreator
         phockup
-        prismlauncher-nvidia
         simple-scan
         thunderbird
         transmission-gtk
         trunk.tdesktop
         vdhcoapp
         unstable.chromium
+
+        ## games
+        lutris
+        steamtinkerlaunch
+        mcreator
+        unstable.prismlauncher
+        unstable.atlauncher
+        unstable.minecraft
+        unstable.glfw-wayland-minecraft
+        unstable.hmcl
+        wesnoth
 
         ## dev
         android-studio

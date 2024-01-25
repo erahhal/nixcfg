@@ -1,4 +1,4 @@
-{ pkgs, lib, hostParams, ... }:
+{ pkgs, lib, ... }:
 let
   assignWorkspaces = pkgs.writeShellScript "hyprland-assign-workspaces.sh" ''
     ## Unfortunately the workspace keyword for Hyprland does not support the monitor "desc:" qualifier, so map them here
@@ -39,7 +39,7 @@ let
 in
 {
   options = {
-    launchAppsConfig = lib.mkOption {
+    launchAppsConfigHyprland = lib.mkOption {
       type = lib.types.lines;
       default =
         ''

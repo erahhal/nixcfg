@@ -317,9 +317,6 @@ in
         whatsapp-for-linux
         xournalpp
 
-        # games
-        wesnoth
-
         ## desktop
         # unstable.ardour
         flavours
@@ -391,7 +388,9 @@ in
       no-border
       fullscreen=yes
       stop-screensaver=yes
-      hwdec=auto
+      ## Set this back once nvidia opengl is working again
+      # hwdec=auto
+      hwdec=vaapi
       ytdl-format=bestvideo+bestaudio
       gpu-context=wayland
 

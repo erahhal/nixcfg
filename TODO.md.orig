@@ -4,7 +4,7 @@ TODOs
 Warts/Issues
 ------------
 
-* Agenix does not decrypt on boot for Sicmundus
+<<<<<<< Updated upstream
 * Figure out ZFS trim schedule
   * https://askubuntu.com/questions/1200172/should-i-turn-on-zfs-trim-on-my-pools-or-should-i-trim-on-a-schedule-using-syste
   * Setup "zpool trim" same as scrub schedule
@@ -12,6 +12,9 @@ Warts/Issues
   * Is scrub setup?
 * ZFS tuning
   * zfs set atime=off rpool
+=======
+* Agenix does not decrypt on boot for Sicmundus
+>>>>>>> Stashed changes
 * Look into replacing custom recursiveMerge with lib.recursiveMerge
 * Get rid of all references to Networkd?
   * There is no GUI or tray applet for Networkd - NetworkManager is used for desktops, networkd for servers/headless
