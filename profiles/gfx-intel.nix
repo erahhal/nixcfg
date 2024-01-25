@@ -1,7 +1,7 @@
 # Taken from Colemickens
 # https://github.com/colemickens/nixcfg/blob/93e3d13b42e2a0a651ec3fbe26f3b98ddfdd7ab9/mixins/gfx-intel.nix
 
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -17,15 +17,19 @@
     opengl = {
       enable = true;
       driSupport = true;
+      # Needed for Steam
+      driSupport32Bit = true;
       extraPackages = with pkgs; [
         intel-media-driver
         vaapiVdpau
         libvdpau-va-gl
 
+        ## should this be used?
+        ## Enabling it causes a nix build conflict with intel-vaapi-driver even though it's not installed explicitly
         # vaapiIntel
 
-        ## Should this really be used instead?
-        intel-vaapi-driver
+        ## Should this really be used instead? seems to already be installed by enabling GL
+        # intel-vaapi-driver
       ];
     };
   };

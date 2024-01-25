@@ -201,11 +201,15 @@ in
       # 100 being the maximum, limit the speed of my CPU to reduce
       # heat and decrease battery usage:
       CPU_MAX_PERF_ON_AC = 100;
-      CPU_MAX_PERF_ON_BAT = 50;
-
-      # Only works if intel_pstate is active
       CPU_BOOST_ON_AC = 1;
+
+      CPU_MAX_PERF_ON_BAT = 50;
+      # Only works if intel_pstate is active
       CPU_BOOST_ON_BAT = 0;
+
+      ## High-perf battery settings
+      # CPU_MAX_PERF_ON_BAT = 100;
+      # CPU_BOOST_ON_BAT = 1;
 
       # The following prevents the battery from charging fully to
       # preserve lifetime. Run `tlp fullcharge` to temporarily force

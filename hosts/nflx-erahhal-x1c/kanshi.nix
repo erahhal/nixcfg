@@ -102,10 +102,13 @@
           exec = [
             "swaymsg workspace 1, move workspace to output right"
             "swaymsg workspace 2, move workspace to eDP-1"
-            "swaymsg workspace 3, move workspace to output right"
+            "swaymsg workspace 3, move workspace to eDP-1"
             "swaymsg workspace 4, move workspace to output right"
             "swaymsg workspace 5, move workspace to output right"
             "swaymsg workspace 6, move workspace to output right"
+            "swaymsg workspace 7, move workspace to output right"
+            "swaymsg workspace 8, move workspace to output right"
+            "swaymsg workspace 9, move workspace to output right"
           ];
         };
         # desk-portable-left = {
@@ -128,10 +131,13 @@
         #   exec = [
         #     "swaymsg workspace 1, move workspace to output left"
         #     "swaymsg workspace 2, move workspace to eDP-1"
-        #     "swaymsg workspace 3, move workspace to output left"
+        #     "swaymsg workspace 3, move workspace to eDP-1"
         #     "swaymsg workspace 4, move workspace to output left"
         #     "swaymsg workspace 5, move workspace to output left"
         #     "swaymsg workspace 6, move workspace to output left"
+        #     "swaymsg workspace 7, move workspace to output left"
+        #     "swaymsg workspace 8, move workspace to output left"
+        #     "swaymsg workspace 9, move workspace to output left"
         #   ];
         # };
         desk-netflix-viewsonic-dual = {
