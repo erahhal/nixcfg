@@ -290,7 +290,7 @@ in
         unstable.discord
         evolutionWithPlugins
         feh
-        unstable.firefox
+        firefox
         glava
         gnome.gnome-todo
         gnome3.cheese
