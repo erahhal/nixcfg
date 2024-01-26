@@ -779,27 +779,32 @@
             capabilities = capabilities,
           }
 
-          local servers = { 'pyright', 'nil_ls', 'rnix' }
+          local servers = {
+            'pyright',
+            'nil_ls',
+            -- Using nil_ls as main language server for nix
+            -- 'rnix',
+          }
           for _, lsp in ipairs(servers) do
             -- for servers with generic config
             nvim_lsp[lsp].setup(base_config)
           end
 
-          local configs = require 'lspconfig.configs'
-          if not configs.nixd then
-            configs.nixd = {
-              default_config = {
-                cmd = { 'nixd' },
-                filetypes = { 'nix' },
-                name = 'nixd',
-                root_dir = nvim_lsp.util.root_pattern('.nixd.json', 'flake.nix', '.git'),
-                single_file_support = true,
-                settings = {}
-              }
-            }
-          end
-
-          nvim_lsp.nixd.setup(base_config)
+          -- -- Disabled nixd, using nil_ls above
+          -- local configs = require 'lspconfig.configs'
+          -- if not configs.nixd then
+          --   configs.nixd = {
+          --     default_config = {
+          --       cmd = { 'nixd' },
+          --       filetypes = { 'nix' },
+          --       name = 'nixd',
+          --       root_dir = nvim_lsp.util.root_pattern('.nixd.json', 'flake.nix', '.git'),
+          --       single_file_support = true,
+          --       settings = {}
+          --     }
+          --   }
+          -- end
+          -- nvim_lsp.nixd.setup(base_config)
 
           local tsserver_config = {
             on_attach = on_attach,

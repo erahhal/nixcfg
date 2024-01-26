@@ -653,11 +653,11 @@
     },
     "nflx-vpn": {
       "locked": {
-        "lastModified": 1705649827,
-        "narHash": "sha256-LHRMREAh9aWqvrgDaGpE2w/UZjqkcnvoemwREiE20Bw=",
+        "lastModified": 1706252536,
+        "narHash": "sha256-apwgR7up3J+43thYPYvN/IqqDjSZu7tTFhOC/muZKPQ=",
         "ref": "refs/heads/master",
-        "rev": "1812d8ecaed9c34c1249751347db587f87d2fa06",
-        "revCount": 1,
+        "rev": "e3b9d41e3bd902909d86257455892205868fce25",
+        "revCount": 2,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },

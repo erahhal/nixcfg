@@ -23,6 +23,7 @@ in
         unstable.jetbrains.idea-ultimate
         lutris
         mcreator
+        postgresql
         # nodejs-16_x
         trunk.jetbrains.datagrip
         transmission-gtk
