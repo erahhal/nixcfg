@@ -5,6 +5,12 @@ args@{ lib, hostParams, userParams, ... }:
     home.sessionVariables = {
 
 ## Exact reference set of vars that has worked in the past:
+## Working software
+##  - Firefox
+##  - glxgears
+##  - Steam
+## Not working:
+##  - Brave (1-2FPS)
 ##
 #   __NV_PRIME_RENDER_OFFLOAD = "1";
 #   __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
