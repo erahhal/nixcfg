@@ -20,6 +20,9 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    ## @TODO: Get rid of this when nvidia is re-enabled in repo, and also update to latest zfs kernel
+    nixos-hardware-xps.url = "github:NixOS/nixos-hardware/af21850d3d3937460378f1a46834fca54397292c";
+
     # Nix User Repository
     nur.url = "github:nix-community/NUR";
 
@@ -247,9 +250,9 @@
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.nixos-hardware.nixosModules.dell-xps-15-9560
-          inputs.nixos-hardware.nixosModules.common-cpu-intel
-          inputs.nixos-hardware.nixosModules.common-pc-laptop
+          inputs.nixos-hardware-xps.nixosModules.dell-xps-15-9560
+          inputs.nixos-hardware-xps.nixosModules.common-cpu-intel
+          inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.nixosModules.nur
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }

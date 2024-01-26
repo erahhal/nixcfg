@@ -40,7 +40,6 @@ in
 
   # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
   boot.kernelParams = [
-    "nvidia-drm.modeset=1"
     "vga=0"
     "rdblacklist=nouveau"
     "nouveau.modeset=0"
@@ -54,7 +53,7 @@ in
 
   hardware.nvidia = {
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
 
     # nvidiaPersistenced = true;
 

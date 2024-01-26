@@ -8,6 +8,15 @@ let
   dell-dock-udev-rules = pkgs.callPackage ../../pkgs/dell-dock-udev-rules {};
 in
 {
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # system.stateVersion = "21.11"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
+
   imports =
     [
       # Standard
@@ -73,8 +82,7 @@ in
   ## Take latest kernel rather than default
   # boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  ## Latest ZFS compatible kernel has problems with dual external displays
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+  # boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   # --------------------------------------------------------------------------------------
   # File system
@@ -275,7 +283,7 @@ in
   boot.kernelParams = [
     # Disables discrete Nvidia GPU when not in use
     # Must use bbwsitch or offloading to use GPU
-    "acpi_rev_override=1"
+    # "acpi_rev_override=1"
 
     # Disables DisplayPort Multi-Stream Transport which allows daisychaining monitors,
     # but also causes external monitors not to wake up when waking from sleep.

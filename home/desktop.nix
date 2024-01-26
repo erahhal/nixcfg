@@ -388,16 +388,16 @@ in
       no-border
       fullscreen=yes
       stop-screensaver=yes
-      ## Set this back once nvidia opengl is working again
-      # hwdec=auto
+      hwdec=auto
+      ## Set this in case nvidia opengl is broken
       hwdec=vaapi
       ytdl-format=bestvideo+bestaudio
       gpu-context=wayland
 
       ## From nixos wiki:
       # hwdec=auto-safe
-      # vo=gpu
-      # profile=gpu-hq
+      vo=gpu
+      profile=gpu-hq
     '';
 
     xdg.configFile."mpv/input.conf".text = ''
