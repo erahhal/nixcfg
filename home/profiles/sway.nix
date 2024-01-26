@@ -9,7 +9,7 @@ let
     repeat_delay = "250";
   };
   swayfont = "Iosevka Bold 18";
-  terminal = "${pkgs.trunk.kitty}/bin/kitty";
+  terminal = "${pkgs.kitty}/bin/kitty";
   light = "${pkgs.light}/bin/light";
   # bemenu = "BEMENU_BACKEND=wayland ${pkgs.bemenu}/bin/bemenu-run -H 32 --no-overlap -p execute: -b --fn 'Terminus 18' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
   # bespokeMenu = "${pkgs.termite}/bin/termite --name=launcher -e \"${pkgs.bashInteractive}/bin/bash -c 'compgen -c | ${pkgs.gnugrep}/bin/grep -v fzf | ${pkgs.coreutils}/bin/sort -u | ${pkgs.fzf}/bin/fzf --layout=reverse | ${pkgs.findutils}/bin/xargs -r ${pkgs.sway}/bin/swaymsg -t command exec'\"";
@@ -29,7 +29,7 @@ let
     open=$(ps aux | grep -i "kitty --class=dropdown" | grep -v grep)
     if [[ $open -eq 0 ]]
     then
-      ${pkgs.trunk.kitty}/bin/kitty --class=dropdown --detach
+      ${pkgs.kitty}/bin/kitty --class=dropdown --detach
       until swaymsg scratchpad show
       do
         echo "Waiting for Kitty to appear..."
