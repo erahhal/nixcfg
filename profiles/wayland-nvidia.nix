@@ -21,7 +21,7 @@ args@{ lib, hostParams, userParams, ... }:
       # SDL_VIDEODRIVER = "wayland";
 
       # From: https://www.reddit.com/r/swaywm/comments/sphp7b/a_quick_look_to_sway_wm_with_nvidias_drivers/
-      GL_GSYNC_ALLOWED = "0";
+      __GL_GSYNC_ALLOWED = "0";
       __GL_VRR_ALLOWED = "0";
       WLR_DRM_NO_ATOMIC = "1";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
