@@ -46,7 +46,6 @@ in
         simple-scan
         thunderbird
         transmission-gtk
-        trunk.tdesktop
         vdhcoapp
         unstable.chromium
 
