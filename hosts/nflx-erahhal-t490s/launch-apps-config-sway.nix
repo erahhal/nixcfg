@@ -28,6 +28,7 @@
         workspace 6 output $portableLg $laptop
         workspace 6
         exec signal-desktop
+        exec telegram-desktop
         workspace 7 output $homeRight $laptop
         workspace 7
         exec discord

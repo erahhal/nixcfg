@@ -1,4 +1,4 @@
-args@{ config, inputs, pkgs, lib, hostParams, ... }:
+args@{ config, inputs, pkgs, lib, hostParams, userParams, ... }:
 let
 xwayland_settings = ''
   Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
@@ -79,7 +79,12 @@ in
   };
 
   imports = [
-    ( import ./tmux.nix (args // { theme-colors = theme-colors; theme-status = theme-status; }))
+    ( import ./tmux.nix (args // {
+      forceConfig = false;
+      theme-colors = theme-colors;
+      theme-status = theme-status;
+      userParams = userParams;
+    }))
   ];
 
   ## Example custom color scheme
@@ -159,6 +164,61 @@ in
     color15               #fffefe
     selection_foreground  #000000
   '';
+
+  programs.alacritty.settings = {
+    bell.color = "#ffffff";
+    colors = {
+      primary = {
+        background            = "#000000";
+        foreground            = "#e9e9e9";
+        cursor                = "#e9e9e9";
+        selection_background  = "#424242";
+        color0                = "#000000";
+        color8                = "#777777";
+        color1                = "#d44d53";
+        color9                = "#d44d53";
+        color2                = "#b9c949";
+        color10               = "#b9c949";
+        color3                = "#e6c446";
+        color11               = "#e6c446";
+        color4                = "#79a6da";
+        color12               = "#79a6da";
+        color5                = "#c396d7";
+        color13               = "#c396d7";
+        color6                = "#70c0b1";
+        color14               = "#70c0b1";
+        color7                = "#fffefe";
+        color15               = "#fffefe";
+        selection_foreground  = "#000000";
+      };
+    };
+  };
+
+  programs.foot.settings = {
+    colors = {
+      flash                 = "ffffff";
+      background            = "000000";
+      foreground            = "e9e9e9";
+      selection-background  = "424242";
+      regular0              = "000000";
+      bright0               = "777777";
+      regular1              = "d44d53";
+      bright1               = "d44d53";
+      regular2              = "b9c949";
+      bright2               = "b9c949";
+      regular3              = "e6c446";
+      bright3               = "e6c446";
+      regular4              = "79a6da";
+      bright4               = "79a6da";
+      regular5              = "c396d7";
+      bright5               = "c396d7";
+      regular6              = "70c0b1";
+      bright6               = "70c0b1";
+      regular7              = "fffefe";
+      bright7               = "fffefe";
+      selection-foreground  = "000000";
+    };
+  };
 
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [

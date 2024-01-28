@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+sudo snap install core
+sudo snap install fusion360 --beta --devmode

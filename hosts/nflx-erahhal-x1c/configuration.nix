@@ -185,6 +185,11 @@ in
   #   "cpuidle.governor=teo"
   # ];
 
+  services.upower = {
+    enable = true;
+    criticalPowerAction = "Hibernate";
+  };
+
   # Thinkpad power and performance management
   # https://linrunner.de/tlp/settings/usb.html
   services.tlp = {

@@ -85,6 +85,7 @@
         ( import ../home/profiles/sway.nix (args // {
           launchAppsConfig = config.launchAppsConfigSway;
           hostParams = hostParams;
+          userParams = userParams;
         }))
       ];
     };

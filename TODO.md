@@ -4,6 +4,9 @@ TODOs
 Warts/Issues
 ------------
 
+* ZSH/Tmux/Kitty cut and paste issues
+  * DISABLE_MAGIC_FUNCTIONS=true
+  * https://unix.stackexchange.com/questions/643018/how-can-i-disable-kittys-paste-from-escaping
 * Agenix does not decrypt on boot for Sicmundus
 * Figure out ZFS trim schedule
   * https://askubuntu.com/questions/1200172/should-i-turn-on-zfs-trim-on-my-pools-or-should-i-trim-on-a-schedule-using-syste

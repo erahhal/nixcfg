@@ -280,6 +280,11 @@ in
   # Hardware specific
   # --------------------------------------------------------------------------------------
 
+  services.upower = {
+    enable = true;
+    criticalPowerAction = "Hibernate";
+  };
+
   boot.kernelParams = [
     # Disables discrete Nvidia GPU when not in use
     # Must use bbwsitch or offloading to use GPU

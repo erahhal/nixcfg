@@ -1,5 +1,6 @@
-{ pkgs, lib, inputs, hostParams, ... }:
+args@{ pkgs, lib, inputs, hostParams, userParams, ... }:
 let
+term = if userParams.tty == "kitty" then "xterm-kitty" else "xterm-256color";
 xwayland_settings = ''
   Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
   Xcursor.theme: Adwaita
@@ -79,8 +80,6 @@ theme-status = ''
   set -g window-status-current-style "bg=#EFEFEF"
   tmux_conf_theme_window_status_current_bg="#EFEFEF"
 '';
-
-  localConf = builtins.readFile ./tmux/tmux.conf.local;
 in
 
 {
@@ -88,55 +87,14 @@ in
     text = "light-mode";
   };
 
-  # @TODO: this shouldn't be duplicated
-  # @TODO: home.file."filename".text = "blah"; CAN be duplicated. use lib.mkBefore / lib.mkAfter to order
-  home.file.".tmux.conf.local" = lib.mkForce { text = builtins.replaceStrings ["[THEME_COLORS_TOKEN]"] [theme-colors] localConf + ''
-    # -- Ellis' Settings -----------------------------------------------------------
-
-    ### TODO:
-    ### Get rid of manual modification in tmux.conf of
-    ### spacer_activity to a space and spacer_current to an empty string
-
-    # Plugins
-    run-shell ${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible/sensible.tmux
-    run-shell ${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/cpu.tmux
-    run-shell ${pkgs.tmuxPlugins.open}/share/tmux-plugins/open/open.tmux
-    set -g @resurrect-strategy-vim 'session'
-    set -g @resurrect-strategy-nvim 'session'
-    # set -g @resurrect-capture-pane-contents 'on'
-    # set -g @resurrect-save-bash-history 'on'
-    run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/resurrect.tmux
-    set -g @continuum-restore 'on'
-    set -g @continuum-save-interval '5' # minutes
-    run-shell ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux
-    run-shell ${pkgs.tmuxPlugins.yank}/share/tmux-plugins/yank/yank.tmux
-
-    # set-option -sa terminal-overrides ',xterm-kitty:RGB'
-    set-option -sa terminal-features ',xterm-kitty:RGB'
-
-    # set-option -g default-shell /bin/zsh
-
-    set -g status-position top
-
-    # For sharing clipboard with vim
-    set -g focus-events on
-
-    set -gu prefix2
-    unbind C-a
-    unbind C-b
-    set -g prefix C-a
-    bind C-a send-prefix
-
-    # smart pane switching with awareness of vim splits
-    bind -n C-h run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-h) || tmux select-pane -L"
-    bind -n C-j run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-j) || tmux select-pane -D"
-    bind -n C-k run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-k) || tmux select-pane -U"
-    bind -n C-l run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-l) || tmux select-pane -R"
-    bind -n 'C-\' run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys 'C-\\') || tmux select-pane -l"
-
-    ${theme-status}
- '';
- };
+  imports = [
+    ( import ./tmux.nix (args // {
+      forceConfig = true;
+      theme-colors = theme-colors;
+      theme-status = theme-status;
+      userParams = userParams;
+    }))
+  ];
 
   # For X
   home.file.".Xresources".text = xwayland_settings;
@@ -184,6 +142,61 @@ in
     color15               #f1f1f1
     selection_foreground  #efefef
   '';
+
+  programs.alacritty.settings = lib.mkForce {
+    bell.color = "#000000";
+    colors = {
+      primary = {
+        background            = "#efefef";
+        foreground            = "#414141";
+        cursor                = "#5e76c7";
+        selection_background  = "#6f6a4e";
+        color0                = "#414141";
+        color1                = "#b23670";
+        color2                = "#66781d";
+        color3                = "#cc6e33";
+        color4                = "#3b5ea7";
+        color5                = "#a353b2";
+        color6                = "#66781d";
+        color7                = "#efefef";
+        color8                = "#3e3e3e";
+        color9                = "#da3365";
+        color10               = "#829428";
+        color11               = "#cc6e33";
+        color12               = "#3b5ea7";
+        color13               = "#a353b2";
+        color14               = "#829428";
+        color15               = "#f1f1f1";
+        selection_foreground  = "#efefef";
+      };
+    };
+  };
+
+  programs.foot.settings = lib.mkForce {
+    colors = {
+      flash                 = "000000";
+      background            = "efefef";
+      foreground            = "414141";
+      selection-background  = "6f6a4e";
+      regular0              = "414141";
+      regular1              = "b23670";
+      regular2              = "66781d";
+      regular3              = "cc6e33";
+      regular4              = "3b5ea7";
+      regular5              = "a353b2";
+      regular6              = "66781d";
+      regular7              = "efefef";
+      bright0               = "3e3e3e";
+      bright1               = "da3365";
+      bright2               = "829428";
+      bright3               = "cc6e33";
+      bright4               = "3b5ea7";
+      bright5               = "a353b2";
+      bright6               = "829428";
+      bright7               = "f1f1f1";
+      selection-foreground  = "efefef";
+    };
+  };
 
   xdg.configFile."lsd/config.yaml".text = ''
     color:

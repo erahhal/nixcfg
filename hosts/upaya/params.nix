@@ -16,10 +16,10 @@
 
   ## @TODO: make xorg-specific
   ## Xorg settings
-  # kittyFontSize = 7;
+  # ttyFontSize = 7;
   # trolltechFontSize = 10;
 
-  kittyFontSize = 9;
+  ttyFontSize = 9;
   trolltechFontSize = 10;
   dpi = 210;
   dpiSddm = 210;
@@ -31,7 +31,7 @@
   # 15.6" 4k: 280 dpi
 
   ## No laptop scaling
-  # kittyFontSize = 24;
+  # ttyFontSize = 24;
   # dpi = 163;
 
   defaultBrowser = "firefox";

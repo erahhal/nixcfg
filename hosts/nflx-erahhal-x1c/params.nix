@@ -12,7 +12,7 @@
   defaultSession = "sway";
   multipleSessions = true;
 
-  kittyFontSize = 9;
+  ttyFontSize = 9;
   trolltechFontSize = 10;
   dpi = 210;
   dpiSddm = 210;

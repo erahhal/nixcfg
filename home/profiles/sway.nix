@@ -1,4 +1,4 @@
-{ lib, pkgs, launchAppsConfig, hostParams, ... }:
+{ lib, pkgs, launchAppsConfig, hostParams, userParams, ... }:
 
 let
   swaynagmode = pkgs.callPackage ../../pkgs/swaynagmode {};
@@ -9,7 +9,6 @@ let
     repeat_delay = "250";
   };
   swayfont = "Iosevka Bold 18";
-  terminal = "${pkgs.kitty}/bin/kitty";
   light = "${pkgs.light}/bin/light";
   # bemenu = "BEMENU_BACKEND=wayland ${pkgs.bemenu}/bin/bemenu-run -H 32 --no-overlap -p execute: -b --fn 'Terminus 18' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
   # bespokeMenu = "${pkgs.termite}/bin/termite --name=launcher -e \"${pkgs.bashInteractive}/bin/bash -c 'compgen -c | ${pkgs.gnugrep}/bin/grep -v fzf | ${pkgs.coreutils}/bin/sort -u | ${pkgs.fzf}/bin/fzf --layout=reverse | ${pkgs.findutils}/bin/xargs -r ${pkgs.sway}/bin/swaymsg -t command exec'\"";
@@ -25,17 +24,17 @@ let
     size = 10.0;
   };
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
-  dropdownTerminalCmd = pkgs.writeShellScript "launchkitty.sh" ''
-    open=$(ps aux | grep -i "kitty --class=dropdown" | grep -v grep)
+  dropdownTerminalCmd = pkgs.writeShellScript "launchtty.sh" ''
+    open=$(ps aux | grep -i "${userParams.tty} --class=dropdown" | grep -v grep)
     if [[ $open -eq 0 ]]
     then
-      ${pkgs.kitty}/bin/kitty --class=dropdown --detach
+      ${userParams.tty} --class=dropdown --detach
       until swaymsg scratchpad show
       do
-        echo "Waiting for Kitty to appear..."
+        echo "Waiting for ${userParams.tty} to appear..."
       done
     else
-      echo "Kitty is already open"
+      echo "${userParams.tty} is already open"
       swaymsg "[app_id=dropdown] scratchpad show"
     fi
   '';
@@ -118,7 +117,6 @@ in
     };
     xwayland = true;
     config = rec {
-      inherit terminal;
       fonts = swayfonts;
       bars = [
         {
@@ -237,7 +235,7 @@ in
         # Capture selection
         "ctrl+shift+4" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -d)\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png";
 
-        "${modifier}+Return" = "exec ${terminal}";
+        "${modifier}+Return" = "exec ${userParams.tty}";
         "${modifier}+Shift+Return" = "exec ${dropdownTerminalCmd}";
         "${modifier}+x" = "exec ${swayLockCmd}";
         "${modifier}+c" = "kill";

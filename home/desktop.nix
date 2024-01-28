@@ -44,9 +44,13 @@ in
 
   home-manager.users.${userParams.username} = {
     imports = [
+      # Terminals
+      ./profiles/alacritty.nix
+      ./profiles/foot.nix
+      ./profiles/kitty.nix
+
       ./profiles/bambu-studio.nix
       ./profiles/element.nix
-      ./profiles/kitty.nix
       ./profiles/gthumb.nix
       ./profiles/signal.nix
       ## Should be handled by wayland scaling now
@@ -246,8 +250,8 @@ in
       ## using "wayland" makes menus disappear in kde apps
       ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
       ##         and borders between elements are sometimes transparent, showing the background.
-      # QT_QPA_PLATFORM = "wayland";
-      QT_QPA_PLATFORM = "xcb";
+      QT_QPA_PLATFORM = "wayland";
+      # QT_QPA_PLATFORM = "xcb";
 
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       XDG_SESSION_TYPE = "wayland";
@@ -276,6 +280,8 @@ in
         xorg.xdpyinfo
         # Dbus viewer
         dfeet
+        xsel
+        wl-clipboard
 
         ## disk space
         baobab
@@ -284,13 +290,17 @@ in
 
         ## apps
         audacity
-        czkawka
+        unstable.bitwarden
         brave
+        czkawka
         unstable.digikam
         unstable.discord
         evolutionWithPlugins
         feh
         firefox
+        # gimp-with-plugins
+        # pr67576-gimp-wayland.gimp-with-plugins
+        pr67576-gimp-wayland.gimp
         glava
         gnome.gnome-todo
         gnome3.cheese
@@ -307,15 +317,12 @@ in
         spotify
         sxiv # image viewer with vim bindings
         unstable.stellarium
-        unstable.bitwarden
-        # gimp-with-plugins
-        # pr67576-gimp-wayland.gimp-with-plugins
-        pr67576-gimp-wayland.gimp
-        unstable.zoom-us
+        telegram-desktop
         waydroid
         webcamoid
         whatsapp-for-linux
         xournalpp
+        zoom-us
 
         ## desktop
         # unstable.ardour

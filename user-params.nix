@@ -10,4 +10,7 @@
   uid = 1026;
   gid = 100;
   shell = "zsh";
+  tty = "kitty";
+  # tty = "alacritty";
+  # tty = "foot";
 }

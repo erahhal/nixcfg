@@ -7,7 +7,7 @@
       # package = pkgs.terminus_font_ttf;
       name = "DejaVu Sans Mono";
       package = pkgs.dejavu_fonts;
-      size = hostParams.kittyFontSize;
+      size = hostParams.ttyFontSize;
     };
     settings = {
       enable_audio_bell = false;
