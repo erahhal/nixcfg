@@ -16,7 +16,7 @@ let
   tmuxConfEllis = ''
     # -- Ellis' Settings -----------------------------------------------------------
 
-    set -g mouse on
+    # set -g mouse on
 
     ### TODO:
     ### Get rid of manual modification in tmux.conf of
@@ -61,6 +61,7 @@ let
     bind -n C-l run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-l) || tmux select-pane -R"
     bind -n 'C-\' run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys 'C-\\') || tmux select-pane -l"
  '';
+
   tmuxConf = tmuxConfLocalThemed + tmuxConfEllis + theme-status;
 in
 {

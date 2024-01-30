@@ -18,12 +18,15 @@ stdenv.mkDerivation rec {
     ./spacer-update.patch
   ];
 
+  # Hooks allow overlays/overrides to modify things pre and post install
   installPhase = ''
     runHook preInstall
 
     mkdir -p $out/
-    cp $src/.tmux.conf $out/.tmux.conf
-    cp $src/.tmux.conf.local $out/.tmux.conf.local
+    # Note that it's copying from . rather than $src
+    # Patches are NOT applied inline to $src
+    cp ./.tmux.conf $out/.tmux.conf
+    cp ./.tmux.conf.local $out/.tmux.conf.local
 
     runHook postInstall
   '';

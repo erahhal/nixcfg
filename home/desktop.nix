@@ -303,7 +303,6 @@ in
         pr67576-gimp-wayland.gimp
         glava
         gnome.gnome-todo
-        gnome3.cheese
         gnome3.gnome-calculator
         joplin-desktop
         kcalc
@@ -319,10 +318,20 @@ in
         unstable.stellarium
         telegram-desktop
         waydroid
-        webcamoid
         whatsapp-for-linux
         xournalpp
         zoom-us
+
+        ## Video recording
+
+        ## BAD - Saved an almost empty file after recording
+        # webcamoid
+        ## BAD - Janky video, audio out of sync
+        # gnome3.cheese
+        ## BAD - audio not recorded with video
+        # guvcview
+        ## BEST - works great
+        obs-studio
 
         ## desktop
         # unstable.ardour
@@ -332,7 +341,6 @@ in
         gnome3.evince # PDF viewer
         gnome3.nautilus
         # cinnamon.nemo
-        obs-studio
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application
