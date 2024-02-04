@@ -39,14 +39,14 @@
       fi
       "$GENERATION"/activate
 
-      if pgrep -x "sway" > /dev/null; then
+      if ${pkgs.procps}/bin/pidof sway > /dev/null; then
         SWAYMSG=${pkgs.sway}/bin/sway
         $PKILL waybar
         ## Using full path to tmux fails, so use one in $PATH
         tmux source-file ~/.tmux.conf
         $SYSTEMCTL --user restart swaynotificationcenter
         $SWAYMSG reload
-      elif pgrep -x "Hyprland" > /dev/null; then
+      elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
         HYPRCTL=${pkgs.hyprland}/bin/hyprctl
         $PKILL waybar
         ## Using full path to tmux fails, so use one in $PATH

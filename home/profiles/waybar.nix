@@ -55,7 +55,6 @@ in
           "sway/mode"
           "sway/window"
           "hyprland/workspaces"
-          "hyprland/mode"
           "hyprland/window"
         ];
 

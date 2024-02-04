@@ -116,13 +116,15 @@ in
       exec-once=hyprctl setcursor Adwaita 24
 
       ## Refresh services
+      exec = ${pkgs.hyprpaper}/bin/hyprpaper
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
       exec = systemctl --user restart sway-idle
       exec = pkill waybar; ${pkgs.waybar}/bin/waybar
+      exec = ${pkgs.blueman}/bin/blueman-applet
+      exec = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
       exec = systemctl --user restart kanshi
-      exec = ${pkgs.hyprpaper}/bin/hyprpaper
 
       ## @TODO
       ## 1. Is this already being set?
@@ -171,13 +173,18 @@ in
       }
 
       general {
-        gaps_in = 5
-        gaps_out = 5
+        # gaps_in = 5
+        # gaps_out = 5
+        gaps_in = 0
+        gaps_out = 0
         border_size = 1
+        col.active_border = rgba(4a7697ff)
+        col.inactive_border = rgba(2b2b2bff)
       }
 
       decoration {
-        rounding = 8
+        # rounding = 8
+        rounding = 0
 
         drop_shadow = 1
         shadow_ignore_window = 1
