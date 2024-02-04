@@ -327,7 +327,7 @@ in
       for_window [app_id="nemo"] floating enable
       for_window [app_id="nemo"] resize set 1600 1200
       for_window [app_id="gthumb"] floating enable; fullscreen enable
-      for_window [class="kcalc"] floating enable
+      for_window [app_id="org.kde.kcalc"] floating enable
       for_window [class="AVPNC"] floating enable
       for_window [app_id="zenity"] floating enable
       for_window [title=".*QjackCtl.*"] floating enable

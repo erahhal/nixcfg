@@ -5,6 +5,63 @@ let
   wofi = "${pkgs.wofi}/bin/wofi --show run -W 400 -H 300";
   launcher = rofi;
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
+  toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
+    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    JQ=${pkgs.jq}/bin/jq
+    BASE64=${pkgs.coreutils}/bin/base64
+
+    ACTIVEWORKSPACE=$($HYPRCTL -j activeworkspace | $JQ ".id")
+    ACTIVEWORKSPACE_WINDOWS_JSON=$($HYPRCTL -j clients | $JQ "map_values(select(.workspace.id == $ACTIVEWORKSPACE)) | map({address,class,title,at})")
+
+    INDEX=0
+    for ROW in $(echo "$ACTIVEWORKSPACE_WINDOWS_JSON" | $JQ -r '.[] | @base64'); do
+        WINDOW=$(echo $ROW | $BASE64 --decode)
+        CLASS=$(echo $WINDOW | $JQ -r ".class")
+        TITLE=$(echo $WINDOW | $JQ -r ".title")
+        $HYPRCTL dispatch focuswindow "title:$TITLE"
+        if [ "$INDEX" == "0" ]; then
+            FIRST_WINDOW_X=$(echo $WINDOW | $JQ -r ".at[0]")
+            $HYPRCTL dispatch togglegroup
+        else
+            WINDOW_X=$(echo $WINDOW | $JQ -r ".at[0]")
+            if [ "$FIRST_WINDOW_X" -gt "$WINDOW_X" ]; then
+                DIRECTION=r
+            else
+                DIRECTION=l
+            fi
+            $HYPRCTL dispatch moveintogroup $DIRECTION
+        fi
+        INDEX=$((INDEX+1))
+    done
+  '';
+
+  move-left = pkgs.writeShellScript "hyprland-move-left.sh" ''
+    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    JQ=${pkgs.jq}/bin/jq
+
+    ACTIVEWINDOW=$($HYPRCTL -j activewindow | $JQ "{address,grouped}")
+    ADDRESS=$(echo $ACTIVEWINDOW | $JQ -r ".address")
+    GROUP_FIRST=$(echo $ACTIVEWINDOW | $JQ -r ".grouped[0]")
+    if [ "$GROUP_FIRST" == "null" ] || [ "$ADDRESS" == "$GROUP_FIRST" ]; then
+        $HYPRCTL dispatch movefocus l
+    else
+        $HYPRCTL dispatch changegroupactive b
+    fi
+  '';
+
+  move-right = pkgs.writeShellScript "hyprland-move-left.sh" ''
+    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    JQ=${pkgs.jq}/bin/jq
+
+    ACTIVEWINDOW=$($HYPRCTL -j activewindow | $JQ "{address,grouped}")
+    ADDRESS=$(echo $ACTIVEWINDOW | $JQ -r ".address")
+    GROUP_LAST=$(echo $ACTIVEWINDOW | $JQ -r ".grouped[-1]")
+    if [ "$GROUP_LAST" == "null" ] ||  [ "$ADDRESS" == "$GROUP_LAST" ]; then
+        $HYPRCTL dispatch movefocus r
+    else
+        $HYPRCTL dispatch changegroupactive f
+    fi
+  '';
 in
 {
   imports = [
@@ -146,6 +203,21 @@ in
         no_gaps_when_only = 1
       }
 
+      group {
+        insert_after_current = false
+        col.border_active = rgba(285577ff)
+        col.border_inactive = rgba(2b2b2bff)
+        groupbar {
+          font_family = DejaVu Sans
+          font_size = 14
+          height = 18
+          text_color = rgba(ffffffff)
+          col.active = rgba(285577ff)
+          col.inactive = rgba(2b2b2bff)
+        }
+      }
+
+
       # should be configured per-profile
       # monitor = eDP-1,3840X2160@60,0x100,1.6,vrr,1
       monitor = eDP-1,highres,auto,1.6,vrr,1
@@ -200,15 +272,19 @@ in
       bind = $mod, C, killactive
       # bind = $mod, R, forcerendererreload
       bind = $mod, R, exec, hyprctl reload
-      bind = $mod, T, togglegroup
+      bind = $mod, T, exec, ${toggle-group}
       bind = $mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'
-      bind = $mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'
+      bind = $mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode "default"'
       bind = $mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'";
-      bind = $mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend, mode \"default\"'
+      bind = $mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend, mode "default"'
       bind = $mod_SHIFT_CTRL, L, movecurrentworkspacetomonitor, r
       bind = $mod_SHIFT_CTRL, H, movecurrentworkspacetomonitor, l
       bind = $mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u
-      bind = $mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor, d
+      bind = $mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor,
+
+      bind = SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${pkgs.hyprland}/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+      bind = SHIFT_CTRL, 4, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -d)" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+      bind = SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.hyprland}/bin/hyprctl -j activewindow | jq -r '.at | join(",")') $(${pkgs.hyprland}/bin/hyprctl -j activewindow | jq -r '.size | join("x")')" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
 
       bind = $mod_CTRL, L, resizeactive, 10 0
       bind = $mod_CTRL, H, resizeactive, -10 0
@@ -216,8 +292,10 @@ in
       bind = $mod_CTRL, J, resizeactive, 0 10
 
       # move focus
-      bind = $mod, H, movefocus, l
-      bind = $mod, L, movefocus, r
+      # bind = $mod, H, movefocus, l
+      bind = $mod, H, exec, ${move-left}
+      # bind = $mod, L, movefocus, r
+      bind = $mod, L, exec, ${move-right}
       bind = $mod, K, movefocus, u
       bind = $mod, J, movefocus, d
 

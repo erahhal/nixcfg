@@ -1,4 +1,10 @@
 { userParams, ... }:
+let
+  home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
+  home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
+  home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
+  home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
+in
 {
   home-manager.users.${userParams.username} = {
     services.kanshi = {
@@ -16,7 +22,7 @@
             }
           ];
         };
-        desk = {
+        desk-sway = {
           outputs = [
             {
               criteria = "LG Electronics LG Ultra HD 0x00003EAD";
@@ -28,6 +34,33 @@
             }
             {
               criteria = "LG Electronics LG HDR 4K 0x00000F5B";
+              status = "enable";
+              mode = "3840x2160";
+              position = "2560,0";
+              scale = 1.5;
+            }
+            {
+              criteria = "eDP-1";
+              status = "disable";
+              # status = "enable";
+              mode = "2880x1800@90.000999";
+              position = "3985,1440";
+              scale = 1.75;
+            }
+          ];
+        };
+        desk-hyprland = {
+          outputs = [
+            {
+              criteria = "LG Electronics LG Ultra HD 0x00043EAD";
+              status = "enable";
+              mode = "3840x2160";
+              position = "0,0";
+              # transform = "90";
+              scale = 1.5;
+            }
+            {
+              criteria = "LG Electronics LG HDR 4K 0x00020F5B";
               status = "enable";
               mode = "3840x2160";
               position = "2560,0";

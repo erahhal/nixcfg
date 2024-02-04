@@ -280,6 +280,8 @@ in
         xorg.xdpyinfo
         # Dbus viewer
         dfeet
+        grim
+        slurp
         xsel
         wl-clipboard
 

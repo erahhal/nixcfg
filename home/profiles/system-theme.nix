@@ -22,7 +22,7 @@
   };
 
   home.packages = with pkgs; [
-    (writeShellScriptBin "toggle-theme" (''
+    (writeShellScriptBin "toggle-theme" ''
       set +e
 
       HOME_MANAGER=${pkgs.home-manager}/bin/home-manager
@@ -39,21 +39,29 @@
       fi
       "$GENERATION"/activate
 
-    '' + (if hostParams.defaultSession == "sway" then ''
-      SWAYMSG=${pkgs.sway}/bin/sway
-      $PKILL waybar
-      ## Using full path to tmux fails, so use one in $PATH
-      tmux source-file ~/.tmux.conf
-      $SYSTEMCTL --user restart swaynotificationcenter
-      $SWAYMSG reload
-    '' else "")))
+      if pgrep -x "sway" > /dev/null; then
+        SWAYMSG=${pkgs.sway}/bin/sway
+        $PKILL waybar
+        ## Using full path to tmux fails, so use one in $PATH
+        tmux source-file ~/.tmux.conf
+        $SYSTEMCTL --user restart swaynotificationcenter
+        $SWAYMSG reload
+      elif pgrep -x "Hyprland" > /dev/null; then
+        HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+        $PKILL waybar
+        ## Using full path to tmux fails, so use one in $PATH
+        tmux source-file ~/.tmux.conf
+        $SYSTEMCTL --user restart swaynotificationcenter
+        $HYPRCTL reload
+      fi
+    '')
   ];
 
   ## base16 guide
   # base00 - Default Background
   # base01 - Lighter Background (Used for status bars, line number and folding marks)
   # base02 - Selection Background
-  # base03 - Comments, Invisibles, Line Highlighting
+  # base03 - Comments, Invisibles, Line Highlightingk
   # base04 - Dark Foreground (Used for status bars)
   # base05 - Default Foreground, Caret, Delimiters, Operators
   # base06 - Light Foreground (Not often used)
