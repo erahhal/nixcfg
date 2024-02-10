@@ -43,6 +43,7 @@ in
       # ../../profiles/bambu-studio.nix
       ## Only needed if the docker version needs to be overridden for some reason
       # ../../overlays/docker.nix
+      # ../../overlays/bcompare-beta.nix
       ./virtualization.nix
 
       # user specific
@@ -177,13 +178,13 @@ in
   #   - Either adding these kernel modules and params,
   #     or turning off power saving on wifi fixed an intermittent
   #     hard freeze when on battery.
-  # boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
-  # boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
-  # boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
-  # boot.kernelParams = [
-  #   "msr.allow_writes=on"
-  #   "cpuidle.governor=teo"
-  # ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
+  boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  boot.kernelParams = [
+    "msr.allow_writes=on"
+    "cpuidle.governor=teo"
+  ];
 
   services.upower = {
     enable = true;

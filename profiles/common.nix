@@ -41,11 +41,13 @@
         "https://cache.nixos.org/"
         # @TODO: Unclear if this should be part of the host machine or the raspberry pi nixcfg repo
         "https://arm.cachix.org/"
+        "https://robotnix.cachix.org/"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "arm.cachix.org-1:5BZ2kjoL1q6nWhlnrbAl+G7ThY7+HaBRD9PZzqZkbnM="
+        "robotnix.cachix.org-1:+y88eX6KTvkJyernp1knbpttlaLTboVp4vq/b24BIv0="
       ];
     };
     # Additional text appended to nix.conf
@@ -70,6 +72,14 @@
     registry.nixpkgs.flake = inputs.nixpkgs;
 
     nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+
+    # Performance - don't kill the machine while building
+    # 0 (high) to 7 (low), default 4
+    daemonIOSchedPriority = 6;
+    # "best-effort" | "idle"
+    daemonIOSchedClass = "idle";
+    # "batch" (high) | "other" (normal) | "idle" (low)
+    daemonCPUSchedPolicy = "idle";
 
     # Garbage collection - deletes all unreachable paths in Nix store.
     gc = {
@@ -324,6 +334,8 @@
     memtest86plus
     minicom
     neofetch
+    nix
+    nix-output-monitor
     nixos-generators
     unstable.nil
     nix-index

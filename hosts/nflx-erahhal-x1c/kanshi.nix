@@ -1,4 +1,4 @@
-{ userParams, ... }:
+{ pkgs, userParams, ... }:
 let
   home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
   home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
@@ -75,6 +75,17 @@ in
               scale = 1.75;
             }
           ];
+          exec = [
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 1 desc:${home-monitor-left-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 2 desc:${home-monitor-right-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 3 desc:${home-monitor-right-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 4 desc:${home-monitor-left-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 5 desc:${home-monitor-left-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 6 desc:${home-monitor-left-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 7 desc:${home-monitor-left-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 8 desc:${home-monitor-left-hyprland}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 desc:${home-monitor-left-hyprland}"
+          ];
         };
         desk-left = {
           outputs = [
@@ -115,13 +126,43 @@ in
           ];
         };
         ## Only left or right can be enabled at the same time, not both
-        desk-portable-right = {
+        # desk-portable-right = {
+        #   outputs = [
+        #     {
+        #       criteria = "eDP-1";
+        #       status = "enable";
+        #       mode = "2880x1800@90.000999";
+        #       position = "0,67";
+        #       scale = 1.8;
+        #     }
+        #     {
+        #       criteria = "LG Electronics 16MQ70 204NZKZ005285";
+        #       status = "enable";
+        #       mode = "2560x1600@59.972000Hz";
+        #       position = "1599,0";
+        #       scale = 1.5;
+        #     }
+        #   ];
+        #   exec = [
+        #     "swaymsg workspace 1, move workspace to output right"
+        #     "swaymsg workspace 2, move workspace to eDP-1"
+        #     "swaymsg workspace 3, move workspace to eDP-1"
+        #     "swaymsg workspace 4, move workspace to output right"
+        #     "swaymsg workspace 5, move workspace to output right"
+        #     "swaymsg workspace 6, move workspace to output right"
+        #     "swaymsg workspace 7, move workspace to output right"
+        #     "swaymsg workspace 8, move workspace to output right"
+        #     "swaymsg workspace 9, move workspace to output right"
+        #   ];
+        # };
+        desk-portable-right-hyprland = {
           outputs = [
             {
               criteria = "eDP-1";
               status = "enable";
               mode = "2880x1800@90.000999";
               position = "0,67";
+              # Resolution must be integer divisible by scale
               scale = 1.8;
             }
             {
@@ -129,19 +170,20 @@ in
               status = "enable";
               mode = "2560x1600@59.972000Hz";
               position = "1599,0";
-              scale = 1.5;
+              # Resolution must be integer divisible by scale
+              scale = 1.666667;
             }
           ];
           exec = [
-            "swaymsg workspace 1, move workspace to output right"
-            "swaymsg workspace 2, move workspace to eDP-1"
-            "swaymsg workspace 3, move workspace to eDP-1"
-            "swaymsg workspace 4, move workspace to output right"
-            "swaymsg workspace 5, move workspace to output right"
-            "swaymsg workspace 6, move workspace to output right"
-            "swaymsg workspace 7, move workspace to output right"
-            "swaymsg workspace 8, move workspace to output right"
-            "swaymsg workspace 9, move workspace to output right"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 1 DP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 2 eDP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 3 eDP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 4 DP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 5 DP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 6 DP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 7 DP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 8 DP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 DP-1"
           ];
         };
         # desk-portable-left = {

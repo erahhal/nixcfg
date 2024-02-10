@@ -517,6 +517,7 @@ in
           # wraps neovim-unwrapped in a special way to load plugins, so must
           # expect nvim to be in $PATH here
           editor = "nvim";
+          excludesfile = "~/.gitignore_global";
         };
         diff = {
           colorMoved = "default";
@@ -551,9 +552,6 @@ in
         };
         push = {
           default = "simple";
-        };
-        core = {
-          excludesfile = "~/.gitignore_global";
         };
         rerere = {
           enabled = true;

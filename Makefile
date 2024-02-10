@@ -10,7 +10,7 @@ switch:
 	make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
-	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
+	nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --flake .#${HOSTNAME} -L |& nom --json
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before
 	NEW_THEME=$$(cat ~/.system-theme) ;\
@@ -21,11 +21,11 @@ switch:
 show-trace:
 	make clear-sddm-cache
 	make clear-mimeapps
-	nixos-rebuild --use-remote-sudo switch --show-trace --flake .#${HOSTNAME} -L
+	nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --show-trace --flake .#${HOSTNAME} -L |& nom --json
 	make update-gnupg-perms
 
 offline:
-	nixos-rebuild --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
+	nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L |& nom --json
 
 clear-gpu-cache:
 	mkdir -p ~/.config

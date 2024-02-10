@@ -118,6 +118,7 @@ window#waybar.empty #window {
 #idle_inhibitor,
 #custom-toggletheme,
 #custom-launcher,
+#custom-notification,
 #custom-power,
 #custom-wallpaper,
 #custom-updates,
@@ -192,6 +193,11 @@ window#waybar.empty #window {
 
 #custom-launcher {
     color: #C6C3C0;
+}
+
+#custom-notification {
+    color: #C6C3C0;
+    font-family: "NotoSansMono Nerd Font";
 }
 
 #custom-power {

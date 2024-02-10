@@ -62,6 +62,14 @@ let
         $HYPRCTL dispatch changegroupactive f
     fi
   '';
+
+  kill-active = pkgs.writeShellScript "hyprland-kill-active.sh" ''
+    if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | jq -r ".class")" = "Steam" ]; then
+        ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
+    else
+        ${pkgs.hyprland}/bin/hyprctl dispatch killactive ""
+    fi
+  '';
 in
 {
   imports = [
@@ -150,6 +158,17 @@ in
         ## No longer an option?
         ## @TODO: what has changed here?
         # no_vfr = 0
+
+        # Don't show anime girl in background
+        disable_hyprland_logo = true
+        force_default_wallpaper = 0
+        disable_splash_rendering = true
+
+        # Screen sleep behavior
+        mouse_move_enables_dpms = true
+        key_press_enables_dpms = true
+
+        mouse_move_focuses_monitor = false
       }
 
       # touchpad gestures
@@ -162,12 +181,22 @@ in
         kb_layout = ro
         repeat_rate = 50
         repeat_delay = 255
+        # Map caps to ctrl
+        kb_options = ctrl:nocaps
 
-        # focus change on cursor move
+        # Don't change focus on cursor move
         follow_mouse = 2
+
+        # Don't automatically change focus between floating and tiled on mouse move
+        float_switch_override_focus = 0
+
         # accel_profile = flat
         touchpad {
           scroll_factor = 0.3
+          disable_while_typing = true
+          tap-to-click = false
+          # Don't use right side of pad as right click. two finger click is right click, three is middle
+          clickfinger_behavior = true
         }
         accel_profile = adaptive
       }
@@ -178,6 +207,8 @@ in
         gaps_in = 0
         gaps_out = 0
         border_size = 1
+        resize_on_border = true
+        no_border_on_floating = true
         col.active_border = rgba(4a7697ff)
         col.inactive_border = rgba(2b2b2bff)
       }
@@ -247,8 +278,11 @@ in
       # workspace = eDP-1, 3
       # workspace = eDP-1, 6
 
-      # telegram media viewer
       windowrule = float, title:^(KCalc)$
+      # Chrome Bitwarden popup
+      windowrule = float, title:^(Bitwarden)$
+      # Firefox Bitwarden popup
+      windowrule = float, title:^(Extension.*Bitwarden.*Firefox)$
 
       # telegram media viewer
       windowrule = float, title:^(Media viewer)$
@@ -276,14 +310,15 @@ in
       bind = $mod, Return, exec, $term
       bind = $mod, X, exec, ${swayLockCmd}
       # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
-      bind = $mod, C, killactive
+      bind = $mod, C, exec, ${kill-active}
       # bind = $mod, R, forcerendererreload
       bind = $mod, R, exec, hyprctl reload
+      bind = $mod, Y, exec, systemctl --user restart kanshi
       bind = $mod, T, exec, ${toggle-group}
       bind = $mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'
       bind = $mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode "default"'
-      bind = $mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'";
-      bind = $mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend, mode "default"'
+      bind = $mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'
+      bind = $mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend'
       bind = $mod_SHIFT_CTRL, L, movecurrentworkspacetomonitor, r
       bind = $mod_SHIFT_CTRL, H, movecurrentworkspacetomonitor, l
       bind = $mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u

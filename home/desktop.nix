@@ -183,7 +183,7 @@ in
       # IME
       # ---------------------------------------------------------------------------
       XMODIFIERS = "@im=fcitx";
-      GTK_IM_MODULE = "fcitx";
+      # GTK_IM_MODULE = "fcitx";
       QT_IM_MODULE = "fcitx";
       SDL_IM_MODULE = "fcitx";
       INPUT_METHOD = "fcitx";
@@ -276,14 +276,14 @@ in
         ## system
         captive-browser
         gucharmap
-        solaar           # for logitech unifying receiver setup
+        solaar            # for logitech unifying receiver setup
         xorg.xdpyinfo
-        # Dbus viewer
-        dfeet
-        grim
-        slurp
-        xsel
-        wl-clipboard
+        dfeet             # Dbus viewer
+        grim              # Arbitrary capture of portion of screen
+        slurp             # Allows user to select portion of screen
+        xsel              # Manipulate xwindows clipboard
+        wl-clipboard      # Manipulate wayland clipboard
+        wf-recorder       # Record video of screen portions in wayland
 
         ## disk space
         baobab
