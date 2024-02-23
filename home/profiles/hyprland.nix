@@ -2,7 +2,6 @@
 
 let
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
-  wofi = "${pkgs.wofi}/bin/wofi --show run -W 400 -H 300";
   launcher = rofi;
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
@@ -16,18 +15,23 @@ let
     INDEX=0
     for ROW in $(echo "$ACTIVEWORKSPACE_WINDOWS_JSON" | $JQ -r '.[] | @base64'); do
         WINDOW=$(echo $ROW | $BASE64 --decode)
-        CLASS=$(echo $WINDOW | $JQ -r ".class")
-        TITLE=$(echo $WINDOW | $JQ -r ".title")
-        $HYPRCTL dispatch focuswindow "title:$TITLE"
+        ADDRESS=$(echo $WINDOW | $JQ -r ".address")
+        $HYPRCTL dispatch focuswindow address:$ADDRESS
         if [ "$INDEX" == "0" ]; then
             FIRST_WINDOW_X=$(echo $WINDOW | $JQ -r ".at[0]")
+            FIRST_WINDOW_Y=$(echo $WINDOW | $JQ -r ".at[1]")
             $HYPRCTL dispatch togglegroup
         else
             WINDOW_X=$(echo $WINDOW | $JQ -r ".at[0]")
+            WINDOW_Y=$(echo $WINDOW | $JQ -r ".at[1]")
             if [ "$FIRST_WINDOW_X" -gt "$WINDOW_X" ]; then
                 DIRECTION=r
-            else
+            elif [ "$FIRST_WINDOW_X" -lt "$WINDOW_X" ]; then
                 DIRECTION=l
+            elif [ "$FIRST_WINDOW_Y" -gt "$WINDOW_Y" ]; then
+                DIRECTION=d
+            else
+                DIRECTION=u
             fi
             $HYPRCTL dispatch moveintogroup $DIRECTION
         fi
@@ -129,7 +133,7 @@ in
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
       exec = systemctl --user restart sway-idle
-      exec = pkill waybar; ${pkgs.waybar}/bin/waybar
+      exec = pkill waybar; sleep 1; ${pkgs.waybar}/bin/waybar
       exec = ${pkgs.blueman}/bin/blueman-applet
       exec = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
       exec = systemctl --user restart kanshi
@@ -164,9 +168,10 @@ in
         force_default_wallpaper = 0
         disable_splash_rendering = true
 
-        # Screen sleep behavior
-        mouse_move_enables_dpms = true
-        key_press_enables_dpms = true
+        ## Screen sleep behavior
+        ## A bug makes these potentially eat up GPU
+        # mouse_move_enables_dpms = true
+        # key_press_enables_dpms = true
 
         mouse_move_focuses_monitor = false
       }
@@ -247,7 +252,7 @@ in
         col.border_inactive = rgba(2b2b2bff)
         groupbar {
           font_family = DejaVu Sans
-          font_size = 14
+          font_size = 10
           height = 18
           text_color = rgba(ffffffff)
           col.active = rgba(285577ff)

@@ -227,6 +227,14 @@ in
     };
   };
 
+  programs.zsh.plugins = [
+    {
+      name = "powerlevel10k-config";
+      src = ./zsh-p10k-config;
+      file = "p10k.zsh";
+    }
+  ];
+
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
       {

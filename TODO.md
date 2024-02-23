@@ -62,6 +62,27 @@ Warts/Issues
 Improvments
 -----------
 
+* hypridle
+  * https://github.com/hyprwm/hypridle
+* hyprlock
+  * https://github.com/hyprwm/hyprlock/
+* Share video of canonical VP of cloud on Nix
+  * https://www.youtube.com/watch?v=9l-U2NwbKOc
+* tailscale with headscale
+* lazy nvim
+* Ubuntu setup with Determinate
+  * https://determinate.systems/posts/determinate-nix-installer/
+* Secure boot with automatic TPM decryption
+  * https://github.com/nix-community/lanzaboote?tab=readme-ov-file
+  * https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md
+* Building out disk automatically for new installs
+  * https://github.com/nix-community/disko
+* Running VMs using Nix
+  * https://github.com/jnsgruk/crafts-flake
+  * https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/
+* Evaluate Jon Seager from Canonical's config
+  * https://github.com/jnsgruk/nixos-config
+  * Traefik
 * Add nixos-infect install scripot
  * Test with an ubuntu image, like done with the umbrel box
 * Gnome Keyring in sway

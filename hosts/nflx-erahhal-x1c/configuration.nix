@@ -162,6 +162,17 @@ in
     '';
   };
 
+  networking.firewall = {
+    allowedUDPPorts = [
+    ];
+    allowedTCPPorts = [
+      # Common docker development port
+      80
+      3000
+      8080
+    ];
+  };
+
   # --------------------------------------------------------------------------------------
   # Hardware specific
   # --------------------------------------------------------------------------------------
@@ -210,7 +221,7 @@ in
       ## cat /sys/devices/system/cpu/intel_pstate/status
       CPU_SCALING_GOVERNOR_ON_AC = "powersave";
       # CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      # CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
       # 100 being the maximum, limit the speed of my CPU to reduce
       # heat and decrease battery usage:

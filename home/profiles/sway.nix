@@ -333,6 +333,7 @@ in
       for_window [title=".*QjackCtl.*"] floating enable
       for_window [title="Teensy"] floating enable
       for_window [title="^Zoom.*"] floating enable
+      for_window [app_id="^org.kde.polkit-kde-authentication-agent.*"] floating enable
       for_window [title="^Minecraft 1.*"] floating enable; fullscreen enable
       for_window [class="com.bitwig.BitwigStudio" title="Manage Licenses"] floating enable
       for_window [class="com.bitwig.BitwigStudio" title="Bitwig Studio \d.*"] floating enable

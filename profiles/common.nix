@@ -307,6 +307,7 @@
     distrobox
     dmidecode
     dos2unix
+    ed
     exfat
     exiftool
     ffmpeg

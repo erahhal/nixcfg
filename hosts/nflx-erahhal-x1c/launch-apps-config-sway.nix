@@ -15,26 +15,34 @@
         workspace 2 output $homeRight $laptop
         workspace 2
         exec kitty tmux a -dt code
+
         workspace 3 output $portableLg $laptop
         workspace 3
         exec slack
+
         workspace 4 output $homeLeft $laptop
         workspace 4
         exec spotify
         exec brave
+
         workspace 5 output $homeLeft $laptop
         workspace 5
         exec firefox
+
         workspace 6 output $portableLg $laptop
         workspace 6
         exec signal-desktop
+        exec telegram-desktop
+
         workspace 7 output $homeRight $laptop
         workspace 7
         exec discord
         exec element-desktop
+
         workspace 8 output $laptop
         workspace 8
         exec waydroid session start
+
         workspace 1 output $homeLeft
         workspace 1
         exec chromium

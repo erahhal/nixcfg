@@ -22,14 +22,6 @@
 
 { pkgs, hostParams, userParams, ...}:
 let
-  run-homefree = pkgs.writeScriptBin "run-homefree" ''
-    #!${pkgs.stdenv.shell}
-
-    export ENV_EFI_CODE_SECURE=${pkgs.OVMF.fd}/FV/OVMF_CODE.fd
-    export ENV_EFI_VARS_SECURE=${pkgs.OVMF.fd}/FV/OVMF_VARS.fd
-
-    quickemu --vm homefree.conf --display spice
-  '';
   run-windows = pkgs.writeScriptBin "run-windows" ''
     #!${pkgs.stdenv.shell}
 
@@ -58,7 +50,6 @@ in
     virt-viewer
     virtiofsd         # needed for file system sharing
 
-    run-homefree
     run-windows
   ];
 

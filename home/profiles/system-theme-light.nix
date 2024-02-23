@@ -101,6 +101,29 @@ in
   # For sway
   home.file.".Xdefaults".text = xwayland_settings;
 
+  programs.zsh.plugins = [
+    {
+      name = "powerlevel10k-config";
+      src = pkgs.writeTextFile {
+        name = "p10k.zsh";
+        destination = "/p10k.zsh";
+        text = ((builtins.readFile ./zsh-p10k-config/p10k.zsh) + ''
+          typeset -g POWERLEVEL9K_BACKGROUND=195
+          typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
+          typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=115
+          typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=45
+          typeset -g POWERLEVEL9K_VCS_LOADING_VISUAL_IDENTIFIER_COLOR=200
+          typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=242
+          typeset -g POWERLEVEL9K_DIRENV_FOREGROUND=166
+          typeset -g POWERLEVEL9K_ASDF_FOREGROUND=78
+          typeset -g POWERLEVEL9K_RANGER_FOREGROUND=172
+          typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_FOREGROUND=172
+        '');
+      };
+      file = "p10k.zsh";
+    }
+  ];
+
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
       {

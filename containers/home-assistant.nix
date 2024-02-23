@@ -1,4 +1,4 @@
-{ config, pkgs, userParams, recursiveMerge, ... }:
+{ config, hostParams, userParams, recursiveMerge, ... }:
 let
   containerDataPath = "/home/${userParams.username}/DockerData";
   # network = "homeassistant_network";
