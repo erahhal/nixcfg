@@ -29,8 +29,8 @@
   waydroid = {
     # width = 3400;
     # height = 1860;
-    width = 1700;
-    height = 930;
+    width = 1600;
+    height = 1000;
   };
 }
 

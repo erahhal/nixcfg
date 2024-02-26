@@ -30,6 +30,7 @@
       SYSTEMCTL=${pkgs.systemd}/bin/systemctl
       HEAD=${pkgs.coreutils}/bin/head
       TAIL=${pkgs.coreutils}/bin/tail
+      TMUX=${pkgs.tmux}/bin/tmux
       RG=${pkgs.ripgrep}/bin/rg
       SYSTEM_THEME=$(cat ~/.system-theme)
       if [ "$SYSTEM_THEME" == "light-mode" ]; then
