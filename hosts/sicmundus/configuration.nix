@@ -55,6 +55,7 @@ in
       ../../containers/etherpad.nix
       ../../containers/gitea.nix
       ../../containers/grist.nix
+      ../../containers/homebox.nix
       ../../containers/jellyfin.nix
       ../../containers/joplin.nix
       ../../containers/logseq.nix
@@ -65,7 +66,8 @@ in
       ../../containers/pinry.nix
       ../../containers/postgres.nix
       ../../containers/redis.nix
-      ../../containers/smokeping.nix
+      ## Eating up a lot of CPU and spamming logs
+      # ../../containers/smokeping.nix
       ../../containers/syncthing.nix
       ../../containers/vaultwarden.nix
       ../../containers/wekan.nix

@@ -13,6 +13,7 @@ in
       image = "nextcloud:latest";
       extraOptions = [
         "--pull=always"
+        "--dns=10.0.0.1"
       ];
       volumes = [
         "${containerDataPath}/nextcloud/nextcloud:/var/www/html"

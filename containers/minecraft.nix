@@ -45,6 +45,7 @@ let
     "${service_ip}:19133:19133/tcp"
     "${service_ip}:19133:19133/udp"
   ];
+  minecraft_version = "1.20";
 in
 {
   networking.interfaces.${hostParams.mainInterface}.ipv4.addresses = [
@@ -200,6 +201,7 @@ in
         ports = [
           "${service_ip}:19132:19132/udp"
           "${service_ip}:19132:19132/tcp"
+          # "${service_ip}:25565:25565"
           "${service_ip}:25565:25565"
         ];
       };
@@ -238,7 +240,7 @@ in
         environment = {
           UID = toString userParams.uid;
           GID = toString userParams.gid;
-          VERSION = "1.19";
+          VERSION = minecraft_version;
           # OPS = "jumpingnosepizza,theomobile";
           OPS = "ektoklast";
           EULA = "TRUE";
@@ -317,7 +319,7 @@ in
         environment = {
           UID = toString userParams.uid;
           GID = toString userParams.gid;
-          VERSION = "1.19";
+          VERSION = minecraft_version;
           OPS = "jumpingnosepizza,theomobile";
           EULA = "TRUE";
           TYPE = "SPIGOT";
@@ -390,7 +392,7 @@ in
         environment = {
           UID = toString userParams.uid;
           GID = toString userParams.gid;
-          VERSION = "1.19";
+          VERSION = minecraft_version;
           OPS = "jumpingnosepizza,theomobile";
           EULA = "TRUE";
           TYPE = "SPIGOT";
@@ -466,7 +468,7 @@ in
     #     environment = {
     #       UID = toString userParams.uid;
     #       GID = toString userParams.gid;
-    #       VERSION = "1.19";
+    #       VERSION = minecraft_version;
     #       OPS = "jumpingnosepizza,theomobile,ektoklast";
     #       EULA = "TRUE";
     #       TYPE = "SPIGOT";
