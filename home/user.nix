@@ -55,7 +55,16 @@ in
       # ./profiles/weechat.nix
     ];
 
+    # ---------------------------------------------------------------------------
+    # Nix-specific
+    # ---------------------------------------------------------------------------
+
     programs.home-manager.enable = true;
+    programs.direnv = {
+      enable = true;
+      enableBashIntegration = true; # see note on other shells below
+      nix-direnv.enable = true;
+    };
 
     # ---------------------------------------------------------------------------
     # General

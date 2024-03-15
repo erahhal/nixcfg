@@ -189,12 +189,14 @@ in
   #   - Either adding these kernel modules and params,
   #     or turning off power saving on wifi fixed an intermittent
   #     hard freeze when on battery.
-  boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
-  boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
-  boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  # boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
+  # boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
+  # boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
   boot.kernelParams = [
     "msr.allow_writes=on"
     "cpuidle.governor=teo"
+    # "usbcore.use_both_schemes=y"
+    # "usbcore.autosuspend=-1"
   ];
 
   services.upower = {

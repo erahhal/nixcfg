@@ -7,8 +7,8 @@
   };
 
   services.udev = {
-    packages = [
-      pkgs.android-udev-rules
+    packages = with pkgs; [
+      android-udev-rules
     ];
   };
 
