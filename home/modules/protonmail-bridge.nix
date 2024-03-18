@@ -40,7 +40,7 @@ in
 
       Service = {
         Restart = "always";
-        ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --log-level ${cfg.logLevel}" + optionalString (cfg.nonInteractive) " --noninteractive";
+        ExecStart = "${pkgs.trunk.protonmail-bridge}/bin/protonmail-bridge --no-window --log-level ${cfg.logLevel}" + optionalString (cfg.nonInteractive) " --noninteractive";
         Environment = [
           "HOME=/home/${userParams.username}"
           # @TODO: This is hacky - better to get PATH programmatically

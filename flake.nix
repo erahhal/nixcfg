@@ -149,51 +149,6 @@
           inherit userParams;
         };
       };
-      nflx-erahhal-t490s =
-      let
-        system = "x86_64-linux";
-        hostParams = import ./hosts/nflx-erahhal-t490s/params.nix {};
-        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
-        modules = [
-          (import ./hosts/nflx-erahhal-t490s/configuration.nix)
-          inputs.agenix.nixosModules.default
-          inputs.secrets.nixosModules.default
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          # @TODO: Make this generic and move into hosts?
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490 # No t490s yet
-          inputs.nixos-hardware.nixosModules.common-cpu-intel
-          inputs.nixos-hardware.nixosModules.common-pc-laptop
-          inputs.nur.nixosModules.nur
-          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
-          }
-          inputs.nix-snapd.nixosModules.default
-          {
-            services.snap.enable = true;
-          }
-          inputs.nflx-vpn.nixosModules.default
-          inputs.nflx.nixosModules.default
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit system;
-          inherit hostParams;
-          inherit copyDesktopIcons;
-          inherit copyDesktopItems;
-          inherit mkWindowsApp;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
-      };
       nflx-erahhal-x1c =
       let
         system = "x86_64-linux";

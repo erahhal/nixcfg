@@ -2,7 +2,6 @@
 {
   home.packages = with pkgs; [
     inputs.nixd.packages.${pkgs.system}.default
-    rnix-lsp
     tree-sitter
     nodePackages.eslint
     nodePackages.prettier
@@ -783,7 +782,6 @@
             'pyright',
             'nil_ls',
             -- Using nil_ls as main language server for nix
-            -- 'rnix',
           }
           for _, lsp in ipairs(servers) do
             -- for servers with generic config

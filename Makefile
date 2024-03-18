@@ -2,8 +2,17 @@ HOSTNAME = $(shell hostname)
 NIX_FILES = $(shell find . -name '*.nix' -type f)
 CURR_THEME = $(shell cat ~/.system-theme)
 
+define n
+
+
+endef
+
 ifndef HOSTNAME
  $(error Hostname unknown)
+endif
+
+ifeq (, $(shell which nom))
+ $(error "$n$nnom not in path. run nix-shell -p nix-output-monitor on first run")
 endif
 
 switch: 
