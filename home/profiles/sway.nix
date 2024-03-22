@@ -55,6 +55,9 @@ let
       ${pkgs.glib}/bin/gsettings set $gnome-schema icon-theme 'Adwaita'
       ${pkgs.glib}/bin/gsettings set $gnome-schema cursor-theme 'Adwaita'
       ${pkgs.glib}/bin/gsettings set $gnome-schema font-name 'Sans 18'
+      ${pkgs.glib}/bin/gsettings set $gnome-schema font-name 'Sans 18'
+      # Don't use middle button paste for trackpoint
+      ${pkgs.glib}/bin/gsettings set $gnome-schema gtk-enable-primary-paste false
     '';
   };
 in
@@ -131,7 +134,7 @@ in
       bars = [
         {
           # command = "pkill waybar || true; ${pkgs.waybar}/bin/waybar";
-          command = "${pkgs.unstable.waybar}/bin/waybar";
+          command = "${pkgs.waybar}/bin/waybar";
         }
       ];
       # focus.followMouse = "always";
@@ -184,7 +187,7 @@ in
         "type:keyboard" = keyboardConfig;
         "2:10:TPPS/2_Elan_TrackPoint" = {
           accel_profile = "flat";
-          pointer_accel = "-0.7";
+          pointer_accel = "0.0";
         };
       };
       output."*" = if builtins.hasAttr "wallpaper" hostParams then {
@@ -204,7 +207,7 @@ in
         { always = true; command = "systemctl --user restart network-manager-applet"; }
 
         # Wayland volume/brightness overlay bar
-        { always = true; command = "systemctl --user restart wob"; }
+        # { always = true; command = "systemctl --user restart wob"; }
 
         # Screen lock
         { always = true; command = "systemctl --user restart sway-idle"; }
@@ -320,6 +323,10 @@ in
       };
     };
     extraConfig = ''
+      ## disable middle click paste
+      ## Not available until 1.9
+      # primary_selection disabled
+
       hide_edge_borders smart
 
       # home-manager config doesn't support "workspace" for this option

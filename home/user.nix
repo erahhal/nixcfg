@@ -48,7 +48,7 @@ in
       inputs.nix-colors.homeManagerModules.default
       ./profiles/system-theme.nix
       # ./profiles/captive-browser.nix
-      ./profiles/node-modules.nix
+      # ./profiles/node-modules.nix
       ./profiles/nvim.nix
       # ./profiles/syncthing.nix
       ./profiles/vifm.nix
@@ -261,7 +261,6 @@ in
         # r = "nix repl ${inputs.flake-utils-plus.lib.repl}";
         # ssh = "env TERM=xterm-256color ssh";
         ls = "lsd";
-        htop = "btop";
         cheat = "function cheat_fn() { curl cht.sh/$1; }; cheat_fn";
       };
 

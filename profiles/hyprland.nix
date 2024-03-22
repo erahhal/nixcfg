@@ -28,10 +28,6 @@
       # gtkUsePortal = true;
     };
 
-    home-manager.sharedModules = [
-      inputs.hyprland.homeManagerModules.default
-    ];
-
     home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
       imports = [
         ( import ../home/profiles/hyprland.nix (args // {

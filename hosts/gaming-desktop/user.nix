@@ -63,7 +63,7 @@ in
 
         ## arduino
         platformio
-        unstable.teensy-loader-cli
+        teensy-loader-cli
         udev
         libudev0-shim
         gcc-arm-embedded

@@ -47,17 +47,17 @@ in
         thunderbird
         transmission-gtk
         vdhcoapp
-        unstable.chromium
+        chromium
 
         ## games
         lutris
         steamtinkerlaunch
         mcreator
-        unstable.prismlauncher
-        unstable.atlauncher
-        unstable.minecraft
-        unstable.glfw-wayland-minecraft
-        unstable.hmcl
+        prismlauncher
+        atlauncher
+        minecraft
+        glfw-wayland-minecraft
+        hmcl
         wesnoth
 
         ## dev
@@ -65,7 +65,7 @@ in
 
         ## arduino
         platformio
-        unstable.teensy-loader-cli
+        teensy-loader-cli
         udev
         libudev0-shim
         gcc-arm-embedded

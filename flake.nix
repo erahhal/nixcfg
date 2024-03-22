@@ -41,6 +41,8 @@
     erosanix.url = "github:emmanuelrosa/erosanix";
     erosanix.inputs.nixpkgs.follows = "nixpkgs";
 
+    flox.url = "github:flox/flox";
+
     # Remarkable 2 Tablet Desktop App WINE wrapper
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
@@ -68,10 +70,10 @@
     nix-software-center.url = "github:vlinkz/nix-software-center";
 
     # Hyprland WM
-    hyprland = {
-      url = "github:hyprwm/hyprland";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # hyprland = {
+    #   url = "github:hyprwm/hyprland";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
     # hyprland-contrib = {
     #   url = "github:hyprwm/contrib";
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -109,10 +111,9 @@
     #   };
     # };
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
-      modules = [
-        inputs.hyprland.homeManagerModules.default
-        { wayland.windowManager.hyprland.enable = true; }
-      ];
+      # modules = [
+      #   inputs.hyprland.homeManagerModules.default
+      # ];
       extraSpecialArgs = {
         inherit userParams;
         inherit recursiveMerge;

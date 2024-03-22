@@ -13,7 +13,7 @@ let
 in
 {
   # home.packages = with pkgs; [ firefox-scaled ];
-  home.packages = with pkgs; [ unstable.firefox ];
+  home.packages = with pkgs; [ firefox ];
 
   home.activation.firefox = lib.hm.dag.entryAfter [ "installPackages" ] ''
     ## See:

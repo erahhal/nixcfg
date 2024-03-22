@@ -306,6 +306,8 @@ in
       "org/gnome/desktop/interface" = {
         "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
         "color-scheme" = "prefer-dark";
+        # Disable trackpad middle click paste
+        "gtk-enable-primary-paste" = false;
       };
     };
   };

@@ -39,15 +39,16 @@
       substituters = [
         "https://nix-community.cachix.org"
         "https://cache.nixos.org/"
-        # @TODO: Unclear if this should be part of the host machine or the raspberry pi nixcfg repo
         "https://arm.cachix.org/"
         "https://robotnix.cachix.org/"
+        "https://cache.flox.dev"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "arm.cachix.org-1:5BZ2kjoL1q6nWhlnrbAl+G7ThY7+HaBRD9PZzqZkbnM="
         "robotnix.cachix.org-1:+y88eX6KTvkJyernp1knbpttlaLTboVp4vq/b24BIv0="
+        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       ];
     };
     # Additional text appended to nix.conf
@@ -141,6 +142,7 @@
 
   # Gives access to the NUR (Nix User Repository): https://github.com/nix-community/NUR
   nixpkgs.overlays = [
+    # @TODO: full overlay can cause rebuilds - install as package instead?
     inputs.comma.overlays.default
     (final: prev: {
       ## Use SwayFX
@@ -250,6 +252,7 @@
 
     ../profiles/overrides.nix
     ../profiles/printers-scanners.nix
+    ../profiles/flox.nix
   ];
 
   # --------------------------------------------------------------------------------------
@@ -338,7 +341,7 @@
     nix
     nix-output-monitor
     nixos-generators
-    unstable.nil
+    nil
     nix-index
     openssl
     # openjdk16-bootstrap

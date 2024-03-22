@@ -20,7 +20,7 @@ in
         awscli
         blender
         chromium
-        unstable.jetbrains.idea-ultimate
+        jetbrains.idea-ultimate
         lutris
         mcreator
         postgresql
@@ -33,7 +33,7 @@ in
         vespa-cli
 
         # Games
-        unstable.prismlauncher
+        prismlauncher
 
         ## python
         ## Currently broken

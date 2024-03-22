@@ -318,7 +318,8 @@ in
           outputs = [
             {
               # criteria = "LG Electronics LG ULTRAWIDE 0x0000FAF6";
-              criteria = "LG Electronics LG ULTRAWIDE 0x0000DD5F";
+              # criteria = "LG Electronics LG ULTRAWIDE 0x0000DD5F";
+              criteria = "LG Electronics LG ULTRAWIDE 0x00006B78";
               status = "enable";
               mode = "3440x1440@49.987000Hz";
               position = "420,709";

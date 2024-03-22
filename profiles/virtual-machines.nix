@@ -45,7 +45,7 @@ in
   #-------------------------------------------
 
   environment.systemPackages = with pkgs; [
-    unstable.quickemu
+    quickemu
     virt-manager
     virt-viewer
     virtiofsd         # needed for file system sharing
