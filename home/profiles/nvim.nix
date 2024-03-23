@@ -541,6 +541,14 @@
         '';
       }
       {
+        plugin = diffview-nvim;
+        config = ''
+          lua << EOF
+          require("diffview").setup {}
+          EOF
+          '';
+      }
+      {
         plugin = vim-tmux-clipboard;
         config = ''
         '';

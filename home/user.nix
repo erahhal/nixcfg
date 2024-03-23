@@ -145,6 +145,7 @@ in
 
         ## dev
         devbox
+        difftastic
         git-secrets
         go
         cargo
@@ -522,16 +523,28 @@ in
           editor = "nvim";
           excludesfile = "~/.gitignore_global";
         };
+        # diff = {
+        #   colorMoved = "default";
+        #   tool = "vimdiff";
+        #   mnemonicprefix = true;
+        # };
+        # difftool = {
+        #   prompt = false;
+        #   vimdiff = {
+        #     trustExitCode = true;
+        #   };
+        # };
         diff = {
-          colorMoved = "default";
-          tool = "vimdiff";
-          mnemonicprefix = true;
+          tool = "difftastic";
         };
         difftool = {
           prompt = false;
-          vimdiff = {
-            trustExitCode = true;
-          };
+        };
+        "difftool \"difftastic\"" = {
+          cmd = ''${pkgs.difftastic}/bin/difft "$LOCAL" "$REMOTE"'';
+        };
+        pager = {
+          difftool = true;
         };
         delta = {
           enable = true;
