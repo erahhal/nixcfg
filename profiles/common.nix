@@ -204,6 +204,8 @@
   services.avahi.nssmdns = true;
 
   services.eternal-terminal.enable = true;
+  # et port
+  networking.firewall.allowedTCPPorts = [ 2022 ];
 
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images
