@@ -203,6 +203,8 @@
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
 
+  services.eternal-terminal.enable = true;
+
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images
 
@@ -311,6 +313,7 @@
     dmidecode
     dos2unix
     ed
+    eternal-terminal
     exfat
     exiftool
     ffmpeg

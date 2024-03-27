@@ -21,7 +21,7 @@
 
   defaultBrowser = "chromium-browser";
 
-  wireguardIp = "192.168.2.5";
+  wireguardIp = "192.168.2.4";
 
   virtualboxEnabled = false;
   vmwareEnabled = true;
