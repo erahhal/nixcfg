@@ -175,6 +175,9 @@ in
         # key_press_enables_dpms = true
 
         mouse_move_focuses_monitor = false
+
+        # jump to window that requests activation
+        focus_on_activate = true
       }
 
       # touchpad gestures

@@ -328,6 +328,7 @@
     git
     git-lfs
     gnumake
+    gnupg
     htop
     hwinfo
     iftop
