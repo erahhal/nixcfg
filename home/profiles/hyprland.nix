@@ -53,7 +53,7 @@ let
     fi
   '';
 
-  move-right = pkgs.writeShellScript "hyprland-move-left.sh" ''
+  move-right = pkgs.writeShellScript "hyprland-move-right.sh" ''
     HYPRCTL=${pkgs.hyprland}/bin/hyprctl
     JQ=${pkgs.jq}/bin/jq
 
@@ -259,7 +259,7 @@ in
         col.border_inactive = rgba(2b2b2bff)
         groupbar {
           font_family = DejaVu Sans
-          font_size = 16
+          font_size = 18
           height = 18
           text_color = rgba(ffffffff)
           col.active = rgba(285577ff)
