@@ -13,6 +13,9 @@ in
     # inputs.remarkable.packages."${system}".remarkable
   ];
 
+  environment.sessionVariables = {
+    XCURSOR_SIZE = "64";
+  };
   environment.variables = {
     XCURSOR_SIZE = "64";
   };

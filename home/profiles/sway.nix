@@ -200,9 +200,6 @@ in
         # Bring in environment into systemd
         { always = true; command = "systemctl --user import-environment"; }
 
-        # Notification daemon
-        { always = true; command = "systemctl --user restart mako"; }
-
         # Network manager applet
         { always = true; command = "systemctl --user restart network-manager-applet"; }
 

@@ -248,6 +248,8 @@
   # --------------------------------------------------------------------------------------
 
   imports = [
+    ../modules/macchanger.nix
+
     # ../overlays/steam-with-nvidia-offload.nix
     # ../overlays/blender-with-nvidia-offload.nix
 
@@ -343,6 +345,7 @@
     memtest86plus
     minicom
     neofetch
+    nethogs
     nix
     nix-output-monitor
     nixos-generators

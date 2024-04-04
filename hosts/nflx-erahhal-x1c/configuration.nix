@@ -97,6 +97,15 @@ in
   systemd.network.wait-online.enable = false;
   systemd.services.NetworkManager-wait-online.enable = false;
 
+  ## Change mac randomly on connection
+  sec.macchanger = {
+    enable = true;
+    devices = [
+      ## Real: E4:60:17:0F:28:C3
+      "wlp0s20f3"
+    ];
+  };
+
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ thinkpad-dock-udev-rules ];
 

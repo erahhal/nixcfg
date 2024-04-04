@@ -5,7 +5,8 @@
   # -------------------------------------------------------------
 
   hostName = "nflx-erahhal-x1c";
-  timeZone = "America/Los_Angeles";
+  # timeZone = "America/Los_Angeles";
+  timeZone = "Europe/Zagreb";
   containerBackend = "docker";
   displayManager = "sddm";
   sddmTheme = "nflx";

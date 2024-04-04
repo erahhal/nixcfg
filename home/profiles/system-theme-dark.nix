@@ -251,6 +251,14 @@ in
     ];
   };
 
+  home.pointerCursor = {
+    gtk.enable = true;
+    # x11.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 16;
+  };
+
   gtk = {
     enable = true;
 
@@ -304,7 +312,7 @@ in
     enable = true;
     settings = {
       "org/gnome/desktop/interface" = {
-        "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
+        # "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
         "color-scheme" = "prefer-dark";
         # Disable trackpad middle click paste
         "gtk-enable-primary-paste" = false;

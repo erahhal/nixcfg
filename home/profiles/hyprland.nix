@@ -127,7 +127,7 @@ in
       # Set mouse cursor size
       exec-once=hyprctl setcursor Adwaita 24
 
-      ## Refresh services
+      # Refresh services
       exec = ${pkgs.hyprpaper}/bin/hyprpaper
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
@@ -138,15 +138,16 @@ in
       exec = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
       exec = systemctl --user restart kanshi
 
-      ## @TODO
-      ## 1. Is this already being set?
-      ## 2. Is it being set BEFORE portals are executed?
-      ## SEE: https://wiki.hyprland.org/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
+      # @TODO
+      # 1. Is this already being set?
+      # 2. Is it being set BEFORE portals are executed?
+      # SEE: https://wiki.hyprland.org/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
+
       # exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
       # exec-once = systemctl --user start clight
 
-      ## @TODO: Settings to not scale XWayland
+      # @TODO: Settings to not scale XWayland
       # xwayland {
       #   force_zero_scaling = true
       # }
@@ -158,9 +159,9 @@ in
       env = XDG_CURRENT_DESKTOP, hyprland
 
       misc {
-        ## enable Variable Frame Rate
-        ## No longer an option?
-        ## @TODO: what has changed here?
+        # enable Variable Frame Rate
+        # No longer an option?
+        # @TODO: what has changed here?
         # no_vfr = 0
 
         # Don't show anime girl in background
@@ -168,8 +169,8 @@ in
         force_default_wallpaper = 0
         disable_splash_rendering = true
 
-        ## Screen sleep behavior
-        ## A bug makes these potentially eat up GPU
+        # Screen sleep behavior
+        # A bug makes these potentially eat up GPU
         # mouse_move_enables_dpms = true
         # key_press_enables_dpms = true
 
@@ -204,6 +205,12 @@ in
           clickfinger_behavior = true
         }
         accel_profile = adaptive
+      }
+
+      device {
+        name = tpps/2-elan-trackpoint
+        tap-to-click = false
+        sensitivity = -0.3
       }
 
       general {
@@ -252,36 +259,13 @@ in
         col.border_inactive = rgba(2b2b2bff)
         groupbar {
           font_family = DejaVu Sans
-          font_size = 10
+          font_size = 16
           height = 18
           text_color = rgba(ffffffff)
           col.active = rgba(285577ff)
           col.inactive = rgba(2b2b2bff)
         }
       }
-
-
-      # should be configured per-profile
-      # monitor = eDP-1,3840X2160@60,0x100,1.6,vrr,1
-      monitor = eDP-1,highres,auto,1.6,vrr,1
-      # monitor = eDP-1,disable
-      monitor = desc:LG Electronics 16MQ70 20NKZ005285,2560X1600@60,1598x0,1.6,vrr,1
-      monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840X2160@60,1920x0,1.5,vrr,1
-      monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840X2160@60,4480x0,1.5
-      workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 1
-      workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 4
-      workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 5
-      workspace = desc:LG Electronics LG HDR 4K 0x00020F5B, 2
-      workspace = desc:LG Electronics LG HDR 4K 0x00020F5B, 7
-      workspace = eDP-1, 3
-      workspace = eDP-1, 6
-      # workspace = DP-2, 1
-      # workspace = DP-2, 4
-      # workspace = DP-2, 5
-      # workspace = DP-1, 2
-      # workspace = DP-1, 7
-      # workspace = eDP-1, 3
-      # workspace = eDP-1, 6
 
       windowrule = float, title:^(KCalc)$
       # Chrome Bitwarden popup
@@ -303,7 +287,7 @@ in
       # idle inhibit while watching videos
       windowrule = idleinhibit focus, class:^(mpv)$
       windowrule = idleinhibit fullscreen, class:^(firefox)$
-      ## @TODO: Make sure class matches for these two
+      # @TODO: Make sure class matches for these two
       windowrule = idleinhibit fullscreen, class:^(chromium)$
       windowrule = idleinhibit fullscreen, class:^(brave)$
 
@@ -311,6 +295,8 @@ in
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
       bindm = $mod_ALT, mouse:272, resizewindow
+      # disable middle click paste
+      bind = , mouse:274, exec, ;
 
       bind = $mod, Return, exec, $term
       bind = $mod, X, exec, ${swayLockCmd}
