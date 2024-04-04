@@ -389,16 +389,32 @@ in
       enable = false;
     };
 
-    # programs.vscode = {
-    #   enable = true;
-    #   package = pkgs.unstable.vscode;    # omit this to use the unfree version
-    #   extensions = with pkgs.unstable.vscode-extensions; [
-    #     # Some example extensions...
-    #     dracula-theme.theme-dracula
-    #     vscodevim.vim
-    #     yzhang.markdown-all-in-one
-    #   ];
-    # };
+    ## @TODO: Setup conditional init.vim
+    ## https://github.com/vscode-neovim/vscode-neovim
+    programs.vscode = {
+      enable = true;
+      package = pkgs.unstable.vscodium;
+      # package = pkgs.unstable.vscodium-fhs;
+      extensions = with pkgs.vscode-extensions; [
+        # dracula-theme.theme-dracula
+        # emroussel.atomize-atom-one-dark-theme
+        # enkia.tokyo-night
+        # equinusocio.vsc-material-theme
+        # mskelton.one-dark-theme
+        # viktorqvarfordt.vscode-pitch-black-theme
+        dhedgecock.radical-vscode
+        # vscodevim.vim
+        asvetliakov.vscode-neovim
+        yzhang.markdown-all-in-one
+      ];
+      userSettings = {
+        "extensions.experimental.affinity" = {
+          "asvetliakov.vscode-neovim" = 1;
+        };
+        "workbench.colorTheme" = "Radical";
+        "editor.renderWhitespace" = "trailing";
+      };
+    };
 
     programs.mpv = {
       enable = true;

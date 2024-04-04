@@ -269,9 +269,11 @@ in
 
       windowrule = float, title:^(KCalc)$
       # Chrome Bitwarden popup
-      windowrule = float, title:^(Bitwarden)$
       # Firefox Bitwarden popup
-      windowrule = float, title:^(Extension.*Bitwarden.*Firefox)$
+      # title: Extension: (Bitwarden - Free Password Manager) - Bitwarden — Mozilla Firefox
+      # @TODO: These don't work
+      windowrulev2 = float, class:(firefox), title:(.*)(Extension)(.*)(Bitwarden)(.*)
+      windowrulev2 = size, 400, 600, class:(firefox), title:(.*)(Extension)(.*)(Bitwarden)(.*)
 
       # telegram media viewer
       windowrule = float, title:^(Media viewer)$
