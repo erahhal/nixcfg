@@ -74,10 +74,18 @@
       url = "github:hyprwm/hyprland";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    # hyprland-contrib = {
-    #   url = "github:hyprwm/contrib";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
+    hypridle = {
+      url = "github:hyprwm/hypridle";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     swayfx.url = "github:willpower3309/swayfx";
     swayfx.inputs.nixpkgs.follows = "nixpkgs";
@@ -111,9 +119,6 @@
     #   };
     # };
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
-      modules = [
-        inputs.hyprland.homeManagerModules.default
-      ];
       extraSpecialArgs = {
         inherit userParams;
         inherit recursiveMerge;

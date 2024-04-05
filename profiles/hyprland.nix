@@ -31,11 +31,15 @@
     # Load latest instead of stable
     home-manager.sharedModules = [
       inputs.hyprland.homeManagerModules.default
+      inputs.hypridle.homeManagerModules.default
+      inputs.hyprlock.homeManagerModules.default
+      inputs.hyprpaper.homeManagerModules.default
     ];
 
     home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
       imports = [
         ( import ../home/profiles/hyprland.nix (args // {
+          inputs = inputs;
           launchAppsConfig = config.launchAppsConfigHyprland;
           hostParams = hostParams;
         }))

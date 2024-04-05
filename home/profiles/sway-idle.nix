@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 let
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };

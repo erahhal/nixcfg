@@ -1,9 +1,10 @@
-{ pkgs, launchAppsConfig, hostParams, ... }:
+{ inputs, pkgs, launchAppsConfig, hostParams, ... }:
 
 let
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
-  swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
+  # lockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
+  lockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
     HYPRCTL=${pkgs.hyprland}/bin/hyprctl
     JQ=${pkgs.jq}/bin/jq
@@ -80,7 +81,9 @@ in
     ./swaynotificationcenter.nix
     ./network-manager-applet.nix
     ./rofi.nix
-    ./sway-idle.nix
+    # ./sway-idle.nix
+    ./hypridle.nix
+    ./hyprlock.nix
     ./waybar.nix
     ./wlsunset.nix
   ];
@@ -132,7 +135,8 @@ in
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
-      exec = systemctl --user restart sway-idle
+      # exec = systemctl --user restart sway-idle
+      exec = systemctl --user restart hypridle
       exec = pkill waybar; sleep 1; ${pkgs.waybar}/bin/waybar
       exec = ${pkgs.blueman}/bin/blueman-applet
       exec = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
@@ -304,7 +308,7 @@ in
       bind = , mouse:274, exec, ;
 
       bind = $mod, Return, exec, $term
-      bind = $mod, X, exec, ${swayLockCmd}
+      bind = $mod, X, exec, ${lockCommand}
       # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
       bind = $mod, C, exec, ${kill-active}
       # bind = $mod, R, forcerendererreload
