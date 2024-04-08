@@ -69,10 +69,18 @@
 
     nix-software-center.url = "github:vlinkz/nix-software-center";
 
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     # Hyprland WM
     hyprland = {
       url = "github:hyprwm/hyprland";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
     };
     hypridle = {
       url = "github:hyprwm/hypridle";
@@ -172,7 +180,34 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
           inputs.nur.nixosModules.nur
-          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
+          {
+            nixpkgs.overlays = [
+              inputs.nur.overlay
+              # inputs.nixpkgs-wayland.overlay
+              # inputs.hyprland.overlays.default
+              # # inputs.hyprland-plugins.overlays.default
+              # inputs.hypridle.overlays.default
+              # inputs.hyprlock.overlays.default
+              # inputs.hyprpaper.overlays.default
+              # (self: super: {
+              #   nixpkgs = super.nixpkgs // {
+              #     librdm = inputs.nixpkgs-unstable.libdrm;
+              #   };
+              # })
+              # (self: super: {
+              #   nixpkgs = super.nixpkgs // {
+              #     libdrm = super.libdrm.overrideAttrs (oldAttrs: rec {
+              #       pname = "libdrm";
+              #       version = "2.4.120";
+              #       src = inputs.nixpkgs.fetchurl {
+              #         url = "https://dri.freedesktop.org/${pname}/${pname}-${version}.tar.xz";
+              #         hash = "sha256-O/VTY/dsclCUZEGrUdOmzArlGAVcD/AXMkq3bN77Mno=";
+              #       };
+              #     });
+              #   };
+              # })
+            ];
+          }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

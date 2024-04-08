@@ -6,7 +6,7 @@ let
   # lockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
   lockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
-    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
     JQ=${pkgs.jq}/bin/jq
     BASE64=${pkgs.coreutils}/bin/base64
 
@@ -41,7 +41,7 @@ let
   '';
 
   move-left = pkgs.writeShellScript "hyprland-move-left.sh" ''
-    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
     JQ=${pkgs.jq}/bin/jq
 
     ACTIVEWINDOW=$($HYPRCTL -j activewindow | $JQ "{address,grouped}")
@@ -55,7 +55,7 @@ let
   '';
 
   move-right = pkgs.writeShellScript "hyprland-move-right.sh" ''
-    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
     JQ=${pkgs.jq}/bin/jq
 
     ACTIVEWINDOW=$($HYPRCTL -j activewindow | $JQ "{address,grouped}")
@@ -69,10 +69,11 @@ let
   '';
 
   kill-active = pkgs.writeShellScript "hyprland-kill-active.sh" ''
-    if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | jq -r ".class")" = "Steam" ]; then
+    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
+    if [ "$($HYPRCTL activewindow -j | jq -r ".class")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
     else
-        ${pkgs.hyprland}/bin/hyprctl dispatch killactive ""
+        $HYPRCTL dispatch killactive ""
     fi
   '';
 in
@@ -324,9 +325,9 @@ in
       bind = $mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u
       bind = $mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor,
 
-      bind = SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${pkgs.hyprland}/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+      bind = SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
       bind = SHIFT_CTRL, 4, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -d)" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
-      bind = SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.hyprland}/bin/hyprctl -j activewindow | jq -r '.at | join(",")') $(${pkgs.hyprland}/bin/hyprctl -j activewindow | jq -r '.size | join("x")')" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+      bind = SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g "$(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | jq -r '.at | join(",")') $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | jq -r '.size | join("x")')" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
 
       bind = $mod_CTRL, L, resizeactive, 10 0
       bind = $mod_CTRL, H, resizeactive, -10 0

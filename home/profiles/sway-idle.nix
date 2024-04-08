@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 let
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
@@ -9,10 +9,10 @@ let
       ${pkgs.sway}/bin/swaymsg "output * dpms on"; sleep 2
   '';
   hyprland-dpms-off-cmd = pkgs.writeShellScript "hyprland-dpms-off-cmd.sh" ''
-     ${pkgs.hyprland}/bin/hyprctl dispatch dpms off
+     ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl dispatch dpms off;
   '';
   hyprland-dpms-on-cmd = pkgs.writeShellScript "hyprland-dpms-on-cmd.sh" ''
-     ${pkgs.hyprland}/bin/hyprctl dispatch dpms on
+     ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl dispatch dpms on;
   '';
   idlecmd = pkgs.writeShellScript "swayidle.sh" ''
     # asterisk in sway command gets interpolated without this setting

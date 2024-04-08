@@ -1,4 +1,4 @@
-{ hostParams, pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
   # This theme switching mechanism heavily inspired by the following post:
   # https://discourse.nixos.org/t/home-manager-toggle-between-themes/32907
@@ -48,7 +48,7 @@
         $SYSTEMCTL --user restart swaynotificationcenter
         $SWAYMSG reload
       elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
-        HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+        HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl
         $PKILL waybar
         ## Using full path to tmux fails, so use one in $PATH
         tmux source-file ~/.tmux.conf
