@@ -185,7 +185,7 @@
               inputs.nur.overlay
               # inputs.nixpkgs-wayland.overlay
               # inputs.hyprland.overlays.default
-              # # inputs.hyprland-plugins.overlays.default
+              # inputs.hyprland-plugins.overlays.default
               # inputs.hypridle.overlays.default
               # inputs.hyprlock.overlays.default
               # inputs.hyprpaper.overlays.default

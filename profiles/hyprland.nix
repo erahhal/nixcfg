@@ -8,13 +8,14 @@
     services.xserver.displayManager.sessionPackages = [ pkgs.hyprland ];
 
     programs.hyprland = {
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
       enable = true;
 
       xwayland = {
         enable = true;
       };
 
-      enableNvidiaPatches = true;
+      # enableNvidiaPatches = true;
     };
 
     # XDG portals - allow desktop apps to use resources outside their sandbox

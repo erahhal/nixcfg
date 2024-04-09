@@ -255,6 +255,7 @@
 
     ## Fixes broken pam for screen lockers but requires rebuild of everything
     # ../overlays/pam-patched.nix
+    ../overlays/hyprland-unstable.nix
 
     ../profiles/overrides.nix
     ../profiles/printers-scanners.nix

@@ -121,6 +121,7 @@ in
   '' else "";
 
   wayland.windowManager.hyprland = {
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     enable = true;
 
     extraConfig = ''
@@ -137,6 +138,7 @@ in
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
       # exec = systemctl --user restart sway-idle
+      exec = systemctl --user stop sway-idle
       exec = systemctl --user restart hypridle
       exec = pkill waybar; sleep 1; ${pkgs.waybar}/bin/waybar
       exec = ${pkgs.blueman}/bin/blueman-applet

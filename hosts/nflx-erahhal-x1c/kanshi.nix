@@ -1,9 +1,10 @@
-{ pkgs, userParams, ... }:
+{ inputs, pkgs, userParams, ... }:
 let
   home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
   home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
+  hyprctl="${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
 in
 {
   home-manager.users.${userParams.username} = {
@@ -70,21 +71,21 @@ in
               criteria = "eDP-1";
               status = "disable";
               # status = "enable";
-              mode = "2880x1800@90.000999";
-              position = "3985,1440";
-              scale = 1.75;
+              mode = "2880x1800@90";
+              position = "6249,1440";
+              scale = 1.8;
             }
           ];
           exec = [
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 1 desc:${home-monitor-left-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 2 desc:${home-monitor-right-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 3 desc:${home-monitor-right-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 4 desc:${home-monitor-left-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 5 desc:${home-monitor-left-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 6 desc:${home-monitor-left-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 7 desc:${home-monitor-left-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 8 desc:${home-monitor-left-hyprland}"
-            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 2 desc:${home-monitor-right-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 3 desc:${home-monitor-right-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 6 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${home-monitor-left-hyprland}"
+            "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${home-monitor-left-hyprland}"
           ];
         };
         desk-left = {

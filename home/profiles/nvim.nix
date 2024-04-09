@@ -687,6 +687,7 @@
         '';
       }
       {
+        # keybinding configured as <space>ca in nvim-lspconfig
         plugin = nvim-lightbulb;
         config = ''
           lua << EOF

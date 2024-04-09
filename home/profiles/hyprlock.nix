@@ -28,6 +28,9 @@
 
     backgrounds = if builtins.hasAttr "wallpaper" hostParams then [
       {
+        # blank means "all monitors"
+        monitor = "";
+        # Only PNG supported for now
         path = hostParams.wallpaper;
       }
     ] else [];

@@ -5,10 +5,13 @@
       type = lib.types.lines;
       default = ''
         # These are set by kanshi, but need to be set here as well to get cursor size correct
-        monitor = eDP-1,2880x1800@90.000999,0x0,1.8,vrr,1
-        monitor = desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1598x0,1.6,vrr,1
-        monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,1920x0,1.5,vrr,1
-        monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,4480x0,1.5,vrr,1
+        # Some mix of settings here + kanshi causes kanshi to fail with:
+        # "failed to apply  configuration for profile 'desk-hyprland'"
+        # It might be enabling VRR or inconsistent frequencies
+        monitor = eDP-1,2880x1800@90,0x0,1.8
+        monitor = desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1598x0,1.6
+        monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5
+        monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5
 
         workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 1
         workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 4
