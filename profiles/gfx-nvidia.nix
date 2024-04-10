@@ -105,20 +105,22 @@ in
     };
   };
 
-  # Generate different boot profiles when rebuilding your system.
-  # Enable PRIME sync by default, but also create a "on-the-go"
-  # specialization that disables PRIME sync and instead enables offload mode.
-  specialisation = {
-    on-the-go.configuration = {
-      system.nixos.tags = [ "on-the-go" ];
-      hardware.nvidia = {
-        prime.offload.enable = lib.mkForce true;
-        prime.offload.enableOffloadCmd = lib.mkForce true;
-        prime.sync.enable = lib.mkForce false;
-        prime.reverseSync.enable = lib.mkForce false;
-      };
-    };
-  };
+  ## Generate different boot profiles when rebuilding your system.
+  ## Enable PRIME sync by default, but also create a "on-the-go"
+  ## specialization that disables PRIME sync and instead enables offload mode.
+  ## @TODO: Currently broken when built with latest ZFS kernel
+
+  # specialisation = {
+  #   on-the-go.configuration = {
+  #     system.nixos.tags = [ "on-the-go" ];
+  #     hardware.nvidia = {
+  #       prime.offload.enable = lib.mkForce true;
+  #       prime.offload.enableOffloadCmd = lib.mkForce true;
+  #       prime.sync.enable = lib.mkForce false;
+  #       prime.reverseSync.enable = lib.mkForce false;
+  #     };
+  #   };
+  # };
 
   home-manager.users.${userParams.username} = { pkgs, ... }: {
     home.sessionVariables = {

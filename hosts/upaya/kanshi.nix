@@ -49,7 +49,7 @@
           outputs = [
             {
               criteria = "eDP-1";
-              status = "enable";
+              status = "disable";
               mode = "3840x2160";
               position = "0,910";
               scale = 2.0;

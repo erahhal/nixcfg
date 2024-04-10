@@ -14,7 +14,6 @@
     lxd.enable = true;
   };
 
-  ## Make Steam use nvidia-offload
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
     home.activation.waydroid = lib.hm.dag.entryAfter [ "installPackages" ] ''
       ## Settings allow small gaps around windows

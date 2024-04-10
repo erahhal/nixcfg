@@ -162,8 +162,6 @@ in
       # env = QT_SCALE_FACTOR, 1.6
       # env = XCURSOR_SIZE, 64
 
-      env = XDG_CURRENT_DESKTOP, hyprland
-
       misc {
         # enable Variable Frame Rate
         # No longer an option?
@@ -251,7 +249,7 @@ in
       }
 
       animations {
-        enabled = 1
+        enabled = 0
         animation = border, 1, 2, default
         animation = fade, 1, 4, default
         animation = windows, 1, 3, default, popin 80%
