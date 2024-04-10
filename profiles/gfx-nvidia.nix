@@ -32,7 +32,6 @@ in
 
   environment.systemPackages = with pkgs; [
     intel-gpu-tools
-    nvtop
     primus
     # truecrack-cuda
     # unstable.cudaPackages_12_3.cudatoolkit

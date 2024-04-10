@@ -76,7 +76,7 @@
 
     # Hyprland WM
     hyprland = {
-      url = "github:hyprwm/hyprland";
+      url = "github:hyprwm/hyprland/v0.38.1";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hyprland-plugins = {
@@ -214,12 +214,14 @@
             home-manager.useUserPackages = true;
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
-          inputs.nix-snapd.nixosModules.default
-          {
-            services.snap.enable = true;
-          }
+
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
+
+          # inputs.nix-snapd.nixosModules.default
+          # {
+          #   services.snap.enable = true;
+          # }
         ];
         specialArgs = {
           inherit inputs;

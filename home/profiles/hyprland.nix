@@ -130,14 +130,13 @@ in
       $term = ${pkgs.trunk.kitty}/bin/kitty
 
       # Set mouse cursor size
-      exec-once=hyprctl setcursor Adwaita 24
+      # exec-once=hyprctl setcursor Adwaita 24
 
       # Refresh services
       exec = ${pkgs.hyprpaper}/bin/hyprpaper
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
-      # exec = systemctl --user restart sway-idle
       exec = systemctl --user stop sway-idle
       exec = systemctl --user restart hypridle
       exec = pkill waybar; sleep 1; ${pkgs.waybar}/bin/waybar
@@ -170,6 +169,9 @@ in
         # No longer an option?
         # @TODO: what has changed here?
         # no_vfr = 0
+
+        # See: https://wiki.hyprland.org/Configuring/Perfomance/
+        vfr = true
 
         # Don't show anime girl in background
         disable_hyprland_logo = true
@@ -239,7 +241,8 @@ in
         # rounding = 8
         rounding = 0
 
-        drop_shadow = 1
+        # drop_shadow = 1
+        drop_shadow = false
         shadow_ignore_window = 1
         shadow_offset = 2 2
         shadow_range = 4
@@ -248,7 +251,7 @@ in
       }
 
       animations {
-        enabled = 0
+        enabled = 1
         animation = border, 1, 2, default
         animation = fade, 1, 4, default
         animation = windows, 1, 3, default, popin 80%

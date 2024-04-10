@@ -11,6 +11,7 @@ rsync -aP \
   --exclude=Android \
   --exclude=.android \
   --exclude=.gradle \
+  --exclude=.config/Signal \
   --exclude=.local/share/Steam \
   --exclude-from=/var/tmp/ignorelist \
   --progress /home/$USER /mnt/ellis/Backups/x1c-home

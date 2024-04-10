@@ -353,6 +353,7 @@
     nixos-generators
     nil
     nix-index
+    nvtop
     openssl
     # openjdk16-bootstrap
     p7zip

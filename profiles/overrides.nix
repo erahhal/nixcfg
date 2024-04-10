@@ -26,6 +26,10 @@ in {
         url = "${nixpkgs-tars}86947c8f83a3bd593eefb8e5f433f0d045c3d9a7.tar.gz";
         sha256 = "1lc63hs87nclb2ikn8d67ihm4pd6kcls3pybmkr0im91vprbywff";
 
+        ## Head isn't even beta version
+        # url = "${nixpkgs-tars}3104b3c0ac170cdce3e7279f2f65ffee357c95de.tar.gz";
+        # sha256 = "1ilmxbm5hbqz63d3xyd267an7bbsqzcwb8krcjs1mxjsjicr7by1";
+
         ## Fails to build
         # url = "${nixpkgs-tars}3ae54d7e237c146367ff258967442d7297eb9691.tar.gz";
         # sha256 = "1sn9y6pxrs8r2srwy10ndqk0fy7p4z64fmxm7r4zffhscilg40y5";

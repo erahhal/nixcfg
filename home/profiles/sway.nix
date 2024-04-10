@@ -207,6 +207,7 @@ in
         # { always = true; command = "systemctl --user restart wob"; }
 
         # Screen lock
+        { always = true; command = "systemctl --user stop hypridle"; }
         { always = true; command = "systemctl --user restart sway-idle"; }
 
         # Let init system know that system is ready

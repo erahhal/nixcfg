@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, lib, pkgs, ... }:
 {
   services.hypridle = let
     hyprlock = "${inputs.hyprlock.packages.${pkgs.system}.hyprlock}/bin/hyprlock";
@@ -23,4 +23,9 @@
       }
     ];
   };
+
+  ## Don't start automatically.
+  ## This allows us to have both sway and hyprland installed simultaneously, and they
+  ## are responsible for starting sway-idle if needed
+  systemd.user.services.hypridle.Install.WantedBy = lib.mkForce [ ];
 }

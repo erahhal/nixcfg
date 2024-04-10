@@ -40,6 +40,7 @@
 
   virtualboxEnabled = false;
   vmwareEnabled = false;
+  waydroidEnabled = false;
 
   waydroid = {
     width = 3820;

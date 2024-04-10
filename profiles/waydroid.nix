@@ -10,7 +10,7 @@
 { userParams, hostParams, ...}:
 {
   virtualisation = {
-    waydroid.enable = true;
+    waydroid.enable = hostParams.waydroidEnabled;
     lxd.enable = true;
   };
 

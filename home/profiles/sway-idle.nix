@@ -44,10 +44,13 @@ in
       PartOf = [ "graphical-session.target" ];
     };
     Install = {
-      WantedBy = [ "graphical-session.target" ];
+      ## This is commented out as we don't want it to start automatically
+      ## This allows us to have both sway and hyprland installed simultaneously, and they
+      ## are responsible for starting sway-idle if needed
+      # WantedBy = [ "graphical-session.target" ];
     };
     Service = {
-      Restart = "always";
+      Restart = "no";
       RestartSec = 2;
       ExecStart = "${idlecmd}";
     };

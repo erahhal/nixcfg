@@ -141,7 +141,7 @@ in
               status = "enable";
               mode = "2560x1600@59.972000Hz";
               position = "1599,0";
-              scale = 1.5;
+              scale = 1.6;
             }
           ];
           exec = [

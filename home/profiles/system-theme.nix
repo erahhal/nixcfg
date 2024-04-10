@@ -41,7 +41,7 @@
       "$GENERATION"/activate
 
       if ${pkgs.procps}/bin/pidof sway > /dev/null; then
-        SWAYMSG=${pkgs.sway}/bin/sway
+        SWAYMSG=${pkgs.sway}/bin/swaymsg
         $PKILL waybar
         ## Using full path to tmux fails, so use one in $PATH
         tmux source-file ~/.tmux.conf

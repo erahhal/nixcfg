@@ -234,6 +234,11 @@ in
       # CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
+      # Supposedly gets rid of stutter in Hyprland
+      # https://wiki.hyprland.org/Configuring/Perfomance/
+      INTEL_GPU_MIN_FREQ_ON_AC = 500;
+      INTEL_GPU_MIN_FREQ_ON_BAT = 500;
+
       # 100 being the maximum, limit the speed of my CPU to reduce
       # heat and decrease battery usage:
       CPU_MAX_PERF_ON_AC = 100;
