@@ -1,4 +1,4 @@
-{ pkgs, copyDesktopIcons, copyDesktopItems, mkWindowsApp, hostParams, userParams, ... }:
+{ pkgs, hostParams, userParams, ... }:
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
