@@ -1,4 +1,58 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, userParams, ... }:
+let
+  ## @TODO: Should really use %h from systemd and pass it in here to
+  ##        get user home directory
+  toggle-theme-script = pkgs.writeShellScriptBin "toggle-theme-script" ''
+    set +e
+
+    HOME=/home/${userParams.username}
+    SYSTEM_THEME=$(cat $HOME/.system-theme)
+    if [ "$SYSTEM_THEME" == "light-mode" ]; then
+      GENERATION=$(home-manager generations | head -2 | tail -1 | rg -o '/[^ ]*')
+    else
+      GENERATION=$(home-manager generations | head -1 | rg -o '/[^ ]*')/specialisation/light-mode
+    fi
+    "$GENERATION"/activate
+
+    if pidof sway > /dev/null; then
+      pkill waybar
+      tmux source-file $HOME/.tmux.conf
+      systemctl --user restart swaynotificationcenter
+      swaymsg reload
+    elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
+      pkill waybar
+      tmux source-file $HOME/.tmux.conf
+      systemctl --user restart swaynotificationcenter
+      hyprctl reload
+    fi
+  '';
+  runtime-paths = with pkgs; lib.makeBinPath [
+    coreutils
+    home-manager
+    procps
+    ripgrep
+    sway
+    systemd
+    tmux
+    inputs.hyprland.packages.${pkgs.system}.hyprland
+  ];
+  toggle-theme = pkgs.stdenv.mkDerivation {
+    name = "toggle-theme";
+
+    dontUnpack = true;
+
+    nativeBuildInputs = [
+      pkgs.makeWrapper
+    ];
+
+    installPhase = ''
+      install -Dm755 ${toggle-theme-script}/bin/toggle-theme-script $out/bin/toggle-theme
+
+      wrapProgram $out/bin/toggle-theme \
+        --suffix PATH : ${runtime-paths}
+    '';
+  };
+in
 {
   # This theme switching mechanism heavily inspired by the following post:
   # https://discourse.nixos.org/t/home-manager-toggle-between-themes/32907
@@ -21,41 +75,18 @@
     };
   };
 
-  home.packages = with pkgs; [
-    (writeShellScriptBin "toggle-theme" ''
-      set +e
+  systemd.user.services.toggle-theme = {
+    Unit = {
+      Description = "Theme toggler";
+    };
+    Service = {
+      Restart = "no";
+      ExecStart = "${toggle-theme}/bin/toggle-theme";
+    };
+  };
 
-      HOME_MANAGER=${pkgs.home-manager}/bin/home-manager
-      PKILL=${pkgs.procps}/bin/pkill
-      SYSTEMCTL=${pkgs.systemd}/bin/systemctl
-      HEAD=${pkgs.coreutils}/bin/head
-      TAIL=${pkgs.coreutils}/bin/tail
-      TMUX=${pkgs.tmux}/bin/tmux
-      RG=${pkgs.ripgrep}/bin/rg
-      SYSTEM_THEME=$(cat ~/.system-theme)
-      if [ "$SYSTEM_THEME" == "light-mode" ]; then
-        GENERATION=$($HOME_MANAGER generations | $HEAD -2 | $TAIL -1 | $RG -o '/[^ ]*')
-      else
-        GENERATION=$($HOME_MANAGER generations | $HEAD -1 | $RG -o '/[^ ]*')/specialisation/light-mode
-      fi
-      "$GENERATION"/activate
-
-      if ${pkgs.procps}/bin/pidof sway > /dev/null; then
-        SWAYMSG=${pkgs.sway}/bin/swaymsg
-        $PKILL waybar
-        ## Using full path to tmux fails, so use one in $PATH
-        tmux source-file ~/.tmux.conf
-        $SYSTEMCTL --user restart swaynotificationcenter
-        $SWAYMSG reload
-      elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
-        HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl
-        $PKILL waybar
-        ## Using full path to tmux fails, so use one in $PATH
-        tmux source-file ~/.tmux.conf
-        $SYSTEMCTL --user restart swaynotificationcenter
-        $HYPRCTL reload
-      fi
-    '')
+  home.packages = [
+    toggle-theme
   ];
 
   ## base16 guide

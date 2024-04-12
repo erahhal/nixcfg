@@ -198,10 +198,9 @@ in
         # @TODO: Doesn't finish running script
         "custom/toggletheme" = {
           tooltip = false;
-          # @TODO: This doesn't really work properly.
-          # It bombs out after switching the home-manager generation,
-          # without error.
-          on-click = "toggle-theme";
+          # @TODO: This doesn't work properly.
+          # It always switches to light-theme
+          on-click = "systemctl --user restart toggle-theme";
         };
 
         tray = {
