@@ -99,7 +99,7 @@ in
 
   ## Change mac randomly on connection
   sec.macchanger = {
-    enable = true;
+    enable = false;
     devices = [
       ## Real: E4:60:17:0F:28:C3
       "wlp0s20f3"

@@ -132,7 +132,11 @@ in
       # Set mouse cursor size
       # exec-once=hyprctl setcursor Adwaita 24
 
-      # Refresh services
+      # Update hyprland signature so hyprctl works with long-lived tmux sessions
+      # Only works with new tmux panes, not existing ones
+      exec-once = tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"
+
+      # Refresh services and processes
       exec = ${pkgs.hyprpaper}/bin/hyprpaper
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart network-manager-applet
@@ -299,6 +303,7 @@ in
 
       # idle inhibit while watching videos
       windowrule = idleinhibit focus, class:^(mpv)$
+      windowrule = idleinhibit focus, title:^(Zoom)(.*)$
       windowrule = idleinhibit fullscreen, class:^(firefox)$
       # @TODO: Make sure class matches for these two
       windowrule = idleinhibit fullscreen, class:^(chromium)$
