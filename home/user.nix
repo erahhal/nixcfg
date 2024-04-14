@@ -534,18 +534,6 @@ in
         #     trustExitCode = true;
         #   };
         # };
-        diff = {
-          tool = "difftastic";
-        };
-        difftool = {
-          prompt = false;
-        };
-        "difftool \"difftastic\"" = {
-          cmd = ''${pkgs.difftastic}/bin/difft "$LOCAL" "$REMOTE"'';
-        };
-        pager = {
-          difftool = true;
-        };
         delta = {
           enable = true;
         };
@@ -557,15 +545,6 @@ in
             required = true;
           };
         };
-        merge = {
-          tool = "bc";
-          trustexitcode = true;
-        };
-        mergetool = {
-          bc = {
-            trustExitCode = true;
-          };
-        };
         push = {
           default = "simple";
         };
@@ -575,7 +554,154 @@ in
         include = {
           path = "~/.gitconfig.local";
         };
+
+        #==========================
+        # Diff settings
+        #==========================
+
+        pager = {
+          difftool = true;
+        };
+
+        #-------------------
+        ## nvim
+        # - text-based
+        #------------------
+        # diff = {
+        #   tool = "nvimdiff";
+        # };
+        # difftool = {
+        #   prompt = true;
+        # };
+        # merge = {
+        #   tool = "nvimdiff";
+        #   trustExitCode = false;
+        # };
+        # mergetool = {
+        #   trustExitCode = false;
+        # };
+
+        #-------------------
+        ## meld
+        # - gui
+        #------------------
+        # diff = {
+        #   tool = "meld";
+        # };
+        # difftool = {
+        #   prompt = true;
+        # };
+        # merge = {
+        #   tool = "meld";
+        #   trustExitCode = true;
+        # };
+
+        #-------------------
+        ## kdiff3
+        # - gui
+        #------------------
+        diff = {
+          tool = "kdiff3";
+        };
+        difftool = {
+          prompt = false;
+          keepBackup = false;
+          trustExitCode = false;
+        };
+        "difftool \"kdiff3\"" = {
+          cmd = ''${pkgs.kdiff3}/bin/kdiff3'';
+        };
+        merge = {
+          tool = "kdiff3";
+          trustExitCode = false;
+        };
+        mergetool = {
+          prompt = false;
+          keepBackup = false;
+          keepTemporaries = false;
+          trustExitCode = false;
+        };
+        "mergetool \"kdiff3\"" = {
+          cmd = ''${pkgs.kdiff3}/bin/kdiff3 -m "$BASE" "$LOCAL" "$REMOTE"'';
+        };
+
+        #-------------------
+        ## p4merge
+        # - gui
+        # - NO WAYLAND
+        #------------------
+
+        #-------------------
+        ## bcompare
+        # - gui-based
+        # - commercial
+        #------------------
+        # merge = {
+        #   tool = "bc";
+        #   trustExitCode = true;
+        # };
+        # mergetool = {
+        #   bc = {
+        #     trustExitCode = true;
+        #   };
+        # };
+
+        #-------------------
+        ## difftastic
+        # - uses treesitter to compare at code level
+        # - home-manager has first-class setting for this
+        # - doesn't seem to support merge
+        #------------------
+        # diff = {
+        #   tool = "difftastic";
+        #   external = "${pkgs.difftastic}/bin/difft";
+        # };
+        # difftool = {
+        #   prompt = false;
+        # };
+        # "difftool \"difftastic\"" = {
+        #   cmd = ''${pkgs.difftastic}/bin/difft "$LOCAL" "$REMOTE"'';
+        # };
+        # merge = {
+        #   tool = "difftastic";
+        #   trustExitCode = true;
+        # };
+
+        #-------------------
+        ## diff-so-fancy
+        # - text based
+        # - home-manager default
+        # - home-manager has first-class setting for this.
+        #------------------
+
+        # opendiff
+        # kdiff3
+        # tkdiff
+        # xxdiff
+        # meld
+        # tortoisemerge
+        # gvimdiff
+        # diffuse
+        # diffmerge
+        # ecmerge
+        # p4merge
+        # araxis
+        # bc
+        # codecompare
+        # smerge
+        # vimdiff
+        # nvimdiff
+        # emerge
       };
+
+      # difftastic = {
+      #   enable = true;
+      #   background = "dark";
+      # };
+
+      # diff-so-fancy = {
+      #   enable = true;
+      # };
     };
 
     programs.go.enable = true;

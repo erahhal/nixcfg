@@ -161,10 +161,9 @@ in
       # xwayland {
       #   force_zero_scaling = true
       # }
-      #
       # env = GDK_SCALE, 2
       # env = QT_SCALE_FACTOR, 1.6
-      # env = XCURSOR_SIZE, 64
+      # env = XCURSOR_SIZE, 32
 
       misc {
         # enable Variable Frame Rate

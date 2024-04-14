@@ -4,6 +4,7 @@ let
   tmuxConfBase = builtins.readFile "${tmux-conf}/.tmux.conf";
   tmuxConfLocal = builtins.readFile "${tmux-conf}/.tmux.conf.local";
   term = if userParams.tty == "kitty" then "xterm-kitty" else "xterm-256color";
+  xclip = "${pkgs.xclip}/bin/xclip";
 
   ## Tmux config is stitched together as follows:
   ## * tmux.conf from the gpakosz repo is bound to ~/.tmux.conf
@@ -41,12 +42,18 @@ let
     # set -g default-terminal "tmux-256color"
     set-option -sa terminal-features ',${term}:RGB'
 
-    # set-option -g default-shell /bin/zsh
+    set-option -g default-shell /etc/profiles/per-user/${userParams.username}/bin/zsh
 
     set -g status-position top
 
+    set -g set-clipboard on
+    setw -g mode-keys vi
+    bind -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel "${xclip} -i -f -selection primary | ${xclip} -i -selection clipboard"
+    bind -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${xclip} -i -f -selection primary | ${xclip} -i -selection clipboard"
+    bind -T copy-mode-vi C-j send-keys -X copy-pipe-and-cancel "${xclip} -i -f -selection primary | ${xclip} -i -selection clipboard"
+
     # For sharing clipboard with vim
-    set -g focus-events on
+    # set -g focus-events on
 
     set -gu prefix2
     unbind C-a

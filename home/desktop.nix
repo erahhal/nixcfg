@@ -1,6 +1,7 @@
 { pkgs, inputs, hostParams, userParams, ... }:
 
 let
+  bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
 in
 {
@@ -229,15 +230,14 @@ in
       # ---------------------------------------------------------------------------
       # DPI-related
       # ---------------------------------------------------------------------------
-      GDK_SCALE = "1";
+      # GDK_SCALE = "1";
       # @TODO: HACK, why are the machines acting differently?
       # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
-      GDK_DPI_SCALE = "1";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "0";
-      QT_SCALE_FACTOR = "1.25";
-      # QT_SCALE_FACTOR = "1";
-      QT_FONT_DPI = "96";
-      # QT_FONT_DPI = "80";
+      # GDK_DPI_SCALE = "1";
+      # QT_AUTO_SCREEN_SCALE_FACTOR = "0";
+      ## Fractional QT_SCALE_FACTOR results in rendering artifacts, e.g. transparent lines
+      # QT_SCALE_FACTOR = "1.25";
+      # QT_FONT_DPI = "96";
 
       # ---------------------------------------------------------------------------
       # Wayland-related
@@ -371,8 +371,14 @@ in
         # winetricks
         # wineWowPackages.waylandFull
 
+        # Dev
+        kdiff3
+        meld
+        p4v
+
         ## unfree
-        bcompare
+        # bcompare
+        bcompare-beta
       ];
     };
 

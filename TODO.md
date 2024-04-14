@@ -4,6 +4,7 @@ TODOs
 Warts/Issues
 ------------
 
+* hyprland crashes if undocked while DPMS off
 * ZSH/Tmux/Kitty cut and paste issues
   * DISABLE_MAGIC_FUNCTIONS=true
   * https://unix.stackexchange.com/questions/643018/how-can-i-disable-kittys-paste-from-escaping

@@ -43,7 +43,7 @@ in
       # ../../profiles/bambu-studio.nix
       ## Only needed if the docker version needs to be overridden for some reason
       # ../../overlays/docker.nix
-      # ../../overlays/bcompare-beta.nix
+      ../../overlays/bcompare-beta.nix
       ./virtualization.nix
 
       # user specific
