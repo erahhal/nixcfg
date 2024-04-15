@@ -1,10 +1,9 @@
 args@{ pkgs, lib, inputs, hostParams, userParams, ... }:
 let
-term = if userParams.tty == "kitty" then "xterm-kitty" else "xterm-256color";
 xwayland_settings = ''
   Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
   Xcursor.theme: Adwaita
-  Xft.dpi: 100
+  Xft.dpi: ${toString hostParams.dpi}
   xterm*background: #efefef
   xterm*faceName: Monospace
   xterm*faceSize: 12

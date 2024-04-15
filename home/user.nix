@@ -622,7 +622,7 @@ in
           trustExitCode = false;
         };
         "mergetool \"kdiff3\"" = {
-          cmd = ''${pkgs.kdiff3}/bin/kdiff3 -m "$BASE" "$LOCAL" "$REMOTE"'';
+          cmd = ''${pkgs.kdiff3}/bin/kdiff3 -o "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
         };
 
         #-------------------

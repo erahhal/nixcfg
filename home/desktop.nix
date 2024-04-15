@@ -303,9 +303,9 @@ in
         evolutionWithPlugins
         feh
         firefox
-        # gimp-with-plugins
+        gimp-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins
-        pr67576-gimp-wayland.gimp
+        # pr67576-gimp-wayland.gimp
         glava
         gnome.gnome-todo
         gnome3.gnome-calculator
@@ -377,8 +377,8 @@ in
         p4v
 
         ## unfree
-        # bcompare
-        bcompare-beta
+        bcompare
+        # bcompare-beta
       ];
     };
 

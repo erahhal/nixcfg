@@ -157,11 +157,12 @@ in
 
       # exec-once = systemctl --user start clight
 
-      # @TODO: Settings to not scale XWayland
-      # xwayland {
-      #   force_zero_scaling = true
-      # }
-      # env = GDK_SCALE, 2
+      # Don't scale xwayland
+      # In conjunction with Xft.dpi being set to something high, like 210
+      xwayland {
+        force_zero_scaling = true
+      }
+      env = GDK_SCALE, 2
       # env = QT_SCALE_FACTOR, 1.6
       # env = XCURSOR_SIZE, 32
 

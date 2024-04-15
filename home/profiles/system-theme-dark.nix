@@ -1,9 +1,9 @@
-args@{ config, inputs, pkgs, lib, hostParams, userParams, ... }:
+args@{ inputs, pkgs, lib, hostParams, userParams, ... }:
 let
 xwayland_settings = ''
   Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
   Xcursor.theme: Adwaita
-  Xft.dpi: 100
+  Xft.dpi: ${toString hostParams.dpi}
   xterm*background: black
   xterm*faceName: Monospace
   xterm*faceSize: 12
