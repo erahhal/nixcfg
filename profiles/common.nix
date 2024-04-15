@@ -257,7 +257,6 @@
     # ../overlays/pam-patched.nix
     ../overlays/hyprland-unstable.nix
 
-    ## Currently only overrides gimp
     # ../profiles/overrides.nix
     ../profiles/printers-scanners.nix
     ../profiles/flox.nix

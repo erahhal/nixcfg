@@ -135,6 +135,11 @@ in
       # Update hyprland signature so hyprctl works with long-lived tmux sessions
       # Only works with new tmux panes, not existing ones
       exec-once = tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"
+      exec-once = ${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r
+      exec-once = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
+      exec-once = ${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r
+      exec-once = ${pkgs.waybar}/bin/waybar
+      exec-once = ${pkgs.blueman}/bin/blueman-applet
 
       # Refresh services and processes
       exec = ${pkgs.hyprpaper}/bin/hyprpaper
@@ -143,9 +148,6 @@ in
       exec = systemctl --user restart wlsunset
       exec = systemctl --user stop sway-idle
       exec = systemctl --user restart hypridle
-      exec = pkill waybar; sleep 1; ${pkgs.waybar}/bin/waybar
-      exec = ${pkgs.blueman}/bin/blueman-applet
-      exec = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
       exec = systemctl --user restart kanshi
 
       # @TODO
@@ -198,7 +200,7 @@ in
       }
 
       input {
-        kb_layout = ro
+        kb_layout = us, cn
         repeat_rate = 50
         repeat_delay = 255
         # Map caps to ctrl
@@ -281,6 +283,10 @@ in
           col.inactive = rgba(2b2b2bff)
         }
       }
+
+      # fcitx
+      windowrule=pseudo,fcitx
+      bind = $mod, E, exec, pkill fcitx5 -9;sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace; sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r
 
       windowrule = float, title:^(KCalc)$
       # Chrome Bitwarden popup

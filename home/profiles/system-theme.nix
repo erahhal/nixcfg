@@ -24,6 +24,7 @@ let
       tmux source-file $HOME/.tmux.conf
       systemctl --user restart swaynotificationcenter
       hyprctl reload
+      waybar
     fi
   '';
   runtime-paths = with pkgs; lib.makeBinPath [
@@ -35,6 +36,7 @@ let
     systemd
     tmux
     inputs.hyprland.packages.${pkgs.system}.hyprland
+    waybar
   ];
   toggle-theme = pkgs.stdenv.mkDerivation {
     name = "toggle-theme";

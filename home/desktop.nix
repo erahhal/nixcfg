@@ -15,7 +15,28 @@ in
   ];
 
   environment.sessionVariables = {
+    # ---------------------------------------------------------------------------
+    # IME
+    # ---------------------------------------------------------------------------
+    # XMODIFIERS = "@im=ibus";
+    # GTK_IM_MODULE = "ibus";
+    # QT_IM_MODULE = "ibus";
+    # SDL_IM_MODULE = "ibus";
+    # INPUT_METHOD = "ibus";
+    # XIM_SERVERS = "ibus";
+
     XCURSOR_SIZE = "64";
+    # GLFW_IM_MODULE = "ibus";
+    GLFW_IM_MODULE = "fcitx";
+    GTK_IM_MODULE = "fcitx";
+    INPUT_METHOD = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+    IMSETTINGS_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    SDL_IM_MODULE = "fcitx";
+    XIM_SERVERS = "fcitx";
+    XIM = "fcitx";
+    XIM_PROGRAM = "fcitx";
   };
   environment.variables = {
     XCURSOR_SIZE = "64";
@@ -35,6 +56,7 @@ in
         fcitx5-gtk
         fcitx5-rime
         libsForQt5.fcitx5-qt
+        plasma5Packages.fcitx5-qt
         rime-data
       ];
     };
@@ -44,6 +66,10 @@ in
   # GTK apps will hang for 30 seconds at start of sway and render strangely without this
   services.dbus = {
     enable = true;
+  };
+
+
+  environment.sessionVariables = {
   };
 
   home-manager.users.${userParams.username} = {
@@ -183,27 +209,6 @@ in
     home.file."Wallpapers".source = ../wallpapers;
 
     home.sessionVariables = {
-      # ---------------------------------------------------------------------------
-      # IME
-      # ---------------------------------------------------------------------------
-      XMODIFIERS = "@im=fcitx";
-      # GTK_IM_MODULE = "fcitx";
-      QT_IM_MODULE = "fcitx";
-      SDL_IM_MODULE = "fcitx";
-      INPUT_METHOD = "fcitx";
-      XIM_SERVERS = "fcitx";
-      XIM = "fcitx";
-      XIM_PROGRAM = "fcitx";
-
-      GLFW_IM_MODULE = "ibus";
-
-      # XMODIFIERS = "@im=ibus";
-      # GTK_IM_MODULE = "ibus";
-      # QT_IM_MODULE = "ibus";
-      # SDL_IM_MODULE = "ibus";
-      # INPUT_METHOD = "ibus";
-      # XIM_SERVERS = "ibus";
-
 
       # ---------------------------------------------------------------------------
       # Browser
@@ -244,11 +249,13 @@ in
       # ---------------------------------------------------------------------------
       MOZ_ENABLE_WAYLAND = "1";
       MOZ_USE_XINPUT2 = "1";
+      MOZ_WEBRENDER = "1";
       WLR_DRM_NO_MODIFIERS = "1";
+      CLUTTER_BACKEND = "wayland";
       ## Sway doesn't load with this
       # WLR_RENDERER = "vulkan";
       ## Steam doesn't work with this enabled
-      # SDL_VIDEODRIVER = "wayland";
+      SDL_VIDEODRIVER = "wayland";
 
       ## using "wayland" makes menus disappear in kde apps
       ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )

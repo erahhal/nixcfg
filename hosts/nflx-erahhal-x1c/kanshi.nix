@@ -4,6 +4,7 @@ let
   home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
+  portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
   hyprctl="${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
 in
 {
@@ -127,43 +128,13 @@ in
           ];
         };
         # Only left or right can be enabled at the same time, not both
-        desk-portable-right = {
-          outputs = [
-            {
-              criteria = "eDP-1";
-              status = "enable";
-              mode = "2880x1800@90.000999";
-              position = "0,67";
-              scale = 1.8;
-            }
-            {
-              criteria = "LG Electronics 16MQ70 204NZKZ005285";
-              status = "enable";
-              mode = "2560x1600@59.972000Hz";
-              position = "1599,0";
-              scale = 1.6;
-            }
-          ];
-          exec = [
-            "swaymsg workspace 1, move workspace to output right"
-            "swaymsg workspace 2, move workspace to eDP-1"
-            "swaymsg workspace 3, move workspace to eDP-1"
-            "swaymsg workspace 4, move workspace to output right"
-            "swaymsg workspace 5, move workspace to output right"
-            "swaymsg workspace 6, move workspace to output right"
-            "swaymsg workspace 7, move workspace to output right"
-            "swaymsg workspace 8, move workspace to output right"
-            "swaymsg workspace 9, move workspace to output right"
-          ];
-        };
-        # desk-portable-right-hyprland = {
+        # desk-portable-right = {
         #   outputs = [
         #     {
         #       criteria = "eDP-1";
         #       status = "enable";
         #       mode = "2880x1800@90.000999";
         #       position = "0,67";
-        #       # Resolution must be integer divisible by scale
         #       scale = 1.8;
         #     }
         #     {
@@ -171,22 +142,52 @@ in
         #       status = "enable";
         #       mode = "2560x1600@59.972000Hz";
         #       position = "1599,0";
-        #       # Resolution must be integer divisible by scale
-        #       scale = 1.666667;
+        #       scale = 1.6;
         #     }
         #   ];
         #   exec = [
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 1 DP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 2 eDP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 3 eDP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 4 DP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 5 DP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 6 DP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 7 DP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 8 DP-1"
-        #     "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 DP-1"
+        #     "swaymsg workspace 1, move workspace to output right"
+        #     "swaymsg workspace 2, move workspace to eDP-1"
+        #     "swaymsg workspace 3, move workspace to eDP-1"
+        #     "swaymsg workspace 4, move workspace to output right"
+        #     "swaymsg workspace 5, move workspace to output right"
+        #     "swaymsg workspace 6, move workspace to output right"
+        #     "swaymsg workspace 7, move workspace to output right"
+        #     "swaymsg workspace 8, move workspace to output right"
+        #     "swaymsg workspace 9, move workspace to output right"
         #   ];
         # };
+        desk-portable-right-hyprland = {
+          outputs = [
+            {
+              criteria = "eDP-1";
+              status = "enable";
+              mode = "2880x1800@90.000999";
+              position = "0,67";
+              # Resolution must be integer divisible by scale
+              scale = 1.8;
+            }
+            {
+              criteria = "LG Electronics 16MQ70 204NZKZ005285";
+              status = "enable";
+              mode = "2560x1600@59.972000Hz";
+              position = "1599,0";
+              # Resolution must be integer divisible by scale
+              scale = 1.6;
+            }
+          ];
+          exec = [
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 2 eDP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 3 eDP-1"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 4 desc:${portable-monitor}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 5 desc:${portable-monitor}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 6 desc:${portable-monitor}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
+            "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
+          ];
+        };
         # desk-portable-left = {
         #   outputs = [
         #     {
