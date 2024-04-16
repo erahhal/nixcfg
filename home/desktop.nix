@@ -255,11 +255,12 @@ in
       MOZ_USE_XINPUT2 = "1";
       MOZ_WEBRENDER = "1";
       WLR_DRM_NO_MODIFIERS = "1";
-      CLUTTER_BACKEND = "wayland";
+
+      # CLUTTER_BACKEND = "wayland";
       ## Sway doesn't load with this
       # WLR_RENDERER = "vulkan";
       ## Steam doesn't work with this enabled
-      SDL_VIDEODRIVER = "wayland";
+      # SDL_VIDEODRIVER = "wayland";
 
       ## using "wayland" makes menus disappear in kde apps
       ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )

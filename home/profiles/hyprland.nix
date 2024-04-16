@@ -127,7 +127,7 @@ in
     extraConfig = ''
       $mod = SUPER
 
-      $term = ${pkgs.trunk.kitty}/bin/kitty
+      $term = ${pkgs.kitty}/bin/kitty
 
       # Set mouse cursor size
       # exec-once=hyprctl setcursor Adwaita 24

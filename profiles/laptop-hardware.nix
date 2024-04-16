@@ -56,7 +56,7 @@
       }
     ];
     extraOptions = ''
-      --login ${pkgs.shadow}/bin/login --xkb-layout us --term xterm-256color --font-name "DejaVu Sans Mono" --font-size 18
+      --login ${pkgs.shadow}/bin/login --xkb-layout us --term xterm-256color --font-name "DejaVu Sans Mono" --font-size 19
     '';
   };
 }
