@@ -141,7 +141,7 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
-          (import ./hosts/mediaserver/configuration.nix)
+          ./hosts/mediaserver/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
@@ -244,12 +244,12 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
-          (import ./hosts/upaya/configuration.nix)
+          ./hosts/upaya/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.nixos-hardware-xps.nixosModules.dell-xps-15-9560
           inputs.nixos-hardware-xps.nixosModules.common-cpu-intel
+          inputs.nixos-hardware-xps.nixosModules.common-cpu-intel-kaby-lake
           inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.nixosModules.nur

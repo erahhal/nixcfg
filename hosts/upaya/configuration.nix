@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, hostParams, recursiveMerge, ... }:
+{ config, lib, pkgs, hostParams, recursiveMerge, ... }:
 
 let
   dell-dock-udev-rules = pkgs.callPackage ../../pkgs/dell-dock-udev-rules {};
@@ -301,6 +301,8 @@ in
     ##
     ##   cctk --CStatesCtrl
   ];
+
+  services.thermald.enable = lib.mkDefault true;
 
   # --------------------------------------------------------------------------------------
   # Packages
