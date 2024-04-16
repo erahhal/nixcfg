@@ -164,7 +164,7 @@ in
       xwayland {
         force_zero_scaling = true
       }
-      env = GDK_SCALE, 2
+      # env = GDK_SCALE, 2
       # env = QT_SCALE_FACTOR, 1.6
       # env = XCURSOR_SIZE, 32
 

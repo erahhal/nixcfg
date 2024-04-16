@@ -9,12 +9,11 @@ let
   throwSystem = throw "Unsupported system: ${stdenv.hostPlatform.system}";
 
   srcs = {
-    # x86_64-linux = fetchurl {
-    #   url = "https://www.scootersoftware.com/files/${pname}-${version}_amd64.deb";
-    #   sha256 = "sha256-f5KO/IJhuWpRrlyowfzh0vzspUCGJJclC+++CcOu40U=";
-    # };
-
-    x86_64-linux = ./bcompare-5.0.0.29328_amd64.deb;
+    x86_64-linux = fetchurl {
+      url = "https://www.scootersoftware.com/files/${pname}-${version}_amd64.deb";
+      # sha256 = "sha256-f5KO/IJhuWpRrlyowfzh0vzspUCGJJclC+++CcOu40U=";
+      sha256 = "13p4z5njwnjnd96jybr4xk4kjq880qj5a1fnb3wwwzz1pkxd9g7j";
+    };
 
     x86_64-darwin = fetchurl {
       ## @TODO: this is still 4.x

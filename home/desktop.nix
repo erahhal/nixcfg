@@ -15,6 +15,9 @@ in
   ];
 
   environment.sessionVariables = {
+    # Supposedly fixes tiny cursor in SDDM, but it doesn't
+    XCURSOR_SIZE = "64";
+
     # ---------------------------------------------------------------------------
     # IME
     # ---------------------------------------------------------------------------
@@ -24,9 +27,8 @@ in
     # SDL_IM_MODULE = "ibus";
     # INPUT_METHOD = "ibus";
     # XIM_SERVERS = "ibus";
-
-    XCURSOR_SIZE = "64";
     # GLFW_IM_MODULE = "ibus";
+
     GLFW_IM_MODULE = "fcitx";
     GTK_IM_MODULE = "fcitx";
     INPUT_METHOD = "fcitx";
@@ -38,7 +40,9 @@ in
     XIM = "fcitx";
     XIM_PROGRAM = "fcitx";
   };
+
   environment.variables = {
+    # Supposedly fixes tiny cursor in SDDM, but it doesn't
     XCURSOR_SIZE = "64";
   };
 
@@ -365,8 +369,13 @@ in
         playerctl
         teams-for-linux
 
+        # Visualization
+        cava
+
         # Pipewire connection tool
         qpwgraph
+        helvum            # this one is better
+        unstable.coppwr   # not yet in stable
 
         ## Wine
         ## wine-staging (version with experimental features)
@@ -384,8 +393,8 @@ in
         p4v
 
         ## unfree
-        bcompare
-        # bcompare-beta
+        # bcompare
+        bcompare-beta
       ];
     };
 

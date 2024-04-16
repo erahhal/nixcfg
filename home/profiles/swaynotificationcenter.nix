@@ -27,6 +27,15 @@ in
     };
   };
 
+
+  ## How to execute scripts with SwayNC
+  # "scripts": {
+  #   "example-action-script": {
+  #     "exec": "echo 'Do something actionable!'",
+  #     "urgency": "Normal",
+  #     "run-on": "action"
+  #   }
+  # },
   xdg.configFile."swaync/config.json".text = ''
     {
       "$schema": "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json",
@@ -58,13 +67,6 @@ in
       "hide-on-clear": false,
       "hide-on-action": true,
       "script-fail-notify": true,
-      "scripts": {
-        "example-action-script": {
-          "exec": "echo 'Do something actionable!'",
-          "urgency": "Normal",
-          "run-on": "action"
-        }
-      },
       "notification-visibility": {
         "example-name": {
           "state": "muted",
