@@ -16,7 +16,8 @@ ifeq (, $(shell which nom))
 endif
 
 switch: 
-	make clear-sddm-cache
+	## Disable for now. Only needed when updating existing SDDM themes. It removes the last selected DM, which is annoying.
+	# make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
 	nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --flake .#${HOSTNAME} -L |& nom --json

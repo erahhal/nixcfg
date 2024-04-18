@@ -76,7 +76,7 @@
 
     # Hyprland WM
     hyprland = {
-      url = "github:hyprwm/hyprland/v0.38.1";
+      url = "github:hyprwm/hyprland/v0.39.1";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hyprland-plugins = {
@@ -103,6 +103,8 @@
     comma.url = "github:nix-community/comma";
 
     sg-nvim.url = "github:sourcegraph/sg.nvim";
+
+    nix-inspect.url = "github:bluskript/nix-inspect";
 
     nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
     # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";

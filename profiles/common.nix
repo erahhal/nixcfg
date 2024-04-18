@@ -378,5 +378,6 @@
     xz
     zip
     zsh
+    inputs.nix-inspect.packages.${system}.default
   ];
 }
