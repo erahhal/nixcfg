@@ -87,9 +87,8 @@ in
     ./waybar.nix
     ./wlsunset.nix
 
-    ./sway-idle.nix
-    ## Hyperlock currently broken
-    # ./hypridle.nix
+    # ./sway-idle.nix
+    ./hypridle.nix
   ];
 
   home.packages = with pkgs; [
@@ -150,10 +149,10 @@ in
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
       ## hyprlock currently broken
-      # exec = systemctl --user stop sway-idle
-      exec = systemctl --user restart sway-idle
-      exec = systemctl --user stop hypridle
-      # exec = systemctl --user restart hypridle
+      exec = systemctl --user stop sway-idle
+      # exec = systemctl --user restart sway-idle
+      # exec = systemctl --user stop hypridle
+      exec = systemctl --user restart hypridle
       exec = systemctl --user restart kanshi
 
       # @TODO
@@ -329,8 +328,8 @@ in
       bind = , mouse:274, exec, ;
 
       bind = $mod, Return, exec, $term
-      bind = $mod, X, exec, ${swayLockCmd}
-      # bind = $mod, X, exec, ${lockCommand}
+      # bind = $mod, X, exec, ${swayLockCmd}
+      bind = $mod, X, exec, ${lockCommand}
       # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
       bind = $mod, C, exec, ${kill-active}
       # bind = $mod, R, forcerendererreload
