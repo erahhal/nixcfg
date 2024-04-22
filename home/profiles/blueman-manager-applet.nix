@@ -2,15 +2,15 @@
 
 {
   home.packages = with pkgs; [
-    networkmanagerapplet
+    blueman
     hicolor-icon-theme
     gnome2.gnome_icon_theme
     gnome3.adwaita-icon-theme
   ];
 
-  systemd.user.services."network-manager-applet" = {
+  systemd.user.services."blueman-manager-applet" = {
     Unit = {
-      Description = "Start the network manager applet";
+      Description = "Start the blueman manager applet";
       PartOf = [ "graphical-session.target" ];
     };
     Install = {
@@ -21,10 +21,10 @@
       # Type = "forking";
       Restart = "always";
       RestartSec = 2;
-      ExecStart = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator --sm-disable";
+      ExecStart = "${pkgs.blueman}/bin/blueman-applet";
     };
     Environment = {
-       XDG_DATA_DIRS = "${pkgs.networkmanagerapplet}/share";
+       XDG_DATA_DIRS = "${pkgs.blueman}/share";
     };
   };
 }

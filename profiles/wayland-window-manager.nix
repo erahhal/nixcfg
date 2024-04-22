@@ -7,9 +7,13 @@
   # XDG portals - allow desktop apps to use resources outside their sandbox
   xdg.portal = {
     enable = true;
+
     extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr # wlroots screen capture
+      ## Launching the WLR portal interferes with Hyprland screen sharing
+      # xdg-desktop-portal-wlr # wlroots screen capture
+
       xdg-desktop-portal-gtk # gtk file dialogs
+
       ## seems to be already installed by hyperland
       # xdg-desktop-portal-hyprland # Hyprland specific
     ];

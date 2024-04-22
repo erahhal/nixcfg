@@ -9,7 +9,7 @@
   in {
     enable = true;
     lockCmd = "pidof hyprlock || ${hyprlock}";
-    beforeSleepCmd = "${hyprctl} dispatch dpms off";
+    beforeSleepCmd = "${loginctl} lock-session && ${hyprctl} dispatch dpms off";
     afterSleepCmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session && ${restartWlsunset}";
     listeners = [
       {
@@ -28,4 +28,8 @@
   ## This allows us to have both sway and hyprland installed simultaneously, and they
   ## are responsible for starting sway-idle if needed
   systemd.user.services.hypridle.Install.WantedBy = lib.mkForce [ ];
+
+  home.packages = [
+    inputs.hypridle.packages.${pkgs.system}.hypridle
+  ];
 }

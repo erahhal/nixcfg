@@ -9,8 +9,9 @@
   containerBackend = "docker";
   displayManager = "sddm";
   sddmTheme = "nflx";
-  defaultSession = "sway";
+  defaultSession = "hyprland";
   multipleSessions = true;
+  defaultLockProgram = "swaylock";
 
   ttyFontSize = 9;
   trolltechFontSize = 10;

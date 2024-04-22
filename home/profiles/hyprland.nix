@@ -3,9 +3,8 @@
 let
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
-  swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
-  # lockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
-  lockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
+  swayLockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
+  hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
     HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
     JQ=${pkgs.jq}/bin/jq
@@ -81,6 +80,7 @@ in
 {
   imports = [
     ./swaynotificationcenter.nix
+    ./blueman-manager-applet.nix
     ./network-manager-applet.nix
     ./rofi.nix
     ./hyprlock.nix
@@ -146,13 +146,24 @@ in
       # Refresh services and processes
       exec = ${pkgs.hyprpaper}/bin/hyprpaper
       exec = systemctl --user restart swaynotificationcenter
+      exec = systemctl --user restart blueman-manager-applet
       exec = systemctl --user restart network-manager-applet
       exec = systemctl --user restart wlsunset
       ## hyprlock currently broken
-      exec = systemctl --user stop sway-idle
-      # exec = systemctl --user restart sway-idle
-      # exec = systemctl --user stop hypridle
-      exec = systemctl --user restart hypridle
+      exec = systemctl --user stop ${
+        if hostParams.defaultLockProgram == "swaylock"
+        then
+          "hypridle"
+        else
+          "sway-idle"
+      }
+      exec = systemctl --user restart ${
+        if hostParams.defaultLockProgram == "swaylock"
+        then
+          "sway-idle"
+        else
+          "hypridle"
+      }
       exec = systemctl --user restart kanshi
 
       # @TODO
@@ -328,9 +339,15 @@ in
       bind = , mouse:274, exec, ;
 
       bind = $mod, Return, exec, $term
-      # bind = $mod, X, exec, ${swayLockCmd}
-      bind = $mod, X, exec, ${lockCommand}
+      bind = $mod, X, exec, ${
+        if hostParams.defaultLockProgram == "swaylock"
+        then
+          swayLockCommand
+        else
+          hyprlockCommand
+      }
       # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
+      bind = $mod, A, exec, ${pkgs.hyprpicker}/bin/hyprpicker -a --format=hex
       bind = $mod, C, exec, ${kill-active}
       # bind = $mod, R, forcerendererreload
       bind = $mod, R, exec, hyprctl reload
@@ -343,7 +360,7 @@ in
       bind = $mod_SHIFT_CTRL, L, movecurrentworkspacetomonitor, r
       bind = $mod_SHIFT_CTRL, H, movecurrentworkspacetomonitor, l
       bind = $mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u
-      bind = $mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor,
+      bind = $mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor, d
 
       bind = SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
       bind = SHIFT_CTRL, 4, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -d)" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
