@@ -1,16 +1,16 @@
-Window 3818f70 -> nflx-erahhal-x1c ❐ code ● 6 zsh:
+Window 35dd620 -> nflx-erahhal-x1c ❐ code ● 1 nixcfg:
 	mapped: 1
 	hidden: 0
-	at: 0,0
+	at: 0,67
 	size: 1600,978
 	workspace: 2 (2)
 	floating: 0
 	monitor: 0
 	class: kitty
-	title: nflx-erahhal-x1c ❐ code ● 6 zsh
+	title: nflx-erahhal-x1c ❐ code ● 1 nixcfg
 	initialClass: kitty
 	initialTitle: tmux
-	pid: 3799
+	pid: 4512
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
@@ -20,41 +20,107 @@ Window 3818f70 -> nflx-erahhal-x1c ❐ code ● 6 zsh:
 	swallowing: 0
 	focusHistoryID: 0
 
-Window 394a6a0 -> Spotify Premium:
+Window 5692660 -> Spotify Premium:
 	mapped: 1
-	hidden: 0
-	at: 1,1
-	size: 798,976
+	hidden: 1
+	at: 1599,27
+	size: 1599,950
 	workspace: 4 (4)
 	floating: 0
-	monitor: 0
+	monitor: 1
 	class: 
 	title: Spotify Premium
 	initialClass: 
 	initialTitle: Spotify Premium
-	pid: 3803
+	pid: 4517
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
 	fullscreenmode: 0
 	fakefullscreen: 0
-	grouped: 0
+	grouped: 5692660,569f760
 	swallowing: 0
 	focusHistoryID: 10
 
-Window 39655b0 -> Your feed on SoundCloud - Brave:
+Window 569f760 -> ASMR EAR CLEANING | Intense Inner Ear Picking 👂 - YouTube - Brave:
 	mapped: 1
 	hidden: 0
-	at: 801,1
-	size: 798,976
+	at: 1599,27
+	size: 1599,950
 	workspace: 4 (4)
 	floating: 0
-	monitor: 0
+	monitor: 1
 	class: brave-browser
-	title: Your feed on SoundCloud - Brave
+	title: ASMR EAR CLEANING | Intense Inner Ear Picking 👂 - YouTube - Brave
 	initialClass: brave-browser
 	initialTitle: Your feed on SoundCloud - Brave
-	pid: 3866
+	pid: 4585
+	xwayland: 0
+	pinned: 0
+	fullscreen: 0
+	fullscreenmode: 0
+	fakefullscreen: 0
+	grouped: 5692660,569f760
+	swallowing: 0
+	focusHistoryID: 7
+
+Window 56b98f0 -> version-clean - sketches - Chromium:
+	mapped: 1
+	hidden: 0
+	at: 1599,27
+	size: 1599,950
+	workspace: 1 (1)
+	floating: 0
+	monitor: 1
+	class: chromium-browser
+	title: version-clean - sketches - Chromium
+	initialClass: chromium-browser
+	initialTitle: Query Editor Navigation Redesign Tracker - Google Docs - Chromium
+	pid: 4537
+	xwayland: 0
+	pinned: 0
+	fullscreen: 0
+	fullscreenmode: 0
+	fakefullscreen: 0
+	grouped: 56b98f0,5698670
+	swallowing: 0
+	focusHistoryID: 2
+
+Window 56bb300 -> Signal:
+	mapped: 1
+	hidden: 1
+	at: 1600,517
+	size: 1597,459
+	workspace: 6 (6)
+	floating: 0
+	monitor: 1
+	class: signal
+	title: Signal
+	initialClass: signal
+	initialTitle: Signal
+	pid: 4525
+	xwayland: 0
+	pinned: 0
+	fullscreen: 0
+	fullscreenmode: 0
+	fakefullscreen: 0
+	grouped: 56bb300,56acd90,3bc51f0
+	swallowing: 0
+	focusHistoryID: 5
+
+Window 56c91a0 -> AJ (DM) - Netflix - Slack:
+	mapped: 1
+	hidden: 0
+	at: 0,67
+	size: 1600,978
+	workspace: 3 (3)
+	floating: 0
+	monitor: 0
+	class: Slack
+	title: AJ (DM) - Netflix - Slack
+	initialClass: Slack
+	initialTitle: Slack
+	pid: 4515
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
@@ -62,21 +128,21 @@ Window 39655b0 -> Your feed on SoundCloud - Brave:
 	fakefullscreen: 0
 	grouped: 0
 	swallowing: 0
-	focusHistoryID: 6
+	focusHistoryID: 1
 
-Window 396de10 -> Ellis Rahhal MTP 7/27/24 – (16):
+Window 56cda60 -> #hyprland-general | Hyprland Cathedral - Discord:
 	mapped: 1
 	hidden: 0
-	at: 1,1
-	size: 798,976
-	workspace: 6 (6)
+	at: 1600,1
+	size: 798,975
+	workspace: 7 (7)
 	floating: 0
-	monitor: 0
-	class: org.telegram.desktop
-	title: Ellis Rahhal MTP 7/27/24 – (16)
-	initialClass: org.telegram.desktop
-	initialTitle: Telegram
-	pid: 3812
+	monitor: 1
+	class: discord
+	title: #hyprland-general | Hyprland Cathedral - Discord
+	initialClass: discord
+	initialTitle: Discord
+	pid: 4531
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
@@ -86,63 +152,41 @@ Window 396de10 -> Ellis Rahhal MTP 7/27/24 – (16):
 	swallowing: 0
 	focusHistoryID: 11
 
-Window 3979580 -> Meet - wcy-hwum-dqs - Chromium:
+Window 56acd90 -> Recipes – (2):
 	mapped: 1
 	hidden: 1
-	at: 0,27
-	size: 1600,951
-	workspace: 1 (1)
+	at: 1599,27
+	size: 1599,950
+	workspace: 6 (6)
 	floating: 0
-	monitor: 0
-	class: chromium-browser
-	title: Meet - wcy-hwum-dqs - Chromium
-	initialClass: chromium-browser
-	initialTitle: FullStory - Chromium
-	pid: 3822
+	monitor: 1
+	class: org.telegram.desktop
+	title: Recipes – (2)
+	initialClass: org.telegram.desktop
+	initialTitle: Telegram
+	pid: 4528
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
 	fullscreenmode: 0
 	fakefullscreen: 0
-	grouped: 3979580,3954060
-	swallowing: 0
-	focusHistoryID: 3
-
-Window 3983640 -> * concerts-la (Channel) - Netflix - Slack:
-	mapped: 1
-	hidden: 0
-	at: 0,0
-	size: 1600,978
-	workspace: 3 (3)
-	floating: 0
-	monitor: 0
-	class: Slack
-	title: * concerts-la (Channel) - Netflix - Slack
-	initialClass: Slack
-	initialTitle: Slack
-	pid: 3801
-	xwayland: 0
-	pinned: 0
-	fullscreen: 0
-	fullscreenmode: 0
-	fakefullscreen: 0
-	grouped: 0
+	grouped: 56bb300,56acd90,3bc51f0
 	swallowing: 0
 	focusHistoryID: 4
 
-Window 397d890 -> Signal:
+Window 57135e0 -> Element * | Nix / NixOS:
 	mapped: 1
 	hidden: 0
-	at: 801,1
-	size: 798,976
-	workspace: 6 (6)
+	at: 2400,1
+	size: 797,975
+	workspace: 7 (7)
 	floating: 0
-	monitor: 0
-	class: signal
-	title: Signal
-	initialClass: signal
-	initialTitle: Signal
-	pid: 3810
+	monitor: 1
+	class: Element
+	title: Element * | Nix / NixOS
+	initialClass: Element
+	initialTitle: Element * | Mozilla General
+	pid: 4533
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
@@ -150,116 +194,72 @@ Window 397d890 -> Signal:
 	fakefullscreen: 0
 	grouped: 0
 	swallowing: 0
-	focusHistoryID: 7
+	focusHistoryID: 6
 
-Window 399c5b0 -> Friends - Discord:
+Window 5698670 -> Untitled • Data Portal - Chromium:
 	mapped: 1
 	hidden: 1
-	at: 0,27
-	size: 1600,951
-	workspace: 7 (7)
+	at: 1599,27
+	size: 1599,950
+	workspace: 1 (1)
 	floating: 0
-	monitor: 0
-	class: discord
-	title: Friends - Discord
-	initialClass: discord
-	initialTitle: Discord
-	pid: 3815
+	monitor: 1
+	class: chromium-browser
+	title: Untitled • Data Portal - Chromium
+	initialClass: chromium-browser
+	initialTitle: Morgan Stanley Smith Barney STP SP10 1099 yearly (Domestic) Re - Chromium
+	pid: 4537
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
 	fullscreenmode: 0
 	fakefullscreen: 0
-	grouped: 399c5b0,39dfc90
+	grouped: 56b98f0,5698670
 	swallowing: 0
 	focusHistoryID: 9
 
-Window 39c3c40 -> HVAC companies hate my house : r/hvacadvice — Mozilla Firefox:
+Window 56b4ab0 -> WiFi channel frequency — Mozilla Firefox:
 	mapped: 1
 	hidden: 0
-	at: 0,0
-	size: 1600,978
+	at: 1599,0
+	size: 1599,977
 	workspace: 5 (5)
 	floating: 0
-	monitor: 0
+	monitor: 1
 	class: firefox
-	title: HVAC companies hate my house : r/hvacadvice — Mozilla Firefox
+	title: WiFi channel frequency — Mozilla Firefox
 	initialClass: firefox
 	initialTitle: Mozilla Firefox
-	pid: 19452
+	pid: 79046
 	xwayland: 0
 	pinned: 0
 	fullscreen: 0
 	fullscreenmode: 0
 	fakefullscreen: 0
 	grouped: 0
-	swallowing: 0
-	focusHistoryID: 5
-
-Window 3954060 -> version-clean - sketches - Chromium:
-	mapped: 1
-	hidden: 0
-	at: 0,27
-	size: 1600,951
-	workspace: 1 (1)
-	floating: 0
-	monitor: 0
-	class: chromium-browser
-	title: version-clean - sketches - Chromium
-	initialClass: chromium-browser
-	initialTitle: version-clean - sketches - Chromium
-	pid: 3822
-	xwayland: 0
-	pinned: 0
-	fullscreen: 0
-	fullscreenmode: 0
-	fakefullscreen: 0
-	grouped: 3979580,3954060
-	swallowing: 0
-	focusHistoryID: 2
-
-Window 39dfc90 -> Element * | Element Web/Desktop:
-	mapped: 1
-	hidden: 0
-	at: 0,27
-	size: 1600,951
-	workspace: 7 (7)
-	floating: 0
-	monitor: 0
-	class: Element
-	title: Element * | Element Web/Desktop
-	initialClass: Element
-	initialTitle: Element * | Element Web/Desktop
-	pid: 3818
-	xwayland: 0
-	pinned: 0
-	fullscreen: 0
-	fullscreenmode: 0
-	fakefullscreen: 0
-	grouped: 399c5b0,39dfc90
 	swallowing: 0
 	focusHistoryID: 8
 
-Window 3adf3d0 -> Authentication Required — PolicyKit1 KDE Agent:
+Window 3bc51f0 -> WhatsApp for Linux:
 	mapped: 1
 	hidden: 0
-	at: 652,405
-	size: 283,144
-	workspace: 2 (2)
-	floating: 1
-	monitor: 0
-	class: polkit-kde-authentication-agent-1
-	title: Authentication Required — PolicyKit1 KDE Agent
-	initialClass: polkit-kde-authentication-agent-1
-	initialTitle: Authentication Required — PolicyKit1 KDE Agent
-	pid: 4229
-	xwayland: 1
+	at: 1599,27
+	size: 1599,950
+	workspace: 6 (6)
+	floating: 0
+	monitor: 1
+	class: whatsapp-for-linux
+	title: WhatsApp for Linux
+	initialClass: whatsapp-for-linux
+	initialTitle: WhatsApp for Linux
+	pid: 673664
+	xwayland: 0
 	pinned: 0
 	fullscreen: 0
 	fullscreenmode: 0
 	fakefullscreen: 0
-	grouped: 0
+	grouped: 56bb300,56acd90,3bc51f0
 	swallowing: 0
-	focusHistoryID: 1
+	focusHistoryID: 3
 
 

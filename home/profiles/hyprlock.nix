@@ -3,6 +3,11 @@
   programs.hyprlock = {
     enable = true;
 
+    general = {
+      no_fade_in = true;
+      no_fade_out = true;
+    };
+
     input-fields = [
       {
         outer_color = "rgb(24, 25, 38)";
@@ -10,14 +15,15 @@
         font_color = "rgb(202, 211, 245)";
         halign = "center";
         valign = "center";
-        size.width = 300;
-        size.height = 40;
+        size.width = 360;
+        size.height = 50;
       }
     ];
 
     labels = [
       {
-        text = "$TIME, $USER";
+        # text = "$TIME, $USER";
+        text = ''cmd[update:1000] echo "<span foreground='##ff2222'>$(date)</span>"'';
         color = "rgb(237, 135, 150)";
         font_family = "FiraCode";
         font_size = 72;

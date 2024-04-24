@@ -141,10 +141,11 @@ in
       exec-once = ${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace
       exec-once = ${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r
       exec-once = ${pkgs.waybar}/bin/waybar
+      exec-once = ${pkgs.hyprpaper}/bin/hyprpaper
       exec-once = ${pkgs.blueman}/bin/blueman-applet
 
       # Refresh services and processes
-      exec = ${pkgs.hyprpaper}/bin/hyprpaper
+      exec = systemctl --user restart polkit-gnome-authentication-agent-1
       exec = systemctl --user restart swaynotificationcenter
       exec = systemctl --user restart blueman-manager-applet
       exec = systemctl --user restart network-manager-applet

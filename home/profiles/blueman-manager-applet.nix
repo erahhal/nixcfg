@@ -1,4 +1,4 @@
-{ pkgs, ...}:
+{ pkgs, userParams, ...}:
 
 {
   home.packages = with pkgs; [

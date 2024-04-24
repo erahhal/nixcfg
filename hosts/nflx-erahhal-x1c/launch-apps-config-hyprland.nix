@@ -43,6 +43,8 @@
         exec-once = [workspace 6 silent] signal-desktop
         windowrule = workspace 6, class:^(org.telegram.desktop)$
         exec-once = [workspace 6 silent] telegram-desktop
+        windowrule = workspace 6, class:^(whatsapp-for-linux)$
+        exec-once = [workspace 6 silent] whatsapp-for-linux
 
         # workspace 7
         windowrule = workspace 7, class:^(discord)$
