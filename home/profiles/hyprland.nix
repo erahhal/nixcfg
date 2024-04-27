@@ -446,14 +446,6 @@ in
         "$mod_ALT, mouse:272, resizewindow"
       ];
 
-      # repeating binds (will repeat when key is held)
-      binde = [
-        ", right, resizeactive, 10 0"
-        ", left, resizeactive, -10 0"
-        ", up, resizeactive, 0 -10"
-        ", down, resizeactive, 0 10"
-      ];
-
       # locked binds (will also work when screen is locked)
       bindl = [
         # media controls
@@ -477,7 +469,12 @@ in
     };
 
     extraConfig = ''
+      # repeating binds (will repeat when key is held)
       submap = resize
+      binde = , right, resizeactive, 10 0
+      binde = , left, resizeactive, -10 0
+      binde = , up, resizeactive, 0 -10
+      binde = , down, resizeactive, 0 10
       bind = , escape, submap, reset
       submap = reset
 

@@ -28,7 +28,7 @@ switch:
 	# Building defaults to dark, so switch back if it was light before
 	NEW_THEME=$$(cat ~/.system-theme) ;\
 	if [ "$(CURR_THEME)" != "$$NEW_THEME" ]; then \
-		toggle-theme ;\
+		systemctl --user restart toggle-theme ;\
 	fi
 
 show-trace:

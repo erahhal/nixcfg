@@ -2,6 +2,7 @@
 
 let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
+  bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
 in
 {
@@ -309,6 +310,7 @@ in
         ## apps
         audacity
         unstable.bitwarden
+        # bambu-studio
         brave
         czkawka
         unstable.digikam

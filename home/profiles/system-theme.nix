@@ -20,11 +20,18 @@ let
       systemctl --user restart swaynotificationcenter
       swaymsg reload
     elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
+      echo ">> killing waybar"
       pkill waybar
+      echo ">> reloading tmux"
       tmux source-file $HOME/.tmux.conf
+      echo ">> restarting SwayNC"
       systemctl --user restart swaynotificationcenter
+      echo ">> reloading hyprland"
       hyprctl reload
-      nohup waybar </dev/null >/dev/null 2>&1 &
+      sleep 1
+      echo ">> launching waybar"
+      ## This only seems to launch if logging at trace level and running in foreground
+      waybar -l trace
     fi
   '';
   runtime-paths = with pkgs; lib.makeBinPath [
@@ -86,10 +93,6 @@ in
       ExecStart = "${toggle-theme}/bin/toggle-theme";
     };
   };
-
-  home.packages = [
-    toggle-theme
-  ];
 
   ## base16 guide
   # base00 - Default Background
