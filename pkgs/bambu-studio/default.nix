@@ -8,13 +8,14 @@
 , imagemagick
 }:
 let
-  version = "v01.08.01.57";
-  filename = "BambuStudio_linux_ubuntu_${version}.AppImage";
+  version = "v01.09.00.70";
+  filename = "Bambu_Studio_linux_ubuntu-${version}.AppImage";
 
   srcs = {
     bambu-studio-appimage = fetchurl {
       url = "https://github.com/bambulab/BambuStudio/releases/download/${version}/${filename}";
-      sha256 = "0wm8chqqxg9gx0ank9j5dwlib0dzk6dbvg6ixr374fl839yficlr";
+
+      sha256 = "09793l9pp25jk5b8z1d99imk7bjpgil6rnp11715lphc2hy0z19k";
     };
   };
 

@@ -74,6 +74,9 @@
 
   services.dbus.packages = with pkgs; [ dconf ];
 
+  # Enable XDG Autostart
+  services.xserver.desktopManager.runXdgAutostartIfNone = true;
+
   # Enables brightness and volume functions
   # Requires user be part of "video" group
   programs.light.enable = true;

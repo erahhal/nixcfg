@@ -24,7 +24,7 @@ let
       tmux source-file $HOME/.tmux.conf
       systemctl --user restart swaynotificationcenter
       hyprctl reload
-      waybar
+      nohup waybar </dev/null >/dev/null 2>&1 &
     fi
   '';
   runtime-paths = with pkgs; lib.makeBinPath [

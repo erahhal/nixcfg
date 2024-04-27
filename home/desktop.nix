@@ -58,6 +58,7 @@ in
         fcitx5-configtool
         fcitx5-chinese-addons
         fcitx5-gtk
+        fcitx5-nord
         fcitx5-rime
         libsForQt5.fcitx5-qt
         plasma5Packages.fcitx5-qt
@@ -321,6 +322,7 @@ in
         glava
         gnome.gnome-todo
         gnome3.gnome-calculator
+        inkscape
         joplin-desktop
         kcalc
         # Not yet available in stable

@@ -376,6 +376,20 @@ in
     };
   };
 
+  wayland.windowManager.hyprland.settings.group = lib.mkForce {
+    insert_after_current = false;
+    "col.border_active" = "rgba(c4c4f1ff)";
+    "col.border_inactive" = "rgba(afafafff)";
+    groupbar = {
+      font_family = "DejaVu Sans";
+      font_size = 18;
+      height = 18;
+      text_color = "rgba(000000ff)";
+      "col.active" = "rgba(c4d4f1ff)";
+      "col.inactive" = "rgba(afafafff)";
+    };
+  };
+
   programs.waybar.style = lib.mkForce ''
     ${builtins.readFile ./waybar/waybar-angular-light.css}
   '';

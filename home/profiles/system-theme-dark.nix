@@ -372,6 +372,20 @@ in
     };
   };
 
+  wayland.windowManager.hyprland.settings.group = {
+    insert_after_current = false;
+    "col.border_active" = "rgba(285577ff)";
+    "col.border_inactive" = "rgba(2b2b2bff)";
+    groupbar = {
+      font_family = "DejaVu Sans";
+      font_size = 18;
+      height = 18;
+      text_color = "rgba(ffffffff)";
+      "col.active" = "rgba(285577ff)";
+      "col.inactive" = "rgba(2b2b2bff)";
+    };
+  };
+
   programs.waybar.style = ''
     ${builtins.readFile ./waybar/waybar-angular.css}
   '';
