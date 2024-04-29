@@ -115,6 +115,7 @@ window#waybar.empty #window {
 #memory,
 #cpu,
 #idle_inhibitor,
+#custom-online-monitor,
 #custom-toggletheme,
 #custom-launcher,
 #custom-notification,
@@ -183,6 +184,10 @@ window#waybar.empty #window {
 
 #idle_inhibitor.activated {
     color: #9c9e18;
+}
+
+#custom-online-monitor {
+    padding: 0 8px 0 6px;
 }
 
 #custom-toggletheme {

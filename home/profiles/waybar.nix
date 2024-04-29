@@ -28,6 +28,15 @@ let
   # '';
   launch = "${pkgs.nwg-menu}/bin/nwg-menu";
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
+  check-online-script = pkgs.writeShellScriptBin "check-online-script" ''
+    ${pkgs.wget}/bin/wget -q --spider http://duckduckgo.com
+
+    if [ $? -eq 0 ]; then
+        echo '{ "text": "online", "alt": "online", "tooltip": "", "class": "online" }'
+    else
+        echo '{ "text": "online", "alt": "offline", "tooltip": "", "class": "offline" }'
+    fi
+  '';
 in
 {
   imports = [
@@ -77,6 +86,7 @@ in
           "clock"
           "idle_inhibitor"
           "custom/toggletheme"
+          "custom/online-monitor"
           "tray"
           # "custom/power"
           "custom/notification"
@@ -195,12 +205,21 @@ in
           };
         };
 
-        # @TODO: Doesn't finish running script
         "custom/toggletheme" = {
           tooltip = false;
-          # @TODO: This doesn't work properly.
-          # It always switches to light-theme
           on-click = "systemctl --user restart toggle-theme";
+        };
+
+        "custom/online-monitor" = {
+          tooltip = false;
+          format = "{icon}";
+          format-icons = {
+            online = "📲";
+            offline = "📵";
+          };
+          exec = "${check-online-script}/bin/check-online-script";
+          interval = 2;
+          return-type = "json";
         };
 
         tray = {
@@ -259,10 +278,10 @@ in
             dnd-inhibited-none = "";
           };
           return-type = "json";
-          exec-if = "which swaync-client";
-          exec = "swaync-client -swb";
-          on-click = "swaync-client -t -sw";
-          on-click-right = "swaync-client -d -sw";
+          # exec-if = "which swaync-client";
+          exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+          on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+          on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
           escape = true;
         };
 
