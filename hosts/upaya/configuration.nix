@@ -203,6 +203,11 @@ in
     allowedTCPPorts = [ 5258 ];
   };
 
+  programs.captive-browser = {
+    enable = true;
+    interface = "wlp0s20f3";
+  };
+
   /*
   services.rkvm = {
     server = {

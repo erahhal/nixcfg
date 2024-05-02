@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, lib, pkgs, ... }:
 {
   home.packages = with pkgs; [
     inputs.nixd.packages.${pkgs.system}.default
@@ -144,6 +144,246 @@
   ## THEN add the following beloe:
   #   extraConfig = ":luafile ~/.config/nvim/lua/init.lua";
 
+  ## Hack to get this config loaded first above the plugin config
+  xdg.configFile."nvim/init.lua".text = lib.mkBefore ''
+    vim.opt.termguicolors = true
+
+    -- if vim.fn.system('echo -n $HOSTNAME'):gsub('\n', "") ~= 'sicmundus' and vim.fn.system('echo -n $HOST'):gsub('\n', "") ~= 'sicmundus' then
+    --   -- Messes up colors over mosh, so don't set this for the server
+    --   vim.op.termguicolors = true
+    -- end
+
+    --------- OPTIONS AND VARS
+
+    -- The following replace vim "set"
+    -- vim.o        -- option, like :set, sets both local and global
+    -- vim.go       -- global option, like :setglobal
+    -- vim.bo       -- buffer local
+    -- vim.wo       -- window local
+    -- vim.opt      -- like vim.o, with objects, tables, and OO methods
+    -- vim.g        -- global var, like :let
+
+    --------- MODES
+
+    -- n            -- normal (esc)
+    -- i            -- insert (i)
+    -- v            -- visual/select (v/gh)
+    -- x            -- visual (v)
+    -- s            -- select (gh)
+    -- c            -- command (:)
+    -- r            -- replace (R)
+    -- o            -- operator pending
+
+    --------- MAPPINGS
+
+    -- map          -- will map recursively e.g. with j --> gg, Q --> j becomes Q --> gg
+                    -- works in normal, visual, select, and operator pending modes
+    -- map!         -- works in insert and command modes
+    -- nnoremap     -- n/x (normal/visual mode) no (not) re (recursive) map
+
+    -------------------------------------------------------
+    -- General settings
+    -------------------------------------------------------
+
+    -- leaders give you 1 second to enter command
+    -- default is \
+    vim.g.mapleader = " "                               -- global
+    vim.g.maplocalleader = " "                          -- per buffer, e.g. can change behavior per filetype
+    vim.o.wrap = false                                  -- don't wrap lines
+    vim.o.ruler = true                                  -- displays line, column, and cursor position at bottom
+    vim.o.mouse = "a"                                   -- enable mouse for "all" modes
+    vim.o.signcolumn = "yes"                            -- always show two column sign column on left
+    vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+
+    vim.o.undodir = vim.fn.expand('~/.local/share/nvim/undo/')
+    vim.o.undofile = true
+
+    vim.o.cursorline = true                             -- Highlight line cursor sits on
+    vim.o.number = true
+    vim.o.relativenumber = true
+
+    -- - enables filetype detection,
+    -- - enables filetype-specific scripts (ftplugins),
+    -- - enables filetype-specific indent scripts.
+    -- Things like ctrl-w ctrl-] won't find custom ctag files without this
+    -- ** Not needed as this is default for nvim
+    -- vim.cmd [[filetype plugin indent on]]
+
+
+    -------------------------------------------------------
+    -- Key mappings
+    -------------------------------------------------------
+
+    -- Next buffer
+    vim.api.nvim_set_keymap("", '<Tab>', ':bn<CR>', { noremap = true })
+    -- Previous buffer
+    vim.api.nvim_set_keymap("", '<S-Tab>', ':bp<CR>', { noremap = true })
+    -- Close buffer
+    vim.api.nvim_set_keymap("", '<leader><Tab>', ':bd<CR>', { noremap = true })
+    vim.api.nvim_set_keymap("", '<leader><S-Tab>', ':bd!<CR>', { noremap = true })
+    -- New tab
+    vim.api.nvim_set_keymap("", '<leader>t', ':tabnew split<CR>', { noremap = true })
+
+    -- Vimscript config
+    vim.cmd([[
+
+      " -----------------------------------------------------
+      " Inline functions and config
+      " -----------------------------------------------------
+
+      " Have Vim jump to the last position when reopening a file
+      if has("autocmd")
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+      endif
+
+      " Automatically resize splits when window is resized
+      augroup AutoResize
+          autocmd FocusGained,FocusLost,VimResized * wincmd =
+      augroup end
+
+      " Highlight tabs
+      fun! HighlightTabs()
+          if exists('w:extratabs')
+              call matchdelete(w:extratabs)
+              unlet w:extratabs
+          endif
+          highlight ExtraTabs ctermbg=red guibg=red
+          if &ft == 'help'
+              return
+          else
+              let w:extratabs=matchadd('ExtraTabs', '\t\+')
+          endif
+      endfun
+
+      augroup TabHighlight
+          autocmd BufEnter * call HighlightTabs()
+      augroup END
+
+      " Remove trailing whitespace
+      fun! TrimTrailingWhitespace()
+          if &ft =~ 'javascript\|html\|jade\|json\|css\|less\|php\|python\|sh\|c\|cpp\|markdown\|yaml\|vim\|nix'
+              :%s/\s\+$//e
+          elseif expand('%:t') =~ '\.gltf$' || expand('%:t') =~ '\.glsl$'
+              :%s/\s\+$//e
+          endif
+      endfun
+
+      augroup WhiteSpaceTrim
+          autocmd BufWritePre * call TrimTrailingWhitespace()
+      augroup END
+
+      " Show max line width
+      fun! ShowMaxLineWidth()
+          if &ft =~ 'javascript\|html\|css\|python\|sh\|c\|cpp\|markdown\|yaml\|vim\|nix'
+              :set colorcolumn=120
+          endif
+      endfun
+
+      augroup MaxLineWidth
+          autocmd BufEnter * call ShowMaxLineWidth()
+      augroup END
+
+      " Indented folding
+      " Modified from http://dhruvasagar.com/2013/03/28/vim-better-foldtext
+      function! NeatFoldText()
+          let indent_level = indent(v:foldstart)
+          let indent = repeat(' ',indent_level)
+          let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', \'\', 'g') . ' '
+          let lines_count = v:foldend - v:foldstart + 1
+          let lines_count_text = '-' . printf("%10s", lines_count . ' lines') . ' '
+          let foldchar = matchstr(&fillchars, 'fold:\zs.')
+          let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+          let foldtextend = lines_count_text . repeat(foldchar, 8)
+          let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+          return indent . foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+      endfunction
+      set foldtext=NeatFoldText()
+
+      " -----------------------------------------------------
+      " Backspace settings
+      "   indent  allow backspacing over autoindent
+      "   eol     allow backspacing over line breaks (join lines)
+      "   start   allow backspacing over the start of insert; CTRL-W and CTRL-U
+      "   0     same as ":set backspace=" (Vi compatible)
+      "   1     same as ":set backspace=indent,eol"
+      "   2     same as ":set backspace=indent,eol,start"
+      " -----------------------------------------------------
+
+      set bs=2
+
+      " -----------------------------------------------------
+      " Indentation  settings
+      " -----------------------------------------------------
+
+      set tabstop=4       " number of spaces a tab counts for
+      set shiftwidth=4    " control how many columns text is indented with the reindent operations (<< and >>) and automatic C-style indentation.
+      set expandtab       " Insert spaces when entering <Tab>
+      set softtabstop=4   " Number of spaces that a <Tab> counts for while performing editing operations, like inserting a <Tab> or using <BS>.  It "feels" like a tab though
+      set ai              " auto indent
+
+      " -----------------------------------------------------
+      " Spell checking
+      " -----------------------------------------------------
+
+      setlocal spell spelllang=en_us
+      " Show nine spell checking candidates at most
+      set spellsuggest=best,9
+
+      augroup SpellCheck
+          autocmd BufRead,BufNewFile *.txt setlocal spell
+          autocmd BufRead,BufNewFile *.md setlocal spell
+      augroup END
+
+      " -----------------------------------------------------
+      " Fold settings
+      "
+      "   fdm:
+      "     manual     Folds are created manually.
+      "     indent     Lines with equal indent form a fold.
+      "     expr       'foldexpr' gives the fold level of a line.
+      "     marker     Markers are used to specify folds.
+      "     syntax     Syntax highlighting items specify folds.
+      "     diff       Fold text that is not changed.
+      " -----------------------------------------------------
+
+      set fdm=marker
+      "set foldmethod=indent
+      "set foldlevelstart=0
+      " javascript folding doesn't work very well with several levels of nested anonymous functions
+      "let javaScript_fold=1         " JavaScript
+      "let php_folding=1             " PHP
+      let g:vim_markdown_folding_disabled=1
+
+      " -----------------------------------------------------
+      " Huge file handling
+      " -----------------------------------------------------
+
+      " disable syntax highlighting in big files
+      function DisableSyntaxTreesitter()
+          echo("Big file, disabling syntax, treesitter and folding")
+          if exists(':TSBufDisable')
+              exec 'TSBufDisable autotag'
+              exec 'TSBufDisable highlight'
+              " etc...
+          endif
+
+          set foldmethod=manual
+          syntax clear
+          syntax off    " hmmm, which one to use?
+          filetype off
+          set noundofile
+          set noswapfile
+          set noloadplugins
+      endfunction
+
+      augroup BigFileDisable
+          autocmd!
+          autocmd BufWinEnter * if getfsize(expand("%")) > 512 * 1024 | exec DisableSyntaxTreesitter() | endif
+      augroup END
+
+    ]])
+  '';
+
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -159,17 +399,6 @@
 
       {
         plugin = vim-startify;
-        config = ''
-          lua << EOF
-          vim.opt.termguicolors = true
-
-          -- if vim.fn.system('echo -n $HOSTNAME'):gsub('\n', "") ~= 'sicmundus' and vim.fn.system('echo -n $HOST'):gsub('\n', "") ~= 'sicmundus' then
-          --   -- Messes up colors over mosh, so don't set this for the server
-          --   vim.op.termguicolors = true
-          -- end
-
-          EOF
-        '';
       }
 
       # =======================
@@ -179,8 +408,6 @@
       # set shiftwidth and expandtab automatically based on file or other files in the working directory
       {
         plugin = vim-sleuth;
-        config = ''
-        '';
       }
 
       # =======================
@@ -1260,10 +1487,11 @@
           vim.api.nvim_set_keymap('n', '<leader>fm', '<cmd>Telescope man_pages<cr>', { noremap = true })
           -- Lists previously open files
           vim.api.nvim_set_keymap('n', '<leader>fp', '<cmd>Telescope oldfiles<cr>', { noremap = true })
+          -- Maps to ctrl-/
           vim.api.nvim_set_keymap('n', '<c-_>', '<cmd>Telescope oldfiles<cr>', { noremap = true })
           -- Lists spelling suggestions for the current word under the cursor, replaces word with selected suggestion on <cr>
           vim.api.nvim_set_keymap('n', '<leader>fs', '<cmd>Telescope spell_suggest<cr>', { noremap = true })
-          -- Lists LSP references for word under the cursor
+          -- Lists LSP references for iword under the cursor
           vim.api.nvim_set_keymap('n', '<leader>fr', '<cmd>Telescope lsp_references<cr>', { noremap = true })
           -- Lists LSP incoming calls for word under the cursor
           vim.api.nvim_set_keymap('n', '<leader>fi', '<cmd>Telescope lsp_incoming_calls<cr>', { noremap = true })
@@ -1646,235 +1874,5 @@
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
     ];
-    # @TODO: Move to lua
-    extraConfig = ''
-      lua << EOF
-
-      --------- OPTIONS AND VARS
-
-      -- The following replace vim "set"
-      -- vim.o        -- option, like :set, sets both local and global
-      -- vim.go       -- global option, like :setglobal
-      -- vim.bo       -- buffer local
-      -- vim.wo       -- window local
-      -- vim.opt      -- like vim.o, with objects, tables, and OO methods
-      -- vim.g        -- global var, like :let
-
-      --------- MODES
-
-      -- n            -- normal (esc)
-      -- i            -- insert (i)
-      -- v            -- visual/select (v/gh)
-      -- x            -- visual (v)
-      -- s            -- select (gh)
-      -- c            -- command (:)
-      -- r            -- replace (R)
-      -- o            -- operator pending
-
-      --------- MAPPINGS
-
-      -- map          -- will map recursively e.g. with j --> gg, Q --> j becomes Q --> gg
-                      -- works in normal, visual, select, and operator pending modes
-      -- map!         -- works in insert and command modes
-      -- nnoremap     -- n/x (normal/visual mode) no (not) re (recursive) map
-
-      -------------------------------------------------------
-      -- General settings
-      -------------------------------------------------------
-
-      -- leaders give you 1 second to enter command
-      vim.g.mapleader = " "                               -- global
-      vim.g.maplocalleader = " "                          -- per buffer, e.g. can change behavior per filetype
-      vim.o.wrap = false                                  -- don't wrap lines
-      vim.o.ruler = true                                  -- displays line, column, and cursor position at bottom
-      vim.o.mouse = "a"                                   -- enable mouse for "all" modes
-      vim.o.signcolumn = "yes"                            -- always show two column sign column on left
-      vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-
-      vim.o.undodir = vim.fn.expand('~/.local/share/nvim/undo/')
-      vim.o.undofile = true
-
-      vim.o.cursorline = true                             -- Highlight line cursor sits on
-      vim.o.number = true
-      vim.o.relativenumber = true
-
-      -- - enables filetype detection,
-      -- - enables filetype-specific scripts (ftplugins),
-      -- - enables filetype-specific indent scripts.
-      -- Things like ctrl-w ctrl-] won't find custom ctag files without this
-      -- ** Not needed as this is default for nvim
-      -- vim.cmd [[filetype plugin indent on]]
-
-
-      -------------------------------------------------------
-      -- Key mappings
-      -------------------------------------------------------
-
-      -- Next buffer
-      vim.api.nvim_set_keymap("", '<Tab>', ':bn<CR>', { noremap = true })
-      -- Previous buffer
-      vim.api.nvim_set_keymap("", '<S-Tab>', ':bp<CR>', { noremap = true })
-      -- Close buffer
-      vim.api.nvim_set_keymap("", '<leader><Tab>', ':bd<CR>', { noremap = true })
-      vim.api.nvim_set_keymap("", '<leader><S-Tab>', ':bd!<CR>', { noremap = true })
-      -- New tab
-      vim.api.nvim_set_keymap("", '<leader>t', ':tabnew split<CR>', { noremap = true })
-
-      EOF
-
-      " -----------------------------------------------------
-      " Inline functions and config
-      " -----------------------------------------------------
-
-      " Have Vim jump to the last position when reopening a file
-      if has("autocmd")
-        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-      endif
-
-      " Automatically resize splits when window is resized
-      augroup AutoResize
-          autocmd FocusGained,FocusLost,VimResized * wincmd =
-      augroup end
-
-      " Highlight tabs
-      fun! HighlightTabs()
-          if exists('w:extratabs')
-              call matchdelete(w:extratabs)
-              unlet w:extratabs
-          endif
-          highlight ExtraTabs ctermbg=red guibg=red
-          if &ft == 'help'
-              return
-          else
-              let w:extratabs=matchadd('ExtraTabs', '\t\+')
-          endif
-      endfun
-
-      augroup TabHighlight
-          autocmd BufEnter * call HighlightTabs()
-      augroup END
-
-      " Remove trailing whitespace
-      fun! TrimTrailingWhitespace()
-          if &ft =~ 'javascript\|html\|jade\|json\|css\|less\|php\|python\|sh\|c\|cpp\|markdown\|yaml\|vim\|nix'
-              :%s/\s\+$//e
-          elseif expand('%:t') =~ '\.gltf$' || expand('%:t') =~ '\.glsl$'
-              :%s/\s\+$//e
-          endif
-      endfun
-
-      augroup WhiteSpaceTrim
-          autocmd BufWritePre * call TrimTrailingWhitespace()
-      augroup END
-
-      " Show max line width
-      fun! ShowMaxLineWidth()
-          if &ft =~ 'javascript\|html\|css\|python\|sh\|c\|cpp\|markdown\|yaml\|vim\|nix'
-              :set colorcolumn=120
-          endif
-      endfun
-
-      augroup MaxLineWidth
-          autocmd BufEnter * call ShowMaxLineWidth()
-      augroup END
-
-      " Indented folding
-      " Modified from http://dhruvasagar.com/2013/03/28/vim-better-foldtext
-      function! NeatFoldText()
-          let indent_level = indent(v:foldstart)
-          let indent = repeat(' ',indent_level)
-          let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', \'\', 'g') . ' '
-          let lines_count = v:foldend - v:foldstart + 1
-          let lines_count_text = '-' . printf("%10s", lines_count . ' lines') . ' '
-          let foldchar = matchstr(&fillchars, 'fold:\zs.')
-          let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
-          let foldtextend = lines_count_text . repeat(foldchar, 8)
-          let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
-          return indent . foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
-      endfunction
-      set foldtext=NeatFoldText()
-
-      " -----------------------------------------------------
-      " Backspace settings
-      "   indent  allow backspacing over autoindent
-      "   eol     allow backspacing over line breaks (join lines)
-      "   start   allow backspacing over the start of insert; CTRL-W and CTRL-U
-      "   0     same as ":set backspace=" (Vi compatible)
-      "   1     same as ":set backspace=indent,eol"
-      "   2     same as ":set backspace=indent,eol,start"
-      " -----------------------------------------------------
-
-      set bs=2
-
-      " -----------------------------------------------------
-      " Indentation  settings
-      " -----------------------------------------------------
-
-      set tabstop=4       " number of spaces a tab counts for
-      set shiftwidth=4    " control how many columns text is indented with the reindent operations (<< and >>) and automatic C-style indentation.
-      set expandtab       " Insert spaces when entering <Tab>
-      set softtabstop=4   " Number of spaces that a <Tab> counts for while performing editing operations, like inserting a <Tab> or using <BS>.  It "feels" like a tab though
-      set ai              " auto indent
-
-      " -----------------------------------------------------
-      " Spell checking
-      " -----------------------------------------------------
-
-      setlocal spell spelllang=en_us
-      " Show nine spell checking candidates at most
-      set spellsuggest=best,9
-
-      augroup SpellCheck
-          autocmd BufRead,BufNewFile *.txt setlocal spell
-          autocmd BufRead,BufNewFile *.md setlocal spell
-      augroup END
-
-      " -----------------------------------------------------
-      " Fold settings
-      "
-      "   fdm:
-      "     manual     Folds are created manually.
-      "     indent     Lines with equal indent form a fold.
-      "     expr       'foldexpr' gives the fold level of a line.
-      "     marker     Markers are used to specify folds.
-      "     syntax     Syntax highlighting items specify folds.
-      "     diff       Fold text that is not changed.
-      " -----------------------------------------------------
-
-      set fdm=marker
-      "set foldmethod=indent
-      "set foldlevelstart=0
-      " javascript folding doesn't work very well with several levels of nested anonymous functions
-      "let javaScript_fold=1         " JavaScript
-      "let php_folding=1             " PHP
-      let g:vim_markdown_folding_disabled=1
-
-      " -----------------------------------------------------
-      " Huge file handling
-      " -----------------------------------------------------
-
-      " disable syntax highlighting in big files
-      function DisableSyntaxTreesitter()
-          echo("Big file, disabling syntax, treesitter and folding")
-          if exists(':TSBufDisable')
-              exec 'TSBufDisable autotag'
-              exec 'TSBufDisable highlight'
-              " etc...
-          endif
-
-          set foldmethod=manual
-          syntax clear
-          syntax off    " hmmm, which one to use?
-          filetype off
-          set noundofile
-          set noswapfile
-          set noloadplugins
-      endfunction
-
-      augroup BigFileDisable
-          autocmd!
-          autocmd BufWinEnter * if getfsize(expand("%")) > 512 * 1024 | exec DisableSyntaxTreesitter() | endif
-      augroup END
-    '';
   };
 }

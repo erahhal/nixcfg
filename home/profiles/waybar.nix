@@ -1,4 +1,4 @@
-{  pkgs, lib, hostParams, ... }:
+{  inputs, pkgs, lib, hostParams, ... }:
 let
   # launch = pkgs.writeShellScript "launch.sh" ''
   #   if ${pkgs.procps}/bin/pgrep -x ".wofi-wrapped" >/dev/null; then
@@ -29,12 +29,14 @@ let
   launch = "${pkgs.nwg-menu}/bin/nwg-menu";
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
   check-online-script = pkgs.writeShellScriptBin "check-online-script" ''
-    ${pkgs.wget}/bin/wget -q --spider http://duckduckgo.com
+    ${pkgs.wget}/bin/wget -q --timeout=1 --tries=1 --spider http://duckduckgo.com
 
+    # "tooltip" field can't match the icon name, or else it will be replaced by icon
+    #  so it is capitalized here to avoid that.
     if [ $? -eq 0 ]; then
-        echo '{ "text": "online", "alt": "online", "tooltip": "", "class": "online" }'
+        echo '{ "text": "online", "alt": "online", "tooltip": "Online", "class": "online" }'
     else
-        echo '{ "text": "online", "alt": "offline", "tooltip": "", "class": "offline" }'
+        echo '{ "text": "online", "alt": "offline", "tooltip": "Offline", "class": "offline" }'
     fi
   '';
 in
@@ -211,7 +213,7 @@ in
         };
 
         "custom/online-monitor" = {
-          tooltip = false;
+          tooltip = true;
           format = "{icon}";
           format-icons = {
             online = "📲";

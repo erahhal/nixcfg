@@ -103,7 +103,6 @@ in
         docker-compose
         gparted
         man-pages
-        openconnect
         samba # to get rid of wine ntml_auth errors
         speedtest-cli
         stress

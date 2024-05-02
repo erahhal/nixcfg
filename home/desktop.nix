@@ -291,7 +291,6 @@ in
 
       packages = with pkgs; [
         ## system
-        captive-browser
         gucharmap
         solaar            # for logitech unifying receiver setup
         xorg.xdpyinfo

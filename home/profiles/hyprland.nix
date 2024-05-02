@@ -80,7 +80,7 @@ in
 {
   imports = [
     ./swaynotificationcenter.nix
-    ./blueman-manager-applet.nix
+    # ./blueman-manager-applet.nix
     ./network-manager-applet.nix
     ./rofi.nix
     ./hyprlock.nix
@@ -140,7 +140,6 @@ in
         "${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
         "${pkgs.waybar}/bin/waybar"
         "${pkgs.hyprpaper}/bin/hyprpaper"
-        "${pkgs.blueman}/bin/blueman-applet"
 
         # @TODO
         # 1. Is this already being set?
@@ -154,9 +153,11 @@ in
 
       # Refresh services and processes
       exec = [
+        "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
+        ## Running as a service seems to cause Dbus errors
+        # "systemctl --user restart blueman-manager-applet"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
         "systemctl --user restart swaynotificationcenter"
-        "systemctl --user restart blueman-manager-applet"
         "systemctl --user restart network-manager-applet"
         "systemctl --user restart wlsunset"
         "systemctl --user restart kanshi"
@@ -292,7 +293,7 @@ in
         no_gaps_when_only = 1;
       };
 
-      windowrule = [
+      windowrulev2 = [
         # "pseudo,fcitx"
 
         "float, title:^(KCalc)$"
@@ -316,15 +317,13 @@ in
         # @TODO: Make sure class matches for these two
         "idleinhibit fullscreen, class:^(chromium)$"
         "idleinhibit fullscreen, class:^(brave)$"
-      ];
 
-      windowrulev2 = [
         # Chrome Bitwarden popup
         # Firefox Bitwarden popup
         # title: Extension: (Bitwarden - Free Password Manager) - Bitwarden — Mozilla Firefox
         # @TODO: These don't work
-        "float, class:(firefox), title:(.*)(Extension)(.*)(Bitwarden)(.*)"
-        "size, 400, 600, class:(firefox), title:(.*)(Extension)(.*)(Bitwarden)(.*)"
+        "float, floating:0,title:^(.*)(Bitwarden)(.*)$"
+        "size 400 600, title:%(.*)(Bitwarden)(.*)$"
       ];
 
       "$screenshotarea" = "hyprctl keyword animation \"fadeOut,0,0,default\"; grimblast --notify copysave area; hyprctl keyword animation \"fadeOut,1,4,default\"";

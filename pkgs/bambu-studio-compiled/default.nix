@@ -1,3 +1,7 @@
+## https://github.com/bambulab/BambuStudio/wiki/Linux-Compile-Guide
+
+## @TODO: Fetch dependencies using Nix rather than dependencies script
+
 {
   stdenv,
   lib,
