@@ -11,7 +11,7 @@
   sddmTheme = "adapta";
   # defaultSession = "none+i3";
   # defaultSession = "hyprland";
-  defaultSession = "sway";
+  defaultSession = "hyprland";
   multipleSessions = true;
   defaultLockProgram = "swaylock";
 

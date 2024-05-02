@@ -307,7 +307,14 @@ in
     ##   cctk --CStatesCtrl
   ];
 
-  services.thermald.enable = lib.mkDefault true;
+  # https://discourse.nixos.org/t/nixos-23-11-thermald-not-working/36317/3
+  # Addresses "stack smashing detected" startup error
+  services.thermald.package = pkgs.thermald.overrideAttrs (old: {
+    patches = (old.patches or [] ) ++ [(builtins.fetchurl {
+      url = "https://patch-diff.githubusercontent.com/raw/intel/thermal_daemon/pull/422.patch";
+      sha256 = "1xqv9hn06h8zmf5p8s1nm7xy89zjcgban8rvzw8b2w1ya20lq08r";
+    })];
+  });
 
   # --------------------------------------------------------------------------------------
   # Packages
