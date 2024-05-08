@@ -1236,11 +1236,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1714616242,
-        "narHash": "sha256-zOTwHs361QnfSZPOmi0avqNRVgQ5ZdJJieRtkvOO4wM=",
+        "lastModified": 1714685009,
+        "narHash": "sha256-0x8kS8aEnZrVk7mwTcyBtz6MJ7v5l0ST1jDZM/tlumY=",
         "ref": "refs/heads/master",
-        "rev": "9fc64057816d0ca2cf670de06de2014b99e2ce49",
-        "revCount": 4,
+        "rev": "d1c8951fc49c0a3be4f9d97df1f83eeada969a69",
+        "revCount": 5,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },
@@ -1903,10 +1903,10 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1713828541,
-        "narHash": "sha256-KtvQeE12MSkCOhvVmnmcZCjnx7t31zWin2XVSDOwBDE=",
-        "path": "/nix/store/h5g4m28iz22w31c0asl73mcir6z7x5ra-source",
-        "rev": "b500489fd3cf653eafc075f9362423ad5cdd8676",
+        "lastModified": 1714531828,
+        "narHash": "sha256-ILsf3bdY/hNNI/Hu5bSt2/KbmHaAVhBbNUOdGztTHEg=",
+        "path": "/nix/store/nsaxv5k14h91rcxfqkinxzpp156217k6-source",
+        "rev": "0638fe2715d998fa81d173aad264eb671ce2ebc1",
         "type": "path"
       },
       "original": {
@@ -1916,10 +1916,10 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1713828541,
-        "narHash": "sha256-KtvQeE12MSkCOhvVmnmcZCjnx7t31zWin2XVSDOwBDE=",
-        "path": "/nix/store/h5g4m28iz22w31c0asl73mcir6z7x5ra-source",
-        "rev": "b500489fd3cf653eafc075f9362423ad5cdd8676",
+        "lastModified": 1714531828,
+        "narHash": "sha256-ILsf3bdY/hNNI/Hu5bSt2/KbmHaAVhBbNUOdGztTHEg=",
+        "path": "/nix/store/nsaxv5k14h91rcxfqkinxzpp156217k6-source",
+        "rev": "0638fe2715d998fa81d173aad264eb671ce2ebc1",
         "type": "path"
       },
       "original": {
@@ -1963,11 +1963,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1714614896,
-        "narHash": "sha256-EBTzyBCCisXHUUu2i5H8R3JKhb5FWeKIFHnyN44fo0c=",
+        "lastModified": 1714768730,
+        "narHash": "sha256-7NlyTUhwJz8/1OCFDjoqJzVz9fXg69Q+E/0LYKoHEVM=",
         "owner": "erahhal",
         "repo": "openconnect-pulse-launcher",
-        "rev": "fcc865a18ee316d430236babe4a7f6d7613edbf8",
+        "rev": "355d679e251853fccd48c8d2bab481db45cb048d",
         "type": "github"
       },
       "original": {

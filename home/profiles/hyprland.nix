@@ -349,9 +349,12 @@ in
         )
         # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
         "$mod, A, exec, ${pkgs.hyprpicker}/bin/hyprpicker -a --format=hex"
+        # Kill
         "$mod, C, exec, ${kill-active}"
+        # Force kill
+        "$mod_SHIFT, C, exec, ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | ${pkgs.jq}/bin/jq '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9"
         # "$mod, R, forcerendererreload"
-        "$mod, R, exec, hyprctl reload"
+        "$mod, R, exec, ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl reload"
         "$mod, Y, exec, systemctl --user restart kanshi"
         "$mod, T, exec, ${toggle-group}"
         "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'"
