@@ -774,7 +774,7 @@
           require("diffview").setup {}
           vim.keymap.set('n', ',d', function()
             if next(require('diffview.lib').views) == nil then
-              vim.cmd('DiffviewOpen')
+              vim.cmd('DiffviewOpen origin')
               else
             vim.cmd('DiffviewClose')
             end

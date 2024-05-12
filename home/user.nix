@@ -47,6 +47,7 @@ in
     imports = [
       inputs.nix-colors.homeManagerModules.default
       ./profiles/system-theme.nix
+      ./profiles/btop.nix
       # ./profiles/captive-browser.nix
       # ./profiles/node-modules.nix
       ./profiles/nvim.nix
@@ -111,7 +112,6 @@ in
 
         ## terminal tools
         bintools-unwrapped
-        btop
         cryptsetup
         ia
         jq

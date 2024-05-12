@@ -334,6 +334,14 @@ in
     };
   };
 
+  ## mkAfter makes sure this is at the end of the file,
+  ## overrirding the theme at the top
+  xdg.configFile."btop/btop.conf".text = lib.mkAfter ''
+    #* Name of a btop++/bpytop/bashtop formatted ".theme" file, "Default" and "TTY" for builtin themes.
+    #* Themes should be placed in "../share/btop/themes" relative to binary or "$HOME/.config/btop/themes"
+    color_theme = "paper"
+  '';
+
   # @TODO: move to a home.activation script?
   xdg.configFile.kcalcrc.text = lib.mkForce ''
     # [Colors]
