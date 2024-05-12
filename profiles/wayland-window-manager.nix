@@ -112,6 +112,8 @@
       ## Steam doesn't work with this enabled
       # SDL_VIDEODRIVER = "wayland";
 
+      SDL_VIDEODRIVER = "x11";
+
       ## using "wayland" makes menus disappear in kde apps
       ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
       ##         and borders between elements are sometimes transparent, showing the background.

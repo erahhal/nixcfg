@@ -49,7 +49,9 @@ args@{ lib, hostParams, userParams, ... }:
 
       # Needed by Hyprland
 
-      LIBVA_DRIVER_NAME = "nvidia";
+      # LIBVA_DRIVER_NAME = "nvidia";
+      LIBVA_DRIVER_NAME = "vdpau";
+
       # XDG_SESSION_TYPE = "wayland";           # set elsewhere
       GBM_BACKEND = lib.mkForce "nvidia-drm";   # Overrides value in gfx-nvidia
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";

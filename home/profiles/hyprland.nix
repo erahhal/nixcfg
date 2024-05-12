@@ -3,6 +3,12 @@
 let
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
+  exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
+    ${builtins.readFile ../../scripts/kill-all-apps.sh}
+
+    pkill Hyprland
+  '';
+
   swayLockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
@@ -297,6 +303,10 @@ in
       windowrulev2 = [
         # "pseudo,fcitx"
 
+        ## Perf
+        "noblur, class:(.*)$"
+        "forcergbx, class:(.*)$"
+
         "float, title:^(KCalc)$"
 
         # telegram media viewer
@@ -358,7 +368,7 @@ in
         "$mod, R, exec, ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl reload"
         "$mod, Y, exec, systemctl --user restart kanshi"
         "$mod, T, exec, ${toggle-group}"
-        "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' 'pkill Hyprland'"
+        "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '${exit-hyprland}'"
         "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'"
         "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'"
         "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend'"
