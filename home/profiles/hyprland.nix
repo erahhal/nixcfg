@@ -139,6 +139,7 @@ in
         "${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace"
         "${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
         "${pkgs.waybar}/bin/waybar"
+        # "${inputs.waybar.packages.${pkgs.system}.waybar}/bin/waybar"
         "${pkgs.hyprpaper}/bin/hyprpaper"
 
         # @TODO

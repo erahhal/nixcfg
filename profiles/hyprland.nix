@@ -10,11 +10,16 @@ let
   '';
 in
 {
+  # imports = [
+  #   ../overlays/hyprland-patched.nix
+  # ];
+
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
     services.xserver.displayManager.sessionPackages = [ pkgs.hyprland ];
 
     programs.hyprland = {
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      # package = pkgs.hyprland-patched;
       enable = true;
 
       xwayland = {
@@ -23,6 +28,7 @@ in
     };
 
     environment.systemPackages = [
+      # pkgs.hyprland-patched
       inputs.hyprland.packages.${pkgs.system}.hyprland
       hyprctl-curr
     ];

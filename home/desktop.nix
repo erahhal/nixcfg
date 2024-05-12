@@ -16,9 +16,6 @@ in
   ];
 
   environment.sessionVariables = {
-    # Supposedly fixes tiny cursor in SDDM, but it doesn't
-    XCURSOR_SIZE = "64";
-
     # ---------------------------------------------------------------------------
     # IME
     # ---------------------------------------------------------------------------
@@ -40,11 +37,6 @@ in
     XIM_SERVERS = "fcitx";
     XIM = "fcitx";
     XIM_PROGRAM = "fcitx";
-  };
-
-  environment.variables = {
-    # Supposedly fixes tiny cursor in SDDM, but it doesn't
-    XCURSOR_SIZE = "64";
   };
 
   # i18n.inputMethod.enabled = "ibus";
@@ -249,37 +241,6 @@ in
       ## Fractional QT_SCALE_FACTOR results in rendering artifacts, e.g. transparent lines
       # QT_SCALE_FACTOR = "1.25";
       # QT_FONT_DPI = "96";
-
-      # ---------------------------------------------------------------------------
-      # Wayland-related
-      # ---------------------------------------------------------------------------
-      MOZ_ENABLE_WAYLAND = "1";
-      MOZ_USE_XINPUT2 = "1";
-      MOZ_WEBRENDER = "1";
-      WLR_DRM_NO_MODIFIERS = "1";
-
-      # CLUTTER_BACKEND = "wayland";
-      ## Sway doesn't load with this
-      # WLR_RENDERER = "vulkan";
-      ## Steam doesn't work with this enabled
-      # SDL_VIDEODRIVER = "wayland";
-
-      ## using "wayland" makes menus disappear in kde apps
-      ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
-      ##         and borders between elements are sometimes transparent, showing the background.
-      QT_QPA_PLATFORM = "wayland";
-      # QT_QPA_PLATFORM = "xcb";
-
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      XDG_SESSION_TYPE = "wayland";
-
-      ## @TODO: This should def be loaded at runtime.
-      #         This is cofigured in hyprland config.
-      ## @TODO: Verify that it's overriden in hyprland.
-      XDG_CURRENT_DESKTOP = "sway";
-
-      # Used to inform discord and other apps that we are using wayland
-      NIXOS_OZONE_WL = "1";
     };
 
     # ---------------------------------------------------------------------------

@@ -1,0 +1,19 @@
+diff --git a/src/protocols/OutputManagement.cpp b/src/protocols/OutputManagement.cpp
+index e7779726..04426b8f 100644
+--- a/src/protocols/OutputManagement.cpp
++++ b/src/protocols/OutputManagement.cpp
+@@ -304,8 +304,12 @@ COutputConfiguration::COutputConfiguration(SP<CZwlrOutputConfigurationV1> resour
+ 
+         LOGM(LOG, "disableHead on {}", PMONITOR->szName);
+ 
+-        PMONITOR->activeMonitorRule.disabled = true;
+-        g_pHyprRenderer->applyMonitorRule(PMONITOR, &PMONITOR->activeMonitorRule, false);
++        SMonitorRule newRule = PMONITOR->activeMonitorRule;
++        newRule.name         = PMONITOR->szName;
++        newRule.disabled     = true;
++
++        g_pConfigManager->appendMonitorRule(newRule);
++        g_pConfigManager->m_bWantsMonitorReload = true;
+     });
+ 
+     resource->setTest([this](CZwlrOutputConfigurationV1* r) {

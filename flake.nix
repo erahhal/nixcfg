@@ -95,6 +95,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    waybar = {
+      url = "github:Alexays/Waybar";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     swayfx.url = "github:willpower3309/swayfx";
     swayfx.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -176,7 +181,7 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
-          (import ./hosts/nflx-erahhal-x1c/configuration.nix)
+          ./hosts/nflx-erahhal-x1c/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
@@ -280,7 +285,7 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
-          (import ./hosts/sicmundus/configuration.nix)
+          ./hosts/sicmundus/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs

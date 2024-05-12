@@ -55,6 +55,10 @@ args@{ lib, hostParams, userParams, ... }:
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       WLR_NO_HARDWARE_CURSORS = "1";
 
+      ## See: https://wiki.hyprland.org/Nvidia/
+      ## For hardware video decoding. Needs "libva-nvidia-driver"
+      NVD_BACKEND = "direct";
+
       #-------------------------------------------------
       # Unknown impact/use
       #-------------------------------------------------

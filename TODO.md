@@ -4,6 +4,8 @@ TODOs
 Warts/Issues
 ------------
 
+* VERASE is set to ctrl-h doesn't work in kmscon
+  * See src/console/console-pty.c
 * hyprland crashes if undocked while DPMS off
 * ZSH/Tmux/Kitty cut and paste issues
   * DISABLE_MAGIC_FUNCTIONS=true
@@ -63,10 +65,8 @@ Warts/Issues
 Improvments
 -----------
 
-* hypridle
-  * https://github.com/hyprwm/hypridle
-* hyprlock
-  * https://github.com/hyprwm/hyprlock/
+* Centralize references to waybar
+  * e.g. need to change to unstable.waybar in multiple places to avoid collisions
 * Share video of canonical VP of cloud on Nix
   * https://www.youtube.com/watch?v=9l-U2NwbKOc
 * tailscale with headscale

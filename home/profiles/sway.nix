@@ -1,4 +1,4 @@
-{ lib, pkgs, launchAppsConfig, hostParams, userParams, ... }:
+{ inputs, lib, pkgs, launchAppsConfig, hostParams, userParams, ... }:
 
 let
   swaynagmode = pkgs.callPackage ../../pkgs/swaynagmode {};
@@ -133,8 +133,9 @@ in
       fonts = swayfonts;
       bars = [
         {
-          # command = "pkill waybar || true; ${pkgs.waybar}/bin/waybar";
+          # command = "pkill waybar || true; ${pkgs.unstable.waybar}/bin/waybar";
           command = "${pkgs.waybar}/bin/waybar";
+          # command = "${inputs.waybar.packages.${pkgs.system}.waybar}/bin/waybar";
         }
       ];
       # focus.followMouse = "always";

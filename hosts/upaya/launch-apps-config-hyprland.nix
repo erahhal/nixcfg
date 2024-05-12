@@ -8,7 +8,8 @@
         # Some mix of settings here + kanshi causes kanshi to fail with:
         # "failed to apply  configuration for profile 'desk-hyprland'"
         # It might be enabling VRR or inconsistent frequencies
-        monitor = eDP-1,3840x2160@60,0x0,2.0
+        # monitor = eDP-1,3840x2160@60,0x0,2.0
+        # monitor = eDP-1,disable
         monitor = desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6
         monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5
         monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5

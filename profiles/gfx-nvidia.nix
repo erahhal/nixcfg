@@ -13,6 +13,7 @@ in
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
+     extraPackages = with pkgs; [nvidia-vaapi-driver];
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -42,6 +43,9 @@ in
     "vga=0"
     "rdblacklist=nouveau"
     "nouveau.modeset=0"
+    ## Supposedly solves issues with corrupted desktop / videos after waking
+    ## See: https://wiki.hyprland.org/Nvidia/
+    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
 
     ## These don't seem to make screen wake issues better
     # "acpi_osi=!"
@@ -60,7 +64,10 @@ in
     modesetting.enable = true;
 
     # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-    powerManagement.enable = false;
+    # powerManagement.enable = false;
+
+    ## Hyprland config now recommends this
+    powerManagement.enable = true;
 
     # Fine-grained power management. Turns off GPU when not in use.
     # Experimental and only works on modern Nvidia GPUs (Turing or newer).

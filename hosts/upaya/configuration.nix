@@ -73,11 +73,17 @@ in
     };
   };
 
-  ## SD card reader causing the following error with newer kernels, so disable it:
-  ##   "nvme unable to change power state from d3cold to d0, device inaccessible"
-  ## See: https://bbs.archlinux.org/viewtopic.php?id=288140
-  ## See: https://bbs.archlinux.org/viewtopic.php?id=288095
-  boot.blacklistedKernelModules = [ "rtsx_pci" "rtsx_pci_sdmmc" ];
+  boot.blacklistedKernelModules = [
+    ## SD card reader causing the following error with newer kernels, so disable it:
+    ##   "nvme unable to change power state from d3cold to d0, device inaccessible"
+    ## See: https://bbs.archlinux.org/viewtopic.php?id=288140
+    ## See: https://bbs.archlinux.org/viewtopic.php?id=288095
+    "rtsx_pci"
+    "rtsx_pci_sdmmc"
+
+    ## From: https://github.com/NixOS/nixos-hardware/blob/master/common/pc/default.nix
+    "ath3k"
+  ];
 
   ## Take latest kernel rather than default
   # boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -290,6 +296,8 @@ in
     criticalPowerAction = "Hibernate";
   };
 
+  powerManagement.cpuFreqGovernor = "performance";
+
   boot.kernelParams = [
     # Disables discrete Nvidia GPU when not in use
     # Must use bbwsitch or offloading to use GPU
@@ -305,16 +313,27 @@ in
     ## To see if enabled:
     ##
     ##   cctk --CStatesCtrl
+
+    ## From: https://github.com/NixOS/nixos-hardware/blob/master/common/cpu/intel/kaby-lake/default.nix
+    "i915.enable_fbc=1"
+    "i915.enable_psr=2"
   ];
 
   # https://discourse.nixos.org/t/nixos-23-11-thermald-not-working/36317/3
   # Addresses "stack smashing detected" startup error
-  services.thermald.package = pkgs.thermald.overrideAttrs (old: {
-    patches = (old.patches or [] ) ++ [(builtins.fetchurl {
-      url = "https://patch-diff.githubusercontent.com/raw/intel/thermal_daemon/pull/422.patch";
-      sha256 = "1xqv9hn06h8zmf5p8s1nm7xy89zjcgban8rvzw8b2w1ya20lq08r";
-    })];
-  });
+  # services.thermald.package = pkgs.thermald.overrideAttrs (old: {
+  #   patches = (old.patches or [] ) ++ [(builtins.fetchurl {
+  #     url = "https://patch-diff.githubusercontent.com/raw/intel/thermal_daemon/pull/422.patch";
+  #     sha256 = "1xqv9hn06h8zmf5p8s1nm7xy89zjcgban8rvzw8b2w1ya20lq08r";
+  #   })];
+  # });
+
+  ## From: https://github.com/NixOS/nixos-hardware/blob/master/common/pc/laptop/default.nix
+  # Gnome 40 introduced a new way of managing power, without tlp.
+  # However, these 2 services clash when enabled simultaneously.
+  # https://github.com/NixOS/nixos-hardware/issues/260
+  services.tlp.enable = lib.mkDefault ((lib.versionOlder (lib.versions.majorMinor lib.version) "21.05")
+                                       || !config.services.power-profiles-daemon.enable);
 
   # --------------------------------------------------------------------------------------
   # Packages

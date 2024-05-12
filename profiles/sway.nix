@@ -1,4 +1,4 @@
-{ config, pkgs, hostParams, userParams, ... }:
+{ config, inputs, hostParams, userParams, ... }:
 
 {
   imports = [] ++ (if hostParams.defaultSession == "sway" || hostParams.multipleSessions then [
@@ -27,6 +27,7 @@
       imports = [
         ( import ../home/profiles/sway.nix (args // {
           launchAppsConfig = config.launchAppsConfigSway;
+          inputs = inputs;
           hostParams = hostParams;
           userParams = userParams;
         }))

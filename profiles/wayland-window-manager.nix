@@ -1,4 +1,4 @@
-{ config, pkgs, hostParams, userParams, ... }:
+{ pkgs, hostParams, userParams, ... }:
 {
   imports = [
     ../hosts/${hostParams.hostName}/kanshi.nix
@@ -90,4 +90,40 @@
   # Make sure that /etc/pam.d/swaylock is added.
   # Otherwise swaylock doesn't unlock.
   security.pam.services.swaylock = {};
+
+  home-manager.users.${userParams.username} = {
+    home.sessionVariables = {
+      ## @TODO: This should def be loaded at runtime.
+      #         This is cofigured in hyprland config.
+      ## @TODO: Verify that it's overriden in hyprland.
+      XDG_CURRENT_DESKTOP = "sway";
+
+      # ---------------------------------------------------------------------------
+      # Wayland-related
+      # ---------------------------------------------------------------------------
+      MOZ_ENABLE_WAYLAND = "1";
+      MOZ_USE_XINPUT2 = "1";
+      MOZ_WEBRENDER = "1";
+      WLR_DRM_NO_MODIFIERS = "1";
+
+      # CLUTTER_BACKEND = "wayland";
+      ## Sway doesn't load with this
+      # WLR_RENDERER = "vulkan";
+      ## Steam doesn't work with this enabled
+      # SDL_VIDEODRIVER = "wayland";
+
+      ## using "wayland" makes menus disappear in kde apps
+      ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )
+      ##         and borders between elements are sometimes transparent, showing the background.
+      QT_QPA_PLATFORM = "wayland";
+      # QT_QPA_PLATFORM = "xcb";
+
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      XDG_SESSION_TYPE = "wayland";
+
+      # Used to inform discord and other apps that we are using wayland
+      NIXOS_OZONE_WL = "1";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    };
+  };
 }
