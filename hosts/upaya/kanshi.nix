@@ -1,11 +1,19 @@
 { inputs, pkgs, userParams, ... }:
 let
-  home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
-  home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
+  wlr-randr = "${pkgs.wlr-randr}/bin/wlr-randr";
+  grep = "${pkgs.gnugrep}/bin/grep";
+  awk = "${pkgs.gawk}/bin/awk";
+  # home-monitor-left-sway = ''"LG Electronics LG Ultra HD 0x00003EAD"'';
+  # home-monitor-right-sway = ''"LG Electronics LG HDR 4K 0x00000F5B"'';
+  home-monitor-left-sway = ''$(${wlr-randr} | ${grep} "LG Electronics LG Ultra HD 0x00003EAD" | ${awk} '{print $1}')'';
+  home-monitor-right-sway = ''$(${wlr-randr} | ${grep} "LG Electronics LG HDR 4K 0x00000F5B" | ${awk} '{print $1}')'';
+  # home-monitor-left-sway = "left";
+  # home-monitor-right-sway = "right";
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
   hyprctl="${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
+  swaymsg="${pkgs.sway}/bin/swaymsg";
 in
 {
   home-manager.users.${userParams.username} = {
@@ -27,7 +35,7 @@ in
             "boltctl forget --all"
           ];
         };
-        desk = {
+        desk-sway = {
           outputs = [
             {
               criteria = "eDP-1";
@@ -51,6 +59,17 @@ in
               position = "4480,0";
               scale = 1.5;
             }
+          ];
+          exec = [
+            "${swaymsg} workspace 1, move workspace to output ${home-monitor-left-sway}"
+            "${swaymsg} workspace 2, move workspace to output ${home-monitor-right-sway}"
+            "${swaymsg} workspace 3, move workspace to output ${home-monitor-right-sway}"
+            "${swaymsg} workspace 4, move workspace to output ${home-monitor-left-sway}"
+            "${swaymsg} workspace 5, move workspace to output ${home-monitor-left-sway}"
+            "${swaymsg} workspace 6, move workspace to output ${home-monitor-left-sway}"
+            "${swaymsg} workspace 7, move workspace to output ${home-monitor-left-sway}"
+            "${swaymsg} workspace 8, move workspace to output ${home-monitor-left-sway}"
+            "${swaymsg} workspace 9, move workspace to output ${home-monitor-left-sway}"
           ];
         };
         desk-hyprland = {
