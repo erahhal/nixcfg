@@ -303,10 +303,6 @@ in
       windowrulev2 = [
         # "pseudo,fcitx"
 
-        ## Perf
-        "noblur, class:(.*)$"
-        "forcergbx, class:(.*)$"
-
         "float, title:^(KCalc)$"
 
         # telegram media viewer

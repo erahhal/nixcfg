@@ -33,14 +33,49 @@ in
     # Using Xorg
     #---------------------------------------------------------------------------
 
+    ## Does not work to change SDDM cursor size
+    # environment.variables = {
+    #   XCURSOR_SIZE = "64";
+    # };
+
+    ## This is the only thing that seems to change the SDDM cursor
+    services.xserver.upscaleDefaultCursor = true; # default false
+
     services.xserver = {
       enable = true;
       displayManager = {
         defaultSession = hostParams.defaultSession;
+        ## Does not work to change SDDM cursor theme or size
+        setupCommands = ''
+          # export XCURSOR_SIZE=64
+          ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
+          ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+            Xft.dpi: ${toString hostParams.dpi}
+            Xcursor.theme: Bibata-Modern-Classic
+            Xcursor.size: 64
+          EOF
+        '';
+        ## Does not work to change SDDM cursor theme or size
+        sessionCommands = ''
+          # export XCURSOR_SIZE=64
+          ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
+          ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+            Xft.dpi: ${toString hostParams.dpi}
+            Xcursor.theme: Bibata-Modern-Classic
+            Xcursor.size: 64
+          EOF
+        '';
         sddm = {
           enable = true;
           enableHidpi = true;
           settings = {
+            Theme = {
+              ## Does not work to change SDDM cursor size
+              CursorSize = 48;
+              ## Does not work to change SDDM cursor theme
+              CursorTheme = "bibata-cursors";
+            };
+            ## Does not work to change SDDM cursor size
             # X11 = {
             #   ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
             # };
@@ -69,6 +104,13 @@ in
         };
       };
     };
+
+    ## Does not work to change SDDM cursor size
+    # systemd.services.display-manager = {
+    #   serviceConfig = {
+    #     Environment = "XCURSOR_SIZE=64";
+    #   };
+    # };
 
     #---------------------------------------------------------------------------
     # As a systemd service

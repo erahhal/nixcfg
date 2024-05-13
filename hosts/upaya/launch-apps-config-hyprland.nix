@@ -4,6 +4,10 @@
     launchAppsConfigHyprland = lib.mkOption {
       type = lib.types.lines;
       default = ''
+        ## Perf
+        windowrulev2=noblur, class:(.*)$
+        windowrulev2=forcergbx, class:(.*)$
+
         # These are set by kanshi, but need to be set here as well to get cursor size correct
         # Some mix of settings here + kanshi causes kanshi to fail with:
         # "failed to apply  configuration for profile 'desk-hyprland'"

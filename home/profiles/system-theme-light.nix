@@ -2,7 +2,8 @@ args@{ pkgs, lib, inputs, hostParams, userParams, ... }:
 let
 xwayland_settings = ''
   Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
-  Xcursor.theme: Adwaita
+  # Xcursor.theme: Adwaita
+  Xcursor.theme: Bibata-Modern-Classic
   Xft.dpi: ${toString hostParams.dpi}
   xterm*background: #efefef
   xterm*faceName: Monospace
