@@ -206,6 +206,9 @@
   services.eternal-terminal.enable = true;
   # et port
   networking.firewall.allowedTCPPorts = [ 2022 ];
+  environment.variables = {
+    ET_NO_TELEMETRY = "1";
+  };
 
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images
