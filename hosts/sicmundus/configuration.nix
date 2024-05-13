@@ -70,7 +70,7 @@ in
       # ../../containers/smokeping.nix
       ../../containers/syncthing.nix
       ../../containers/vaultwarden.nix
-      ../../containers/wekan.nix
+      # ../../containers/wekan.nix
       ../../containers/wikijs.nix
       ../../containers/xbrowsersync.nix
 
