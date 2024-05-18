@@ -10,9 +10,9 @@ let
   '';
 in
 {
-  # imports = [
-  #   ../overlays/hyprland-patched.nix
-  # ];
+  imports = [
+    # ../overlays/hyprland-patched.nix
+  ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
     services.xserver.displayManager.sessionPackages = [ pkgs.hyprland ];

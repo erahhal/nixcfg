@@ -279,6 +279,13 @@ in
         "${modifier}+Control+j" = "resize shrink height 1 px or 1 ppt";
         "${modifier}+Control+k" = "resize grow height 1 px or 1 ppt";
 
+        ## Toggle notification list view
+        "${modifier}+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+        ## Clear notifications
+        "${modifier}+Shift+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -C -sw";
+        ## Toggle notification do-not-disturb
+        "${modifier}+Control+Shift+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+
         "${modifier}+h" = "focus left";
         "${modifier}+j" = "focus down";
         "${modifier}+k" = "focus up";

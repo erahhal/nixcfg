@@ -69,11 +69,6 @@
 
     nix-software-center.url = "github:vlinkz/nix-software-center";
 
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
     # Hyprland WM
     hyprland = {
       url = "github:hyprwm/hyprland/v0.39.1";
