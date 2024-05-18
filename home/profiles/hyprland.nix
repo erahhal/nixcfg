@@ -373,6 +373,13 @@ in
         "$mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u"
         "$mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor, d"
 
+        ## Toggle notification list view
+        "$mod, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"
+        ## Clear notifications
+        "$mod_SHIFT, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -C -sw"
+        ## Toggle notification do-not-disturb
+        "$mod_SHIFT_CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw"
+
         "SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
         "SHIFT_CTRL, 4, exec, ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -d)\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
         "SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g \"$(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | jq -r '.at | join(\",\")') $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | jq -r '.size | join(\"x\")')\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"

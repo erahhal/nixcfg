@@ -225,10 +225,10 @@
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
 
-          # inputs.nix-snapd.nixosModules.default
-          # {
-          #   services.snap.enable = true;
-          # }
+          inputs.nix-snapd.nixosModules.default
+          {
+            services.snap.enable = true;
+          }
         ];
         specialArgs = {
           inherit inputs;

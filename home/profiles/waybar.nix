@@ -284,6 +284,7 @@ in
           return-type = "json";
           # exec-if = "which swaync-client";
           exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+          interval = 2;
           on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
           on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
           escape = true;
