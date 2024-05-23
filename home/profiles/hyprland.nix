@@ -155,7 +155,7 @@ in
 
         # "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
-        # "ystemctl --user start clight"
+        # "systemctl --user start clight"
       ];
 
       # Refresh services and processes

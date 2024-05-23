@@ -27,6 +27,7 @@ in
     environment.systemPackages = with pkgs; [
       sddm
       sddm-themes  # Must be installed globally, not home
+      bibata-cursors
     ];
 
     #---------------------------------------------------------------------------
@@ -70,9 +71,9 @@ in
           enableHidpi = true;
           settings = {
             Theme = {
-              ## Does not work to change SDDM cursor size
-              CursorSize = 48;
+              CursorSize = 32;
               ## Does not work to change SDDM cursor theme
+              ## see profile/desktop.nix for how this is changed
               CursorTheme = "bibata-cursors";
             };
             ## Does not work to change SDDM cursor size
