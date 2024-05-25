@@ -821,11 +821,11 @@
                       NvimTree = true,
                   },
                   diagnostics = "nvim_lsp",
-                  always_show_bufferline = false,
+                  always_show_bufferline = true,
               },
               highlights = {
                   buffer_selected = {
-                      fg = '#ffffff',
+                      -- fg = '#ffffff',
                       bold = true,
                   },
               },
@@ -861,8 +861,22 @@
         plugin = lualine-nvim;
         config = ''
           lua << EOF
+
+          local function path_option()
+            if vim.o.columns > 78 then
+              return 2
+            else
+              return 0
+            end
+          end
+
           require('lualine').setup {
-            options = { theme = 'gruvbox' }
+            options = {
+              theme = 'gruvbox',
+            },
+            sections = {
+              lualine_c = {'filename'},
+            }
           }
           EOF
         '';

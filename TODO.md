@@ -68,6 +68,7 @@ Warts/Issues
 Improvments
 -----------
 
+* Centralize all icon theme and sizing code
 * Centralize references to waybar
   * e.g. need to change to unstable.waybar in multiple places to avoid collisions
 * Share video of canonical VP of cloud on Nix
