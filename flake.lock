@@ -1223,11 +1223,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1708924735,
-        "narHash": "sha256-a/jNDnTm3Kanx6GbE5XGv9Avwx6w5OAOXBtr4v75NkY=",
+        "lastModified": 1716839541,
+        "narHash": "sha256-biRq0kIW6zhX5oFYg1+amLz1B8AOSdvWG9ZfJhmAjA4=",
         "ref": "refs/heads/master",
-        "rev": "362e4fc2b9def4925e38d418603a706e6bb2d84f",
-        "revCount": 20,
+        "rev": "1dd101282762e4d1b9e47e36119e2c1fa8170993",
+        "revCount": 21,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
@@ -1838,10 +1838,10 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1714782413,
-        "narHash": "sha256-tbg0MEuKaPcUrnmGCu4xiY5F+7LW2+ECPKVAJd2HLwM=",
-        "path": "/nix/store/05jf7swanajlk1fz7fxc00fx1qwga6zk-source",
-        "rev": "651b4702e27a388f0f18e1b970534162dec09aff",
+        "lastModified": 1715395895,
+        "narHash": "sha256-DreMqi6+qa21ffLQqhMQL2XRUkAGt3N7iVB5FhJKie4=",
+        "path": "/nix/store/14hmp9p41qbskdqz5c63708lpgk8imk4-source",
+        "rev": "71bae31b7dbc335528ca7e96f479ec93462323ff",
         "type": "path"
       },
       "original": {

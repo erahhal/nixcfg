@@ -266,31 +266,6 @@
   ];
 
   # --------------------------------------------------------------------------------------
-  # System users
-  # --------------------------------------------------------------------------------------
-
-  # Needed for running newt docker images that use systemd
-  users = {
-    groups.www-data = {
-      gid = 33;
-    };
-    # Used by metatron and newt auth-proxy. host user needs to be part of this group
-    groups.nac = {
-      gid = 60243;
-    };
-    users.www-data = {
-      isSystemUser  = true;
-      description  = "www-data";
-      group = "www-data";
-      extraGroups = [
-        "users"
-      ];
-      uid = 33;
-    };
-  };
-
-
-  # --------------------------------------------------------------------------------------
   # Base Packages
   # --------------------------------------------------------------------------------------
 

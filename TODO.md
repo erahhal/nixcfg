@@ -4,6 +4,7 @@ TODOs
 Warts/Issues
 ------------
 
+* Add Zellij as alternative to tmux
 * Hibernation broken
   * criticalPowerAction = "Hibernate" doesn't seem to work
   * https://discourse.nixos.org/t/hibernate-doesnt-work-anymore/24673/8
