@@ -28,7 +28,8 @@ in
     # GLFW_IM_MODULE = "ibus";
 
     GLFW_IM_MODULE = "fcitx";
-    GTK_IM_MODULE = "fcitx";
+    ## This interferes with wayland input, and should be set per-app
+    # GTK_IM_MODULE = "fcitx";
     INPUT_METHOD = "fcitx";
     XMODIFIERS = "@im=fcitx";
     IMSETTINGS_MODULE = "fcitx";
@@ -39,26 +40,27 @@ in
     XIM_PROGRAM = "fcitx";
   };
 
-  # i18n.inputMethod.enabled = "ibus";
-  # i18n.inputMethod.ibus.engines = with pkgs.ibus-engines; [ libpinyin ];
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    inputMethod = {
-      # enabled = "ibus";
-      # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
-      enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [
-        fcitx5-configtool
-        fcitx5-chinese-addons
-        fcitx5-gtk
-        fcitx5-nord
-        fcitx5-rime
-        libsForQt5.fcitx5-qt
-        plasma5Packages.fcitx5-qt
-        rime-data
-      ];
-    };
-  };
+  ### DON'T USE THIS - USE HOME MANAGER CONFIG INSTEAD
+  # # i18n.inputMethod.enabled = "ibus";
+  # # i18n.inputMethod.ibus.engines = with pkgs.ibus-engines; [ libpinyin ];
+  # i18n = {
+  #   defaultLocale = "en_US.UTF-8";
+  #   inputMethod = {
+  #     # enabled = "ibus";
+  #     # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
+  #     enabled = "fcitx5";
+  #     fcitx5.addons = with pkgs; [
+  #       fcitx5-configtool
+  #       fcitx5-chinese-addons
+  #       fcitx5-gtk
+  #       fcitx5-nord
+  #       fcitx5-rime
+  #       libsForQt5.fcitx5-qt
+  #       plasma5Packages.fcitx5-qt
+  #       rime-data
+  #     ];
+  #   };
+  # };
 
   # For xdg-desktop-portal-wlr
   # GTK apps will hang for 30 seconds at start of sway and render strangely without this
@@ -78,9 +80,7 @@ in
       ./profiles/kitty.nix
 
       ./profiles/bambu-studio.nix
-      ./profiles/element.nix
       ./profiles/gthumb.nix
-      ./profiles/signal.nix
       ## Should be handled by wayland scaling now
       # ./profiles/firefox.nix
 
@@ -88,6 +88,41 @@ in
       ## But left in for the theming
       ./profiles/qt4-hidpi.nix
     ];
+
+    ## Until Hyprland bug https://github.com/hyprwm/Hyprland/issues/5815 is resolved
+    ## Go to Fctix Configure --> Addons --> Wayland Input method front end --> disable "Forward key event..."
+
+    ## Fcitx in Home Manager works properly, as it's run as a systemd service
+    ## which seems to import all the proper input methods
+    ## and doesn't need to be launched in the WM (e.g. Hyprland) config
+    i18n = {
+      # defaultLocale = "en_US.UTF-8";
+      inputMethod = {
+        # enabled = "ibus";
+        # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [
+          fcitx5-configtool
+          fcitx5-chinese-addons
+          fcitx5-gtk
+          fcitx5-nord
+          fcitx5-rime
+          libsForQt5.fcitx5-qt
+          plasma5Packages.fcitx5-qt
+          rime-data
+        ];
+      };
+    };
+
+    ## Screen scaling doesn't seem to make it into the systemd service,
+    ## so set it explicitly
+    systemd.user.services.fcitx5-daemon = {
+      Service = {
+        Environment = [
+          "QT_SCALE_FACTOR=2"
+        ];
+      };
+    };
 
     # ---------------------------------------------------------------------------
     # MIME apps
@@ -271,7 +306,8 @@ in
         brave
         czkawka
         unstable.digikam
-        unstable.discord
+        discord
+        element-desktop
         evolutionWithPlugins
         feh
         firefox
@@ -291,9 +327,11 @@ in
         mpv
         unstable.rpi-imager
         shotwell
+        signal-desktop
+        slack
         spotify
         sxiv # image viewer with vim bindings
-        unstable.stellarium
+        stellarium
         telegram-desktop
         waydroid
         whatsapp-for-linux
@@ -355,8 +393,8 @@ in
         p4v
 
         ## unfree
-        # bcompare
-        bcompare-beta
+        bcompare
+        # bcompare-beta
       ];
     };
 

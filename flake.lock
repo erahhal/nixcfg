@@ -1075,11 +1075,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1717033333,
-        "narHash": "sha256-g9p4LnWvlWbEM29dv9pQ7+Fp3w1fl9lggqa60MnjJa0=",
+        "lastModified": 1717227230,
+        "narHash": "sha256-XVf0Y7gHSzWeHG+JskwaMVvB3DLAMMz9MT5497ghbeg=",
         "ref": "refs/heads/master",
-        "rev": "a31ac88919a14d59b135b487dd5ff48e376188bc",
-        "revCount": 22,
+        "rev": "a906768a591eb2e2b7a47d3e09ea38f9b3bace90",
+        "revCount": 23,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },

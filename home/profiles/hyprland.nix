@@ -1,6 +1,7 @@
 { inputs, pkgs, launchAppsConfig, hostParams, ... }:
 
 let
+  hyprctl = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
   exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
@@ -12,7 +13,7 @@ let
   swayLockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
-    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
+    HYPRCTL=${hyprctl};
     JQ=${pkgs.jq}/bin/jq
     BASE64=${pkgs.coreutils}/bin/base64
 
@@ -47,7 +48,7 @@ let
   '';
 
   move-left = pkgs.writeShellScript "hyprland-move-left.sh" ''
-    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
+    HYPRCTL=${hyprctl};
     JQ=${pkgs.jq}/bin/jq
 
     ACTIVEWINDOW=$($HYPRCTL -j activewindow | $JQ "{address,grouped}")
@@ -61,7 +62,7 @@ let
   '';
 
   move-right = pkgs.writeShellScript "hyprland-move-right.sh" ''
-    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
+    HYPRCTL=${hyprctl};
     JQ=${pkgs.jq}/bin/jq
 
     ACTIVEWINDOW=$($HYPRCTL -j activewindow | $JQ "{address,grouped}")
@@ -75,7 +76,7 @@ let
   '';
 
   kill-active = pkgs.writeShellScript "hyprland-kill-active.sh" ''
-    HYPRCTL=${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl;
+    HYPRCTL=${hyprctl};
     if [ "$($HYPRCTL activewindow -j | jq -r ".class")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
     else
@@ -141,9 +142,7 @@ in
         # Update hyprland signature so hyprctl works with long-lived tmux sessions
         # Only works with new tmux panes, not existing ones
         ''tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"''
-        "${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
-        "${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace"
-        "${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
+        # "${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace"
         "${pkgs.waybar}/bin/waybar"
         # "${inputs.waybar.packages.${pkgs.system}.waybar}/bin/waybar"
         "${pkgs.hyprpaper}/bin/hyprpaper"
@@ -301,8 +300,6 @@ in
       };
 
       windowrulev2 = [
-        # "pseudo,fcitx"
-
         "float, title:^(KCalc)$"
 
         # telegram media viewer
@@ -333,7 +330,7 @@ in
         "size 400 600, title:%(.*)(Bitwarden)(.*)$"
       ];
 
-      "$screenshotarea" = "hyprctl keyword animation \"fadeOut,0,0,default\"; grimblast --notify copysave area; hyprctl keyword animation \"fadeOut,1,4,default\"";
+      "$screenshotarea" = "${hyprctl} keyword animation \"fadeOut,0,0,default\"; grimblast --notify copysave area; ${hyprctl} keyword animation \"fadeOut,1,4,default\"";
 
       ## Bind Flags
       ## ----------
@@ -346,7 +343,7 @@ in
       ## i -> ignore mods, will ignore modifiers.
 
       bind = [
-        "$mod, E, exec, pkill fcitx5 -9;sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace; sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
+        # "$mod, E, exec, pkill fcitx5 -9;sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace; sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
         "$mod, Return, exec, $term"
         (
           if hostParams.defaultLockProgram == "swaylock" then
@@ -359,9 +356,9 @@ in
         # Kill
         "$mod, C, exec, ${kill-active}"
         # Force kill
-        "$mod_SHIFT, C, exec, ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | ${pkgs.jq}/bin/jq '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9"
+        "$mod_SHIFT, C, exec, ${hyprctl} -j activewindow | ${pkgs.jq}/bin/jq '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9"
         # "$mod, R, forcerendererreload"
-        "$mod, R, exec, ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl reload"
+        "$mod, R, exec, ${hyprctl} reload"
         "$mod, Y, exec, systemctl --user restart kanshi"
         "$mod, T, exec, ${toggle-group}"
         "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '${exit-hyprland}'"
@@ -380,9 +377,9 @@ in
         ## Toggle notification do-not-disturb
         "$mod_SHIFT_CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw"
 
-        "SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
+        "SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${hyprctl} -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
         "SHIFT_CTRL, 4, exec, ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -d)\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
-        "SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g \"$(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | jq -r '.at | join(\",\")') $(${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl -j activewindow | jq -r '.size | join(\"x\")')\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
+        "SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g \"$(${hyprctl} -j activewindow | jq -r '.at | join(\",\")') $(${hyprctl} -j activewindow | jq -r '.size | join(\"x\")')\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
 
         "$mod_CTRL, L, resizeactive, 10 0"
         "$mod_CTRL, H, resizeactive, -10 0"

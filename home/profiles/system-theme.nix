@@ -27,7 +27,7 @@ let
       echo ">> restarting SwayNC"
       systemctl --user restart swaynotificationcenter
       echo ">> reloading hyprland"
-      hyprctl reload
+      ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl reload
       sleep 1
       echo ">> launching waybar"
       ## This only seems to launch if logging at trace level and running in foreground

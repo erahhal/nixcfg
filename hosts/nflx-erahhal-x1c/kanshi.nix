@@ -196,15 +196,15 @@ in
               }
             ];
             exec = [
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 2 eDP-1"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 3 eDP-1"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 4 desc:${portable-monitor}"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 5 desc:${portable-monitor}"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 6 desc:${portable-monitor}"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
-              "${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 2 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 6 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
             ];
           };
         }
