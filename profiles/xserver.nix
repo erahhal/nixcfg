@@ -5,6 +5,8 @@
     edid-decode
   ];
 
+  services.libinput.enable = true;
+
   services.xserver = {
     enable = true;
     dpi = hostParams.dpi;
@@ -12,7 +14,6 @@
     # 230/35 seems to be the same as 250/50 with xset/sway
     autoRepeatDelay = 230;
     autoRepeatInterval = 35;
-    libinput.enable = true;
     synaptics.palmDetect = true;
     inputClassSections = [
       ''

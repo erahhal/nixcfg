@@ -204,8 +204,6 @@ in
     # Display, Theme, DPI, Cursor Size settings
     # ---------------------------------------------------------------------------
 
-    home.file."Wallpapers".source = ../wallpapers;
-
     home.sessionVariables = {
 
       # ---------------------------------------------------------------------------
@@ -255,7 +253,6 @@ in
         gucharmap
         solaar            # for logitech unifying receiver setup
         xorg.xdpyinfo
-        dfeet             # Dbus viewer
         grim              # Arbitrary capture of portion of screen
         slurp             # Allows user to select portion of screen
         xsel              # Manipulate xwindows clipboard
@@ -282,7 +279,7 @@ in
         # pr67576-gimp-wayland.gimp-with-plugins
         # pr67576-gimp-wayland.gimp
         glava
-        gnome.gnome-todo
+        endeavour       # replaces gnome.gnome-todo
         gnome3.gnome-calculator
         inkscape
         joplin-desktop

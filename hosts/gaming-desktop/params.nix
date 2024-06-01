@@ -25,7 +25,7 @@
   dpiSddm = 210;
   dpiLaptop = 270;
   touchpad_click_method = "button_areas";
-  wallpaper = "~/Wallpapers/teundenouden - polar gilds darkened - CC BY-NC-ND 3.0.png";
+  wallpaper = ./. + "../../wallpapers/teundenouden - polar gilds darkened - CC BY-NC-ND 3.0.png";
 
   # 27" 4k: 161 dpi
   # 15.6" 4k: 280 dpi

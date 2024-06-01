@@ -2,10 +2,11 @@
 
 {
   config = if hostParams.displayManager == "lightdm" then {
+    services.libinput.enable = true;
+
     services.xserver = {
       enable = true;
       dpi = hostParams.dpi;
-      libinput.enable = true;
       displayManager = {
         defaultSession = hostParams.defaultSession;
         lightdm = {

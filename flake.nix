@@ -3,10 +3,10 @@
 
   inputs = {
     # Use stable for main
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
 
     # Should match nixpkgs version
-    home-manager.url = "github:nix-community/home-manager/release-23.11";
+    home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Trails trunk - latest packages with broken commits filtered out
@@ -77,18 +77,6 @@
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
     };
-    hypridle = {
-      url = "github:hyprwm/hypridle";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    hyprlock = {
-      url = "github:hyprwm/hyprlock";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
 
     waybar = {
       url = "github:Alexays/Waybar";
@@ -135,36 +123,6 @@
       };
     };
     nixosConfigurations = {
-      mediaserver =
-      let
-        system = "aarch64-linux";
-        hostParams = import ./hosts/mediaserver/params.nix {};
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
-        modules = [
-          ./hosts/mediaserver/configuration.nix
-          inputs.agenix.nixosModules.default
-          inputs.secrets.nixosModules.default
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.nixos-hardware.nixosModules.raspberry-pi-4
-          inputs.nur.nixosModules.nur
-          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
-          }
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit system;
-          inherit hostParams;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
-      };
       nflx-erahhal-x1c =
       let
         system = "x86_64-linux";
@@ -188,9 +146,6 @@
               # inputs.nixpkgs-wayland.overlay
               # inputs.hyprland.overlays.default
               # inputs.hyprland-plugins.overlays.default
-              # inputs.hypridle.overlays.default
-              # inputs.hyprlock.overlays.default
-              # inputs.hyprpaper.overlays.default
               # (self: super: {
               #   nixpkgs = super.nixpkgs // {
               #     librdm = inputs.nixpkgs-unstable.libdrm;

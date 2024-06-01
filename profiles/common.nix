@@ -201,7 +201,7 @@
 
   # network locator e.g. scanners, printers, media devices, etc
   services.avahi.enable = true;
-  services.avahi.nssmdns = true;
+  services.avahi.nssmdns4 = true;
 
   services.eternal-terminal.enable = true;
   # et port
@@ -331,7 +331,7 @@
     nixos-generators
     nil
     nix-index
-    nvtop
+    nvtopPackages.full
     openssl
     # openjdk16-bootstrap
     p7zip

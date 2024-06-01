@@ -18,8 +18,7 @@
   dpi = 190;
   # dpiSddm = 210;
   # dpiLaptop = 210;
-  # wallpaper = "~/Wallpapers/yellowstone.jpg";
-  wallpaper = "~/Wallpapers/teundenouden - polar gilds darkened - CC BY-NC-ND 3.0.png";
+  wallpaper = ../../wallpapers/yellowstone.jpg;
 
   defaultBrowser = "chromium-browser";
 

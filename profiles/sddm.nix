@@ -45,7 +45,6 @@ in
     services.xserver = {
       enable = true;
       displayManager = {
-        defaultSession = hostParams.defaultSession;
         ## Does not work to change SDDM cursor theme or size
         setupCommands = ''
           # export XCURSOR_SIZE=64
@@ -66,43 +65,47 @@ in
             Xcursor.size: 64
           EOF
         '';
-        sddm = {
-          enable = true;
-          enableHidpi = true;
-          settings = {
-            Theme = {
-              CursorSize = 32;
-              ## Does not work to change SDDM cursor theme
-              ## see profile/desktop.nix for how this is changed
-              CursorTheme = "bibata-cursors";
-            };
-            ## Does not work to change SDDM cursor size
-            # X11 = {
-            #   ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
-            # };
+      };
+    };
 
-            #---------------------------------------------------------------------------
-            # Using Wayland
-            #
-            # @TODO: Seems to work now with 23.11 - figure out if it can be used
-            #---------------------------------------------------------------------------
-
-            # General = {
-            #   DisplayServer = "wayland";
-            #   GreeterEnvironment ="QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
-            # };
-            # Wayland = {
-            #   EnableHiDPI = "true";
-            #   CompositorCommand = "sway";
-            # };
+    services.displayManager = {
+      defaultSession = hostParams.defaultSession;
+      sddm = {
+        enable = true;
+        enableHidpi = true;
+        settings = {
+          Theme = {
+            CursorSize = 32;
+            ## Does not work to change SDDM cursor theme
+            ## see profile/desktop.nix for how this is changed
+            CursorTheme = "bibata-cursors";
           };
-          theme = hostParams.sddmTheme;
-        };
+          ## Does not work to change SDDM cursor size
+          # X11 = {
+          #   ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
+          # };
 
-        autoLogin = {
-          enable = false;
-          user = userParams.username;
+          #---------------------------------------------------------------------------
+          # Using Wayland
+          #
+          # @TODO: Seems to work now with 23.11 - figure out if it can be used
+          #---------------------------------------------------------------------------
+
+          # General = {
+          #   DisplayServer = "wayland";
+          #   GreeterEnvironment ="QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
+          # };
+          # Wayland = {
+          #   EnableHiDPI = "true";
+          #   CompositorCommand = "sway";
+          # };
         };
+        theme = hostParams.sddmTheme;
+      };
+
+      autoLogin = {
+        enable = false;
+        user = userParams.username;
       };
     };
 

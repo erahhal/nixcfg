@@ -15,7 +15,7 @@ in
   ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
-    services.xserver.displayManager.sessionPackages = [ pkgs.hyprland ];
+    services.displayManager.sessionPackages = [ pkgs.hyprland ];
 
     programs.hyprland = {
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
@@ -36,9 +36,6 @@ in
     # Load latest instead of stable
     home-manager.sharedModules = [
       inputs.hyprland.homeManagerModules.default
-      inputs.hypridle.homeManagerModules.default
-      inputs.hyprlock.homeManagerModules.default
-      inputs.hyprpaper.homeManagerModules.default
     ];
 
     home-manager.users.${userParams.username} = args@{ pkgs, ... }: {

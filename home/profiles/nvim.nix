@@ -692,13 +692,14 @@
         '';
       }
 
+      ## @TODO: Nix build errors when this is enabled
       # Git management
-      {
-        # @TODO: replace with gin.vim (not yet in a nix package)
-        plugin = gina-vim;
-        config = ''
-        '';
-      }
+      # {
+      #   # @TODO: replace with gin.vim (not yet in a nix package)
+      #   plugin = gina-vim;
+      #   config = ''
+      #   '';
+      # }
 
       # Show diff marks
       {

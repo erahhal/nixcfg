@@ -1,27 +1,36 @@
 { inputs, lib, pkgs, ... }:
 {
   services.hypridle = let
-    hyprlock = "${inputs.hyprlock.packages.${pkgs.system}.hyprlock}/bin/hyprlock";
+    hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
     # @TODO: Should use from inputs, not pkgs
     hyprctl = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
     loginctl = "${pkgs.systemd}/bin/loginctl";
     restartWlsunset = "systemd --user restart wlsunset.service";
   in {
     enable = true;
-    lockCmd = "pidof hyprlock || ${hyprlock}";
-    beforeSleepCmd = "${loginctl} lock-session && ${hyprctl} dispatch dpms off";
-    afterSleepCmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session && ${restartWlsunset}";
-    listeners = [
-      {
-        timeout = 300;
-        onTimeout = "${loginctl} lock-session";
-      }
-      {
-        timeout = 360;
-        onTimeout = "${hyprctl} dispatch dpms off";
-        onResume = "${hyprctl} dispatch dpms on && ${restartWlsunset}";
-      }
-    ];
+    settings = {
+      general = {
+        lock_cmd = "pidof hyprlock || ${hyprlock}";
+        # unlock_cmd = "echo 'unlock!'";
+        before_sleep_cmd = "${loginctl} lock-session && ${hyprctl} dispatch dpms off";
+        after_sleep_cmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session && ${restartWlsunset}";
+        ignore_dbus_inhibit = false;
+      };
+
+      listener = [
+        {
+          timeout = 300;
+          on-timeout = "${loginctl} lock-session";
+          # on-resume = "echo 'service resumed'";
+        }
+
+        {
+          timeout = 360;
+          on-timeout = "${hyprctl} dispatch dpms off";
+          on-resume = "${hyprctl} dispatch dpms on && systemd --user restart wlsunset.service";
+        }
+      ];
+    };
   };
 
   ## Don't start automatically.
@@ -29,7 +38,7 @@
   ## are responsible for starting sway-idle if needed
   systemd.user.services.hypridle.Install.WantedBy = lib.mkForce [ ];
 
-  home.packages = [
-    inputs.hypridle.packages.${pkgs.system}.hypridle
+  home.packages = with pkgs; [
+    hypridle
   ];
 }
