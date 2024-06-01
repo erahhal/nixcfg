@@ -1,4 +1,4 @@
-{ inputs, pkgs, launchAppsConfig, hostParams, ... }:
+{ inputs, pkgs, hostParams, ... }:
 
 let
   hyprctl = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
@@ -167,6 +167,7 @@ in
         "systemctl --user restart network-manager-applet"
         "systemctl --user restart wlsunset"
         "systemctl --user restart kanshi"
+        "systemctl --user restart fcitx5-daemon"
         ## hyprlock currently broken
         (
           if hostParams.defaultLockProgram == "swaylock" then
@@ -279,16 +280,6 @@ in
         shadow_range = 4;
         shadow_render_power = 1;
         "col.shadow" = "0x55000000";
-      };
-
-      animations = {
-        enabled = 0;
-        animation = [
-          "border, 1, 2, default"
-          "fade, 1, 4, default"
-          "windows, 1, 3, default, popin 80%"
-          "workspaces, 1, 2, default, slide"
-        ];
       };
 
       dwindle = {
@@ -490,8 +481,6 @@ in
       binde = , down, resizeactive, 0 10
       bind = , escape, submap, reset
       submap = reset
-
-      ${launchAppsConfig}
     '';
   };
 }

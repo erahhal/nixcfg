@@ -1,4 +1,4 @@
-{ config, inputs, hostParams, pkgs, userParams, ... }:
+{ inputs, hostParams, pkgs, userParams, ... }:
 let
   hyprctl = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
@@ -43,7 +43,6 @@ in
       imports = [
         ( import ../home/profiles/hyprland.nix (args // {
           inputs = inputs;
-          launchAppsConfig = config.launchAppsConfigHyprland;
           hostParams = hostParams;
         }))
       ];

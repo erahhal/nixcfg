@@ -1,61 +1,64 @@
 { lib, ... }:
 {
-  options = {
-    launchAppsConfigHyprland = lib.mkOption {
-      type = lib.types.lines;
-      default = ''
-        # These are set by kanshi, but need to be set here as well to get cursor size correct
-        # Some mix of settings here + kanshi causes kanshi to fail with:
-        # "failed to apply  configuration for profile 'desk-hyprland'"
-        # It might be enabling VRR or inconsistent frequencies
-        monitor = eDP-1,2880x1800@90,0x0,1.8
-        monitor = desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6
-        monitor = desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5
-        monitor = desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5
+  wayland.windowManager.hyprland = {
+    settings = {
+      animations = {
+        animation = [
+          "border, 1, 2, default"
+          "fade, 1, 4, default"
+          "windows, 1, 3, default, popin 80%"
+          "workspaces, 1, 2, default, slide"
+        ];
+      };
 
-        workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 1
-        workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 4
-        workspace = desc:LG Electronics LG Ultra HD 0x00043EAD, 5
+      monitor = [
+        ## These are set by kanshi, but need to be set here as well to get cursor size correct
+        ## Some mix of settings here + kanshi causes kanshi to fail with:
+        ## "failed to apply  configuration for profile 'desk-hyprland'"
+        ## It might be enabling VRR or inconsistent frequencies
 
-        workspace = desc:LG Electronics LG HDR 4K 0x00020F5B, 2
-        workspace = desc:LG Electronics LG HDR 4K 0x00020F5B, 7
+        # "eDP-1,disable"
+        "eDP-1,2880x1800@90,0x0,1.8"
+        "desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5"
+        "desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5"
+      ];
 
-        # workspace 2
-        windowrule = workspace 2, silent, class:^(kitty)$
-        exec-once = [workspace 2 silent] kitty tmux a -dt code
+      workspace = [
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 1"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 4"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 5"
+        "desc:LG Electronics LG HDR 4K 0x00020F5B, 2"
+        "desc:LG Electronics LG HDR 4K 0x00020F5B, 7"
+      ];
 
-        # workspace 3
-        windowrule = workspace 3, silent, class:^(Slack)$
-        exec-once = [workspace 3 silent] slack
+      windowrulev2 = [
+        "workspace 2, silent, class:^(kitty)$"
+        "workspace 3, silent, class:^(Slack)$"
+        "workspace 4, silent, title:^(Spotify)$"
+        "workspace 4, silent, class:^(brave-browser)$"
+        "workspace 5, silent, class:^(firefox)$"
+        "workspace 6, class:^(signal)$"
+        "workspace 6, class:^(org.telegram.desktop)$"
+        "workspace 6, class:^(whatsapp-for-linux)$"
+        "workspace 7, class:^(discord)$"
+        "workspace 7, class:^(Element)$"
+        "workspace 1, silent, class:^(chromium-browser)$"
+      ];
 
-        # workspace 4
-        windowrule = workspace 4 silent, title:^(Spotify)$
-        exec-once = [workspace 4 silent] spotify
-        windowrule = workspace 4 silent, class:^(brave-browser)$
-        exec-once = [workspace 4 silent] brave
-
-        # workspace 5
-        windowrule = workspace 5, silent, class:^(firefox)$
-        exec-once = [workspace 5 silent] firefox
-
-        # workspace 6
-        windowrule = workspace 6, class:^(signal)$
-        exec-once = [workspace 6 silent] signal-desktop
-        windowrule = workspace 6, class:^(org.telegram.desktop)$
-        exec-once = [workspace 6 silent] telegram-desktop
-        windowrule = workspace 6, class:^(whatsapp-for-linux)$
-        exec-once = [workspace 6 silent] whatsapp-for-linux
-
-        # workspace 7
-        windowrule = workspace 7, class:^(discord)$
-        exec-once = [workspace 7 silent] discord
-        windowrule = workspace 7, class:^(Element)$
-        exec-once = [workspace 7 silent] element-desktop
-
-        # workspace 1
-        windowrule = workspace 1, silent, class:^(chromium-browser)$
-        exec-once = [workspace 1 silent] chromium
-      '';
+      exec-once = [
+        "[workspace 2 silent] kitty tmux a -dt code"
+        "[workspace 3 silent] slack"
+        "[workspace 4 silent] spotify"
+        "[workspace 4 silent] brave"
+        "[workspace 5 silent] firefox"
+        "[workspace 6 silent] signal-desktop"
+        "[workspace 6 silent] telegram-desktop"
+        "[workspace 6 silent] whatsapp-for-linux"
+        "[workspace 7 silent] discord"
+        "[workspace 7 silent] element-desktop"
+        "[workspace 1 silent] chromium"
+      ];
     };
   };
 }

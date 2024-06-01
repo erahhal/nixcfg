@@ -9,15 +9,19 @@
     enable = true;
 
     extraPortals = with pkgs; [
-      ## Launching the WLR portal interferes with Hyprland screen sharing
-      # xdg-desktop-portal-wlr # wlroots screen capture
+      ## gtk file dialogs
+      xdg-desktop-portal-gtk
 
-      xdg-desktop-portal-gtk # gtk file dialogs
+      ## Launching the WLR portal might interfere with Hyprland screen sharing
+      # xdg-desktop-portal-wlr # wlroots screen capture
 
       ## seems to be already installed by hyperland
       # xdg-desktop-portal-hyprland # Hyprland specific
     ];
-    wlr.enable = true;
+
+    ## Are these needed for sway?
+
+    # wlr.enable = true;
     # gtkUsePortal = true;
   };
 

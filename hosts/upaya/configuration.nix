@@ -52,7 +52,6 @@ in
 
       # display
       ./launch-apps-config-sway.nix
-      ./launch-apps-config-hyprland.nix
       ./kanshi.nix
     ];
 

@@ -13,6 +13,10 @@ in
     _module.args.hostParams = hostParams;
     _module.args.userParams = userParams;
 
+    imports = [
+      ./launch-apps-config-hyprland.nix
+    ];
+
     home = {
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 

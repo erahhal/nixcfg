@@ -20,6 +20,7 @@ in
     imports = [
       # ../../home/profiles/gimp-hidpi.nix
       ../../home/profiles/protonmail-bridge.nix
+      ./launch-apps-config-hyprland.nix
     ];
 
     xresources = if hostParams.defaultSession == "none+i3" then {

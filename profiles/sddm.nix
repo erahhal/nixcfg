@@ -75,7 +75,7 @@ in
         enableHidpi = true;
         settings = {
           Theme = {
-            CursorSize = 32;
+            CursorSize = 28;
             ## Does not work to change SDDM cursor theme
             ## see profile/desktop.nix for how this is changed
             CursorTheme = "bibata-cursors";

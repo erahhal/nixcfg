@@ -23,3 +23,4 @@ pkill element
 pkill element-desktop
 pkill Element
 pkill electron
+pkill whatsapp-for-linux

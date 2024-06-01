@@ -1,7 +1,7 @@
 { lib, pkgs, userParams, ...}:
 let
   # This is needed to set the cursor for SDDM
-  default-mouse-cursor = pkgs.stdenv.mkDerivation rec {
+  default-mouse-cursor = pkgs.stdenv.mkDerivation {
     pname = "default-mouse-cursor";
     version = "0.1";
 
