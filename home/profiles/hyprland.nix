@@ -334,7 +334,11 @@ in
       ## i -> ignore mods, will ignore modifiers.
 
       bind = [
-        # "$mod, E, exec, pkill fcitx5 -9;sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace; sleep 1;${pkgs.fcitx5-with-addons}/bin/fcitx5-remote -r"
+        # Toggle FCITX service
+        # Only really needed until the following bug is resolved:
+        # https://github.com/hyprwm/Hyprland/issues/5815
+        "$mod, E, exec, if systemctl --user is-active --quiet fcitx5-daemon; then systemctl --user stop fcitx5-daemon; else systemctl --user start fcitx5-daemon; fi"
+
         "$mod, Return, exec, $term"
         (
           if hostParams.defaultLockProgram == "swaylock" then
