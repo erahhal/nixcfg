@@ -29,8 +29,8 @@ in
     };
 
     environment.systemPackages = [
-      # pkgs.hyprland-patched
       inputs.hyprland.packages.${pkgs.system}.hyprland
+      # pkgs.hyprland-patched
       hyprctl-curr
     ];
 

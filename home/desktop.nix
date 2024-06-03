@@ -391,6 +391,7 @@ in
         kdiff3
         meld
         p4v
+        sqlitebrowser
 
         ## unfree
         bcompare

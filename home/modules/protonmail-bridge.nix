@@ -30,7 +30,7 @@ in
 
   config = mkIf cfg.enable {
 
-    home.packages = [ pkgs.trunk.protonmail-bridge ];
+    home.packages = [ pkgs.unstable.protonmail-bridge ];
 
     systemd.user.services.protonmail-bridge = {
       Unit = {
@@ -40,7 +40,7 @@ in
 
       Service = {
         Restart = "always";
-        ExecStart = "${pkgs.trunk.protonmail-bridge}/bin/protonmail-bridge --no-window --log-level ${cfg.logLevel}" + optionalString (cfg.nonInteractive) " --noninteractive";
+        ExecStart = "${pkgs.unstable.protonmail-bridge}/bin/protonmail-bridge --no-window --log-level ${cfg.logLevel}" + optionalString (cfg.nonInteractive) " --noninteractive";
         Environment = [
           "HOME=/home/${userParams.username}"
           # @TODO: This is hacky - better to get PATH programmatically

@@ -138,8 +138,8 @@ in
         joplin
         pandoc
         ranger
-        trunk.youtube-dl
-        trunk.yt-dlp
+        unstable.youtube-dl
+        unstable.yt-dlp
         weechat
 
         ## dev

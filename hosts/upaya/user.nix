@@ -74,7 +74,7 @@ in
         teensyduino
 
         ## unstable
-        trunk.bitwig-studio
+        unstable.bitwig-studio
       ];
 
       # Xorg only

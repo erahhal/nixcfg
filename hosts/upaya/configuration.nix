@@ -41,7 +41,7 @@ in
 
       # host specific
       ../../profiles/mullvad.nix
-      # ../../profiles/nfs-mounts.nix
+      ../../profiles/nfs-mounts.nix
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
       ../../profiles/wireguard.nix
