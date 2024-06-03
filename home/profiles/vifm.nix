@@ -201,6 +201,8 @@
               \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
               \*.as[fx]},
              \<video/*>
+            \ {View using mpv}
+            \ mpv %f,
             \ {View using ffplay}
             \ ffplay -fs -autoexit %f,
             \ {View using Dragon}

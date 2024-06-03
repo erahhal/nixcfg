@@ -22,7 +22,7 @@
 
   ttyFontSize = 9;
   trolltechFontSize = 10;
-  dpi = 210;
+  dpi = 270;
   dpiSddm = 210;
   dpiLaptop = 270;
   touchpad_click_method = "button_areas";
