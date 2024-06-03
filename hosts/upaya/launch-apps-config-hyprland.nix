@@ -44,8 +44,8 @@
 
         "workspace 1, silent, class:^(firefox)$"
         "workspace 2, silent, class:^(kitty)$"
-        "workspace 4 silent, title:^(Spotify)$"
-        "workspace 4 silent, class:^(brave-browser)$"
+        "workspace 4, silent, title:^(Spotify)$"
+        "workspace 4, silent, class:^(brave-browser)$"
         "workspace 6, class:^(signal)$"
         "workspace 6, class:^(org.telegram.desktop)$"
         "workspace 7, class:^(discord)$"
