@@ -2,7 +2,7 @@
 
 let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
-  bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
+  # bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
 in
 {
@@ -79,7 +79,7 @@ in
       ./profiles/foot.nix
       ./profiles/kitty.nix
 
-      ./profiles/bambu-studio.nix
+      # ./profiles/bambu-studio.nix
       ./profiles/gthumb.nix
       ## Should be handled by wayland scaling now
       # ./profiles/firefox.nix
@@ -302,7 +302,7 @@ in
         ## apps
         audacity
         unstable.bitwarden
-        # bambu-studio
+        bambu-studio
         brave
         czkawka
         unstable.digikam

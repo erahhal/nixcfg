@@ -645,89 +645,6 @@
       }
 
       # =======================
-      # VCS Support
-      # =======================
-
-      # Git wrapper
-      # :G<command> or :Git <command>    - run a git command
-      {
-        plugin = vim-fugitive;
-        config = ''
-        '';
-      }
-
-      {
-        plugin = gitsigns-nvim;
-        config = ''
-          lua << EOF
-          require('gitsigns').setup {
-          }
-          EOF
-        '';
-      }
-
-      # Git branch viewer
-      # :Flog or :Flogsplit       - open viewer (all commands below only work in viewer)
-      #       <C-N> and <C-P>     - jump between commits
-      #       u                   - refresh graph
-      #       a                   - toggle all branches
-      #       gb                  - toggle bisect mode
-      #       gm                  - toggle displaying no merges
-      #       gr                  - toggle reflog
-      #       gq                  - quit
-      #       g?                  - help
-      {
-        plugin = vim-flog;
-        config = ''
-        '';
-      }
-
-      # Visual Git management
-      {
-        plugin = vim-twiggy;
-        config = ''
-          lua << EOF
-          vim.api.nvim_set_keymap('n', '<c-g>', ':Twiggy<CR>', { noremap = true })
-          EOF
-        '';
-      }
-
-      ## @TODO: Nix build errors when this is enabled
-      # Git management
-      # {
-      #   # @TODO: replace with gin.vim (not yet in a nix package)
-      #   plugin = gina-vim;
-      #   config = ''
-      #   '';
-      # }
-
-      # Show diff marks
-      {
-        plugin = vim-signify;
-        config = ''
-          lua << EOF
-          vim.g.signify_vcs_cmds = {
-              git = "git diff --no-color --no-ext-diff -U0 master -- %f",
-          }
-          vim.g.signify_priority = 1
-          vim.cmd[[highlight SignColumn ctermbg=237]]
-          EOF
-        '';
-      }
-
-      # Magit
-      # :Magit            - open
-      # <C-n> an <C-p>    - jump between hunks
-      # S                 - stage a hunk
-      # CC                - commit staged hunks
-      # CC or :w          - finalize commit
-      {
-        plugin = vimagit;
-        config = ''
-        '';
-      }
-
-      # =======================
       # Diffing
       # =======================
 
@@ -768,6 +685,8 @@
           EOF
         '';
       }
+
+      ## Required by neogit
       {
         plugin = diffview-nvim;
         config = ''
@@ -1402,8 +1321,9 @@
         '';
       }
 
+      ## Required by neogit
       {
-        plugin = plenary-nvim;
+        plugin = fzf-lua;
         config = ''
         '';
       }
@@ -1438,7 +1358,7 @@
       # (Should be loaded after LSP)
       # =======================
 
-      # plenary is a generic lua lib used by telescope.nvim
+      # plenary is a generic lua lib used by telescope.nvim and neogit
       {
         plugin = plenary-nvim;
         config = ''
@@ -1762,6 +1682,94 @@
 
       {
         plugin = nvim-terminal-lua;
+        config = ''
+        '';
+      }
+
+      # =======================
+      # VCS Support
+      # =======================
+
+      # Git wrapper
+      # :G<command> or :Git <command>    - run a git command
+      {
+        plugin = vim-fugitive;
+        config = ''
+        '';
+      }
+
+      {
+        plugin = gitsigns-nvim;
+        config = ''
+          lua << EOF
+          require('gitsigns').setup {
+          }
+          EOF
+        '';
+      }
+
+      # Git branch viewer
+      # :Flog or :Flogsplit       - open viewer (all commands below only work in viewer)
+      #       <C-N> and <C-P>     - jump between commits
+      #       u                   - refresh graph
+      #       a                   - toggle all branches
+      #       gb                  - toggle bisect mode
+      #       gm                  - toggle displaying no merges
+      #       gr                  - toggle reflog
+      #       gq                  - quit
+      #       g?                  - help
+      {
+        plugin = vim-flog;
+        config = ''
+        '';
+      }
+
+      # Visual Git management
+      # {
+      #   plugin = vim-twiggy;
+      #   config = ''
+      #     lua << EOF
+      #     vim.api.nvim_set_keymap('n', '<c-g>', ':Twiggy<CR>', { noremap = true })
+      #     EOF
+      #   '';
+      # }
+
+      # Git management
+      {
+        ## Using unstable because of: https://github.com/NeogitOrg/neogit/issues/1295
+        plugin = pkgs.unstable.vimPlugins.neogit;
+        config = ''
+          lua << EOF
+          local neogit = require("neogit")
+          neogit.setup {}
+          vim.api.nvim_set_keymap('n', '<c-g>', ':Neogit<CR>', { noremap = true })
+          vim.api.nvim_set_keymap("", '<leader>gg', ':Neogit<CR>', { noremap = true })
+          EOF
+        '';
+      }
+
+      # Show diff marks
+      {
+        plugin = vim-signify;
+        config = ''
+          lua << EOF
+          vim.g.signify_vcs_cmds = {
+              git = "git diff --no-color --no-ext-diff -U0 master -- %f",
+          }
+          vim.g.signify_priority = 1
+          vim.cmd[[highlight SignColumn ctermbg=237]]
+          EOF
+        '';
+      }
+
+      # Magit
+      # :Magit            - open
+      # <C-n> an <C-p>    - jump between hunks
+      # S                 - stage a hunk
+      # CC                - commit staged hunks
+      # CC or :w          - finalize commit
+      {
+        plugin = vimagit;
         config = ''
         '';
       }
