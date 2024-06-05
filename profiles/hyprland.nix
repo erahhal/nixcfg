@@ -1,6 +1,9 @@
 { inputs, hostParams, pkgs, userParams, ... }:
 let
-  hyprctl = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
+  # hyprland = pkgs.hyprland;
+  hyprland = pkgs.hyprland-patched;
+  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  hyprctl = "${hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
   # is able to still connected to hyprland even though the socket changed.
   hyprctl-curr = pkgs.writeShellScriptBin "hyprctl-curr" ''
@@ -12,15 +15,14 @@ let
 in
 {
   imports = [
-    # ../overlays/hyprland-patched.nix
+    ../overlays/hyprland-patched-2.nix
   ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
-    services.displayManager.sessionPackages = [ pkgs.hyprland ];
+    services.displayManager.sessionPackages = [hyprland ];
 
     programs.hyprland = {
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-      # package = pkgs.hyprland-patched;
+      package = hyprland;
       enable = true;
 
       xwayland = {
@@ -29,15 +31,14 @@ in
     };
 
     environment.systemPackages = [
-      inputs.hyprland.packages.${pkgs.system}.hyprland
-      # pkgs.hyprland-patched
+      hyprland
       hyprctl-curr
     ];
 
     # Load latest instead of stable
-    home-manager.sharedModules = [
-      inputs.hyprland.homeManagerModules.default
-    ];
+    # home-manager.sharedModules = [
+    #   inputs.hyprland.homeManagerModules.default
+    # ];
 
     home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
       imports = [

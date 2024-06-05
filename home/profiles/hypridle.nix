@@ -1,9 +1,12 @@
 { inputs, lib, pkgs, ... }:
 {
   services.hypridle = let
+    # hyprland = pkgs.hyprland;
+    hyprland = pkgs.hyprland-patched;
+    # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
     hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
     # @TODO: Should use from inputs, not pkgs
-    hyprctl = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl";
+    hyprctl = "${hyprland}/bin/hyprctl";
     loginctl = "${pkgs.systemd}/bin/loginctl";
     restartWlsunset = "systemd --user restart wlsunset.service";
   in {

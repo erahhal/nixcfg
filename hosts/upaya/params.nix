@@ -22,9 +22,9 @@
 
   ttyFontSize = 9;
   trolltechFontSize = 10;
-  dpi = 270;
+  dpi = 210;
   dpiSddm = 210;
-  dpiLaptop = 270;
+  dpiLaptop = 210;
   touchpad_click_method = "button_areas";
   wallpaper = ../../wallpapers/teundenouden-polar-gilds-darkened-CC-BY-NC-ND-3.0.png;
 

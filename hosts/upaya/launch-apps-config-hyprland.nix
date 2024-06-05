@@ -39,8 +39,8 @@
 
       windowrulev2 = [
         ## Perf
-        "noblur, class:(.*)$"
-        "forcergbx, class:(.*)$"
+        # "noblur, class:(.*)$"
+        # "forcergbx, class:(.*)$"
 
         "workspace 1, silent, class:^(firefox)$"
         "workspace 2, silent, class:^(kitty)$"

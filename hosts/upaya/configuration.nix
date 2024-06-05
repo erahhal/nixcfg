@@ -334,6 +334,11 @@ in
   services.tlp.enable = lib.mkDefault ((lib.versionOlder (lib.versions.majorMinor lib.version) "21.05")
                                        || !config.services.power-profiles-daemon.enable);
 
+
+  # @TODO: TEMPORARY - Just testing to see if this has an effect on performance
+  #        It works, but this may be dangerous as the laptop could overheat and catch fire
+  services.thermald.enable = lib.mkForce false;
+
   # --------------------------------------------------------------------------------------
   # Packages
   # --------------------------------------------------------------------------------------

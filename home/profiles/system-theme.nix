@@ -1,5 +1,8 @@
-{ inputs, pkgs, userParams, ... }:
+{ inputs, lib, pkgs, userParams, ... }:
 let
+  # hyprland = pkgs.hyprland;
+  hyprland = pkgs.hyprland-patched;
+  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   ## @TODO: Should really use %h from systemd and pass it in here to
   ##        get user home directory
   toggle-theme-script = pkgs.writeShellScriptBin "toggle-theme-script" ''
@@ -27,23 +30,23 @@ let
       echo ">> restarting SwayNC"
       systemctl --user restart swaynotificationcenter
       echo ">> reloading hyprland"
-      ${inputs.hyprland.packages.${pkgs.system}.hyprland}/bin/hyprctl reload
+      ${hyprland}/bin/hyprctl reload
       sleep 1
       echo ">> launching waybar"
       ## This only seems to launch if logging at trace level and running in foreground
       waybar -l trace
     fi
   '';
-  runtime-paths = with pkgs; lib.makeBinPath [
-    coreutils
-    home-manager
-    procps
-    ripgrep
-    sway
-    systemd
-    tmux
-    inputs.hyprland.packages.${pkgs.system}.hyprland
-    waybar
+  runtime-paths = lib.makeBinPath [
+    pkgs.coreutils
+    pkgs.home-manager
+    pkgs.procps
+    pkgs.ripgrep
+    pkgs.sway
+    pkgs.systemd
+    pkgs.tmux
+    hyprland
+    pkgs.waybar
     # inputs.waybar.packages.${pkgs.system}.waybar
   ];
   toggle-theme = pkgs.stdenv.mkDerivation {
