@@ -15,7 +15,7 @@ let
 in
 {
   imports = [
-    ../overlays/hyprland-patched-2.nix
+    ../overlays/hyprland-patched.nix
   ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
