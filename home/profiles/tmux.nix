@@ -29,6 +29,9 @@ let
     #    -q suppresses errors
     #    -a append to string option
 
+    ## Large scrollback buffer
+    set-option -g history-limit 100000
+
     ## Enable mouse interactions
     # set -g mouse on
 

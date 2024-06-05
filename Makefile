@@ -63,7 +63,7 @@ update-local:
 	nix flake lock --update-input remarkable --update-input dcc
 
 update-nflx:
-	nix flake lock --update-input nflx --update-input nflx-vpn
+	nix flake lock --update-input nflx --update-input nflx-vpn --update-input openconnect-pulse-launcher
 
 upgrade:
 	make update && make switch

@@ -14,7 +14,7 @@ pkgs.symlinkJoin {
   name = "prismlauncher-nvidia";
   paths = [
     # Additional JDKs
-    pkgs.jdk17
+    pkgs.jdk22
 
     # 1.19 fails without this package
     pkgs.flite

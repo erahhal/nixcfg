@@ -112,6 +112,21 @@
   # :copen    - open quickfix list
   # :ccl      - close quickfix list
   #
+  # Telescope bindings
+  # ---------------------------
+  # <leader>ff  - files
+  # <leader>fg  - string (grep)
+  # <leader>fb  - buffers
+  # <leader>fh  - help
+  # <leader>fm  - man
+  # <leader>fp  - previous
+  # <leader>fs  - spell
+  # <leader>fr  - lsp references
+  # <leader>fi  - lsp incoming calls
+  # <leader>fo  - lsp outgoing calls
+  # <leader>fw  - lsp workspace symbols
+  # <leader>fd  - lsp definitions
+  #
   # Search and Replace in files
   # ---------------------------
   # Select files first:
@@ -1734,19 +1749,19 @@
       #   '';
       # }
 
-      # Git management
-      {
-        ## Using unstable because of: https://github.com/NeogitOrg/neogit/issues/1295
-        plugin = pkgs.unstable.vimPlugins.neogit;
-        config = ''
-          lua << EOF
-          local neogit = require("neogit")
-          neogit.setup {}
-          vim.api.nvim_set_keymap('n', '<c-g>', ':Neogit<CR>', { noremap = true })
-          vim.api.nvim_set_keymap("", '<leader>gg', ':Neogit<CR>', { noremap = true })
-          EOF
-        '';
-      }
+      ## Git management
+      ## Currently broken
+      # {
+      #   plugin = pkgs.vimPlugins.neogit;
+      #   config = ''
+      #     lua << EOF
+      #     local neogit = require("neogit")
+      #     neogit.setup {}
+      #     vim.api.nvim_set_keymap('n', '<c-g>', ':Neogit<CR>', { noremap = true })
+      #     vim.api.nvim_set_keymap("", '<leader>gg', ':Neogit<CR>', { noremap = true })
+      #     EOF
+      #   '';
+      # }
 
       # Show diff marks
       {

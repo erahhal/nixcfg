@@ -21,6 +21,7 @@ in
         blender
         chromium
         unstable.jetbrains.idea-ultimate
+        unstable.jetbrains-toolbox
         lutris
         mcreator
         # nodejs-16_x

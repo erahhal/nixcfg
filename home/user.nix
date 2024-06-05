@@ -150,7 +150,7 @@ in
         cargo
         cmake
         deno
-        jdk17
+        jdk22
         nodejs
         yarn
 

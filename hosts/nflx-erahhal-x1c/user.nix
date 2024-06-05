@@ -24,12 +24,16 @@ in
         awscli
         blender
         chromium
-        jetbrains.idea-ultimate
+
+        jetbrains-toolbox
+        ## These are installed by jetbrains-toolbox with a corporate license
+        # jetbrains.datagrip
+        # jetbrains.idea-ultimate
+
         lutris
         mcreator
         postgresql
         # nodejs-16_x
-        trunk.jetbrains.datagrip
         transmission-gtk
 
         # AI
