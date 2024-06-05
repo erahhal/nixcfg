@@ -379,8 +379,8 @@ in
     "col.border_inactive" = "rgba(2b2b2bff)";
     groupbar = {
       font_family = "DejaVu Sans";
-      font_size = 18;
-      height = 18;
+      font_size = 10;
+      height = 22;
       text_color = "rgba(ffffffff)";
       "col.active" = "rgba(285577ff)";
       "col.inactive" = "rgba(2b2b2bff)";
