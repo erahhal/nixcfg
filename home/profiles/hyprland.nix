@@ -103,6 +103,7 @@ in
 
   home.packages = with pkgs; [
     gnome3.zenity
+    hyprpaper
     networkmanagerapplet
     imv
     i3status
@@ -128,6 +129,7 @@ in
   ];
 
   xdg.configFile."hypr/hyprpaper.conf".text = if builtins.hasAttr "wallpaper" hostParams then ''
+    splash = false
     preload = ${hostParams.wallpaper}
     wallpaper = ,${hostParams.wallpaper}
   '' else "";
