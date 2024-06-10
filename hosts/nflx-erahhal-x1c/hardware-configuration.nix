@@ -35,12 +35,22 @@
       fsType = "vfat";
     };
 
-  swapDevices = [
-    {
-      device = "/dev/nvme0n1p2";
-      randomEncryption = true;
-    }
-  ];
+  # swapDevices = [
+  #   {
+  #     device = "/dev/nvme0n1p2";
+  #     randomEncryption = true;
+  #   }
+  # ];
+
+  ## Disable swap
+  swapDevices = lib.mkForce [ ];
+
+  ## Enable zramswap (must disable swap above)
+  ## Supposedly helps with out of memory errors during compilation of big projects
+  zramSwap = {
+    enable = true;
+    writebackDevice = "/dev/nvme0n1p2";
+  };
 
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.devNodes = "/dev/";

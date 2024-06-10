@@ -90,7 +90,6 @@ in
 {
   imports = [
     ./swaynotificationcenter.nix
-    # ./blueman-manager-applet.nix
     ./network-manager-applet.nix
     ./rofi.nix
     ./hyprlock.nix
@@ -99,6 +98,11 @@ in
 
     # ./sway-idle.nix
     ./hypridle.nix
+
+    ## These services have problems when started from systemd
+    # ./blueman-manager-applet.nix
+    ## Doesn't work with clipboard
+    # ./flameshot.nix
   ];
 
   home.packages = with pkgs; [
@@ -141,7 +145,8 @@ in
     settings = {
       "$mod" = "SUPER";
 
-      "$term" = "${pkgs.kitty}/bin/kitty";
+      # "$term" = "${pkgs.kitty}/bin/kitty";
+      "$term" = "${pkgs.foot}/bin/foot";
 
       exec-once = [
         # Update hyprland signature so hyprctl works with long-lived tmux sessions
@@ -167,6 +172,9 @@ in
         "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
         ## Running as a service seems to cause Dbus errors
         # "systemctl --user restart blueman-manager-applet"
+        "pkill flameshot; XDG_CURRENT_DESKTOP=sway ${pkgs.flameshot}/bin/flameshot"
+        ## Running as a service doesn't wor with clipboard
+        # "systemctl --user restart flameshot"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
         "systemctl --user restart swaynotificationcenter"
         "systemctl --user restart network-manager-applet"
@@ -324,6 +332,17 @@ in
         # @TODO: These don't work
         "float, floating:0,title:^(.*)(Bitwarden)(.*)$"
         "size 400 600, title:%(.*)(Bitwarden)(.*)$"
+
+        # Flameshot
+        ## important
+        "fakefullscreen,class:flameshot"
+        "float,class:flameshot"
+        "monitor 0,class:flameshot"
+        "move 0 0,class:flameshot"
+        ## visual
+        "noanim,class:flameshot"
+        "noborder,class:flameshot"
+        "rounding 0,class:flameshot"
       ];
 
       "$screenshotarea" = "${hyprctl} keyword animation \"fadeOut,0,0,default\"; grimblast --notify copysave area; ${hyprctl} keyword animation \"fadeOut,1,4,default\"";
@@ -377,6 +396,7 @@ in
         ## Toggle notification do-not-disturb
         "$mod_SHIFT_CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw"
 
+        ## @TODO: Replace with hyprshot
         "SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${hyprctl} -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
         "SHIFT_CTRL, 4, exec, ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -d)\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"
         "SHIFT_CTRL, 5, exec, ${pkgs.grim}/bin/grim -g \"$(${hyprctl} -j activewindow | jq -r '.at | join(\",\")') $(${hyprctl} -j activewindow | jq -r '.size | join(\"x\")')\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"

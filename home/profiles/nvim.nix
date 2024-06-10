@@ -676,6 +676,25 @@
         '';
       }
 
+
+      # =======================
+      # Zellji
+      # =======================
+
+      # Integration with Zellij using hjkl navigation
+      {
+        plugin = zellij-nvim;
+        config = ''
+          lua << EOF
+
+          require("zellij").setup({
+            vimTmuxNavigatorKeybinds = true,
+          })
+
+          EOF
+        '';
+      }
+
       # =======================
       # Tmux
       # =======================

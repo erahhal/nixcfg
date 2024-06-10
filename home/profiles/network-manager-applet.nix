@@ -22,9 +22,9 @@
       Restart = "always";
       RestartSec = 2;
       ExecStart = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator --sm-disable";
-    };
-    Environment = {
-       XDG_DATA_DIRS = "${pkgs.networkmanagerapplet}/share";
+      Environment = [
+       "XDG_DATA_DIRS=${pkgs.networkmanagerapplet}/share"
+      ];
     };
   };
 }

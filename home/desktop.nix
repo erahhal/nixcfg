@@ -285,6 +285,7 @@ in
 
       packages = with pkgs; [
         ## system
+        lsix
         gucharmap
         solaar            # for logitech unifying receiver setup
         xorg.xdpyinfo

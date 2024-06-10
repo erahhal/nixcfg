@@ -14,6 +14,8 @@
   defaultLockProgram = "swaylock";
 
   ttyFontSize = 9;
+  ## Only 10 seems to get rid of the gaps in Foot terminal
+  ttyLineHeight = 10;
   trolltechFontSize = 10;
   dpi = 190;
   # dpiSddm = 210;

@@ -6,8 +6,16 @@
       main = {
         shell = userParams.shell;
         term = "xterm-256color";
-        font = "DejaVu Sans Mono:size=" + toString hostParams.ttyFontSize;
         dpi-aware = "no";
+        font = "DejaVu Sans Mono:size=" + toString hostParams.ttyFontSize;
+        # line-height = hostParams.ttyLineHeight;
+        # font-bold = "";
+        # font-italic = "";
+        # font-bold-italic = "";
+        # font-size-adjustment = 0.5;
+        # letter-spacing = 0;
+        # horizontal-letter-offset = 0;
+        # vertical-letter-offset = 0;
       };
 
       mouse = {

@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ userParams, ... }:
 {
   wayland.windowManager.hyprland = {
     settings = {
@@ -34,6 +34,7 @@
 
       windowrulev2 = [
         "workspace 2, silent, class:^(kitty)$"
+        "workspace 2, silent, class:^(foot)$"
         "workspace 3, silent, class:^(Slack)$"
         "workspace 4, silent, title:^(Spotify)$"
         "workspace 4, silent, class:^(brave-browser)$"
@@ -47,7 +48,7 @@
       ];
 
       exec-once = [
-        "[workspace 2 silent] kitty tmux a -dt code"
+        "[workspace 2 silent] ${userParams.tty} tmux a -dt code"
         "[workspace 3 silent] slack"
         "[workspace 4 silent] spotify"
         "[workspace 4 silent] brave"
