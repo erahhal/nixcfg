@@ -3,6 +3,7 @@ let
   # hyprland = pkgs.hyprland;
   # hyprland = pkgs.hyprland-patched;
   hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   hyprctl = "${hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
   # is able to still connected to hyprland even though the socket changed.
@@ -24,11 +25,20 @@ in
       trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
 
-    # nixpkgs.config.packageOverrides = pkgs: {
-    #   hyprland = pkgs.hyprland.override {
-    #     debug = true;
-    #   };
-    # };
+    nixpkgs.config.packageOverrides = pkgs: {
+      hyprland = pkgs.hyprland.override {
+        debug = true;
+      };
+    };
+
+    hardware.opengl = {
+      package = pkgs-unstable.mesa.drivers;
+
+      # if you also want 32-bit support (e.g for Steam)
+      driSupport32Bit = true;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
+    };
+
 
     services.displayManager.sessionPackages = [hyprland ];
 
