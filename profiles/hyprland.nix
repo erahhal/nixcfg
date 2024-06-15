@@ -1,8 +1,8 @@
 { inputs, hostParams, pkgs, userParams, ... }:
 let
   # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = pkgs.hyprland-patched;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
   # is able to still connected to hyprland even though the socket changed.
@@ -15,10 +15,16 @@ let
 in
 {
   imports = [
-    ../overlays/hyprland-patched.nix
+    # ../overlays/hyprland-patched.nix
   ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
+    nixpkgs.config.packageOverrides = pkgs: {
+      hyprland = pkgs.hyprland.override {
+        debug = true;
+      };
+    };
+
     services.displayManager.sessionPackages = [hyprland ];
 
     programs.hyprland = {

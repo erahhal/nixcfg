@@ -1,8 +1,8 @@
 { inputs, lib, pkgs, userParams, ... }:
 let
   # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = pkgs.hyprland-patched;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   ## @TODO: Should really use %h from systemd and pass it in here to
   ##        get user home directory
   toggle-theme-script = pkgs.writeShellScriptBin "toggle-theme-script" ''

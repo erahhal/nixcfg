@@ -2,8 +2,8 @@
 
 let
   # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = pkgs.hyprland-patched;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
@@ -143,6 +143,11 @@ in
     enable = true;
 
     settings = {
+
+      debug = {
+        disable_logs = false;
+      };
+
       "$mod" = "SUPER";
 
       # "$term" = "${pkgs.kitty}/bin/kitty";

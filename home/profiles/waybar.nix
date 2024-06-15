@@ -1,4 +1,4 @@
-{  inputs, pkgs, lib, hostParams, ... }:
+{  inputs, pkgs, ... }:
 let
   # launch = pkgs.writeShellScript "launch.sh" ''
   #   if ${pkgs.procps}/bin/pgrep -x ".wofi-wrapped" >/dev/null; then
@@ -42,7 +42,7 @@ let
 in
 {
   imports = [
-    ../../overlays/waybar-hyprland.nix
+    # ../../overlays/waybar-hyprland.nix
   ];
 
   home.packages = with pkgs; [
@@ -81,18 +81,20 @@ in
 
         modules-right = [
           "network"
+          "custom/online-monitor"
           "backlight"
+          # "cava"
           "pulseaudio"
           "battery"
-          "cpu"
-          "memory"
-          "temperature"
+          # "cpu"
+          # "memory"
+          # "temperature"
+          # "custom/power"
           "clock"
+          "tray"
           "idle_inhibitor"
           "custom/toggletheme"
-          "custom/online-monitor"
-          "tray"
-          # "custom/power"
+          "systemd-failed-units"
           "custom/notification"
         ];
 
@@ -156,6 +158,29 @@ in
           };
           format-source = " {volume}%";
           format-source-muted = "";
+        };
+
+        cava = {
+          framerate = 30;
+          autosens = 1;
+          ## Doesn't seem to work
+          # sensitivity = 100;
+          bars = 10;
+          lower_cutoff_freq = 50;
+          higher_cutoff_freq = 10000;
+          method = "pulse";
+          source = "auto";
+          stereo = false;
+          reverse = false;
+          bar_delimiter = 0;
+          monstercat = false;
+          waves = false;
+          noise_reduction = 0.77;
+          input_delay = 2;
+          format-icons = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
+          actions = {
+            on-click-right = "mode";
+          };
         };
 
         "river/tags" = {
@@ -224,6 +249,15 @@ in
           exec = "${check-online-script}/bin/check-online-script";
           interval = 2;
           return-type = "json";
+        };
+
+        systemd-failed-units = {
+          hide-on-ok = true;
+          format = "✗ {nr_failed}";
+          format-ok = "✓";
+          system = true;
+          user = false;
+          on-click = ''systemctl list-units --state=failed; read -p "Press enter to continue"'';
         };
 
         tray = {

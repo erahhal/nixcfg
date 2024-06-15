@@ -2,8 +2,8 @@
 
 let
   # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = pkgs.hyprland-patched;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl="${hyprland}/bin/hyprctl";
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
   sway-dpms-off-cmd = pkgs.writeShellScript "sway-dpms-off-cmd.sh" ''

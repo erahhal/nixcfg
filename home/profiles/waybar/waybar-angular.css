@@ -109,12 +109,14 @@ window#waybar.empty #window {
 
 #network,
 #temperature,
+#cava,
 #pulseaudio,
 #battery,
 #backlight,
 #clock,
 #memory,
 #cpu,
+#systemd-failed-units,
 #idle_inhibitor,
 #custom-online-monitor,
 #custom-toggletheme,
@@ -139,8 +141,13 @@ window#waybar.empty #window {
     color: #f5aa42;
 }
 
+#cava,
 #pulseaudio {
     color: #FAE3B0;
+}
+
+#cava {
+    min-width: 110px;
 }
 
 #battery {
@@ -176,6 +183,10 @@ window#waybar.empty #window {
 
 #cpu {
     color: #96CDFB;
+}
+
+#systemd-failed-units {
+    color: #F28FAD;
 }
 
 #idle_inhibitor {

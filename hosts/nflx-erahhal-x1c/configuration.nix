@@ -146,8 +146,46 @@ in
 
   # Enable fingerprint reading daemon.
   services.fprintd.enable = true;
-  security.pam.services.login.fprintAuth = true;
   security.pam.services.xscreensaver.fprintAuth = true;
+
+  security.pam.services.login.fprintAuth = true;
+
+  ## Disabled, using custom rules below to enable fingerprint auth
+  # security.pam.services.login.u2fAuth = true;
+
+  ## Disabled, as it interferes with the lock screen and display manager
+  ## @NOTE: These are internal settings, and can change in the future;
+  # security.pam.services.login.rules.auth.u2fAuthFingerprint = {
+  #   order = 10800;
+  #   control = "sufficient";
+  #   modulePath = "${pkgs.pam_u2f}/lib/security/pam_u2f.so";
+  #   args = [ "cue" "pinverification=0" "userverification=1" ];
+  # };
+  # security.pam.services.login.rules.auth.u2fAuthPin = {
+  #   order = 10801;
+  #   control = "sufficient";
+  #   modulePath = "${pkgs.pam_u2f}/lib/security/pam_u2f.so";
+  #   args = [ "cue" "pinverification=1" "userverification=0" ];
+  # };
+
+  security.pam.services.sudo.fprintAuth = true;
+
+  ## Disabled, using custom rules below to enable fingerprint auth
+  # security.pam.services.sudo.u2fAuth = true;
+
+  ## @NOTE: These are internal settings, and can change in the future;
+  security.pam.services.sudo.rules.auth.u2fAuthFingerprint = {
+    order = 10800;
+    control = "sufficient";
+    modulePath = "${pkgs.pam_u2f}/lib/security/pam_u2f.so";
+    args = [ "cue" "pinverification=0" "userverification=1" ];
+  };
+  security.pam.services.sudo.rules.auth.u2fAuthPin = {
+    order = 10801;
+    control = "sufficient";
+    modulePath = "${pkgs.pam_u2f}/lib/security/pam_u2f.so";
+    args = [ "cue" "pinverification=1" "userverification=0" ];
+  };
 
   services.smokeping = {
     enable = false;
@@ -263,10 +301,10 @@ in
       # full charge.
       # https://linrunner.de/tlp/faq/battery.html#how-to-choose-good-battery-charge-thresholds
 
-      # START_CHARGE_THRESH_BAT0 = 60;
-      # STOP_CHARGE_THRESH_BAT0 = 85;
-      # START_CHARGE_THRESH_BAT1 = 60;
-      # STOP_CHARGE_THRESH_BAT1 = 85;
+      START_CHARGE_THRESH_BAT0 = 60;
+      STOP_CHARGE_THRESH_BAT0 = 85;
+      START_CHARGE_THRESH_BAT1 = 60;
+      STOP_CHARGE_THRESH_BAT1 = 85;
 
       ## High charge settings
 
@@ -278,10 +316,10 @@ in
       ## Travel settings
       ## START can't be above 99
 
-      START_CHARGE_THRESH_BAT0=99;
-      STOP_CHARGE_THRESH_BAT0=100;
-      START_CHARGE_THRESH_BAT1=99;
-      STOP_CHARGE_THRESH_BAT1=100;
+      # START_CHARGE_THRESH_BAT0=99;
+      # STOP_CHARGE_THRESH_BAT0=100;
+      # START_CHARGE_THRESH_BAT1=99;
+      # STOP_CHARGE_THRESH_BAT1=100;
     };
   };
 }

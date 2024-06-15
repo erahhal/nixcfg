@@ -41,7 +41,6 @@
     };
   };
 
-
   ## Polkit supports GUI auth for restarting systemd services
 
   ## KDE polkit is still using XWayland, use Gnome instead
@@ -96,6 +95,11 @@
   security.pam.services.swaylock = {};
 
   home-manager.users.${userParams.username} = {
+    ## Notify user if power low
+    services.poweralertd = {
+      enable = true;
+    };
+
     home.sessionVariables = {
       ## @TODO: This should def be loaded at runtime.
       #         This is cofigured in hyprland config.

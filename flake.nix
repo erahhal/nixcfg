@@ -71,17 +71,18 @@
 
     # Hyprland WM
     hyprland = {
-      url = "github:hyprwm/hyprland/v0.39.1";
+      # url = "github:hyprwm/hyprland/v0.41.1";
+      url = "git+http://github.com/hyprwm/Hyprland?submodules=1&tag=v0.41.1";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-    };
-
-    waybar = {
-      url = "github:Alexays/Waybar";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # hyprland-plugins = {
+    #   url = "github:hyprwm/hyprland-plugins";
+    # };
+    #
+    # waybar = {
+    #   url = "github:Alexays/Waybar";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
 
     swayfx.url = "github:willpower3309/swayfx";
     swayfx.inputs.nixpkgs.follows = "nixpkgs";

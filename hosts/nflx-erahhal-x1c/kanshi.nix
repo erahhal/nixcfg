@@ -6,8 +6,8 @@ let
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
   # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = pkgs.hyprland-patched;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl="${hyprland}/bin/hyprctl";
 in
 {

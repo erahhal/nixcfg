@@ -11,7 +11,8 @@
   sddmTheme = "nflx";
   defaultSession = "hyprland";
   multipleSessions = true;
-  defaultLockProgram = "swaylock";
+  # defaultLockProgram = "swaylock";
+  defaultLockProgram = "hyprlock";
 
   ttyFontSize = 9;
   ## Only 10 seems to get rid of the gaps in Foot terminal

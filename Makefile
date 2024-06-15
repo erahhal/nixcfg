@@ -73,6 +73,7 @@ clear-sddm-cache:
 
 clear-mimeapps:
 	[ -L "${HOME}/.config/mimeapps.list" ] || rm -f ${HOME}/.config/mimeapps.list
+	[ -L "${HOME}/.local/share/mimeinfo.cache" ] || rm -f ${HOME}/.local/share/mimeinfo.cache
 
 update-gnupg-perms:
 	mkdir -p ${HOME}/.gnupg
