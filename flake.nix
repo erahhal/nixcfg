@@ -73,7 +73,8 @@
     hyprland = {
       # url = "github:hyprwm/hyprland/v0.41.1";
       url = "git+http://github.com/hyprwm/Hyprland?submodules=1&tag=v0.41.1";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      ## Don't override, as hyprland sets its own version of nixpkgs
+      # inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     # hyprland-plugins = {
     #   url = "github:hyprwm/hyprland-plugins";

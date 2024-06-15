@@ -19,11 +19,16 @@ in
   ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
-    nixpkgs.config.packageOverrides = pkgs: {
-      hyprland = pkgs.hyprland.override {
-        debug = true;
-      };
+    nix.settings = {
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
+
+    # nixpkgs.config.packageOverrides = pkgs: {
+    #   hyprland = pkgs.hyprland.override {
+    #     debug = true;
+    #   };
+    # };
 
     services.displayManager.sessionPackages = [hyprland ];
 
