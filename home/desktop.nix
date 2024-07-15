@@ -289,6 +289,7 @@ in
         gucharmap
         solaar            # for logitech unifying receiver setup
         xorg.xdpyinfo
+        xorg.xhost
         grim              # Arbitrary capture of portion of screen
         slurp             # Allows user to select portion of screen
         xsel              # Manipulate xwindows clipboard
@@ -417,7 +418,8 @@ in
     ## https://github.com/vscode-neovim/vscode-neovim
     programs.vscode = {
       enable = true;
-      package = pkgs.unstable.vscodium;
+      # package = pkgs.unstable.vscodium;
+       package = pkgs.vscodium;
       # package = pkgs.unstable.vscodium-fhs;
       extensions = with pkgs.vscode-extensions; [
         # dracula-theme.theme-dracula

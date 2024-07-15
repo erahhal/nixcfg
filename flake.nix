@@ -52,8 +52,8 @@
     # DCC
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    dcc.url = "path:flakes/dcc";
-    dcc.inputs.nixpkgs.follows = "nixpkgs";
+    # dcc.url = "path:flakes/dcc";
+    # dcc.inputs.nixpkgs.follows = "nixpkgs";
 
     # Pulse Secure
     # See the following about why relative paths can cause build issues:
@@ -71,8 +71,9 @@
 
     # Hyprland WM
     hyprland = {
-      url = "github:hyprwm/hyprland/v0.39.1";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # url = "github:hyprwm/hyprland/v0.39.1";
+      url = "github:hyprwm/hyprland/v0.41.2";
+      # inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -100,8 +101,8 @@
     nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
     # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
-    secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
-    # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
+    # secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
+    secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
   };
 
   outputs = { ... }@inputs:
@@ -143,26 +144,6 @@
           {
             nixpkgs.overlays = [
               inputs.nur.overlay
-              # inputs.nixpkgs-wayland.overlay
-              # inputs.hyprland.overlays.default
-              # inputs.hyprland-plugins.overlays.default
-              # (self: super: {
-              #   nixpkgs = super.nixpkgs // {
-              #     librdm = inputs.nixpkgs-unstable.libdrm;
-              #   };
-              # })
-              # (self: super: {
-              #   nixpkgs = super.nixpkgs // {
-              #     libdrm = super.libdrm.overrideAttrs (oldAttrs: rec {
-              #       pname = "libdrm";
-              #       version = "2.4.120";
-              #       src = inputs.nixpkgs.fetchurl {
-              #         url = "https://dri.freedesktop.org/${pname}/${pname}-${version}.tar.xz";
-              #         hash = "sha256-O/VTY/dsclCUZEGrUdOmzArlGAVcD/AXMkq3bN77Mno=";
-              #       };
-              #     });
-              #   };
-              # })
             ];
           }
           inputs.home-manager.nixosModules.home-manager
@@ -172,6 +153,53 @@
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
 
+          inputs.nflx-vpn.nixosModules.default
+          inputs.nflx.nixosModules.default
+
+          inputs.nix-snapd.nixosModules.default
+          {
+            services.snap.enable = true;
+          }
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit system;
+          inherit hostParams;
+          inherit copyDesktopIcons;
+          inherit copyDesktopItems;
+          inherit mkWindowsApp;
+          inherit recursiveMerge;
+          inherit userParams;
+        };
+      };
+      t490s =
+      let
+        system = "x86_64-linux";
+        hostParams = import ./hosts/t490s/params.nix {};
+        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
+      in
+      inputs.nixpkgs.lib.nixosSystem {
+        system = system;
+        modules = [
+          ./hosts/t490s/configuration.nix
+          inputs.agenix.nixosModules.default
+          inputs.secrets.nixosModules.default
+          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
+          inputs.nur.nixosModules.nur
+          {
+            nixpkgs.overlays = [
+              inputs.nur.overlay
+            ];
+          }
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.overlays = [ inputs.nur.overlay ];
+          }
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
 

@@ -45,7 +45,7 @@
     ];
   };
 
-  # after boot, use graphical console TTY that supports TrueType fonts and glyphs
+  ## after boot, use graphical console TTY that supports TrueType fonts and glyphs
   services.kmscon = {
     enable = true;
     hwRender = true;

@@ -29,22 +29,30 @@ let
   launch = "${pkgs.nwg-menu}/bin/nwg-menu";
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
   check-online-script = pkgs.writeShellScriptBin "check-online-script" ''
-    ${pkgs.wget}/bin/wget -q --timeout=1 --tries=1 --spider http://duckduckgo.com
+    ## Mullvad statuses
+    ## - Disconnected
+    ## - Connecting
+    ## - Connected
+    mullvad_status=$(${pkgs.mullvad}/bin/mullvad status)
+    if echo $mullvad_status | ${pkgs.gnugrep}/bin/grep -q Connecting; then
+      echo '{ "text": "mullvadconnecting", "alt": "mullvadconnecting", "tooltip": "Mullvad Connecting...", "class": "mullvadconnecting" }'
+      exit
+    elif echo $mullvad_status | ${pkgs.gnugrep}/bin/grep -q Connected; then
+      echo '{ "text": "mullvadconnected", "alt": "mullvadconnected", "tooltip": "Mullvad Connected", "class": "mullvadconnected" }'
+      exit
+    fi
 
+    ${pkgs.wget}/bin/wget -q --timeout=1 --tries=1 --spider https://github.com
     # "tooltip" field can't match the icon name, or else it will be replaced by icon
     #  so it is capitalized here to avoid that.
     if [ $? -eq 0 ]; then
-        echo '{ "text": "online", "alt": "online", "tooltip": "Online", "class": "online" }'
+      echo '{ "text": "online", "alt": "online", "tooltip": "Online", "class": "online" }'
     else
-        echo '{ "text": "online", "alt": "offline", "tooltip": "Offline", "class": "offline" }'
+      echo '{ "text": "online", "alt": "offline", "tooltip": "Offline", "class": "offline" }'
     fi
   '';
 in
 {
-  imports = [
-    ../../overlays/waybar-hyprland.nix
-  ];
-
   home.packages = with pkgs; [
     waybar
     # inputs.waybar.packages.${pkgs.system}.waybar
@@ -220,6 +228,8 @@ in
           format-icons = {
             online = "📲";
             offline = "📵";
+            mullvadconnecting = "󱎛";
+            mullvadconnected = "󱅛";
           };
           exec = "${check-online-script}/bin/check-online-script";
           interval = 2;

@@ -12,6 +12,7 @@
 
   environment.systemPackages = with pkgs; [
     mullvad
+    mullvad-closest
   ];
 
   services.mullvad-vpn = {

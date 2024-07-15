@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+NAME="astrillvpn"
+
+packages=("vim" "libnss3-tools" "net-tools" "libglib2.0-0" "libgtkmm-3.0-1v5" "libwebkit2gtk-4.0-37" "acl")
+package_list=""
+for package in ${packages[@]}; do
+    package_list="$package_list $package"
+done
+
+if ! distrobox list | grep -q $NAME; then
+    distrobox create --name $NAME -i ubuntu:22.04 --volume /run/dbus:/run/dbus --init-hooks "apt install -y $package_list"
+fi
+distrobox enter $NAME -- "chsh -s /bin/bash"
+
+if ! distrobox enter $NAME -- apt --installed list | grep pulsesecure; then
+    distrobox enter $NAME -- "sudo dpkg -i ~/Code/nixcfg/pkgs/astrillvpn/astrill-setup-linux64_3.9.0.2180.deb"
+    ## Doesn't seem to actually run pulsesecure using sudo
+    # distrobox enter $NAME -- "distrobox-export --service pulsesecure --sudo"
+    distrobox enter $NAME -- "astrill"
+fi

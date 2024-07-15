@@ -1,7 +1,7 @@
 { inputs, hostParams, pkgs, userParams, ... }:
 let
-  # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
+  hyprland = pkgs.hyprland;
+  # hyprland = pkgs.hyprland-patched;
   # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
@@ -14,9 +14,9 @@ let
   '';
 in
 {
-  imports = [
-    ../overlays/hyprland-patched.nix
-  ];
+  # imports = [
+  #   ../overlays/hyprland-patched.nix
+  # ];
 
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
     services.displayManager.sessionPackages = [hyprland ];

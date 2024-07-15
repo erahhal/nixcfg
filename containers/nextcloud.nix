@@ -1,4 +1,11 @@
-{ config, lib, pkgs, hostParams, userParams, recursiveMerge, ... }:
+## To run "occ" command:
+##
+## docker exec -it nextcloud bash
+## apt update
+## apt install sudo
+## sudo -H -u www-data bash -c "./occ db:add-missing-indices"
+
+{ pkgs, hostParams, userParams, ... }:
 let
   containerDataPath = "/home/${userParams.username}/DockerData";
   service_ip = "10.0.0.89";

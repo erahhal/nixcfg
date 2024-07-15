@@ -1,8 +1,8 @@
 { inputs, pkgs, hostParams, ... }:
 
 let
-  # hyprland = pkgs.hyprland;
-  hyprland = pkgs.hyprland-patched;
+  hyprland = pkgs.hyprland;
+  # hyprland = pkgs.hyprland-patched;
   # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";

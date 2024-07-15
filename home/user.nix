@@ -139,7 +139,7 @@ in
         joplin
         pandoc
         ranger
-        unstable.youtube-dl
+        # unstable.youtube-dl
         unstable.yt-dlp
         weechat
 
@@ -232,6 +232,9 @@ in
     programs.atuin = {
       enable = true;
       enableZshIntegration = true;
+      ## Need 18.3.0 to fix zfs zpool timeout issue;
+      ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
+      package = pkgs.unstable.atuin;
       settings = {
         # Show only history for current terminal. ctrl-r to toggle through modes
         filter_mode = "session";
@@ -250,6 +253,35 @@ in
 
         # no borders
         # style = "compact";
+
+        ## Need 18.3.0 to fix zfs zpool timeout issue;
+        ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
+        daemon = {
+          enabled = true;
+        };
+      };
+    };
+
+    ## Need 18.3.0 to fix zfs zpool timeout issue;
+    ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
+    systemd.user.services.atuin = {
+      Unit = {
+        Description = "Atuin daemon to avoid zpool timeout error";
+        After = [ "network.target" ];
+      };
+
+      Service = {
+        Restart = "always";
+        ExecStart = "${pkgs.unstable.atuin}/bin/atuin daemon";
+        Environment = [
+          "HOME=/home/${userParams.username}"
+          # @TODO: This is hacky - better to get PATH programmatically
+          "PATH=/etc/profiles/per-user/${userParams.username}/bin:/run/current-system/sw/bin"
+        ];
+      };
+
+      Install = {
+        WantedBy = [ "default.target" ];
       };
     };
 

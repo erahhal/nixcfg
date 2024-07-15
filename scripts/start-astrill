@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+xhost +si:localuser:root
+
+# pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY astrill --noasproxycheck
+# sudo -E env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY astrill --noasproxycheck
+sudo env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY astrill --noasproxycheck
