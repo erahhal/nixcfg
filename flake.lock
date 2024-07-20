@@ -1118,17 +1118,14 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1717227230,
-        "narHash": "sha256-XVf0Y7gHSzWeHG+JskwaMVvB3DLAMMz9MT5497ghbeg=",
-        "ref": "refs/heads/master",
-        "rev": "a906768a591eb2e2b7a47d3e09ea38f9b3bace90",
-        "revCount": 23,
-        "type": "git",
-        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
+        "lastModified": 1721338970,
+        "narHash": "sha256-3nvhTWp2b7QKpBk2+rB/UyvCdkJ6ER/Ye6BTF4BGMno=",
+        "path": "/home/erahhal/Code/nixcfg-nflx",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
+        "path": "/home/erahhal/Code/nixcfg-nflx",
+        "type": "path"
       }
     },
     "nflx-vpn": {
@@ -1743,10 +1740,10 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1717144377,
-        "narHash": "sha256-F/TKWETwB5RaR8owkPPi+SPJh83AQsm6KrQAlJ8v/uA=",
-        "path": "/nix/store/i1aw9jjgxcvyd642s12kw3iasmarwd42-source",
-        "rev": "805a384895c696f802a9bf5bf4720f37385df547",
+        "lastModified": 1720954236,
+        "narHash": "sha256-1mEKHp4m9brvfQ0rjCca8P1WHpymK3TOr3v34ydv9bs=",
+        "path": "/nix/store/hkv63lvykwr520xf8yv2gcw3s78fjfpd-source",
+        "rev": "53e81e790209e41f0c1efa9ff26ff2fd7ab35e27",
         "type": "path"
       },
       "original": {
@@ -1756,10 +1753,10 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1717144377,
-        "narHash": "sha256-F/TKWETwB5RaR8owkPPi+SPJh83AQsm6KrQAlJ8v/uA=",
-        "path": "/nix/store/i1aw9jjgxcvyd642s12kw3iasmarwd42-source",
-        "rev": "805a384895c696f802a9bf5bf4720f37385df547",
+        "lastModified": 1720954236,
+        "narHash": "sha256-1mEKHp4m9brvfQ0rjCca8P1WHpymK3TOr3v34ydv9bs=",
+        "path": "/nix/store/hkv63lvykwr520xf8yv2gcw3s78fjfpd-source",
+        "rev": "53e81e790209e41f0c1efa9ff26ff2fd7ab35e27",
         "type": "path"
       },
       "original": {
