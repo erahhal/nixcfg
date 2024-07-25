@@ -4,7 +4,7 @@
   wayland.windowManager.hyprland = {
     settings = {
       animations = {
-        enabled = 0;
+        enabled = 1;
         animation = [
           "border, 1, 2, default"
           "fade, 1, 4, default"
@@ -42,7 +42,7 @@
         # "noblur, class:(.*)$"
         # "forcergbx, class:(.*)$"
 
-        "workspace 1, silent, class:^(firefox)$"
+        # "workspace 1, silent, class:^(firefox)$"
         "workspace 2, silent, class:^(kitty)$"
         "workspace 4, silent, title:^(Spotify)$"
         "workspace 4, silent, class:^(brave-browser)$"

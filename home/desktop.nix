@@ -352,17 +352,22 @@ in
         obs-studio
 
         ## desktop
+
+        ## file managers
+        # gnome3.nautilus  # Defaults to move rather than copy over network drives
+        dolphin
+        krusader
+        xfce.thunar
+        cinnamon.nemo
+
         # unstable.ardour
         flavours
         gnome3.adwaita-icon-theme
         gnome3.eog # image viewer
         gnome3.evince # PDF viewer
-        gnome3.nautilus
-        # cinnamon.nemo
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application
-        xfce.thunar
         xfce.xfconf # Needed to save the preferences
         xfce.exo # Used by default for `open terminal here`, but can be changed
         # qt5
@@ -391,6 +396,7 @@ in
 
         # Dev
         kdiff3
+        krename
         meld
         p4v
         sqlitebrowser
@@ -460,6 +466,11 @@ in
       # hwdec=auto-safe
       vo=gpu
       profile=gpu-hq
+
+      ## Key bindings
+
+      # Rotate video
+      r cycle_values video-rotate 90 180 270 0
     '';
 
     xdg.configFile."mpv/input.conf".text = ''

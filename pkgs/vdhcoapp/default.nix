@@ -9,13 +9,13 @@
 { pkgs, lib, stdenv, nodejs, ffmpeg, glibc }:
 
 let
-  version = "1.6.3";
+  version = "2.0.19";
 
   src = pkgs.fetchFromGitHub {
     owner = "mi-g";
     repo = "vdhcoapp";
     rev = "v${version}";
-    sha256 = "sha256-kLdBWfVsfF/kjL0CEdNwn3HWterNuCLicR9NL6eH8js=";
+    sha256 = "sha256-8xeZvqpRq71aShVogiwlVD3gQoPGseNOmz5E3KbsZxU=";
   };
 
   composition = import ./composition.nix {

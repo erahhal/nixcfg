@@ -6,7 +6,7 @@ let
   phockup = pkgs.callPackage ../../pkgs/phockup {};
   prismlauncher-nvidia = pkgs.callPackage ../../pkgs/prismlauncher-nvidia {};
   teensy-loader-gui = pkgs.callPackage ../../pkgs/teensy-loader-gui {};
-  vdhcoapp = pkgs.callPackage ../../pkgs/vdhcoapp {};
+  # vdhcoapp = pkgs.callPackage ../../pkgs/vdhcoapp {};
   whatsapp-scaled = pkgs.callPackage ../../pkgs/whatsapp-scaled {};
 in
 {

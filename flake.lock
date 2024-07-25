@@ -135,6 +135,23 @@
         "type": "github"
       }
     },
+    "dcc": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-m2yWL8a9JirF9l7SRc2dX8r/1xyfMucrnqJNIfS3PiI=",
+        "path": "flakes/dcc",
+        "type": "path"
+      },
+      "original": {
+        "path": "flakes/dcc",
+        "type": "path"
+      }
+    },
     "dream2nix": {
       "inputs": {
         "nixpkgs": [
@@ -1970,6 +1987,7 @@
       "inputs": {
         "agenix": "agenix",
         "comma": "comma",
+        "dcc": "dcc",
         "erosanix": "erosanix",
         "flake-utils": "flake-utils",
         "flake-utils-plus": "flake-utils-plus",
@@ -2086,14 +2104,17 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1718917105,
-        "narHash": "sha256-t4V/yjBMbDkWXpEC+whaU5OpkMyZZHv7ypliSOaixlQ=",
-        "path": "/home/erahhal/Code/nixcfg-secrets",
-        "type": "path"
+        "lastModified": 1721062692,
+        "narHash": "sha256-yZoLDsMzT0toPxj6vS38BPzRnTaLDvcc4WvVnDk71Iw=",
+        "ref": "refs/heads/master",
+        "rev": "a19f7f457d8e8c4bde11ee223ca392fe2b9504b0",
+        "revCount": 7,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-secrets",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       }
     },
     "sg-nvim": {

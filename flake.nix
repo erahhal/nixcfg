@@ -52,8 +52,8 @@
     # DCC
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    # dcc.url = "path:flakes/dcc";
-    # dcc.inputs.nixpkgs.follows = "nixpkgs";
+    dcc.url = "path:flakes/dcc";
+    dcc.inputs.nixpkgs.follows = "nixpkgs";
 
     # Pulse Secure
     # See the following about why relative paths can cause build issues:
@@ -101,8 +101,8 @@
     nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
     # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
-    # secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
-    secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
+    secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
+    # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
   };
 
   outputs = { ... }@inputs:
