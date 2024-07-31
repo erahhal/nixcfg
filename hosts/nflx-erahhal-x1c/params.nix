@@ -11,6 +11,7 @@
   sddmTheme = "nflx";
   defaultSession = "hyprland";
   multipleSessions = true;
+  # defaultLockProgram = "swaylock";
   defaultLockProgram = "hyprlock";
 
   ttyFontSize = 9;

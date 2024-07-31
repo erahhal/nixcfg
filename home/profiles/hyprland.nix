@@ -86,6 +86,42 @@ let
         $HYPRCTL dispatch killactive ""
     fi
   '';
+
+  hyprland-bitwarden-resize = pkgs.writeShellScript "hyprland-bitwarden-resize" ''
+    HYPRCTL=${hyprctl};
+
+    handle() {
+      case $1 in
+        windowtitle*)
+          # Extract the window ID from the line
+          window_id=''${1#*>>}
+
+          # Fetch the list of windows and parse it using jq to find the window by its decimal ID
+          window_info=$($HYPRCTL clients -j | ${pkgs.jq}/bin/jq --arg id "0x$window_id" '.[] | select(.address == ($id))')
+
+          # Extract the title from the window info
+          window_title=$(echo "$window_info" | ${pkgs.jq}/bin/jq '.title')
+
+          # Check if the title matches the characteristics of the Bitwarden popup window
+          if [[ "$window_title" == *"Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox"* ]]; then
+
+            # echo $window_id, $window_title
+            # $HYPRCTL dispatch togglefloating address:0x$window_id
+            # $HYPRCTL dispatch resizewindowpixel exact 20% 40%,address:0x$window_id
+            # $HYPRCTL dispatch movewindowpixel exact 40% 30%,address:0x$window_id
+
+            $HYPRCTL --batch "dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
+            # $HYPRCTL --batch "dispatch togglefloating address:0x$window_id ; dispatch centerwindow"
+          fi
+          ;;
+      esac
+    }
+
+    # Kill old process
+    ${pkgs.procps}/bin/ps -ef | ${pkgs.gnugrep}/bin/grep "[s]ocat" | ${pkgs.gnugrep}/bin/grep '[h]ypr' | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.findutils}/bin/xargs kill
+    # Listen to the Hyprland socket for events and process each line with the handle function
+    ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock | while read -r line; do handle "$line"; done
+  '';
 in
 {
   imports = [
@@ -172,7 +208,8 @@ in
         "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
         ## Running as a service seems to cause Dbus errors
         # "systemctl --user restart blueman-manager-applet"
-        "pkill flameshot; XDG_CURRENT_DESKTOP=sway ${pkgs.flameshot}/bin/flameshot"
+        ## Crashes Hyprland when used in a multi-monitor setup
+        #"pkill flameshot; XDG_CURRENT_DESKTOP=sway ${pkgs.flameshot}/bin/flameshot"
         ## Running as a service doesn't wor with clipboard
         # "systemctl --user restart flameshot"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
@@ -194,6 +231,8 @@ in
           else
             "systemctl --user restart hypridle"
         )
+
+        hyprland-bitwarden-resize
       ];
 
       xwayland = {
@@ -303,6 +342,10 @@ in
         no_gaps_when_only = 1;
       };
 
+      layerrule = [
+        # "blur, waybar"
+      ];
+
       windowrulev2 = [
         "float, title:^(KCalc)$"
 
@@ -329,9 +372,16 @@ in
         # Chrome Bitwarden popup
         # Firefox Bitwarden popup
         # title: Extension: (Bitwarden - Free Password Manager) - Bitwarden — Mozilla Firefox
-        # @TODO: These don't work
-        "float, floating:0,title:^(.*)(Bitwarden)(.*)$"
-        "size 400 600, title:%(.*)(Bitwarden)(.*)$"
+        "float, initialTitle:^(Bitwarden)$"
+        ## Chrome/Brave extension
+        ## float is not dynamic so it matches initialTitle and not title
+        ## See: https://github.com/hyprwm/Hyprland/issues/6302
+        ## See: https://github.com/hyprwm/Hyprland/issues/3835
+        "float, initialTitle:^(_crx_nngceckbapebfimnlniiiahkandclblb)$"
+        "center, initialTitle:^(_crx_nngceckbapebfimnlniiiahkandclblb)$"
+        "size 400 600, initialTitle:^(_crx_nngceckbapebfimnlniiiahkandclblb)$"
+        ## Firefox Bitwarden
+        "suppressevent maximize, class:^(firefox)$"
 
         # Flameshot
         ## important
@@ -343,6 +393,11 @@ in
         "noanim,class:flameshot"
         "noborder,class:flameshot"
         "rounding 0,class:flameshot"
+
+        ## Orca slicer / Bambustudio fix
+        ## See: https://github.com/hyprwm/Hyprland/issues/6698
+        "stayfocused, class:^(BambuStudio)$,title:^()$"
+        "suppressevent activate, class:^(BambuStudio)$,title:^()$"
       ];
 
       "$screenshotarea" = "${hyprctl} keyword animation \"fadeOut,0,0,default\"; grimblast --notify copysave area; ${hyprctl} keyword animation \"fadeOut,1,4,default\"";
@@ -367,8 +422,14 @@ in
         (
           if hostParams.defaultLockProgram == "swaylock" then
             "$mod, X, exec, ${swayLockCommand}"
-        else
+          else
             "$mod, X, exec, ${hyprlockCommand}"
+        )
+        (
+          if hostParams.defaultLockProgram == "swaylock" then
+            ",switch:on:Lid Switch,exec,${swayLockCommand}"
+          else
+            ",switch:on:Lid Switch,exec,${hyprlockCommand}"
         )
         # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
         "$mod, A, exec, ${pkgs.hyprpicker}/bin/hyprpicker -a --format=hex"

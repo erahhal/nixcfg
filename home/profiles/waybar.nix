@@ -54,13 +54,14 @@ let
 in
 {
   home.packages = with pkgs; [
-    waybar
+    # need >= 0.10.4. Stable has 0.10.3 which crashes on monitor changes
+    unstable.waybar
     # inputs.waybar.packages.${pkgs.system}.waybar
   ];
 
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar;
+    package = pkgs.unstable.waybar;
     # package = inputs.waybar.packages.${pkgs.system}.waybar;
     # If enabled, this will load waybar separately from sway's own config, leading to two bars being loaded
     systemd.enable = false;

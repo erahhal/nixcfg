@@ -272,6 +272,7 @@ in
 
       Service = {
         Restart = "always";
+        ExecStartPre = "rm -f /home/${userParams.username}/.local/share/atuin/atuin.sock";
         ExecStart = "${pkgs.unstable.atuin}/bin/atuin daemon";
         Environment = [
           "HOME=/home/${userParams.username}"

@@ -4,7 +4,7 @@
     hyprland = pkgs.hyprland;
     # hyprland = pkgs.hyprland-patched;
     # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
+    hyprlock = "${pkgs.unstable.hyprlock}/bin/hyprlock";
     # @TODO: Should use from inputs, not pkgs
     hyprctl = "${hyprland}/bin/hyprctl";
     loginctl = "${pkgs.systemd}/bin/loginctl";
