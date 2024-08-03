@@ -1,4 +1,4 @@
 { pkgs, ... }:
 pkgs.writeShellScript "hyprlock.sh" ''
-  ${pkgs.unstable.hyprlock}/bin/hyprlock
+  ${pkgs.hyprlock}/bin/hyprlock
 ''

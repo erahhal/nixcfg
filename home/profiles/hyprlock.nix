@@ -2,7 +2,7 @@
 {
   programs.hyprlock = {
     enable = true;
-    package = pkgs.unstable.hyprlock;
+    package = pkgs.hyprlock;
 
     settings = {
       background = if builtins.hasAttr "wallpaper" hostParams then {
