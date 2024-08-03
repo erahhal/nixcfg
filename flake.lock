@@ -1135,14 +1135,17 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1698000798,
-        "narHash": "sha256-aq7cxQgT/BTh9lq9al1I57fMnbTJxhoYPx4XM6UvKX0=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1717227230,
+        "narHash": "sha256-XVf0Y7gHSzWeHG+JskwaMVvB3DLAMMz9MT5497ghbeg=",
+        "ref": "refs/heads/master",
+        "rev": "a906768a591eb2e2b7a47d3e09ea38f9b3bace90",
+        "revCount": 23,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nflx-vpn": {
@@ -1519,11 +1522,11 @@
     },
     "nixpkgs-trunk": {
       "locked": {
-        "lastModified": 1722719969,
-        "narHash": "sha256-E47qbT/mRtBCSZra+9S9208sp/QnNeOAq7EhHX+eMNE=",
+        "lastModified": 1722725472,
+        "narHash": "sha256-oTcOjzRRYh6yxOCJmH3mJyjRYfivIn/rMLDfpVUUygA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "83a364ced9d5b8a6bdac897bbef6b91e70777b97",
+        "rev": "2508e03e7e0fd28b8f513cddde339604406ec5fa",
         "type": "github"
       },
       "original": {
@@ -1758,10 +1761,10 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1720954236,
-        "narHash": "sha256-1mEKHp4m9brvfQ0rjCca8P1WHpymK3TOr3v34ydv9bs=",
-        "path": "/nix/store/hkv63lvykwr520xf8yv2gcw3s78fjfpd-source",
-        "rev": "53e81e790209e41f0c1efa9ff26ff2fd7ab35e27",
+        "lastModified": 1722519197,
+        "narHash": "sha256-VEdJmVU2eLFtLqCjTYJd1J7+Go8idAcZoT11IewFiRg=",
+        "path": "/nix/store/0ma1jl6szmcx4pr9vsczrn7vw7f85b08-source",
+        "rev": "05405724efa137a0b899cce5ab4dde463b4fd30b",
         "type": "path"
       },
       "original": {
@@ -1771,10 +1774,10 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1720954236,
-        "narHash": "sha256-1mEKHp4m9brvfQ0rjCca8P1WHpymK3TOr3v34ydv9bs=",
-        "path": "/nix/store/hkv63lvykwr520xf8yv2gcw3s78fjfpd-source",
-        "rev": "53e81e790209e41f0c1efa9ff26ff2fd7ab35e27",
+        "lastModified": 1722519197,
+        "narHash": "sha256-VEdJmVU2eLFtLqCjTYJd1J7+Go8idAcZoT11IewFiRg=",
+        "path": "/nix/store/0ma1jl6szmcx4pr9vsczrn7vw7f85b08-source",
+        "rev": "05405724efa137a0b899cce5ab4dde463b4fd30b",
         "type": "path"
       },
       "original": {
@@ -1800,11 +1803,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1722714302,
-        "narHash": "sha256-+WN9ZaS+vgu2CBwBgMLDhQacT2e7wS5yuFOAGMre4UQ=",
+        "lastModified": 1722724256,
+        "narHash": "sha256-Vflr/x/QumRSioHGu76n3AjVEGCORmNfCVafTz18gzw=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "afe4afbb78687bdf71eb7300173c20c5554f5bc9",
+        "rev": "f32ba1e1cc4b2f9780b60cbd0cc3288aa25e59b9",
         "type": "github"
       },
       "original": {
