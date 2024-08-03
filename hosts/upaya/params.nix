@@ -13,7 +13,8 @@
   # defaultSession = "hyprland";
   defaultSession = "hyprland";
   multipleSessions = true;
-  defaultLockProgram = "swaylock";
+  #d efaultLockProgram = "swaylock";
+  defaultLockProgram = "hyprlock";
 
   ## @TODO: make xorg-specific
   ## Xorg settings

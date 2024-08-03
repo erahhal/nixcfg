@@ -233,9 +233,10 @@
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.nixos-hardware-xps.nixosModules.common-cpu-intel
-          inputs.nixos-hardware-xps.nixosModules.common-cpu-intel-kaby-lake
-          inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
+          inputs.nixos-hardware.nixosModules.dell-xps-15-9560
+          # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel
+          # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel-kaby-lake
+          # inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.nixosModules.nur
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
