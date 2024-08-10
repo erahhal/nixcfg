@@ -22,6 +22,7 @@ switch:
 	# make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
+	make clear-gtkrc
 	# nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --flake .#${HOSTNAME} -L |& ${NOM} --json
 	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
@@ -73,6 +74,11 @@ clear-sddm-cache:
 
 clear-mimeapps:
 	[ -L "${HOME}/.config/mimeapps.list" ] || rm -f ${HOME}/.config/mimeapps.list
+
+clear-gtkrc:
+	# Plasma6 overwrites this, messing up the dark theme
+	rm -f ${HOME}/.gtkrc-2.0
+
 
 update-gnupg-perms:
 	mkdir -p ${HOME}/.gnupg

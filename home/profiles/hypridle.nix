@@ -8,13 +8,19 @@
     # @TODO: Should use from inputs, not pkgs
     hyprctl = "${hyprland}/bin/hyprctl";
     loginctl = "${pkgs.systemd}/bin/loginctl";
-    restartWlsunset = "systemd --user restart wlsunset.service";
+    restartWlsunset = "systemctl --user restart wlsunset.service";
   in {
     enable = true;
     settings = {
       general = {
         lock_cmd = "pidof hyprlock || ${hyprlock}";
         # unlock_cmd = "echo 'unlock!'";
+
+        ## This sometimes kills the hyprlock that is currently locking the screen,
+        ## which leaves hyprland with a red screen
+        ## INSTEAD: only kill hyprlock if it's older than a certain age, say 1 minute?
+        # before_sleep_cmd = "kill $(pidof hyprlock); ${loginctl} lock-session && ${hyprctl} dispatch dpms off";
+
         before_sleep_cmd = "${loginctl} lock-session && ${hyprctl} dispatch dpms off";
         after_sleep_cmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session && ${restartWlsunset}";
         ignore_dbus_inhibit = false;
@@ -30,7 +36,7 @@
         {
           timeout = 360;
           on-timeout = "${hyprctl} dispatch dpms off";
-          on-resume = "${hyprctl} dispatch dpms on && systemd --user restart wlsunset.service";
+          on-resume = "${hyprctl} dispatch dpms on && systemctl --user restart wlsunset.service";
         }
       ];
     };

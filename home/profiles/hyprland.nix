@@ -425,12 +425,6 @@ in
           else
             "$mod, X, exec, ${hyprlockCommand}"
         )
-        (
-          if hostParams.defaultLockProgram == "swaylock" then
-            ",switch:on:Lid Switch,exec,${swayLockCommand}"
-          else
-            ",switch:on:Lid Switch,exec,${hyprlockCommand}"
-        )
         # @TODO: Use the following instead: https://wiki.hyprland.org/Configuring/Uncommon-tips--tricks/#minimize-steam-instead-of-killing
         "$mod, A, exec, ${pkgs.hyprpicker}/bin/hyprpicker -a --format=hex"
         # Kill
@@ -444,7 +438,12 @@ in
         "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '${exit-hyprland}'"
         "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'"
         "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'"
-        "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' 'systemctl suspend'"
+        (
+          if hostParams.defaultLockProgram == "swaylock" then
+            "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${swayLockCommand} suspend'"
+          else
+            "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${hyprlockCommand} suspend'"
+        )
         "$mod_SHIFT_CTRL, L, movecurrentworkspacetomonitor, r"
         "$mod_SHIFT_CTRL, H, movecurrentworkspacetomonitor, l"
         "$mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u"

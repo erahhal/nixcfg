@@ -21,6 +21,39 @@
         "type": "github"
       }
     },
+    "aquamarine": {
+      "inputs": {
+        "hyprutils": [
+          "hyprland",
+          "hyprutils"
+        ],
+        "hyprwayland-scanner": [
+          "hyprland",
+          "hyprwayland-scanner"
+        ],
+        "nixpkgs": [
+          "hyprland",
+          "nixpkgs"
+        ],
+        "systems": [
+          "hyprland",
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1722974790,
+        "narHash": "sha256-zBZ9BvKF8pMF0ywcn1BI0+ntM1R0N8nysUmMDGmi0ts=",
+        "owner": "hyprwm",
+        "repo": "aquamarine",
+        "rev": "131ed05f99e66c3e518be3fadeff7ddb7d1d351d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hyprwm",
+        "repo": "aquamarine",
+        "type": "github"
+      }
+    },
     "base16-schemes": {
       "flake": false,
       "locked": {
@@ -721,6 +754,7 @@
     },
     "hyprland": {
       "inputs": {
+        "aquamarine": "aquamarine",
         "hyprcursor": "hyprcursor",
         "hyprlang": "hyprlang",
         "hyprutils": "hyprutils",
@@ -730,16 +764,16 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1719317162,
-        "narHash": "sha256-t3N0VzDJdxchdmHkbGMGqvoxTq/Bm7Y98upU4icPYLY=",
+        "lastModified": 1723058230,
+        "narHash": "sha256-G39pjU/wdTlhsuaMtwYyhrwyZowoXxN1n7F6up3q4sI=",
         "owner": "hyprwm",
         "repo": "hyprland",
-        "rev": "918d8340afd652b011b937d29d5eea0be08467f5",
+        "rev": "9a09eac79b85c846e3a865a9078a3f8ff65a9259",
         "type": "github"
       },
       "original": {
         "owner": "hyprwm",
-        "ref": "v0.41.2",
+        "ref": "v0.42.0",
         "repo": "hyprland",
         "type": "github"
       }
@@ -1713,11 +1747,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1719075281,
-        "narHash": "sha256-CyyxvOwFf12I91PBWz43iGT1kjsf5oi6ax7CrvaMyAo=",
+        "lastModified": 1722813957,
+        "narHash": "sha256-IAoYyYnED7P8zrBFMnmp7ydaJfwTnwcnqxUElC1I26Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a71e967ef3694799d0c418c98332f7ff4cc5f6af",
+        "rev": "cb9a96f23c491c081b38eab96d22fa958043c9fa",
         "type": "github"
       },
       "original": {

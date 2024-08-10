@@ -4,6 +4,8 @@ TODOs
 Warts/Issues
 ------------
 
+* Try plasmashell on top of Hyprland
+  * https://www.reddit.com/r/hyprland/comments/1ch3qkp/plasma_shell_on_hyprland_feels_really_out_of_place/
 * Add Zellij as alternative to tmux
 * Hibernation broken
   * criticalPowerAction = "Hibernate" doesn't seem to work

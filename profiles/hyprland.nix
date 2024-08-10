@@ -12,6 +12,8 @@ let
 
     ${hyprctl} -i $HYPRLAND_ID $@
   '';
+  swayLockCommand = pkgs.callPackage ../pkgs/sway-lock-command { };
+  hyprlockCommand = pkgs.callPackage ../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
 in
 {
   # imports = [
@@ -40,6 +42,34 @@ in
     #   inputs.hyprland.homeManagerModules.default
     # ];
 
+    # Ignore lid switch, and let hyprland handle it using
+    # the lid switch bindings below
+    services.logind.lidSwitch = "ignore";
+
+    # services.acpid = {
+    #   enable = true;
+    #   logEvents = true;
+    #   lidEventCommands =
+    #   ''
+    #     export PATH=$PATH:/run/current-system/sw/bin
+    #
+    #     lid_state=$(cat /proc/acpi/button/lid/LID/state | awk '{print $NF}')
+    #     if [ $lid_state = "closed" ]; then
+    #       # give time for WM to lock screen
+    #       echo "Sleeping for 5 seconds..."
+    #       sleep 5
+    #       echo "Suspending"
+    #       systemctl suspend
+    #     fi
+    #   '';
+    #
+    #   powerEventCommands =
+    #   ''
+    #     systemctl suspend
+    #   '';
+    # };
+
+
     home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
       imports = [
         ( import ../home/profiles/hyprland.nix (args // {
@@ -47,6 +77,20 @@ in
           hostParams = hostParams;
         }))
       ];
+
+      wayland.windowManager.hyprland = {
+        settings = {
+          bind = [
+            (
+              if hostParams.defaultLockProgram == "swaylock" then
+                '',switch:on:Lid Switch,exec,${swayLockCommand} suspend''
+              else
+                '',switch:on:Lid Switch,exec,${hyprlockCommand} suspend''
+            )
+          ];
+        };
+      };
+
     };
   } else {};
 }

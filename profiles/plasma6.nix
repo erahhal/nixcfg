@@ -1,27 +1,37 @@
-{ hostParams, userParams, pkgs, ... }:
+{ hostParams, lib, pkgs, userParams, ... }:
 
 {
-  config = if (hostParams.defaultSession == "plasma6" || hostParams.multipleSessions) then {
-    environment.systemPackages = with pkgs; [
-      unstable.kdePackages.kate
-    ];
+  config = lib.mkMerge [
+    (if (hostParams.defaultSession == "plasma6" || hostParams.multipleSessions) then {
+      services.xserver.enable = true;
+      services.displayManager.sddm.enable = true;
+      services.displayManager.sddm.wayland.enable = true;
+      services.desktopManager.plasma6.enable = true;
+    } else {})
 
-    ## Not yet available on stable
-    # services.desktopManager.plasma6.enable = true;
+    {
+      environment.systemPackages = with pkgs; [
+        kdePackages.kate
+        kdePackages.qtwayland
+        kdePackages.kwallet
+      ];
 
-    home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
-      # home.sessionVariables = {
-      #   QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/lib/qt-${pkgs.qt5.qtbase.version}/plugins”;
-      # };
-      home.sessionVariables = {
-        QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/lib/qt-${pkgs.qt5.qtbase.version}/plugins";
+      # Conflicts with TLP
+      services.power-profiles-daemon.enable = lib.mkForce false;
+
+      home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
+        ## in system-theme-dark.nix
+        # qt = {
+        #   enable = true;
+        #   platformTheme = "qtct";
+        #   style.name = "kvantum";
+        # };
+        #
+        # xdg.configFile = {
+        #   "Kvantum/ArcDark".source = "${pkgs.arc-kde-theme}/share/Kvantum/ArcDark";
+        #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=ArcDark";
+        # };
       };
-      # imports = [
-      #   ( import ../home/profiles/plasma6.nix (args // {
-      #     hostParams = hostParams;
-      #     userParams = userParams;
-      #   }))
-      # ];
-    };
-  } else {};
+    }
+  ];
 }

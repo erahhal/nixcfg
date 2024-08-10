@@ -72,7 +72,7 @@
     # Hyprland WM
     hyprland = {
       # url = "github:hyprwm/hyprland/v0.39.1";
-      url = "github:hyprwm/hyprland/v0.41.2";
+      url = "github:hyprwm/hyprland/v0.42.0";
       # inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hyprland-plugins = {

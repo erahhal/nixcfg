@@ -35,7 +35,7 @@ in
       ./lightdm.nix
       ./i3.nix
       ./wayland-window-manager.nix
-      # ./plasma6.nix
+      ./plasma6.nix
       ./sway.nix
       ./hyprland.nix
       ./fonts.nix

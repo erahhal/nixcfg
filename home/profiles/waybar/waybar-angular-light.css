@@ -2,6 +2,9 @@
     border: none;
     font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
     font-size: 14px;
+    min-height: 30px;
+    /* Padding seems to be the transparent gap at the bottom rather than internal padding */
+    padding-bottom: 0px;
 }
 
 window#waybar {

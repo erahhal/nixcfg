@@ -295,6 +295,7 @@ in
         xsel              # Manipulate xwindows clipboard
         wl-clipboard      # Manipulate wayland clipboard
         wf-recorder       # Record video of screen portions in wayland
+        veracrypt
 
         ## disk space
         baobab
