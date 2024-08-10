@@ -7,6 +7,7 @@ let
 in
 {
   imports = [
+    ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
   ];
 

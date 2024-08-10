@@ -47,7 +47,6 @@ in
         simple-scan
         thunderbird
         transmission-gtk
-        vdhcoapp
         chromium
 
         ## games
