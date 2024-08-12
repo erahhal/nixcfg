@@ -2,7 +2,8 @@
 
 let
   hyprland = pkgs.hyprland;
-  # hyprland = pkgs.hyprland-patched;
+  # hyprland = pkgs.trunk.hyprland;
+  # hyprland = pkgs.unstable.hyprland-patched;
   # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl="${hyprland}/bin/hyprctl";
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };

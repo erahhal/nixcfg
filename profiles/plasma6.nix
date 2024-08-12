@@ -4,8 +4,6 @@
   config = lib.mkMerge [
     (if (hostParams.defaultSession == "plasma6" || hostParams.multipleSessions) then {
       services.xserver.enable = true;
-      services.displayManager.sddm.enable = true;
-      services.displayManager.sddm.wayland.enable = true;
       services.desktopManager.plasma6.enable = true;
     } else {})
 

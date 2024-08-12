@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, system, userParams, ...}:
+{ config, pkgs, inputs, system, userParams, hyprland-unstable, ...}:
 {
 
   # --------------------------------------------------------------------------------------
@@ -127,6 +127,7 @@
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;
           inherit system;
+          # (import ../overlays/hyprland-patched.nix)
         };
         trunk = import inputs.nixpkgs-trunk {
           config = config.nixpkgs.config;
@@ -258,7 +259,6 @@
 
     ## Fixes broken pam for screen lockers but requires rebuild of everything
     # ../overlays/pam-patched.nix
-    ../overlays/hyprland-unstable.nix
 
     # ../profiles/overrides.nix
     ../profiles/printers-scanners.nix

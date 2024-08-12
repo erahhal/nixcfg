@@ -1,69 +1,71 @@
-{  ... }:
-let
-  hyprland-patched = final: prev: {
-    hyprland-patched = prev.hyprland.overrideAttrs (finalAttrs: oldAttrs: {
-      src = final.fetchFromGitHub {
-        owner = "hyprwm";
-        repo = oldAttrs.pname;
-        fetchSubmodules = true;
-        # rev = "eea0a6a";
-        # hash = "sha256-aaF2FYy152AvdYvqn7kj+VNgp07DF/p8cLmhXD68i3A=";
-        rev = "c95845b1488b4bd63e901cbdc4cb68c27a45971b";
-        hash = "sha256-1oVVblacE6uQztHTTPG6NoUzj5RErIRbmDoVNWnG6xg=";
-      };
-    });
+final: prev: {
+  hyprland-patched = prev.hyprland.overrideAttrs (finalAttrs: oldAttrs: {
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = oldAttrs.pname;
+      fetchSubmodules = true;
+      rev = "118d4e1001d5847aa42d1e5d5fa9623954ae751d";
+      hash = "sha256-1oVVblacE6uQztHTdPG6NoUzj5RErIebmDoVNWnG6xg=";
+    };
+  });
 
-    hyprcursor = prev.hyprcursor.overrideAttrs (finalAttrs: oldAttrs: {
-      version = "57298fc4f13c807e50ada2c986a3114b7fc2e621";
-      src = final.fetchFromGitHub {
-        owner = "hyprwm";
-        repo = "hyprcursor";
-        rev = "57298fc4f13c807e50ada2c986a3114b7fc2e621";
-        hash = "sha256-FIN1wMoyePBTtibCbaeJaoKNLuAYIGwLCWAYC1DJanw=";
-      };
-    });
+  hyprwayland-scanner = prev.hyprwayland-scanner.overrideAttrs (finalAttrs: oldAttrs: {
+    version = "a048a6cb015340bd82f97c1f40a4b595ca85cc30";
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = "hyprwayland-scanner";
+      rev = "a048a6cb015340bd82f97c1f40a4b595ca85cc30";
+      hash = "sha256-SOOqIT27/X792+vsLSeFdrNTF+OSRp5qXv6Te+fb2Qg=";
+    };
+  });
 
-    hyprlang = prev.hyprlang.overrideAttrs (finalAttrs: oldAttrs: {
-      version = "87d5d984109c839482b88b4795db073eb9ed446f";
-      src = final.fetchFromGitHub {
-        owner = "hyprwm";
-        repo = "hyprlang";
-        rev = "87d5d984109c839482b88b4795db073eb9ed446f";
-        hash = "sha256-+qLn4lsHU6iL3+HTo1gTQ1tWzet8K9h+IfVemzEQZj8=";
-      };
-    });
+  hyprland-protocols = prev.hyprland-protocols.overrideAttrs (finalAttrs: oldAttrs: {
+    version = "5a11232266bf1a1f5952d5b179c3f4b2facaaa84";
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = "hyprland-protocols";
+      rev = "5a11232266bf1a1f5952d5b179c3f4b2facaaa84";
+      hash = "sha256-zCu4R0CSHEactW9JqYki26gy8h9f6rHmSwj4XJmlHgg=";
+    };
+  });
 
-    hyprland-protocols = prev.hyprland-protocols.overrideAttrs (finalAttrs: oldAttrs: {
-      version = "0c2ce70625cb30aef199cb388f99e19a61a6ce03";
-      src = final.fetchFromGitHub {
-        owner = "hyprwm";
-        repo = "hyprland-protocols";
-        rev = "0c2ce70625cb30aef199cb388f99e19a61a6ce03";
-        hash = "sha256-zOEwiWoXk3j3+EoF3ySUJmberFewWlagvewDRuWYAso=";
-      };
-    });
+  hyprlang = prev.hyprlang.overrideAttrs (finalAttrs: oldAttrs: {
+    version = "adbefbf49664a6c2c8bf36b6487fd31e3eb68086";
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = "hyprlang";
+      rev = "adbefbf49664a6c2c8bf36b6487fd31e3eb68086";
+      hash = "sha256-BiJKO0IIdnSwHQBSrEJlKlFr753urkLE48wtt0UhNG4=";
+    };
+  });
 
-    hyprwayland-scanner = prev.hyprwayland-scanner.overrideAttrs (finalAttrs: oldAttrs: {
-      version = "0.3.9";
-      src = final.fetchFromGitHub {
-        owner = "hyprwm";
-        repo = "hyprwayland-scanner";
-        rev = "v0.3.9";
-        hash = "sha256-hRE0+vPXQYB37nx07HQMnaCV5wJjShOeqRygw3Ga6WM=";
-      };
-    });
+  hyprcursor = prev.hyprcursor.overrideAttrs (finalAttrs: oldAttrs: {
+    version = "4493a972b48f9c3014befbbf381ed5fff91a65dc";
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = "hyprcursor";
+      rev = "4493a972b48f9c3014befbbf381ed5fff91a65dc";
+      hash = "sha256-aYlHTWylczLt6ERJyg6E66Y/XSCbVL7leVcRuJmVbpI=";
+    };
+  });
 
-    xdg-desktop-portal-hyprland = prev.xdg-desktop-portal-hyprland.overrideAttrs (finalAttrs: oldAttrs: {
-      version = "91e48d6acd8a5a611d26f925e51559ab743bc438";
-      src = final.fetchFromGitHub {
-        owner = "hyprwm";
-        repo = "xdg-desktop-portal-hyprland";
-        rev = "91e48d6acd8a5a611d26f925e51559ab743bc438";
-        hash = "sha256-1u9Exrc7yx9qtES2brDh7/DDZ8w8ap1nboIOAtCgeuM=";
-      };
-    });
-  };
-in
-{
-  nixpkgs.overlays = [ hyprland-patched ];
+  hyprutils = prev.hyprutils.overrideAttrs (finalAttrs: oldAttrs: {
+    version = "5dcbbc1e3de40b2cecfd2007434d86e924468f1f";
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = "hyprutils";
+      rev = "5dcbbc1e3de40b2cecfd2007434d86e924468f1f";
+      hash = "sha256-D3wIZlBNh7LuZ0NaoCpY/Pvu+xHxIVtSN+KkWZYvvVs=";
+    };
+  });
+
+  xdg-desktop-portal-hyprland = prev.xdg-desktop-portal-hyprland.overrideAttrs (finalAttrs: oldAttrs: {
+    version = "7f2a77ddf60390248e2a3de2261d7102a13e5341";
+    src = final.fetchFromGitHub {
+      owner = "hyprwm";
+      repo = "xdg-desktop-portal-hyprland";
+      rev = "7f2a77ddf60390248e2a3de2261d7102a13e5341";
+      hash = "sha256-Khdm+mDzYA//XaU0M+hftod+rKr5q9SSHSEuiQ0/9ow=";
+    };
+  });
 }

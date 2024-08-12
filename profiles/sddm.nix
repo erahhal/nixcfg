@@ -39,8 +39,9 @@ in
     #   XCURSOR_SIZE = "64";
     # };
 
-    ## This is the only thing that seems to change the SDDM cursor
-    services.xserver.upscaleDefaultCursor = true; # default false
+    ## This is the only thing that seems to change the SDDM cursor when using X11. Not needed for Wayland.
+    # services.xserver.upscaleDefaultCursor = true; # default false
+    # services.displayManager.sddm.settings.Theme.CursorSize = 28;
 
     services.xserver = {
       enable = true;
@@ -73,9 +74,10 @@ in
       sddm = {
         enable = true;
         enableHidpi = true;
+        wayland.enable = true;
         settings = {
           Theme = {
-            CursorSize = 28;
+            CursorSize = 16;
             ## Does not work to change SDDM cursor theme
             ## see profile/desktop.nix for how this is changed
             CursorTheme = "bibata-cursors";
@@ -83,21 +85,6 @@ in
           ## Does not work to change SDDM cursor size
           # X11 = {
           #   ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
-          # };
-
-          #---------------------------------------------------------------------------
-          # Using Wayland
-          #
-          # @TODO: Seems to work now with 23.11 - figure out if it can be used
-          #---------------------------------------------------------------------------
-
-          # General = {
-          #   DisplayServer = "wayland";
-          #   GreeterEnvironment ="QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
-          # };
-          # Wayland = {
-          #   EnableHiDPI = "true";
-          #   CompositorCommand = "sway";
           # };
         };
         theme = hostParams.sddmTheme;
