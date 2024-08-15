@@ -80,6 +80,7 @@ theme-status = ''
   set -g window-status-current-style "bg=${tmux-background}"
   tmux_conf_theme_window_status_current_bg="${tmux-background}"
 '';
+
 in
 {
   home.file.".system-theme" = {
@@ -321,23 +322,44 @@ in
     };
   };
 
-  qt = {
-    enable = true;
-    platformTheme.name = "adwaita";
-    style = {
-      name = "adwaita-dark";
-      package = pkgs.adwaita-qt;
-    };
-  };
-
   # qt = {
   #   enable = true;
-  #   platformTheme = "qtct";
-  #   style.name = "kvantum";
+  #   platformTheme.name = "adwaita";
+  #   style = {
+  #     name = "adwaita-dark";
+  #     package = pkgs.adwaita-qt;
+  #   };
+  # };
+
+  ## Use Kvantum theme
+  qt = {
+    enable = true;
+    platformTheme.name = "qtct";
+    style.name = "kvantum";
+  };
+  home.sessionVariables = {
+    QT_QPA_PLATFORM_THEME = "qt5ct";
+    QT_STYLE_OVERRIDE = "kvantum";
+  };
+  # xdg.configFile = {
+  #   "Kvantum/AdaptaNokto".source = "${pkgs.adapta-kde-theme}/share/Kvantum/AdaptaNokto";
+  #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=AdaptaNokto";
   # };
   # xdg.configFile = {
-  #   "Kvantum/ArcDark".source = "${pkgs.arc-kde-theme}/share/Kvantum/ArcDark";
-  #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=ArcDark";
+  #   "Kvantum/Graphite".source = "${pkgs.graphite-kde-theme}/share/Kvantum/Graphite";
+  #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=GraphiteDark";
+  # };
+  # xdg.configFile = {
+  #   "Kvantum/GraphiteNord".source = "${pkgs.graphite-kde-theme}/share/Kvantum/GraphiteNord";
+  #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=GraphiteNordDark";
+  # };
+  xdg.configFile = {
+    "Kvantum/ArcDark".source = "${pkgs.arc-kde-theme}/share/Kvantum/ArcDark";
+    "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=ArcDark";
+  };
+  # xdg.configFile = {
+  #   "Kvantum/MateriaDark".source = "${pkgs.materia-kde-theme}/share/Kvantum/MateriaDark";
+  #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=MateriaDark";
   # };
 
   # @TODO: move to a home.activation script?

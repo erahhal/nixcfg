@@ -4,6 +4,12 @@ let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
   # bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
+  kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
+    ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
+  '';
+  kvantumpreview = pkgs.writeShellScriptBin "kvantumpreview" ''
+    ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantumpreview $@
+  '';
 in
 {
   imports = [
@@ -67,10 +73,6 @@ in
   # GTK apps will hang for 30 seconds at start of sway and render strangely without this
   services.dbus = {
     enable = true;
-  };
-
-
-  environment.sessionVariables = {
   };
 
   home-manager.users.${userParams.username} = {
@@ -297,6 +299,9 @@ in
         wl-clipboard      # Manipulate wayland clipboard
         wf-recorder       # Record video of screen portions in wayland
         veracrypt
+
+        # kvantummanager
+        # kvantumpreview
 
         ## disk space
         baobab

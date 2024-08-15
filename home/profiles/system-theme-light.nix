@@ -326,12 +326,36 @@ in
     };
   };
 
+  # qt = lib.mkForce {
+  #   enable = true;
+  #   platformTheme.name = "adwaita";
+  #   style = {
+  #     name = "adwaita-light";
+  #     package = pkgs.adwaita-qt;
+  #   };
+  # };
+
+  ## Use Kvantum theme
   qt = lib.mkForce {
     enable = true;
-    platformTheme.name = "adwaita";
-    style = {
-      name = "adwaita-light";
-      package = pkgs.adwaita-qt;
+    platformTheme.name = "qtct";
+    style.name = "kvantum";
+  };
+  ## Duplicated here for clarity
+  home.sessionVariables = {
+    QT_QPA_PLATFORM_THEME = "qt5ct";
+    QT_STYLE_OVERRIDE = "kvantum";
+  };
+  # xdg.configFile = {
+  #   "Kvantum/Adapta".source = "${pkgs.adapta-kde-theme}/share/Kvantum/Adapta";
+  #   "Kvantum/kvantum.kvconfig" = lib.mkForce {
+  #     text = "[General]\ntheme=Adapta";
+  #   };
+  # };
+  xdg.configFile = {
+    "Kvantum/Arc".source = "${pkgs.arc-kde-theme}/share/Kvantum/Arc";
+    "Kvantum/kvantum.kvconfig" = lib.mkForce {
+      text = "[General]\ntheme=Arc";
     };
   };
 
