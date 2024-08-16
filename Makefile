@@ -33,7 +33,7 @@ switch:
 	fi
 
 remote-install:
-	nix run github:nix-community/nixos-anywhere -- --flake .#antikythera root@10.3.0.107
+	./nixos-anywhere/install.sh
 
 show-trace:
 	make clear-sddm-cache
@@ -68,6 +68,9 @@ update-local:
 
 update-nflx:
 	nix flake lock --update-input nflx --update-input nflx-vpn --update-input openconnect-pulse-launcher
+
+update-secrets:
+	nix flake lock --update-input secrets
 
 upgrade:
 	make update && make switch
