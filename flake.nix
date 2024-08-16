@@ -171,10 +171,10 @@
           inherit userParams;
         };
       };
-      t490s =
+      antikythera =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/t490s/params.nix {};
+        hostParams = import ./hosts/antikythera/params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -182,11 +182,12 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
-          ./hosts/t490s/configuration.nix
+          ./hosts/antikythera/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
+          # @TODO: Switch to gen5 when available
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen4
           inputs.nur.nixosModules.nur
           {
             nixpkgs.overlays = [
@@ -199,8 +200,6 @@
             home-manager.useUserPackages = true;
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
-          inputs.nflx-vpn.nixosModules.default
-          inputs.nflx.nixosModules.default
 
           inputs.nix-snapd.nixosModules.default
           {
