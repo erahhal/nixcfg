@@ -32,6 +32,9 @@ switch:
 		systemctl --user restart toggle-theme ;\
 	fi
 
+remote-install:
+	nix run github:nix-community/nixos-anywhere -- --flake .#antikythera root@10.3.0.107
+
 show-trace:
 	make clear-sddm-cache
 	make clear-mimeapps

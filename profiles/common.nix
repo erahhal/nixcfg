@@ -263,6 +263,8 @@
     # ../profiles/overrides.nix
     ../profiles/printers-scanners.nix
     ../profiles/flox.nix
+
+    ../nixos-anywhere/connection-sharing.nix
   ];
 
   # --------------------------------------------------------------------------------------

@@ -5,6 +5,9 @@
     # Use stable for main
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
 
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
     # Should match nixpkgs version
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -182,6 +185,7 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          inputs.disko.nixosModules.disko
           ./hosts/antikythera/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
