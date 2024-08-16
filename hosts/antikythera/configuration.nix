@@ -28,7 +28,7 @@ in
 
       # device specific
       ./disk-config.nix
-      # ./hardware-configuration.nix
+      ./hardware-configuration.nix
       ../../profiles/android.nix
       ../../profiles/exclusive-lan.nix
       ../../profiles/gfx-intel.nix
