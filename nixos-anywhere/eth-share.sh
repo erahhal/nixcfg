@@ -1,10 +1,11 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i bash -p nftables -p dnsmasq
+#! nix-shell -i bash -p nftables -p dnsmasq -p iw -p gawk -p gnugrep
 
 ## See: https://nixos.wiki/wiki/Internet_Connection_Sharing
 
-WIFI_INTERFACE=wlp0s20f3
-ETH_INTERFACE=enp0s13f0u1
+WIFI_INTERFACE=$(iw dev | awk '$1=="Interface"{print $2}')
+# gets first physical interface that starts with the letter "e"
+ETH_INTERFACE=$(find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n' | grep "^e" | head -n 1)
 
 up () {
     # Setup ethernet device
