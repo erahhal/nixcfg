@@ -60,7 +60,7 @@ in
       ../../containers/joplin.nix
       ../../containers/logseq.nix
       ../../containers/mariadb.nix
-      ../../containers/minecraft.nix
+      # ../../containers/minecraft.nix
       ../../containers/minio.nix
       ../../containers/nextcloud.nix
       ../../containers/pinry.nix
