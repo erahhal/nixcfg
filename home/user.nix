@@ -234,7 +234,7 @@ in
       enableZshIntegration = true;
       ## Need 18.3.0 to fix zfs zpool timeout issue;
       ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
-      package = pkgs.atuin;
+      package = pkgs.unstable.atuin;
       settings = {
         # Show only history for current terminal. ctrl-r to toggle through modes
         filter_mode = "session";
@@ -265,27 +265,30 @@ in
     ## @TODO: Is this needed anymore? It seems to be working without it now
     ## Need 18.3.0 to fix zfs zpool timeout issue;
     ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
-    # systemd.user.services.atuin = {
-    #   Unit = {
-    #     Description = "Atuin daemon to avoid zpool timeout error";
-    #     After = [ "network.target" ];
-    #   };
-    #
-    #   Service = {
-    #     Restart = "always";
-    #     ExecStartPre = "rm -f /home/${userParams.username}/.local/share/atuin/atuin.sock";
-    #     ExecStart = "${pkgs.atuin}/bin/atuin daemon";
-    #     Environment = [
-    #       "HOME=/home/${userParams.username}"
-    #       # @TODO: This is hacky - better to get PATH programmatically
-    #       "PATH=/etc/profiles/per-user/${userParams.username}/bin:/run/current-system/sw/bin"
-    #     ];
-    #   };
-    #
-    #   Install = {
-    #     WantedBy = [ "default.target" ];
-    #   };
-    # };
+    systemd.user.services.atuin = {
+      Unit = {
+        Description = "Atuin daemon to avoid zpool timeout error";
+        After = [ "network.target" ];
+      };
+      Service = {
+        Restart = "always";
+        ExecStart =
+          let runScript = pkgs.writeShellScriptBin "start-atuin-daemon" ''
+              rm -f /home/${userParams.username}/.local/share/atuin/atuin.sock | true
+              ${pkgs.unstable.atuin}/bin/atuin daemon
+            '';
+          in "${runScript}/bin/start-atuin-daemon";
+        Environment = [
+          "HOME=/home/${userParams.username}"
+          # @TODO: This is hacky - better to get PATH programmatically
+          "PATH=/etc/profiles/per-user/${userParams.username}/bin:/run/current-system/sw/bin"
+        ];
+      };
+
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
 
     programs.zsh = {
       enable = if userParams.shell == "zsh" then true else false;

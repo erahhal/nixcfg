@@ -339,6 +339,7 @@
     p7zip
     pciutils
     powertop
+    pstree
     pv
     networkmanager
     sshpass
