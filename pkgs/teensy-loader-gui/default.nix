@@ -1,9 +1,8 @@
 { pkgs, stdenv, fetchurl }:
 
-let 
+let
   teensy_version = "1.52";
-  bin_sha256 = "1yivq1nr4rhmcqy0jw819b1s3ykqild40w5djmsp91n6lq79zj80";
-in 
+in
 let
   teensy-loader-gui-bin = stdenv.mkDerivation rec {
     name = "teensy-loader-gui-bin";
@@ -11,7 +10,7 @@ let
     system = "x86_64-linux";
     src = fetchurl {
       url = "https://www.pjrc.com/teensy/teensy_linux64.tar.gz";
-      sha256 = bin_sha256;
+      hash = "sha256-PHcq6jVWkSLjtMy/wv674BSow1ajgJ0/haj+V7xW+bk=";
     };
     phases = [ "installPhase" "fixupPhase" ];
     installPhase = ''
@@ -26,7 +25,7 @@ in
 pkgs.buildFHSUserEnv {
   name = "teensy-loader-gui";
   targetPkgs = pkgs: with pkgs;
-    [ 
+    [
       cairo
       gdk-pixbuf
       glib

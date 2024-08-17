@@ -24,7 +24,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "0,0";
                 scale = 1.8;
               }
@@ -68,7 +68,7 @@ in
               {
                 criteria = "LG Electronics LG Ultra HD 0x00043EAD";
                 status = "enable";
-                mode = "3840x2160";
+                mode = "3840x2160@60";
                 position = "0,0";
                 # transform = "90";
                 scale = 1.5;
@@ -76,7 +76,7 @@ in
               {
                 criteria = "LG Electronics LG HDR 4K 0x00020F5B";
                 status = "enable";
-                mode = "3840x2160";
+                mode = "3840x2160@60";
                 position = "2560,0";
                 scale = 1.5;
               }
@@ -84,7 +84,7 @@ in
                 criteria = "eDP-1";
                 status = "disable";
                 # status = "enable";
-                mode = "2880x1800@90";
+                mode = "2880x1800@120";
                 position = "6249,1440";
                 scale = 1.8;
               }
@@ -117,7 +117,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1678,1440";
                 scale = 1.75;
               }
@@ -139,7 +139,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1678,1440";
                 scale = 1.75;
               }
@@ -185,7 +185,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "0,67";
                 # Resolution must be integer divisible by scale
                 scale = 1.8;
@@ -259,7 +259,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1287,1440";
                 scale = 1.75;
               }
@@ -288,7 +288,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1287,2149";
                 scale = 1.75;
               }
@@ -311,7 +311,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "900,1440";
                 scale = 1.75;
               }
@@ -339,7 +339,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1287,2149";
                 scale = 1.75;
               }
@@ -370,7 +370,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1287,2149";
                 scale = 1.75;
               }
@@ -399,7 +399,7 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "1287,2149";
                 scale = 1.75;
               }

@@ -322,25 +322,30 @@ in
     };
   };
 
-  # qt = {
-  #   enable = true;
-  #   platformTheme.name = "adwaita";
-  #   style = {
-  #     name = "adwaita-dark";
-  #     package = pkgs.adwaita-qt;
-  #   };
-  # };
-
-  ## Use Kvantum theme
   qt = {
     enable = true;
-    platformTheme.name = "qtct";
-    style.name = "kvantum";
+    platformTheme.name = "adwaita";
+    style = {
+      name = "adwaita-dark";
+      package = pkgs.adwaita-qt;
+    };
   };
-  home.sessionVariables = {
-    QT_QPA_PLATFORM_THEME = "qt5ct";
-    QT_STYLE_OVERRIDE = "kvantum";
-  };
+
+  ## Use Kvantum theme
+  # qt = {
+  #   enable = true;
+  #   platformTheme.name = "qtct";
+  #   style.name = "kvantum";
+  # };
+  # home.sessionVariables = {
+  #   QT_QPA_PLATFORM_THEME = "qt5ct";
+  #   QT_STYLE_OVERRIDE = "kvantum";
+  # };
+  # xdg.configFile = {
+  #   "Kvantum/ArcDark".source = "${pkgs.arc-kde-theme}/share/Kvantum/ArcDark";
+  #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=ArcDark";
+  # };
+
   # xdg.configFile = {
   #   "Kvantum/AdaptaNokto".source = "${pkgs.adapta-kde-theme}/share/Kvantum/AdaptaNokto";
   #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=AdaptaNokto";
@@ -353,10 +358,6 @@ in
   #   "Kvantum/GraphiteNord".source = "${pkgs.graphite-kde-theme}/share/Kvantum/GraphiteNord";
   #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=GraphiteNordDark";
   # };
-  xdg.configFile = {
-    "Kvantum/ArcDark".source = "${pkgs.arc-kde-theme}/share/Kvantum/ArcDark";
-    "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=ArcDark";
-  };
   # xdg.configFile = {
   #   "Kvantum/MateriaDark".source = "${pkgs.materia-kde-theme}/share/Kvantum/MateriaDark";
   #   "Kvantum/kvantum.kvconfig".text = "[General]\ntheme=MateriaDark";

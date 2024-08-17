@@ -299,6 +299,7 @@ in
         wl-clipboard      # Manipulate wayland clipboard
         wf-recorder       # Record video of screen portions in wayland
         veracrypt
+        wezterm
 
         # kvantummanager
         # kvantumpreview

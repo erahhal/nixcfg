@@ -31,7 +31,7 @@ in
       ./hardware-configuration.nix
       ../../profiles/android.nix
       ../../profiles/exclusive-lan.nix
-      ../../profiles/gfx-intel.nix
+      ../../profiles/gfx-amd.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
 
@@ -55,8 +55,7 @@ in
       ./kanshi.nix
       ./launch-apps-config-sway.nix
 
-      # Temporary
-      # ../../profiles/nfs-mounts.nix
+      ../../profiles/nfs-mounts.nix
     ];
 
   # Needed to setup passwords
@@ -127,13 +126,10 @@ in
     useNetworkd = true;
     networkmanager = {
       enable = true;
-      # Wifi power settings - do not remove
-      #   - Either disabling wifi powersave here, or adding
-      #     the kernel modules and params below fixed an intermittent
-      #     hard freeze when on battery.
       wifi = {
         # backend = "iwd";
-        # powersave = false;
+        ## Disabling powersave fixes stability issue with wifi
+        powersave = false;
         scanRandMacAddress = false;
       };
       ## When NtworkManager-wait-online.service is enabled, having wg0

@@ -8,7 +8,7 @@
   timeZone = "America/Los_Angeles";
   containerBackend = "docker";
   displayManager = "sddm";
-  sddmTheme = "abstractdark";
+  sddmTheme = "adapta";
   defaultSession = "hyprland";
   multipleSessions = true;
   # defaultLockProgram = "swaylock";
