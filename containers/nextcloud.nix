@@ -1,9 +1,6 @@
 ## To run "occ" command:
 ##
-## docker exec -it nextcloud bash
-## apt update
-## apt install sudo
-## sudo -H -u www-data bash -c "./occ db:add-missing-indices"
+## docker exec -u www-data nextcloud bash -c "/var/www/html/occ setupchecks"
 
 { pkgs, hostParams, userParams, ... }:
 let
@@ -28,6 +25,8 @@ in
         "${containerDataPath}/nextcloud/app/custom_apps:/var/www/html/custom_apps"
         "${containerDataPath}/nextcloud/app/data:/var/www/html/data"
         "${containerDataPath}/nextcloud/app/themes:/var/www/html/themes"
+        "${containerDataPath}/nextcloud/app/config/opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini"
+        "${containerDataPath}/nextcloud/app/config/php-extra.ini:/usr/local/etc/php/conf.d/php-extra.ini"
         "/etc/localtime:/etc/localtime:ro"
       ];
       environment = {
