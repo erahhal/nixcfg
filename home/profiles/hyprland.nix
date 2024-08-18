@@ -14,6 +14,23 @@ let
     pkill Hyprland
   '';
 
+  wallpaper = if builtins.hasAttr "wallpaper" hostParams then pkgs.writeShellScript "hyprland-wallpaper" ''
+    killall hyprpaper
+    killall mpvpaper
+    killall swaybg
+    # ${pkgs.swaybg}/bin/swaybg -i "$(${pkgs.findutils}/bin/find ~/.config/wallpapers/. -type f| ${pkgs.coreutils}/bin/shuf -n1)"
+    ${pkgs.swaybg}/bin/swaybg -i ${hostParams.wallpaper} -m fill
+  '' else "";
+
+  ## This is fun, but eats up a ton of GPU
+  wallpaper-animated = pkgs.writeShellScript "hyprland-wallpaper-animated" ''
+    killall hyprpaper
+    killall swaybg
+    killall mpvpaper
+    # ${pkgs.mpvpaper}/bin/mpvpaper '*' -o "no-audio --panscan=1.0 --loop-file=inf --loop-playlist=inf" "$(${pkgs.findutils}/bin/find ~/Videos/backgrounds/. -type f| ${pkgs.coreutils}/bin/shuf -n1)"
+    ${pkgs.mpvpaper}/bin/mpvpaper '*' -o "no-audio --panscan=1.0 --loop-file=inf --loop-playlist=inf" ~/Videos/backgrounds
+  '';
+
   swayLockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
@@ -83,6 +100,9 @@ let
     HYPRCTL=${hyprctl};
     if [ "$($HYPRCTL activewindow -j | jq -r ".class")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
+    elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "foot" ]; then
+        address=$($HYPRCTL activewindow -j | jq -r ".address")
+        nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address"
     else
         $HYPRCTL dispatch killactive ""
     fi
@@ -149,7 +169,6 @@ in
     imv
     i3status
     wl-clipboard
-    gnome3.zenity
     wdisplays
     wlr-randr
     (
@@ -192,7 +211,7 @@ in
         # "${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace"
         "${pkgs.waybar}/bin/waybar"
         # "${inputs.waybar.packages.${pkgs.system}.waybar}/bin/waybar"
-        "${pkgs.hyprpaper}/bin/hyprpaper"
+        # "${pkgs.hyprpaper}/bin/hyprpaper"
 
         # @TODO
         # 1. Is this already being set?
@@ -206,6 +225,7 @@ in
 
       # Refresh services and processes
       exec = [
+        wallpaper
         "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
         ## Running as a service seems to cause Dbus errors
         # "systemctl --user restart blueman-manager-applet"

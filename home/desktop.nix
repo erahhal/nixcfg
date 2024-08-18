@@ -464,16 +464,23 @@ in
       no-border
       fullscreen=yes
       stop-screensaver=yes
-      hwdec=auto
-      ## Set this in case nvidia opengl is broken
-      hwdec=vaapi
+
       ytdl-format=bestvideo+bestaudio
-      gpu-context=wayland
+
 
       ## From nixos wiki:
+      hwdec=auto
       # hwdec=auto-safe
+      # hwdec=vaapi   # Set this in case nvidia opengl is broken
       vo=gpu
       profile=gpu-hq
+      gpu-context=wayland
+
+      ## GPU Accelerated Vulkan
+      # vo=gpu-next
+      # gpu-api=vulkan
+      # hwdec=vulkan
+      # gpu-context=waylandvk
 
       ## Key bindings
 
