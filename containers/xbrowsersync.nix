@@ -25,18 +25,19 @@ in
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig.Type = "oneshot";
-      script = let cli = "${config.virtualisation.docker.package}/bin/docker";
+      script = let cli = "${pkgs.docker}/bin/docker";
                in ''
                  if [ "${network}" == "host" ]; then
                    exit 0
                  fi
                  # Put a true at the end to prevent getting non-zero return code, which will
                  # crash the whole service.
-                 check=$(${cli} network ls | grep "${network}" || true)
+                 check=$(${cli} network ls | grep "${network}")
                  if [ -z "$check" ]; then
                    ${cli} network create ${network}
                  else
                    echo "container ${network} already exists"
+                   exit 0
                  fi
                '';
     };

@@ -1,4 +1,18 @@
-{ config, pkgs, hostParams, userParams, ... }:
+## To fix corrupted setup:
+#
+# nix-shell -p sqlite
+# cd ~/DockerData/jellyfin/config/data
+# mv library.db library-corrupted.db
+# sqlite3 library-corrupted.db ".recover" | sqlite3 library.db
+# mv jellyfin.db jellyfin-corrupted.db
+# sqlite3 jellyfin-corrupted.db ".recover" | sqlite3 jellyfin.db
+#
+## To clear disk space
+#
+# cd ~/DockerData/jellyfin/config/data
+# rm -rf *.db.bak*
+
+{ hostParams, userParams, ... }:
 let
   containerDataPath = "/home/${userParams.username}/DockerData";
   service_ip = "10.0.0.87";
