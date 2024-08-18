@@ -68,7 +68,7 @@ in
               {
                 criteria = "LG Electronics LG Ultra HD 0x00043EAD";
                 status = "enable";
-                mode = "3840x2160@60";
+                mode = "3840x2160";
                 position = "0,0";
                 # transform = "90";
                 scale = 1.5;
@@ -76,7 +76,7 @@ in
               {
                 criteria = "LG Electronics LG HDR 4K 0x00020F5B";
                 status = "enable";
-                mode = "3840x2160@60";
+                mode = "3840x2160";
                 position = "2560,0";
                 scale = 1.5;
               }
