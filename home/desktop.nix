@@ -317,7 +317,7 @@ in
         czkawka
         unstable.digikam
         discord
-        element-desktop
+        # element-desktop
         evolutionWithPlugins
         feh
         firefox

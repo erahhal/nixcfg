@@ -8,9 +8,15 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
+    disko-unstable.url = "github:nix-community/disko";
+    disko-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
     # Should match nixpkgs version
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    home-manager-unstable.url = "github:nix-community/home-manager";
+    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # Trails trunk - latest packages with broken commits filtered out
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -43,6 +49,9 @@
     # Wine wrapper
     erosanix.url = "github:emmanuelrosa/erosanix";
     erosanix.inputs.nixpkgs.follows = "nixpkgs";
+
+    erosanix-unstable.url = "github:emmanuelrosa/erosanix";
+    erosanix-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     flox.url = "github:flox/flox";
 
@@ -119,12 +128,6 @@
     #     allowUnsupportedSystem = true;
     #   };
     # };
-    homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
-      extraSpecialArgs = {
-        inherit userParams;
-        inherit recursiveMerge;
-      };
-    };
     nixosConfigurations = {
       nflx-erahhal-x1c =
       let
@@ -152,6 +155,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit userParams;
+              inherit recursiveMerge;
+            };
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
 
@@ -178,14 +185,14 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/antikythera/params.nix {};
-        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
+        copyDesktopIcons = inputs.erosanix-unstable.lib."${system}".copyDesktopIcons;
+        copyDesktopItems = inputs.erosanix-unstable.lib."${system}".copyDesktopIcons;
+        mkWindowsApp = inputs.erosanix-unstable.lib.x86_64-linux.mkWindowsApp;
       in
-      inputs.nixpkgs.lib.nixosSystem {
+      inputs.nixpkgs-unstable.lib.nixosSystem {
         system = system;
         modules = [
-          inputs.disko.nixosModules.disko
+          inputs.disko-unstable.nixosModules.disko
           ./hosts/antikythera/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
@@ -198,10 +205,14 @@
               inputs.nur.overlay
             ];
           }
-          inputs.home-manager.nixosModules.home-manager
+          inputs.home-manager-unstable.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit userParams;
+              inherit recursiveMerge;
+            };
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
 
@@ -245,6 +256,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit userParams;
+              inherit recursiveMerge;
+            };
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
         ];
@@ -276,6 +291,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit userParams;
+              inherit recursiveMerge;
+            };
             nixpkgs.overlays = [ inputs.nur.overlay ];
           }
         ];

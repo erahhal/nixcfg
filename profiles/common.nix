@@ -70,9 +70,9 @@
         keep-outputs = true
       '';
 
-    registry.nixpkgs.flake = inputs.nixpkgs;
+    # registry.nixpkgs.flake = inputs.nixpkgs;
 
-    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+    # nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
     # Performance - don't kill the machine while building
     # 0 (high) to 7 (low), default 4
