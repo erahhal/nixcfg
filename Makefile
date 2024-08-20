@@ -50,6 +50,9 @@ clear-gpu-cache:
 	mkdir -p ~/.config
 	find ~/.config/. -type d -name GPUCache -exec rm -rf {} +
 
+get-new-packages:
+	./build/get-new-packages
+
 gc:
 	nix-store --gc
 	nix-env --delete-generations old
