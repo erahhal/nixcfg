@@ -333,6 +333,7 @@
     nixos-generators
     nil
     nix-index
+    nvd
     nvtopPackages.full
     openssl
     # openjdk16-bootstrap
