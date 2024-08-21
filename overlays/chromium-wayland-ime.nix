@@ -9,6 +9,7 @@ let chromiumWaylandIme = final: prev: {
   brave = prev.brave.override {
     commandLineArgs = [
       "--enable-wayland-ime"
+      "--password-store=basic" # Don't show kwallet login at start
     ];
   };
 

@@ -199,6 +199,10 @@ in
     enable = true;
 
     settings = {
+      debug = {
+        disable_logs = false;
+      };
+
       "$mod" = "SUPER";
 
       # "$term" = "${pkgs.kitty}/bin/kitty";
@@ -406,7 +410,7 @@ in
 
         # Flameshot
         ## important
-        "fakefullscreen,class:flameshot"
+        "fullscreen,class:flameshot"
         "float,class:flameshot"
         "monitor 0,class:flameshot"
         "move 0 0,class:flameshot"
