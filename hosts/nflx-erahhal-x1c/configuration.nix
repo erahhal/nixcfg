@@ -144,6 +144,13 @@ in
     interface = "wlp0s20f3";
   };
 
+  ## Sound support
+  ## @TODO: Are these required going forward or is this due to a breakage?
+  hardware.enableAllFirmware = true;
+  boot.extraModprobeConfig = ''
+    options snd-intel-dspcfg dsp_driver=1
+  '';
+
   # Enable fingerprint reading daemon.
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
