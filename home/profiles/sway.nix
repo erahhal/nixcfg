@@ -17,6 +17,7 @@ let
   launcher = rofi;
   pamixer = "${pkgs.pamixer}/bin/pamixer";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
+  nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
   swayfonts = {
     names = [ swayfont ];
     # names = [ "Terminus (TTF)" "FontAwesome" ];
@@ -101,21 +102,8 @@ in
     weston
     wdisplays
     wlr-randr
-    (
-      pkgs.writeTextFile {
-        name = "nag-graphical";
-        destination = "/bin/nag-graphical";
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
 
-          # export GDK_DPI_SCALE=2
-          if zenity --question --text="$1"; then
-            $2
-          fi
-        '';
-      }
-    )
+    nag-graphical
   ];
 
   wayland.windowManager.sway = {

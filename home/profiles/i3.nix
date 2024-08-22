@@ -9,6 +9,7 @@ let
   wofi = "${pkgs.wofi}/bin/wofi --insensitive";
   bemenu = "${pkgs.bemenu}/bin/bemenu-run -H 48 -p execute: -b --fn 'Terminus 24' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
   launcher = bemenu;
+  nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
   pamixer = "${pkgs.pamixer}/bin/pamixer";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   i3fonts = {
@@ -124,21 +125,7 @@ in
   home.packages = with pkgs; [
     gnome3.zenity
     libnotify
-    # @TODO: de-dupe this with profiles/sway.nix
-    (
-      pkgs.writeTextFile {
-        name = "nag-graphical";
-        destination = "/bin/nag-graphical";
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-
-          if zenity --question --text="$1"; then
-            $2
-          fi
-        '';
-      }
-    )
+    nag-graphical
   ];
 
   services.dunst = {

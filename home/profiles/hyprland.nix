@@ -14,6 +14,8 @@ let
     pkill Hyprland
   '';
 
+  nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
+
   wallpaper = if builtins.hasAttr "wallpaper" hostParams then pkgs.writeShellScript "hyprland-wallpaper" ''
     killall hyprpaper
     killall mpvpaper
@@ -171,21 +173,8 @@ in
     wl-clipboard
     wdisplays
     wlr-randr
-    (
-      pkgs.writeTextFile {
-        name = "nag-graphical";
-        destination = "/bin/nag-graphical";
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
 
-          # export GDK_DPI_SCALE=2
-          if zenity --question --text="$1"; then
-            $2
-          fi
-        '';
-      }
-    )
+    nag-graphical
   ];
 
   xdg.configFile."hypr/hyprpaper.conf".text = if builtins.hasAttr "wallpaper" hostParams then ''
