@@ -362,8 +362,8 @@ in
         ## desktop
 
         ## file managers
-        # gnome3.nautilus  # Defaults to move rather than copy over network drives
-        dolphin
+        # dolphin          # Doesn't render very well
+        gnome3.nautilus
         krusader
         xfce.thunar
         cinnamon.nemo

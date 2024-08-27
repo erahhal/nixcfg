@@ -21,7 +21,7 @@
   dpi = 190;
   # dpiSddm = 210;
   # dpiLaptop = 210;
-  wallpaper = ../../wallpapers/yellowstone.jpg;
+  wallpaper = ../../wallpapers/tokyo-park.jpeg;
 
   defaultBrowser = "chromium-browser";
 

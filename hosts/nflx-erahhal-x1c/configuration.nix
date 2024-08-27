@@ -270,17 +270,17 @@ in
       # full charge.
       # https://linrunner.de/tlp/faq/battery.html#how-to-choose-good-battery-charge-thresholds
 
-      # START_CHARGE_THRESH_BAT0 = 60;
-      # STOP_CHARGE_THRESH_BAT0 = 85;
-      # START_CHARGE_THRESH_BAT1 = 60;
-      # STOP_CHARGE_THRESH_BAT1 = 85;
+      START_CHARGE_THRESH_BAT0 = 75;
+      STOP_CHARGE_THRESH_BAT0 = 85;
+      START_CHARGE_THRESH_BAT1 = 75;
+      STOP_CHARGE_THRESH_BAT1 = 85;
 
       ## High charge settings
 
-      START_CHARGE_THRESH_BAT0=85;
-      STOP_CHARGE_THRESH_BAT0=95;
-      START_CHARGE_THRESH_BAT1=85;
-      STOP_CHARGE_THRESH_BAT1=95;
+      # START_CHARGE_THRESH_BAT0=85;
+      # STOP_CHARGE_THRESH_BAT0=95;
+      # START_CHARGE_THRESH_BAT1=85;
+      # STOP_CHARGE_THRESH_BAT1=95;
 
       ## Travel settings
       ## START can't be above 99

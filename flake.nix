@@ -74,6 +74,7 @@
 
     # Hyprland WM
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&tag=v0.42.0";
+    hyprland.inputs.nixpkgs.follows = "nixpkgs";
     # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.42.0";
 
     # hyprland-plugins = {
