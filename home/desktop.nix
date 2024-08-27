@@ -288,6 +288,7 @@ in
 
       packages = with pkgs; [
         ## system
+        arandr
         lsix
         gucharmap
         solaar            # for logitech unifying receiver setup
