@@ -2,6 +2,7 @@
 
 {
   imports = [] ++ (if hostParams.defaultSession == "sway" || hostParams.multipleSessions then [
+    # ../overlays/sway-xwayland-unscaled.nix
     # ../overlays/sway-with-dbus.nix
     # ../overlays/sway-with-nvidia-patches.nix
     # ../overlays/sway-with-input-methods.nix

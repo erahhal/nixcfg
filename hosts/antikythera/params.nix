@@ -18,9 +18,12 @@
   ## Only 10 seems to get rid of the gaps in Foot terminal
   ttyLineHeight = 10;
   trolltechFontSize = 10;
-  dpi = 190;
-  # dpiSddm = 210;
-  # dpiLaptop = 210;
+
+  ## Use with no Xwayland scaling (in Hyperland)
+  dpi = 192;
+  ## Use with Xwayland scaling (in Sway)
+  # dpi = 96;
+
   wallpaper = ../../wallpapers/yellowstone.jpg;
 
   defaultBrowser = "firefox";
@@ -28,7 +31,7 @@
   wireguardIp = "192.168.2.4";
 
   virtualboxEnabled = false;
-  vmwareEnabled = true;
+  vmwareEnabled = false;
   waydroidEnabled = false;
 
   waydroid = {

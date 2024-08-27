@@ -104,7 +104,7 @@ let
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
     elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "foot" ]; then
         address=$($HYPRCTL activewindow -j | jq -r ".address")
-        nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address"
+        nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address" --default-cancel
     else
         $HYPRCTL dispatch killactive ""
     fi

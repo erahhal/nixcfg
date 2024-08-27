@@ -9,7 +9,6 @@
     ];
   };
 
-  sound.enable = true;
   hardware.enableAllFirmware = true;
 
   security.rtkit.enable = true;

@@ -468,7 +468,7 @@ in
           # Completion plugins
           #-----------------------------------
 
-          "adb"
+          # "adb" ## No longer exists?
           "ant"
           "autopep8"
           "aws"
@@ -493,7 +493,7 @@ in
           "pip"
           "pylint"
           "redis-cli"
-          "ripgrep"
+          # "ripgrep" ## No longer exists?
           "rust"
           "stack"
           "yarn"

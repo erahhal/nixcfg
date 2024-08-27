@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+kill-all-apps.sh
+sudo systemctl restart display-manager
