@@ -37,8 +37,8 @@ in
         transmission-gtk
 
         # AI
-        streamlit
-        vespa-cli
+        # streamlit
+        # vespa-cli
 
         # Games
         prismlauncher

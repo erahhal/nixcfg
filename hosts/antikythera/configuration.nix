@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, inputs, pkgs, userParams, hostParams, ... }:
+{ config, inputs, lib, pkgs, userParams, hostParams, ... }:
 
 let
   thinkpad-dock-udev-rules = pkgs.callPackage ../../pkgs/thinkpad-dock-udev-rules { };
@@ -99,6 +99,16 @@ in
   # --------------------------------------------------------------------------------------
   # Device specific
   # --------------------------------------------------------------------------------------
+
+  ## Disable swap
+  swapDevices = lib.mkForce [ ];
+
+  ## Enable zramswap (must disable swap above)
+  ## Supposedly helps with out of memory errors during compilation of big projects
+  zramSwap = {
+    enable = true;
+    writebackDevice = "/dev/nvme0n1p2";
+  };
 
   time.timeZone = hostParams.timeZone;
 
