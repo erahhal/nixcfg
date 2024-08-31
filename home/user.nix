@@ -292,6 +292,9 @@ in
 
     programs.zsh = {
       enable = if userParams.shell == "zsh" then true else false;
+
+      enableCompletion = false;
+
       shellAliases = {
         something = "${pkgs.ffmpeg}/bin/ffmpeg --someoption";
         n = "nix-shell -p";

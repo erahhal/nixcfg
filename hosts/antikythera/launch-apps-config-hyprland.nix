@@ -18,7 +18,8 @@
         ## It might be enabling VRR or inconsistent frequencies
 
         # "eDP-1,disable"
-        "eDP-1,2880x1800@90,0x0,1.8"
+        # "eDP-1,2880x1800@120,0x0,1.8"
+        "eDP-1,preferred,auto,1.8"
         "desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6"
         "desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5"
         "desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5"
@@ -38,7 +39,7 @@
         "workspace 3, silent, class:^(Slack)$"
         "workspace 4, silent, title:^(Spotify)$"
         "workspace 4, silent, class:^(brave-browser)$"
-        "workspace 1, silent, class:^(firefox)$"
+        "workspace 5, silent, class:^(firefox)$"
         "workspace 6, class:^(signal)$"
         "workspace 6, class:^(org.telegram.desktop)$"
         "workspace 6, class:^(whatsapp-for-linux)$"
@@ -56,7 +57,7 @@
         "[workspace 6 silent] whatsapp-for-linux"
         "[workspace 7 silent] discord"
         "[workspace 7 silent] element-desktop"
-        "[workspace 1 silent] firefox"
+        "[workspace 5 silent] firefox"
       ];
     };
   };

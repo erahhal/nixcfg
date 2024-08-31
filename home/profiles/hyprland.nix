@@ -231,7 +231,8 @@ in
         "systemctl --user restart network-manager-applet"
         "systemctl --user restart wlsunset"
         "systemctl --user restart kanshi"
-        "systemctl --user restart fcitx5-daemon"
+        ## Don't start on load - still causes issues with lost keystrokes
+        # "systemctl --user restart fcitx5-daemon"
         ## hyprlock currently broken
         (
           if hostParams.defaultLockProgram == "swaylock" then
@@ -516,8 +517,8 @@ in
         "$mod_SHIFT_ALT, R, exec, grimblast --notify --cursor copysave screen"
 
         # special workspace
-        "$mod_SHIFT, grave, movetoworkspace, special"
-        "$mod, grave, togglespecialworkspace, eDP-1"
+        # "$mod_SHIFT, grave, movetoworkspace, special"
+        # "$mod, grave, togglespecialworkspace, eDP-1"
 
         # cycle workspaces
         "$mod, bracketleft, workspace, m-1"

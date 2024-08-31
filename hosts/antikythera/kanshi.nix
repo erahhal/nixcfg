@@ -54,7 +54,7 @@ in
                 criteria = "eDP-1";
                 status = "disable";
                 # status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "2880x1800@120";
                 position = "3985,1440";
                 scale = 1.75;
               }
