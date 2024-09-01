@@ -15,7 +15,7 @@
       ## Launching the WLR portal might interfere with Hyprland screen sharing
       # xdg-desktop-portal-wlr # wlroots screen capture
 
-      xdg-desktop-portal-hyprland # Hyprland specific
+      # xdg-desktop-portal-hyprland # Hyprland specific
     ];
 
     ## Are these needed for sway?

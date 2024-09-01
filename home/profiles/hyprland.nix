@@ -14,6 +14,16 @@ let
     pkill Hyprland
   '';
 
+  xdg-desktop-portal-hyprland = pkgs.writeShellScript "xdg-desktop-portal-hyprland" ''
+    sleep 1
+    kill $(${pkgs.procps}/bin/pidof xdg-desktop-portal-hyprland)
+    kill $(${pkgs.procps}/bin/pidof xdg-desktop-portal-wlr)
+    kill $(${pkgs.procps}/bin/pidof xdg-desktop-portal)
+    ${pkgs.unstable.xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland &
+    sleep 2
+    ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal &
+  '';
+
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
   wallpaper = if builtins.hasAttr "wallpaper" hostParams then pkgs.writeShellScript "hyprland-wallpaper" ''
@@ -198,6 +208,7 @@ in
       "$term" = "${pkgs.foot}/bin/foot";
 
       exec-once = [
+        xdg-desktop-portal-hyprland
         # Update hyprland signature so hyprctl works with long-lived tmux sessions
         # Only works with new tmux panes, not existing ones
         ''tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"''
