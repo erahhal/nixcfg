@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 systemctl --user stop wireplumber pipewire-pulse pipewire
+## Fixes issue with bluetooth sinks not showing audio profiles, e.g. mediaserver
+rm -rf ~/.local/state/wireplumber.orig
+mv  ~/.local/state/wireplumber ~/.local/state/wireplumber.orig
 systemctl --user start pipewire pipewire-pulse wireplumber
 pkill waybar
 nohup waybar > /dev/null 2>&1 &

@@ -277,7 +277,7 @@ in
     # theme.package = pkgs.solarc-gtk-theme;
     # theme.name = "Materia";
     # theme.package = pkgs.materia-theme;
-    iconTheme.package = pkgs.gnome3.adwaita-icon-theme;
+    iconTheme.package = pkgs.adwaita-icon-theme;
     iconTheme.name = "Adwaita";
 
     gtk2.extraConfig =

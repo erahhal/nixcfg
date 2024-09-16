@@ -280,6 +280,34 @@ in
     };
 
     # ---------------------------------------------------------------------------
+    # Audio
+    # ---------------------------------------------------------------------------
+
+    ## Enable easyeffects service, which can add a Dolby Atmos filter
+    ## Dolby Atmos is proprietary and typically only available for Windows
+    ## https://forum.manjaro.org/t/how-can-i-make-easyeffects-run-on-startup-background/99041/3
+    ## https://www.reddit.com/r/linuxquestions/comments/pfl0g7/dolby_atmos_support_in_linux/
+    ## https://raw.githubusercontent.com/JackHack96/PulseEffects-Presets/master/install.sh
+    ## https://github.com/shuhaowu/linux-thinkpad-speaker-improvements
+    ### Install effects:
+    ## bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/PulseEffects-Presets/master/install.sh)"
+
+    # systemd.user.services.easyeffects = {
+    #   Unit = {
+    #     Description = "Audio Filter";
+    #     After = [ "multi-user.target" ];
+    #   };
+    #   Service = {
+    #     Restart = "always";
+    #     ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
+    #   };
+    #
+    #   Install = {
+    #     WantedBy = [ "default.target" ];
+    #   };
+    # };
+
+    # ---------------------------------------------------------------------------
     # Selected packages for all hosts
     # ---------------------------------------------------------------------------
 
@@ -309,6 +337,9 @@ in
         baobab
         qdirstat
         filelight
+
+        ## audio
+        easyeffects
 
         ## apps
         audacity
@@ -371,7 +402,7 @@ in
 
         # unstable.ardour
         flavours
-        gnome3.adwaita-icon-theme
+        adwaita-icon-theme
         gnome3.eog # image viewer
         gnome3.evince # PDF viewer
         # @TODO: figure out a way to overlay instead of replacing the package

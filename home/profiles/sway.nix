@@ -92,13 +92,13 @@ in
 
   home.packages = with pkgs; [
     configure-gtk
-    gnome3.zenity
+    zenity
     swaynagmode
     networkmanagerapplet
     imv
     i3status
     wl-clipboard
-    gnome3.zenity
+    zenity
     weston
     wdisplays
     wlr-randr

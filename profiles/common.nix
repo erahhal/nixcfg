@@ -355,6 +355,7 @@
     vim
     vulnix
     wireguard-tools
+    wirelesstools
     wget
     xorriso
     xz

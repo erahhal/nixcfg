@@ -1026,7 +1026,7 @@
               "--stdio",
             },
           }
-          nvim_lsp.tsserver.setup(tsserver_config)
+          nvim_lsp.ts_ls.setup(tsserver_config)
 
           local vscode_servers = {'eslint', 'html' }
           for _, lsp in ipairs(vscode_servers) do
@@ -1412,7 +1412,7 @@
 
           -- Must be loaded after telescope
           local actions = require("telescope.actions")
-          local trouble = require("trouble.providers.telescope")
+          local trouble = require("trouble.sources.telescope")
 
           require("telescope").setup({
               defaults = {
@@ -1424,10 +1424,10 @@
                           -- Ctrl-space is used by Tmux, so remap to Ctrl-e
                           ["<c-e>"] = actions.to_fuzzy_refine,
 
-                          ["<c-o>"] = trouble.open_with_trouble,
+                          ["<c-o>"] = trouble.open,
                       },
                       n = {
-                        ["<c-o>"] = trouble.open_with_trouble,
+                        ["<c-o>"] = trouble.open,
                       },
                   },
               },

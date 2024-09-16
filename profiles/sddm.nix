@@ -40,8 +40,7 @@ in
     # };
 
     ## This is the only thing that seems to change the SDDM cursor when using X11. Not needed for Wayland.
-    # services.xserver.upscaleDefaultCursor = true; # default false
-    # services.displayManager.sddm.settings.Theme.CursorSize = 28;
+    services.xserver.upscaleDefaultCursor = true; # default false
 
     services.xserver = {
       enable = true;
@@ -74,10 +73,14 @@ in
       sddm = {
         enable = true;
         enableHidpi = true;
-        wayland.enable = true;
+        # wayland.enable = true;
         settings = {
           Theme = {
-            CursorSize = 16;
+            ## Wayland
+            # CursorSize = 16;
+            ## Xorg
+            CursorSize = 28;
+
             ## Does not work to change SDDM cursor theme
             ## see profile/desktop.nix for how this is changed
             CursorTheme = "bibata-cursors";

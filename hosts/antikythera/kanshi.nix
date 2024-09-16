@@ -56,7 +56,7 @@ in
                 # status = "enable";
                 mode = "2880x1800@120";
                 position = "3985,1440";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };

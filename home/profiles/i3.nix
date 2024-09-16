@@ -123,7 +123,7 @@ in
   ];
 
   home.packages = with pkgs; [
-    gnome3.zenity
+    zenity
     libnotify
     nag-graphical
   ];

@@ -5,7 +5,7 @@
     blueman
     hicolor-icon-theme
     gnome2.gnome_icon_theme
-    gnome3.adwaita-icon-theme
+    adwaita-icon-theme
   ];
 
   systemd.user.services."blueman-manager-applet" = {

@@ -49,10 +49,10 @@ in
     options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
   };
 
-  fileSystems."/mnt/nas-usbshare" = {
-    device = "10.0.0.42:/volumeUSB1/usbshare";
-    fsType = "nfs";
-    # mount when share first used rather than at start, and disconnect after timeout
-    options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
-  };
+  # fileSystems."/mnt/nas-usbshare" = {
+  #   device = "10.0.0.42:/volumeUSB1/usbshare";
+  #   fsType = "nfs";
+  #   # mount when share first used rather than at start, and disconnect after timeout
+  #   options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
+  # };
 }

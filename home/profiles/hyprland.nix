@@ -175,7 +175,7 @@ in
   ];
 
   home.packages = with pkgs; [
-    gnome3.zenity
+    zenity
     hyprpaper
     networkmanagerapplet
     imv
@@ -386,7 +386,16 @@ in
         "workspace special silent, title:^(Firefox — Sharing Indicator)$"
         "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
 
+        # Modals
+        "stayfocused, class:^(zenity)$"
+        # "center, class:^(zenity)$"
+
         # idle inhibit while watching videos
+        "float, initialClass:^(mpv)$"
+        "float, class:^(mpv)$"
+        "fullscreen, initialClass:^(mpv)$"
+        "fullscreen, class:^(mpv)$"
+        "idleinhibit focus, initialClass:^(mpv)$"
         "idleinhibit focus, class:^(mpv)$"
         "idleinhibit focus, title:^(Zoom)(.*)$"
         "idleinhibit fullscreen, class:^(firefox)$"

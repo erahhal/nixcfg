@@ -27,10 +27,14 @@
 
       workspace = [
         "desc:LG Electronics LG Ultra HD 0x00043EAD, 1"
+        "desc:LG Electronics LG HDR 4K 0x00020F5B, 2"
+        "desc:LG Electronics LG HDR 4K 0x00020F5B, 3"
         "desc:LG Electronics LG Ultra HD 0x00043EAD, 4"
         "desc:LG Electronics LG Ultra HD 0x00043EAD, 5"
-        "desc:LG Electronics LG HDR 4K 0x00020F5B, 2"
-        "desc:LG Electronics LG HDR 4K 0x00020F5B, 7"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 6"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 7"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 8"
+        "desc:LG Electronics LG Ultra HD 0x00043EAD, 9"
       ];
 
       windowrulev2 = [

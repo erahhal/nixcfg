@@ -156,6 +156,34 @@ in
     # interfaces."wlp0s20f3".useDHCP = true;
   };
 
+  services.smokeping = {
+    enable = false;
+    hostName = "antikythera.localdomain";
+    targetConfig = ''
+      probe = FPing
+      menu = Top
+      title = Network Latency Grapher
+      remark = Welcome to SmokePing
+      + google
+      menu = Google
+      title = google Network
+      ++ googlesite
+      host = google.com
+      ++ googledns
+      host = 8.8.8.8
+      + netflix
+      menu = Netflix
+      title = Netlix Network
+      ++ vpn
+      host = lt.ovpn.netflix.net
+      + home
+      menu = Home
+      title = Home Network
+      ++ nasserver
+      host = nas.localdomain
+    '';
+  };
+
   programs.captive-browser = {
     enable = true;
     interface = "wlp0s20f3";
@@ -289,7 +317,8 @@ in
       #   changing the governor.
       # Default: <none>
 
-      #CPU_SCALING_GOVERNOR_ON_AC=balance_power
+      # CPU_SCALING_GOVERNOR_ON_AC = "balance_power";
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
       # Set the min/max frequency available for the scaling governor.
@@ -321,7 +350,8 @@ in
       #   EPP: amd-pstate driver in active mode ('amd-pstate-epp') as of kernel 6.3
       # Default: balance_performance (AC), balance_power (BAT)
 
-      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
+      # CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
       CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
 
       # Set Intel CPU P-state performance: 0..100 (%).
