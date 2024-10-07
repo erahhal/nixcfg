@@ -103,7 +103,6 @@ in
         brightnessctl
         dconf
         docker-compose
-        gparted
         man-pages
         samba # to get rid of wine ntml_auth errors
         speedtest-cli

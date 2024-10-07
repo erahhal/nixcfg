@@ -1,10 +1,10 @@
 { inputs, pkgs, hostParams, ... }:
 
 let
-  hyprland = pkgs.hyprland;
+  # hyprland = pkgs.hyprland;
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
@@ -241,7 +241,7 @@ in
         "systemctl --user restart swaynotificationcenter"
         "systemctl --user restart network-manager-applet"
         "systemctl --user restart wlsunset"
-        "systemctl --user restart kanshi"
+        # "systemctl --user restart kanshi"
         ## Don't start on load - still causes issues with lost keystrokes
         # "systemctl --user restart fcitx5-daemon"
         ## hyprlock currently broken

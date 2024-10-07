@@ -6,9 +6,9 @@
   boot.initrd.kernelModules = [ "amdgpu" ];
 
   hardware = {
-    opengl = {
+    graphics = {
       # Needed for Steam
-      driSupport32Bit = true;
+      enable32Bit = true;
     };
   };
 

@@ -4,7 +4,7 @@
 
 pkgs.symlinkJoin {
   name = "gnome-calculator";
-  paths = [ pkgs.gnome3.gnome-calculator ];
+  paths = [ pkgs.gnome-calculator ];
   buildInputs = [ pkgs.makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/gnome-calculator \

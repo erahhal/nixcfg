@@ -1,9 +1,9 @@
 { inputs, hostParams, pkgs, userParams, ... }:
 let
-  hyprland = pkgs.hyprland;
+  # hyprland = pkgs.hyprland;
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
   # is able to still connected to hyprland even though the socket changed.

@@ -14,7 +14,7 @@ in
     _module.args.userParams = userParams;
 
     imports = [
-      ../../home/profiles/protonmail-bridge.nix
+      # ../../home/profiles/protonmail-bridge.nix
       ./launch-apps-config-hyprland.nix
     ];
 
@@ -47,7 +47,7 @@ in
         ## Desktop
         cool-retro-term
         thunderbird
-        transmission-gtk
+        transmission_4-gtk
 
         ## arduino
         platformio

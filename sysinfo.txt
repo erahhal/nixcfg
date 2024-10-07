@@ -1,0 +1,310 @@
+Hyprland, built from branch main at commit 0f594732b063a90d44df8c5d402d658f27471dfe  (props: bump version to 0.43.0).
+Date: 2024-09-08
+Tag: v0.43.0, commits: 0f594732b063a90d44df8c5d402d658f27471dfe
+
+flags: (if any)
+
+
+System Information:
+System name: Linux
+Node name: antikythera
+Release: 6.10.10
+Version: #1-NixOS SMP PREEMPT_DYNAMIC Thu Sep 12 09:13:13 UTC 2024
+
+
+GPU information: 
+c4:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. [AMD/ATI] Phoenix3 [1002:1900] (rev d2) (prog-if 00 [VGA controller])
+
+
+os-release: ANSI_COLOR="1;34"
+BUG_REPORT_URL="https://github.com/NixOS/nixpkgs/issues"
+BUILD_ID="24.11.20240913.345c263"
+DOCUMENTATION_URL="https://nixos.org/learn.html"
+HOME_URL="https://nixos.org/"
+ID=nixos
+IMAGE_ID=""
+IMAGE_VERSION=""
+LOGO="nix-snowflake"
+NAME=NixOS
+PRETTY_NAME="NixOS 24.11 (Vicuna)"
+SUPPORT_URL="https://nixos.org/community.html"
+VERSION="24.11 (Vicuna)"
+VERSION_CODENAME=vicuna
+VERSION_ID="24.11"
+
+
+plugins:
+
+======Config-Start======
+
+
+Config File: /home/erahhal/.config/hypr/hyprland.conf: Read Succeeded
+exec-once = /nix/store/4a86f7kq7757fjwf5zzwk0jxixn4330n-dbus-1.14.10/bin/dbus-update-activation-environment --systemd DISPLAY HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && systemctl --user stop hyprland-session.target && systemctl --user start hyprland-session.target
+$mod=SUPER
+$screenshotarea=/nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl keyword animation "fadeOut,0,0,default"; grimblast --notify copysave area; /nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl keyword animation "fadeOut,1,4,default"
+$term=/nix/store/07y3fqc49kyll7m48i4x7c5d6d7mb3a8-foot-1.18.1/bin/foot
+animations {
+  animation=border, 1, 2, default
+  animation=fade, 1, 4, default
+  animation=windows, 1, 3, default, popin 80%
+  animation=workspaces, 1, 2, default, slide
+}
+
+debug {
+  disable_logs=false
+}
+
+decoration {
+  col.shadow=0x55000000
+  drop_shadow=false
+  rounding=0
+  shadow_ignore_window=1
+  shadow_offset=2 2
+  shadow_range=4
+  shadow_render_power=1
+}
+
+device {
+  name=tpps/2-elan-trackpoint
+  sensitivity=-0.300000
+  tap-to-click=false
+}
+
+dwindle {
+  no_gaps_when_only=1
+  preserve_split=1
+  pseudotile=1
+}
+
+
+general {
+  border_size=1
+  col.active_border=rgba(4a7697ff)
+  col.inactive_border=rgba(2b2b2bff)
+  gaps_in=0
+  gaps_out=0
+  no_border_on_floating=true
+  resize_on_border=true
+}
+
+gestures {
+  workspace_swipe=1
+  workspace_swipe_forever=1
+}
+
+group {
+  groupbar {
+    col.active=rgba(285577ff)
+    col.inactive=rgba(2b2b2bff)
+    font_family=DejaVu Sans
+    font_size=10
+    height=22
+    text_color=rgba(ffffffff)
+  }
+  col.border_active=rgba(285577ff)
+  col.border_inactive=rgba(2b2b2bff)
+  insert_after_current=false
+}
+
+input {
+  touchpad {
+    clickfinger_behavior=true
+    disable_while_typing=true
+    scroll_factor=0.300000
+    tap-to-click=false
+  }
+  accel_profile=adaptive
+  float_switch_override_focus=0
+  follow_mouse=2
+  kb_layout=us, cn
+  kb_options=ctrl:nocaps
+  repeat_delay=255
+  repeat_rate=50
+}
+
+
+misc {
+  disable_hyprland_logo=true
+  disable_splash_rendering=true
+  focus_on_activate=true
+  force_default_wallpaper=0
+  mouse_move_focuses_monitor=false
+  vfr=true
+}
+
+xwayland {
+  force_zero_scaling=true
+}
+bind=$mod, E, exec, if systemctl --user is-active --quiet fcitx5-daemon; then systemctl --user stop fcitx5-daemon; else systemctl --user start fcitx5-daemon; fi
+bind=$mod, Return, exec, $term
+bind=$mod, X, exec, /nix/store/0a809m9jbyz2gg47vnbxab35k6fa3nmh-hyprlock.sh
+bind=$mod, A, exec, /nix/store/ysja336fmkaz0gcmxlk1hfqh5xghnjgv-hyprpicker-0.3.0/bin/hyprpicker -a --format=hex
+bind=$mod, C, exec, /nix/store/z39a808pml47qdhd9frv1ingajmzb4az-hyprland-kill-active.sh
+bind=$mod_SHIFT, C, exec, /nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl -j activewindow | /nix/store/x8jzsy0y1zk30mcvav2rh6lrw1gbzzy3-jq-1.7.1-bin/bin/jq '.pid' | /nix/store/fnq94lw19pnwdl9p8zhfrad4jmlgxlbr-findutils-4.10.0/bin/xargs -L 1 kill -9
+bind=$mod, R, exec, /nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl reload
+bind=$mod, Y, exec, systemctl --user restart kanshi
+bind=$mod, T, exec, /nix/store/afn8w6vjrwmdiyrldpnzck2vgq2i8np5-hyprland-toggle-group.sh
+bind=$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '/nix/store/5d15xc44q6m0y3a38gqwr2r4nsggnpi0-exit-hyprland'
+bind=$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode "default"'
+bind=$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'
+bind=$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '/nix/store/0a809m9jbyz2gg47vnbxab35k6fa3nmh-hyprlock.sh suspend'
+bind=$mod_SHIFT_CTRL, L, movecurrentworkspacetomonitor, r
+bind=$mod_SHIFT_CTRL, H, movecurrentworkspacetomonitor, l
+bind=$mod_SHIFT_CTRL, K, movecurrentworkspacetomonitor, u
+bind=$mod_SHIFT_CTRL, J, movecurrentworkspacetomonitor, d
+bind=$mod, N, exec, /nix/store/qccddsda35rmsfd13dsslhlhg0z1s5mh-SwayNotificationCenter-0.10.1/bin/swaync-client -t -sw
+bind=$mod_SHIFT, N, exec, /nix/store/qccddsda35rmsfd13dsslhlhg0z1s5mh-SwayNotificationCenter-0.10.1/bin/swaync-client -C -sw
+bind=$mod_SHIFT_CTRL, N, exec, /nix/store/qccddsda35rmsfd13dsslhlhg0z1s5mh-SwayNotificationCenter-0.10.1/bin/swaync-client -d -sw
+bind=SHIFT_CTRL, 3, exec, /nix/store/hkcywj1yjgcyfj1n4sh32kzsxs56hwsk-grim-1.4.1/bin/grim -o $(/nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl -j activeworkspace | jq -r '.monitor') - | /nix/store/189v8mq211l0csxn5iispfrgncv2m714-wl-clipboard-2.2.1/bin/wl-copy -t image/png
+bind=SHIFT_CTRL, 4, exec, /nix/store/hkcywj1yjgcyfj1n4sh32kzsxs56hwsk-grim-1.4.1/bin/grim -g "$(/nix/store/4ciy4n2nw7kj6rmrvij2x44v7v9m142k-slurp-1.5.0/bin/slurp -d)" - | /nix/store/189v8mq211l0csxn5iispfrgncv2m714-wl-clipboard-2.2.1/bin/wl-copy -t image/png
+bind=SHIFT_CTRL, 5, exec, /nix/store/hkcywj1yjgcyfj1n4sh32kzsxs56hwsk-grim-1.4.1/bin/grim -g "$(/nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl -j activewindow | jq -r '.at | join(",")') $(/nix/store/vvyki0akv4ldaiybps664q3p8vj5s27i-hyprland-0.43.0/bin/hyprctl -j activewindow | jq -r '.size | join("x")')" - | /nix/store/189v8mq211l0csxn5iispfrgncv2m714-wl-clipboard-2.2.1/bin/wl-copy -t image/png
+bind=$mod_CTRL, L, resizeactive, 10 0
+bind=$mod_CTRL, H, resizeactive, -10 0
+bind=$mod_CTRL, K, resizeactive, 0 -10
+bind=$mod_CTRL, J, resizeactive, 0 10
+bind=$mod, H, exec, /nix/store/cib0ym9q3q3jhfjpadlcznc631p12bvd-hyprland-move-left.sh
+bind=$mod, L, exec, /nix/store/c2rpj5liw2gb5b6qs8grbc68kw34fa38-hyprland-move-right.sh
+bind=$mod, K, movefocus, u
+bind=$mod, J, movefocus, d
+bind=$mod_SHIFT, L, movewindow, r
+bind=$mod_SHIFT, H, movewindow, l
+bind=$mod_SHIFT, K, movewindow, u
+bind=$mod_SHIFT, J, movewindow, d
+bind=$mod, F, fullscreen
+bind=$mod, SPACE, togglefloating
+bind=$mod, P, exec, /nix/store/w4xrwdaijpf2f7rl275n3swkfllgk8fs-rofi-1.7.5+wayland3/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi
+bind=$mod, Escape, exec, wlogout -p layer-shell
+bind=$mod, O, exec, run-as-service wl-ocr
+bind=$mod, S, submap, resize
+bind=, Print, exec, $screenshotarea
+bind=CTRL, Print, exec, grimblast --notify --cursor copysave output
+bind=$mod_SHIFT_CTRL, R, exec, grimblast --notify --cursor copysave output
+bind=ALT, Print, exec, grimblast --notify --cursor copysave screen
+bind=$mod_SHIFT_ALT, R, exec, grimblast --notify --cursor copysave screen
+bind=$mod, bracketleft, workspace, m-1
+bind=$mod, bracketright, workspace, m+1
+bind=$mod_SHIFT, braceleft, focusmonitor, l
+bind=$mod_SHIFT, braceright, focusmonitor, r
+bind=, mouse:274, exec, ;
+bind=$mod, 1, workspace, 1
+bind=$mod_SHIFT, 1, movetoworkspace, 1
+bind=$mod, 2, workspace, 2
+bind=$mod_SHIFT, 2, movetoworkspace, 2
+bind=$mod, 3, workspace, 3
+bind=$mod_SHIFT, 3, movetoworkspace, 3
+bind=$mod, 4, workspace, 4
+bind=$mod_SHIFT, 4, movetoworkspace, 4
+bind=$mod, 5, workspace, 5
+bind=$mod_SHIFT, 5, movetoworkspace, 5
+bind=$mod, 6, workspace, 6
+bind=$mod_SHIFT, 6, movetoworkspace, 6
+bind=$mod, 7, workspace, 7
+bind=$mod_SHIFT, 7, movetoworkspace, 7
+bind=$mod, 8, workspace, 8
+bind=$mod_SHIFT, 8, movetoworkspace, 8
+bind=$mod, 9, workspace, 9
+bind=$mod_SHIFT, 9, movetoworkspace, 9
+bind=$mod, 0, workspace, 10
+bind=$mod_SHIFT, 0, movetoworkspace, 10
+bind=,switch:on:Lid Switch,exec,/nix/store/0a809m9jbyz2gg47vnbxab35k6fa3nmh-hyprlock.sh suspend
+bindl=, XF86AudioPlay, exec, playerctl play-pause
+bindl=, XF86AudioPrev, exec, playerctl previous
+bindl=, XF86AudioNext, exec, playerctl next
+bindl=, XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindl=, XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindle=, XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 6%+
+bindle=, XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 6%-
+bindle=, XF86MonBrightnessUp, exec, light -A 5
+bindle=, XF86MonBrightnessDown, exec, light -U 5
+bindm=$mod, mouse:272, movewindow
+bindm=$mod, mouse:273, resizewindow
+bindm=$mod_ALT, mouse:272, resizewindow
+exec=/nix/store/mgjbm4h0cgfnlwwm5wwkrl19n8cm3bxd-hyprland-wallpaper
+exec=pkill blueman-applet; /nix/store/faa34wcxcn0i24sxdhf32pvn89sadjjd-blueman-2.4.3/bin/blueman-applet
+exec=systemctl --user restart polkit-gnome-authentication-agent-1
+exec=systemctl --user restart swaynotificationcenter
+exec=systemctl --user restart network-manager-applet
+exec=systemctl --user restart wlsunset
+exec=systemctl --user restart kanshi
+exec=systemctl --user stop sway-idle
+exec=systemctl --user restart hypridle
+exec=/nix/store/6lxxgjsjigy3fvligq6mx5b633p75s10-hyprland-bitwarden-resize
+exec-once=[workspace 2 silent] foot tmux a -dt code
+exec-once=[workspace 4 silent] spotify
+exec-once=[workspace 4 silent] brave
+exec-once=[workspace 6 silent] signal-desktop
+exec-once=[workspace 6 silent] telegram-desktop
+exec-once=[workspace 6 silent] whatsapp-for-linux
+exec-once=[workspace 7 silent] discord
+exec-once=[workspace 7 silent] element-desktop
+exec-once=[workspace 5 silent] firefox
+exec-once=/nix/store/81ylgh29a5nnaxd42nbdykxbhlv2qmip-xdg-desktop-portal-hyprland
+exec-once=tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"
+exec-once=/nix/store/ah183zhigv1x0a7cms0z759r1cvk4s4h-waybar-0.10.4/bin/waybar
+monitor=eDP-1,preferred,auto,1.8
+monitor=desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6
+monitor=desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5
+monitor=desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5
+windowrulev2=workspace 2, silent, class:^(kitty)$
+windowrulev2=workspace 2, silent, class:^(foot)$
+windowrulev2=workspace 3, silent, class:^(Slack)$
+windowrulev2=workspace 4, silent, title:^(Spotify)$
+windowrulev2=workspace 4, silent, class:^(brave-browser)$
+windowrulev2=workspace 5, silent, class:^(firefox)$
+windowrulev2=workspace 6, class:^(signal)$
+windowrulev2=workspace 6, class:^(org.telegram.desktop)$
+windowrulev2=workspace 6, class:^(whatsapp-for-linux)$
+windowrulev2=workspace 7, class:^(discord)$
+windowrulev2=workspace 7, class:^(Element)$
+windowrulev2=workspace 1, silent, class:^(chromium-browser)$
+windowrulev2=float, title:^(KCalc)$
+windowrulev2=float, title:^(Media viewer)$
+windowrulev2=float, title:^(Picture-in-Picture)$
+windowrulev2=pin, title:^(Picture-in-Picture)$
+windowrulev2=workspace special silent, title:^(Firefox — Sharing Indicator)$
+windowrulev2=workspace special silent, title:^(.*is sharing (your screen|a window).)$
+windowrulev2=stayfocused, class:^(zenity)$
+windowrulev2=float, initialClass:^(mpv)$
+windowrulev2=float, class:^(mpv)$
+windowrulev2=fullscreen, initialClass:^(mpv)$
+windowrulev2=fullscreen, class:^(mpv)$
+windowrulev2=idleinhibit focus, initialClass:^(mpv)$
+windowrulev2=idleinhibit focus, class:^(mpv)$
+windowrulev2=idleinhibit focus, title:^(Zoom)(.*)$
+windowrulev2=idleinhibit fullscreen, class:^(firefox)$
+windowrulev2=idleinhibit fullscreen, class:^(chromium)$
+windowrulev2=idleinhibit fullscreen, class:^(brave)$
+windowrulev2=float, initialTitle:^(Bitwarden)$
+windowrulev2=float, initialTitle:^(_crx_nngceckbapebfimnlniiiahkandclblb)$
+windowrulev2=center, initialTitle:^(_crx_nngceckbapebfimnlniiiahkandclblb)$
+windowrulev2=size 400 600, initialTitle:^(_crx_nngceckbapebfimnlniiiahkandclblb)$
+windowrulev2=suppressevent maximize, class:^(firefox)$
+windowrulev2=fullscreen,class:flameshot
+windowrulev2=float,class:flameshot
+windowrulev2=monitor 0,class:flameshot
+windowrulev2=move 0 0,class:flameshot
+windowrulev2=noanim,class:flameshot
+windowrulev2=noborder,class:flameshot
+windowrulev2=rounding 0,class:flameshot
+windowrulev2=stayfocused, class:^(BambuStudio)$,title:^()$
+windowrulev2=suppressevent activate, class:^(BambuStudio)$,title:^()$
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 1
+workspace=desc:LG Electronics LG HDR 4K 0x00020F5B, 2
+workspace=desc:LG Electronics LG HDR 4K 0x00020F5B, 3
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 4
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 5
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 6
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 7
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 8
+workspace=desc:LG Electronics LG Ultra HD 0x00043EAD, 9
+# repeating binds (will repeat when key is held)
+submap = resize
+binde = , right, resizeactive, 10 0
+binde = , left, resizeactive, -10 0
+binde = , up, resizeactive, 0 -10
+binde = , down, resizeactive, 0 10
+bind = , escape, submap, reset
+submap = reset
+
+======Config-End========
+

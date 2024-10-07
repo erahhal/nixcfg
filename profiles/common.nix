@@ -282,6 +282,12 @@
     enable = if userParams.shell == "zsh" then true else false;
   };
 
+  programs.gamescope = {
+    enable = true;
+    # make sure gamescope runs at full performance
+    capSysNice = true;
+  };
+
   environment.systemPackages = with pkgs; [
     appimage-run
     at-spi2-core
@@ -310,6 +316,7 @@
     git-lfs
     gnumake
     gnupg
+    gparted # need to be installed as system, not user package
     htop
     hwinfo
     iftop

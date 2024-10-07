@@ -55,7 +55,8 @@ in
       ./kanshi.nix
       ./launch-apps-config-sway.nix
 
-      ../../profiles/nfs-mounts.nix
+      # ../../profiles/nfs-mounts.nix
+      ../../profiles/smb-mounts.nix
     ];
 
   # Needed to setup passwords
@@ -93,8 +94,6 @@ in
 
   ## Latest kernel doesn't always work with ZFS
   # boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   # --------------------------------------------------------------------------------------
   # Device specific

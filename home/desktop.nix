@@ -3,6 +3,7 @@
 let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
   # bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
+  bambu-studio-hyprland = pkgs.callPackage ../pkgs/bambu-studio-hyprland { inputs = inputs; };
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
   kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
@@ -344,7 +345,7 @@ in
         ## apps
         audacity
         unstable.bitwarden
-        bambu-studio
+        bambu-studio-hyprland
         brave
         czkawka
         unstable.digikam
@@ -358,7 +359,7 @@ in
         # pr67576-gimp-wayland.gimp
         glava
         endeavour       # replaces gnome.gnome-todo
-        gnome3.gnome-calculator
+        gnome-calculator
         inkscape
         joplin-desktop
         kcalc
@@ -395,16 +396,16 @@ in
 
         ## file managers
         # dolphin          # Doesn't render very well
-        gnome3.nautilus
+        nautilus
         krusader
         xfce.thunar
-        cinnamon.nemo
+        nemo
 
         # unstable.ardour
         flavours
         adwaita-icon-theme
-        gnome3.eog # image viewer
-        gnome3.evince # PDF viewer
+        eog # image viewer
+        evince # PDF viewer
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application

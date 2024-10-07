@@ -99,7 +99,7 @@
       ## @TODO: This should def be loaded at runtime.
       #         This is cofigured in hyprland config.
       ## @TODO: Verify that it's overriden in hyprland.
-      XDG_CURRENT_DESKTOP = "sway";
+      # XDG_CURRENT_DESKTOP = "sway";
 
       # ---------------------------------------------------------------------------
       # Wayland-related
