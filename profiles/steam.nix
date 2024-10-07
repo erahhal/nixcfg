@@ -4,7 +4,9 @@
     enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    gamescopeSession.enable = true;
+    ## provides steam-gamescope script
+    ## Instead, use custom steam-gamescope script in ~/Scripts folder
+    # gamescopeSession.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
