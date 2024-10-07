@@ -56,7 +56,7 @@ in
                 # status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "3985,1440";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };
@@ -119,7 +119,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1678,1440";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };
@@ -141,7 +141,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1678,1440";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };
@@ -228,7 +228,7 @@ in
         #         status = "enable";
         #         mode = "2880x1800@90.000999";
         #         position = "1706,100";
-        #         scale = 1.75;
+        #         scale = 1.8;
         #       }
         #     ];
         #     exec = [
@@ -261,7 +261,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1287,1440";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };
@@ -290,7 +290,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1287,2149";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };
@@ -313,7 +313,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "900,1440";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
           };
@@ -341,7 +341,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1287,2149";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
             exec = [
@@ -359,9 +359,7 @@ in
             name = "desk-netflix-lg-dual";
             outputs = [
               {
-                # criteria = "LG Electronics LG ULTRAWIDE 0x0000FAF6";
-                # criteria = "LG Electronics LG ULTRAWIDE 0x0000DD5F";
-                criteria = "LG Electronics LG ULTRAWIDE 0x00006B78";
+                criteria = "LG Electronics LG ULTRAWIDE 0x0001ADA5";
                 status = "enable";
                 mode = "3440x1440@49.987000Hz";
                 position = "420,709";
@@ -372,7 +370,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1287,2149";
-                scale = 1.75;
+                scale = 1.8;
               }
             ];
             exec = [
@@ -401,7 +399,7 @@ in
                 status = "enable";
                 mode = "2880x1800@90.000999";
                 position = "1287,2149";
-                scale = 1.75;
+                scale = 1.8;
               }
               {
                 criteria = "LG Electronics 16MQ70 204NZKZ005285";

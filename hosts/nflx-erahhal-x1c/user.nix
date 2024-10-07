@@ -2,7 +2,6 @@
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
-  vespa-cli = pkgs.callPackage ../../pkgs/vespa-cli {};
 in
 {
   imports = [

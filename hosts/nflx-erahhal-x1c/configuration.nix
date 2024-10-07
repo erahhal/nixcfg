@@ -35,6 +35,7 @@ in
       ../../profiles/steam.nix
 
       # host specific
+      ../../modules/snapclient.nix
       ../../profiles/mullvad.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix
@@ -152,9 +153,9 @@ in
   '';
 
   # Enable fingerprint reading daemon.
-  services.fprintd.enable = true;
-  security.pam.services.login.fprintAuth = true;
-  security.pam.services.xscreensaver.fprintAuth = true;
+  services.fprintd.enable = false;
+  security.pam.services.login.fprintAuth = false;
+  security.pam.services.xscreensaver.fprintAuth = false;
 
   services.smokeping = {
     enable = false;
@@ -193,6 +194,12 @@ in
       3000
       8080
     ];
+  };
+
+  services.snapclient = {
+    enable = false;
+    username = userParams.username;
+    serverHost = "partymusic.localdomain";
   };
 
   # --------------------------------------------------------------------------------------

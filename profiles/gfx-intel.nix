@@ -23,7 +23,6 @@
   hardware = {
     opengl = {
       enable = true;
-      driSupport = true;
       # Needed for Steam
       driSupport32Bit = true;
       extraPackages = with pkgs; [
