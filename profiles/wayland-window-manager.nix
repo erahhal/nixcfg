@@ -105,9 +105,9 @@
       # Wayland-related
       # ---------------------------------------------------------------------------
       ## Firefox: use Wayland renderer
-      MOZ_ENABLE_WAYLAND = "1";
+      # MOZ_ENABLE_WAYLAND = "1";
       ## set to 1 to always allocate planes without modifiers, this can fix certain modeset failures because of bandwidth restrictions.
-      WLR_DRM_NO_MODIFIERS = "1";
+      # WLR_DRM_NO_MODIFIERS = "1";
 
       # CLUTTER_BACKEND = "wayland";
       ## Sway doesn't load with this
@@ -119,9 +119,9 @@
       ## Firefox: Use xinput2 which enables touchscreen gestures such as smooth touchpad scrolling
       MOZ_USE_XINPUT2 = "1";
       ## Firefox: Use GPU-accelerated 2D rendering engine written in Rust
-      MOZ_WEBRENDER = "1";
+      # MOZ_WEBRENDER = "1";
 
-      SDL_VIDEODRIVER = "x11";
+      # SDL_VIDEODRIVER = "x11";
 
       ## using "wayland" makes menus disappear in kde apps
       ## UPDATE: Menus seem to work, but some buttons don't work unless the window is floated. (Seems to be fixed by setting QT_AUTO_SCREEN_SCALE_FACTOR=1? )

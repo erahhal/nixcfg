@@ -208,7 +208,6 @@ in
       "$term" = "${pkgs.foot}/bin/foot";
 
       exec-once = [
-        xdg-desktop-portal-hyprland
         # Update hyprland signature so hyprctl works with long-lived tmux sessions
         # Only works with new tmux panes, not existing ones
         ''tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"''
@@ -237,6 +236,7 @@ in
         #"pkill flameshot; XDG_CURRENT_DESKTOP=sway ${pkgs.flameshot}/bin/flameshot"
         ## Running as a service doesn't wor with clipboard
         # "systemctl --user restart flameshot"
+        "systemctl --user restart xdg-desktop-portal-hyprland"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
         "systemctl --user restart swaynotificationcenter"
         "systemctl --user restart network-manager-applet"
@@ -268,19 +268,24 @@ in
       };
 
       env = [
-        # "GDK_SCALE, 2"
-        # "QT_SCALE_FACTOR, 1.6"
-        # "XCURSOR_SIZE, 32"
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+
+        "GDK_BACKEND,wayland,x11,*"
+        "QT_QPA_PLATFORM,wayland;xcb"
+        "SDL_VIDEODRIVER,wayland"
+        "CLUTTER_BACKEND,wayland"
+
+        "QT_AUTO_SCREEN_SCALE_FACTOR,1"
+        "QT_QPA_PLATFORM,wayland;xcb"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+        "QT_QPA_PLATFORMTHEME,qt5ct"
       ];
 
       misc = {
-        # enable Variable Frame Rate
-        # No longer an option?
-        # @TODO: what has changed here?
-        # no_vfr = 0;
-
         # See: https://wiki.hyprland.org/Configuring/Perfomance/
-        vfr = true;
+        # vfr = true;
 
         # Don't show anime girl in background
         disable_hyprland_logo = true;

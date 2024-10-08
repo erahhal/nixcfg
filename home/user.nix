@@ -157,20 +157,16 @@ in
         ## python
         pyright
         s-tui
-        (let
-          # my-docker-compose = ps: ps.callPackage ../pkgs/docker-compose {};
-          python-with-packages = python3.withPackages(ps: with ps; [
-            docker
-            docker-compose
-            lxml
-            pandas
-            pip
-            pyyaml
-            requests
-            virtualenv
-          ]);
-        in
-        python-with-packages)
+        (python3.withPackages(python-packages: with python-packages; [
+          docker
+          docker-compose
+          lxml
+          pandas
+          pip
+          pyyaml
+          requests
+          virtualenv
+        ]))
 
         ## Unfree apps
         obsidian
