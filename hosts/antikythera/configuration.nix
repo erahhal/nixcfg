@@ -126,6 +126,19 @@ in
     ];
   };
 
+  services.zfs = {
+    trim.enable = true;
+    autoScrub = {
+      enable = true;
+      pools = [ "rpool" ];
+    };
+    autoSnapshot = {
+      enable = true;
+      frequent = 8;
+      monthly = 1;
+    };
+  };
+
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ thinkpad-dock-udev-rules ];
 

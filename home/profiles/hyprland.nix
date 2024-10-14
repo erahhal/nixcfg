@@ -369,12 +369,17 @@ in
         # keep floating dimentions while tiling
         pseudotile = 1;
         preserve_split = 1;
-        # aka monocle mode
-        no_gaps_when_only = 1;
       };
 
       layerrule = [
         # "blur, waybar"
+      ];
+
+      workspace = [
+        # Don't show border for workspaces with a single tiled window
+        "w[t1], border:false"
+        # Don't show border for workspaces with a single grouped window
+        "w[g1], border:false"
       ];
 
       windowrulev2 = [
