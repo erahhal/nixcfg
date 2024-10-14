@@ -29,6 +29,9 @@ in
                 scale = 1.8;
               }
             ];
+            exec = [
+              "${hyprctl} dispatch dpms on"
+            ];
           };
         }
         {
@@ -99,6 +102,7 @@ in
               "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${home-monitor-left-hyprland}"
               "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${home-monitor-left-hyprland}"
               "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch dpms on"
             ];
           };
         }

@@ -23,8 +23,8 @@ switch:
 	make clear-mimeapps
 	make clear-gpu-cache
 	make clear-gtkrc
-	nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --flake .#${HOSTNAME} -L |& ${NOM} --json
-	# nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
+	# nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --flake .#${HOSTNAME} -L |& ${NOM} --json
+	nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before
 	NEW_THEME=$$(cat ~/.system-theme) ;\
