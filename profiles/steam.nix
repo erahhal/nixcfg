@@ -12,11 +12,28 @@
         ''-w $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .width")''
         ''-H $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")''
         ''-h $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")''
-        ''-f''
-        ''-r 60''
-        ''--expose-wayland''
-        ''--backend wayland''
+
+        ## Full screen
+        ''--fullscreen''
+        ''--borderless''
+
+        ''--backend sdl''
+        # ''--backend wayland''
+
+        ## Without it, the mouse won't move, or will be bound by window
+        ## @TODO: Doesn't seem to work
         ''--force-grab-cursor''
+        ## Scale cursor properly when --force-grab-cursor used
+        ''--cursor-scale-height $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")''
+
+        ## Game framerate
+        # ''-r 60''
+
+        ''--adaptive-sync''
+
+        ## Allow wayland apps/games to run
+        # ''--expose-wayland''
+
       ];
     };
   };
