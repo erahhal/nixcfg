@@ -1,4 +1,51 @@
-{ pkgs, userParams, ... }:
+{ pkgs, inputs, lib, userParams, ... }:
+let
+  # hyprland = pkgs.hyprland;
+  # hyprland = pkgs.trunk.hyprland;
+  # hyprland = pkgs.unstable.hyprland-patched;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  steam-gamescope-runtime-paths = lib.makeBinPath [
+    hyprland
+    pkgs.jq
+    pkgs.gamescope
+  ];
+  steam-gamescope-script = pkgs.writeShellScriptBin "steam-gamescope-script" ''
+    WIDTH=$(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .width")
+    HEIGHT=$(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")
+    gamescope \
+      --steam \
+      -W $WIDTH \
+      -w $WIDTH \
+      -H $HEIGHT \
+      -h $HEIGHT \
+      --fullscreen \
+      --borderless \
+      --backend wayland \
+      --force-grab-cursor \
+      --cursor-scale-height $HEIGHT \
+      --adaptive-sync \
+      -- steam -tenfoot -pipewire-dmabuf
+  '';
+in
+let
+  steam-gs = pkgs.stdenv.mkDerivation {
+    name = "steam-gs";
+
+    dontUnpack = true;
+
+    nativeBuildInputs = [
+      pkgs.makeWrapper
+    ];
+
+    installPhase = ''
+      install -Dm755 ${steam-gamescope-script}/bin/steam-gamescope-script $out/bin/steam-gs
+      # cp -r ${pkgs.bambu-studio}/share $out/
+
+      wrapProgram $out/bin/steam-gs \
+        --suffix PATH : ${steam-gamescope-runtime-paths}
+    '';
+  };
+in
 {
   programs.steam = {
     enable = true;
@@ -6,35 +53,6 @@
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     gamescopeSession = {
       enable = true;
-      ## Run wayland at native resolution
-      args = [
-        ''-W $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .width")''
-        ''-w $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .width")''
-        ''-H $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")''
-        ''-h $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")''
-
-        ## Full screen
-        ''--fullscreen''
-        ''--borderless''
-
-        ''--backend sdl''
-        # ''--backend wayland''
-
-        ## Without it, the mouse won't move, or will be bound by window
-        ## @TODO: Doesn't seem to work
-        ''--force-grab-cursor''
-        ## Scale cursor properly when --force-grab-cursor used
-        ''--cursor-scale-height $(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")''
-
-        ## Game framerate
-        # ''-r 60''
-
-        ''--adaptive-sync''
-
-        ## Allow wayland apps/games to run
-        # ''--expose-wayland''
-
-      ];
     };
   };
 
@@ -45,34 +63,16 @@
     protonup
     steam-tui
     steamcmd
+    steam-gs
   ];
 
   home-manager.users.${userParams.username} = {
-    xdg.desktopEntries.steam = {
-      name = "Steam";
-      exec = "steam-gamescope";
+    xdg.desktopEntries.steam-gamescope = {
+      name = "SteamGs";
+      exec = "steam-gs";
       terminal = false;
       type = "Application";
+      icon = "steam";
     };
   };
-
-  # Kinda works with portal2, but with serious input lag:
-  # env DXVK_ASYNC=1 SDL_VIDEODRIVER=x11 gamemoderun gamescope -W 3840 -H 2160 -r 160 -o 160 --borderless --fullscreen --rt --steam  -- %command% |& tee /tmp/game.log
-
-  # nixpkgs.config.packageOverrides = pkgs: {
-  #   steam = pkgs.steam.override {
-  #     extraPkgs = pkgs: with pkgs; [
-  #       xorg.libXcursor
-  #       xorg.libXi
-  #       xorg.libXinerama
-  #       xorg.libXScrnSaver
-  #       libpng
-  #       libpulseaudio
-  #       libvorbis
-  #       stdenv.cc.cc.lib
-  #       libkrb5
-  #       keyutils
-  #     ];
-  #   };
-  # };
 }

@@ -55,8 +55,8 @@ in
       ./kanshi.nix
       ./launch-apps-config-sway.nix
 
-      # ../../profiles/nfs-mounts.nix
-      ../../profiles/smb-mounts.nix
+      ../../profiles/nfs-mounts.nix
+      # ../../profiles/smb-mounts.nix
     ];
 
   # Needed to setup passwords
