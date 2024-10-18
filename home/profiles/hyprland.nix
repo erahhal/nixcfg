@@ -187,6 +187,18 @@ in
     nag-graphical
   ];
 
+  # Not sure why max_fps is duplicated. Got this example from someone else
+  # "allow_token_by_default" causes the share dialog checkbox to be "checked".
+  # it's not visibly checked though. It's supposed to prevent the dialog
+  # from popping up 3 times.
+  xdg.configFile."hypr/xdph.conf".text = ''
+    screenscopy {
+      max_fps = 60
+      max_fps = 60
+      allow_token_by_default = true
+    }
+  '';
+
   xdg.configFile."hypr/hyprpaper.conf".text = if builtins.hasAttr "wallpaper" hostParams then ''
     splash = false
     preload = ${hostParams.wallpaper}
@@ -216,11 +228,8 @@ in
         # "${inputs.waybar.packages.${pkgs.system}.waybar}/bin/waybar"
         # "${pkgs.hyprpaper}/bin/hyprpaper"
 
-        # @TODO
-        # 1. Is this already being set?
-        # 2. Is it being set BEFORE portals are executed?
-        # SEE: https://wiki.hyprland.org/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
-
+        ## 1. This is already being set by home-manager
+        ## SEE: https://wiki.hyprland.org/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
         # "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
         # "systemctl --user start clight"
@@ -407,7 +416,7 @@ in
         "fullscreen, class:^(mpv)$"
         "idleinhibit focus, initialClass:^(mpv)$"
         "idleinhibit focus, class:^(mpv)$"
-        "idleinhibit focus, title:^(Zoom)(.*)$"
+        "idleinhibit focus, class:^(zoom)$"
         "idleinhibit fullscreen, class:^(firefox)$"
 
         # @TODO: Make sure class matches for these two

@@ -48,6 +48,9 @@
   ## are responsible for starting sway-idle if needed
   systemd.user.services.hypridle.Install.WantedBy = lib.mkForce [ ];
 
+  ## Verbose
+  # systemd.user.services.hypridle.Service.ExecStart = lib.mkForce "${pkgs.hypridle}/bin/hypridle -v";
+
   home.packages = with pkgs; [
     hypridle
   ];

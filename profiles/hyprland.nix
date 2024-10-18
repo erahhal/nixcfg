@@ -4,6 +4,8 @@ let
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
   hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # portal = pkgs.xdg-desktop-portal-hyprland;
+  portal = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
   # is able to still connected to hyprland even though the socket changed.
@@ -20,8 +22,14 @@ in
   config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
     services.displayManager.sessionPackages = [hyprland ];
 
+    nix.settings = {
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    };
+
     programs.hyprland = {
       package = hyprland;
+      portalPackage = portal;
       enable = true;
 
       xwayland = {

@@ -84,14 +84,15 @@ in
   ## Latest kernel doesn't always work with ZFS
   # boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  ## Latest ZFS compatible kernel has problems with dual external displays
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-
   # --------------------------------------------------------------------------------------
   # Device specific
   # --------------------------------------------------------------------------------------
 
   time.timeZone = hostParams.timeZone;
+
+  ## Fixes microphone
+  ## See: https://askubuntu.com/questions/1283440/how-to-fix-ubuntu-incorrectly-seeing-the-internal-microphone-as-an-unplugged-h
+  # boot.blacklistedKernelModules = [ "snd-soc-dmic" "snd-acp3x-rn" "snd-acp3x-pdm-dma" ];
 
   # Prevent hanging when waiting for network to be up
   systemd.network.wait-online.anyInterface = true;
@@ -146,11 +147,7 @@ in
   };
 
   ## Sound support
-  ## @TODO: Are these required going forward or is this due to a breakage?
   hardware.enableAllFirmware = true;
-  boot.extraModprobeConfig = ''
-    options snd-intel-dspcfg dsp_driver=1
-  '';
 
   # Enable fingerprint reading daemon.
   services.fprintd.enable = false;

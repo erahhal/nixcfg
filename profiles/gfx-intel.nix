@@ -21,10 +21,8 @@
   };
 
   hardware = {
-    opengl = {
+    graphics = {
       enable = true;
-      # Needed for Steam
-      driSupport32Bit = true;
       extraPackages = with pkgs; [
         intel-media-driver
         vaapiVdpau
