@@ -99,7 +99,6 @@ in
     i3status
     wl-clipboard
     zenity
-    weston
     wdisplays
     wlr-randr
 

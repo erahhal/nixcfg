@@ -29,6 +29,7 @@ in
 
         ## Dev and tools
         android-studio
+        bitwig-studio
         blender-hip   # blender-hip is AMD hardware accelerated version of blender
         jetbrains.datagrip
         jetbrains.idea-ultimate
@@ -50,6 +51,8 @@ in
         transmission_4-gtk
 
         ## arduino
+        arduino
+        arduino-ide
         platformio
         teensy-loader-cli
         udev
@@ -58,14 +61,6 @@ in
         teensy-loader-gui
         teensyduino
 
-        ## python
-        ## Currently broken
-        # python39Packages.jupyter_core
-        # python39Packages.nbconvert
-        # python39Packages.mistune
-
-        ## unstable
-        trunk.bitwig-studio
       ];
     };
   };

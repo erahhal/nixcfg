@@ -407,6 +407,8 @@
     vimdiffAlias = true;
     withNodeJs = true;
     withPython3 = true;
+    withRuby = true;
+
     plugins = with pkgs.vimPlugins; [
 
       # =======================
@@ -591,7 +593,7 @@
       }
 
       {
-        plugin = pkgs.unstable.vimPlugins.rainbow-delimiters-nvim;
+        plugin = rainbow-delimiters-nvim;
         config = ''
           lua << EOF
           -- This module contains a number of default definitions
@@ -646,7 +648,7 @@
           vim.opt.diffopt:append {'internal,algorithm:patience'}
 
           -- @TODO: Enable this with nvim 0.9
-          -- vim.opt.diffopt:append {'linematch:60'}
+          vim.opt.diffopt:append {'linematch:60'}
           EOF
         '';
       }

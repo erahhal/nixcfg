@@ -10,12 +10,16 @@
   ];
 
   # From: https://github.com/NixOS/nixos-hardware/blob/master/common/gpu/intel/default.nix
+  # environment.variables = {
+  #   VDPAU_DRIVER = lib.mkIf config.hardware.graphics.enable (lib.mkDefault "va_gl");
+  # };
   environment.variables = {
-    VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+     LIBVA_DRIVER_NAME = lib.mkIf config.hardware.graphics.enable ( lib.mkDefault "iHD" );
+     # LIBVA_DRIVER_NAME = lib.mkIf config.hardware.graphics.enable ( lib.mkDefault "i965" );
   };
 
   nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override {
+    intel-vaapi-driver = pkgs.intel-vaapi-driver.override {
       enableHybridCodec = true;
     };
   };
@@ -24,8 +28,13 @@
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
-        intel-media-driver
-        vaapiVdpau
+        vpl-gpu-rt          # for newer GPUs on NixOS >24.05 or unstable
+        intel-media-driver # LIBVA_DRIVER_NAME=iHD
+        # intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+        #libvdpau-va-gl
+
+        # intel-media-driver
+        # vaapiVdpau
         libvdpau-va-gl
 
         ## should this be used?
@@ -34,6 +43,12 @@
 
         ## Should this really be used instead? seems to already be installed by enabling GL
         # intel-vaapi-driver
+      ];
+
+      extraPackages32 = with pkgs.pkgsi686Linux; [
+        intel-media-driver
+        # intel-vaapi-driver
+        libvdpau-va-gl
       ];
     };
   };

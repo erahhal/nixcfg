@@ -74,3 +74,12 @@ inputs.nixpkgs.lib.nixosSystem {
 * https://github.com/bluskript/nix-inspect
 
 `nix-inspect .`
+
+### Removing a file from /nix/store, e.g. a lock file that has somehow been left behind
+
+```
+sudo mkdir /mnt/store_rw
+sudo mount -o rw --bind /nix/store /mnt/store_rw/
+sudo rm /mnt/store_rw/<path>/file
+sudo umount /mnt/store_rw
+```

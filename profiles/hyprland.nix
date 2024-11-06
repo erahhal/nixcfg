@@ -1,9 +1,9 @@
 { inputs, hostParams, pkgs, userParams, ... }:
 let
-  # hyprland = pkgs.hyprland;
+  hyprland = pkgs.hyprland;
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
-  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
   # portal = pkgs.xdg-desktop-portal-hyprland;
   portal = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
   hyprctl = "${hyprland}/bin/hyprctl";
@@ -27,8 +27,14 @@ in
       trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
 
+    nixpkgs.overlays = [
+      (final: prev: {
+        hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      })
+    ];
+
     programs.hyprland = {
-      package = hyprland;
+      package = pkgs.hyprland;
       portalPackage = portal;
       enable = true;
 

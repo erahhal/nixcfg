@@ -21,7 +21,8 @@ in
 
       packages = with pkgs; [
         awscli
-        blender
+        ## Currently broken
+        # blender
         chromium
 
         jetbrains-toolbox
@@ -42,14 +43,13 @@ in
         # Games
         prismlauncher
 
-        ## python
-        ## Currently broken
-        # python39Packages.jupyter_core
-        # python39Packages.nbconvert
-        # python39Packages.mistune
-
         ## unstable
         trunk.bitwig-studio
+
+        ## arduino
+        arduino
+        arduino-ide
+        platformio
       ];
     };
   };

@@ -76,6 +76,7 @@
 
     # Hyprland WM
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    # hyprland.url = "git+https://github.com/hyprwm/hyprland?ref=keepDebugInfo&submodules=1";
     # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.43.0";
 
     # hyprland-plugins = {
@@ -98,11 +99,11 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
-    nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
-    # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
+    # nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
+    nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";

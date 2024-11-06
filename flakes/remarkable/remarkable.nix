@@ -149,8 +149,8 @@ EOF
     name = "remarkable";
 
     src = fetchurl {
-      url = "https://preview.redd.it/r6poix54d5x41.png?width=256&format=png&auto=webp&s=d0e6abf805d34f74cdb2a7f461d6537c811a3344";
-      sha256 = "16s6hxblzv8j6ymkc342rwpnhyvcdfyy5k2xr81csw8q4k4r4imd";
+      url = "https://images.ctfassets.net/9haz2glq4wt0/1yxsPvaCnwInqCpMNiIpSq/566258aaee87e7528980f027392a297e/reMarkable_Logo_Png.png";
+      sha256 = "1nv4k268ib0pwyysl5mpsgdyyrnw990nnab6s4z67pbyiv6jxjmy";
       name = "remarkable.png";
     };
   };

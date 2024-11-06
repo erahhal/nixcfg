@@ -128,8 +128,6 @@ in
         autojump
         fortune
         fzf
-        python39Packages.percol
-        python39Packages.pygments
         ripgrep
         thefuck
         wol
@@ -150,7 +148,6 @@ in
         cargo
         cmake
         deno
-        jdk22
         nodejs
         yarn
 

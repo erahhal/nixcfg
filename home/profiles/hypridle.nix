@@ -1,10 +1,10 @@
 { inputs, lib, pkgs, ... }:
 {
   services.hypridle = let
-    # hyprland = pkgs.hyprland;
+    hyprland = pkgs.hyprland;
     # hyprland = pkgs.trunk.hyprland;
     # hyprland = pkgs.unstable.hyprland-patched;
-    hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
     hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
     # @TODO: Should use from inputs, not pkgs
     hyprctl = "${hyprland}/bin/hyprctl";

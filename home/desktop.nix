@@ -327,7 +327,8 @@ in
         slurp             # Allows user to select portion of screen
         xsel              # Manipulate xwindows clipboard
         wl-clipboard      # Manipulate wayland clipboard
-        wf-recorder       # Record video of screen portions in wayland
+        ## Currently broken
+        # wf-recorder       # Record video of screen portions in wayland
         veracrypt
         wezterm
 
@@ -419,6 +420,9 @@ in
 
         # Visualization
         cava
+        mandelbulber
+        qosmic
+        xaos
 
         # Pipewire connection tool
         qpwgraph
@@ -441,6 +445,9 @@ in
         meld
         p4v
         sqlitebrowser
+
+        # Hardware Dev
+        gerbv
 
         ## unfree
         bcompare

@@ -21,7 +21,7 @@
     # Which package collection to use system-wide.
 
     # package = pkgs.nixUnstable;
-    package = pkgs.nixFlakes;
+    package = pkgs.nixVersions.latest;
 
     settings = {
       # sets up an isolated environment for each build process to improve reproducibility.
@@ -182,6 +182,8 @@
   # Services
   # --------------------------------------------------------------------------------------
 
+  systemd.coredump.enable = true;
+
   # Firmware/BIOS updates
   services.fwupd.enable = true;
 
@@ -296,7 +298,6 @@
     bashmount
     bfg-repo-cleaner
     bind
-    blender
     ccze             # readable system log parser
     cdrkit           # provides genisoimage
     cpufrequtils
@@ -312,6 +313,7 @@
     fio
     fx                # Terminal-based JSON viewer and processor
     gcc
+    gdb
     git
     git-lfs
     gnumake

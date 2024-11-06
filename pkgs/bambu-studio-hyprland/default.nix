@@ -1,9 +1,9 @@
 { pkgs, inputs, lib }:
 let
-  # hyprland = pkgs.hyprland;
+  hyprland = pkgs.hyprland;
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
-  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
   runtime-paths = lib.makeBinPath [
     hyprland
     pkgs.jq

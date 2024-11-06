@@ -1,10 +1,10 @@
 { inputs, pkgs, hostParams, ... }:
 
 let
-  # hyprland = pkgs.hyprland;
+  hyprland = pkgs.hyprland;
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
-  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
   hyprctl = "${hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
@@ -192,9 +192,7 @@ in
   # it's not visibly checked though. It's supposed to prevent the dialog
   # from popping up 3 times.
   xdg.configFile."hypr/xdph.conf".text = ''
-    screenscopy {
-      max_fps = 60
-      max_fps = 60
+    screencopy {
       allow_token_by_default = true
     }
   '';
@@ -364,14 +362,6 @@ in
       decoration = {
         # rounding = 8;
         rounding = 0;
-
-        # drop_shadow = 1;
-        drop_shadow = false;
-        shadow_ignore_window = 1;
-        shadow_offset = "2 2";
-        shadow_range = 4;
-        shadow_render_power = 1;
-        "col.shadow" = "0x55000000";
       };
 
       dwindle = {

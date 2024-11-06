@@ -18,14 +18,15 @@ in
 
       packages = with pkgs; [
         awscli
+        bitwig-studio
         blender
         chromium
-        unstable.jetbrains.idea-ultimate
-        unstable.jetbrains-toolbox
+        jetbrains.datagrip
+        jetbrains.idea-ultimate
+        jetbrains-toolbox
         lutris
         mcreator
         # nodejs-16_x
-        trunk.jetbrains.datagrip
         transmission-gtk
 
         # AI
@@ -33,16 +34,7 @@ in
         vespa-cli
 
         # Games
-        unstable.prismlauncher
-
-        ## python
-        ## Currently broken
-        # python39Packages.jupyter_core
-        # python39Packages.nbconvert
-        # python39Packages.mistune
-
-        ## unstable
-        trunk.bitwig-studio
+        prismlauncher
       ];
     };
   };
