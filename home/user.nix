@@ -6,6 +6,7 @@ let
     # PATH = "$HOME/Scripts:$HOME/.yarn/bin:$HOME/.local/bin:$PATH";
     PATH = "$HOME/Scripts:$HOME/.local/bin:$PATH:/snap/bin";
     # NODE_PATH = "$HOME/.local/share/yarn/global/node_modules";
+    SSH_ASKPASS = "";
   };
   ia = pkgs.callPackage ../pkgs/ia {};
 in

@@ -1806,6 +1806,24 @@
       # Custom unsupported plugins
       # =======================
 
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          name = "ghopen";
+          src = pkgs.fetchFromGitHub {
+            owner = "amjith";
+            repo = "ghopen.nvim";
+            rev = "97d3a5da2ac27bdbd2aae275625bd9f2b653e0d9";
+            sha256 = "sha256-63tCRtwvtC84q67jKGhQreu0GK8jSio32LF7I1D7mkM=";
+          };
+        };
+        config = ''
+          lua << EOF
+          require('ghopen').setup { }
+          vim.api.nvim_set_keymap('n', 'go', ':Ghopen<CR>', { noremap = true })
+          EOF
+        '';
+      }
+
       # {
       #   plugin = let kui-nvim-plugin = pkgs.vimUtils.buildVimPlugin {
       #     name = "kui-nvim-plugin";
