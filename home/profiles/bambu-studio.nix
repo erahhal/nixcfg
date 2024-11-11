@@ -1,7 +1,9 @@
-{ pkgs,  ... }:
+{ inputs, pkgs,  ... }:
 
 let
-  bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio { };
+  # bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio { };
+  # bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
+  bambu-studio = pkgs.callPackage ../../pkgs/bambu-studio-hyprland { inputs = inputs; };
 in
 {
   home.packages = [ bambu-studio ];

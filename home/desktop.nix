@@ -2,8 +2,6 @@
 
 let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
-  # bambu-studio = pkgs.libsForQt5.callPackage ../pkgs/bambu-studio-compiled {};
-  bambu-studio-hyprland = pkgs.callPackage ../pkgs/bambu-studio-hyprland { inputs = inputs; };
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
   kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
@@ -80,10 +78,10 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
+      ./profiles/bambu-studio.nix
       ./profiles/foot.nix
       ./profiles/kitty.nix
 
-      # ./profiles/bambu-studio.nix
       ./profiles/gthumb.nix
       ## Should be handled by wayland scaling now
       # ./profiles/firefox.nix
@@ -346,7 +344,6 @@ in
         ## apps
         audacity
         unstable.bitwarden
-        bambu-studio-hyprland
         brave
         czkawka
         unstable.digikam
@@ -473,27 +470,28 @@ in
     programs.vscode = {
       enable = true;
       # package = pkgs.unstable.vscodium;
-       package = pkgs.vscodium;
+      ## fhs package allows for arbitrary extension installation
+      package = pkgs.vscodium.fhs;
       # package = pkgs.unstable.vscodium-fhs;
-      extensions = with pkgs.vscode-extensions; [
-        # dracula-theme.theme-dracula
-        # emroussel.atomize-atom-one-dark-theme
-        # enkia.tokyo-night
-        # equinusocio.vsc-material-theme
-        # mskelton.one-dark-theme
-        # viktorqvarfordt.vscode-pitch-black-theme
-        dhedgecock.radical-vscode
-        # vscodevim.vim
-        asvetliakov.vscode-neovim
-        yzhang.markdown-all-in-one
-      ];
-      userSettings = {
-        "extensions.experimental.affinity" = {
-          "asvetliakov.vscode-neovim" = 1;
-        };
-        "workbench.colorTheme" = "Radical";
-        "editor.renderWhitespace" = "trailing";
-      };
+      # extensions = with pkgs.vscode-extensions; [
+      #   # dracula-theme.theme-dracula
+      #   # emroussel.atomize-atom-one-dark-theme
+      #   # enkia.tokyo-night
+      #   # equinusocio.vsc-material-theme
+      #   # mskelton.one-dark-theme
+      #   # viktorqvarfordt.vscode-pitch-black-theme
+      #   dhedgecock.radical-vscode
+      #   # vscodevim.vim
+      #   asvetliakov.vscode-neovim
+      #   yzhang.markdown-all-in-one
+      # ];
+      # userSettings = {
+      #   "extensions.experimental.affinity" = {
+      #     "asvetliakov.vscode-neovim" = 1;
+      #   };
+      #   "workbench.colorTheme" = "Radical";
+      #   "editor.renderWhitespace" = "trailing";
+      # };
     };
 
     programs.mpv = {

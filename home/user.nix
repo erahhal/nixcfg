@@ -227,7 +227,7 @@ in
       enableZshIntegration = true;
       ## Need 18.3.0 to fix zfs zpool timeout issue;
       ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
-      package = pkgs.unstable.atuin;
+      # package = pkgs.unstable.atuin;
       settings = {
         # Show only history for current terminal. ctrl-r to toggle through modes
         filter_mode = "session";

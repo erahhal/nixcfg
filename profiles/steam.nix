@@ -39,7 +39,6 @@ let
 
     installPhase = ''
       install -Dm755 ${steam-gamescope-script}/bin/steam-gamescope-script $out/bin/steam-gs
-      # cp -r ${pkgs.bambu-studio}/share $out/
 
       wrapProgram $out/bin/steam-gs \
         --suffix PATH : ${steam-gamescope-runtime-paths}

@@ -24,6 +24,7 @@
   wallpaper = ../../wallpapers/tokyo-park.jpeg;
 
   defaultBrowser = "chromium-browser";
+  # defaultBrowser = "firefox";
 
   wireguardIp = "192.168.2.4";
 

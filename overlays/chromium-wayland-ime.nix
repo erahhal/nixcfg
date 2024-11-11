@@ -20,19 +20,19 @@ let chromiumWaylandIme = final: prev: {
     '';
   });
 
-  # signal-desktop = prev.signal-desktop.overrideAttrs (oldAttrs: {
-  #   postInstall = oldAttrs.postInstall or "" + ''
-  #     wrapProgram $out/bin/signal-desktop \
-  #       --add-flags "--enable-wayland-ime"
-  #   '';
-  # });
-  #
-  # element-desktop = prev.element-desktop.overrideAttrs (oldAttrs: {
-  #   postInstall = oldAttrs.postInstall or "" + ''
-  #     wrapProgram $out/bin/element-desktop \
-  #       --add-flags "--enable-wayland-ime"
-  #   '';
-  # });
+  signal-desktop = prev.signal-desktop.overrideAttrs (oldAttrs: {
+    postInstall = oldAttrs.postInstall or "" + ''
+      wrapProgram $out/bin/signal-desktop \
+        --add-flags "--enable-wayland-ime"
+    '';
+  });
+
+  element-desktop = prev.element-desktop.overrideAttrs (oldAttrs: {
+    postInstall = oldAttrs.postInstall or "" + ''
+      wrapProgram $out/bin/element-desktop \
+        --add-flags "--enable-wayland-ime"
+    '';
+  });
 
   spotify = prev.spotify.overrideAttrs (oldAttrs: {
     postInstall = oldAttrs.postInstall or "" + ''

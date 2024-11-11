@@ -44,6 +44,8 @@ let
   '';
 
   swayLockCommand = pkgs.callPackage ../../pkgs/sway-lock-command { };
+  ## @TODO: Currently locks before suspending. Could cause problems?
+  ## See:   https://github.com/hyprwm/hyprlock/issues/65#issuecomment-2468337543
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   toggle-group = pkgs.writeShellScript "hyprland-toggle-group.sh" ''
     HYPRCTL=${hyprctl};

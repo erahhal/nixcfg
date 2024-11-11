@@ -1,6 +1,7 @@
 { pkgs, hostParams, userParams, ... }:
 
 let
+  cursor = pkgs.callPackage ../../pkgs/cursor { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
 in
 {
@@ -21,8 +22,7 @@ in
 
       packages = with pkgs; [
         awscli
-        ## Currently broken
-        # blender
+        blender
         chromium
 
         jetbrains-toolbox
@@ -39,6 +39,7 @@ in
         # AI
         # streamlit
         # vespa-cli
+        cursor
 
         # Games
         prismlauncher
