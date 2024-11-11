@@ -99,11 +99,11 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
-    # nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
-    nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
+    nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
+    # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";

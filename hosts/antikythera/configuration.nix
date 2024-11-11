@@ -36,6 +36,7 @@ in
       ../../profiles/steam.nix
 
       # host specific
+      ../../profiles/homefree.nix
       ../../profiles/mullvad.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix

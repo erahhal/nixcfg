@@ -59,8 +59,8 @@ in
         libudev0-shim
         gcc-arm-embedded
         teensy-loader-gui
-        teensyduino
-
+        ## Conflicts with arduino IDE
+        # teensyduino
       ];
     };
   };
