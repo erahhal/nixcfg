@@ -6,11 +6,7 @@ let
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
   asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
-  hyprland = pkgs.hyprland;
-  # hyprland = pkgs.trunk.hyprland;
-  # hyprland = pkgs.unstable.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
-  hyprctl="${hyprland}/bin/hyprctl";
+  hyprctl="${pkgs.hyprland}/bin/hyprctl";
 in
 {
   home-manager.users.${userParams.username} = {

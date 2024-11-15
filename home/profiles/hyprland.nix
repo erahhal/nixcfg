@@ -1,11 +1,7 @@
 { inputs, pkgs, hostParams, ... }:
 
 let
-  hyprland = pkgs.hyprland;
-  # hyprland = pkgs.trunk.hyprland;
-  # hyprland = pkgs.unstable.hyprland-patched;
-  # hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
-  hyprctl = "${hyprland}/bin/hyprctl";
+  hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
   exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
@@ -206,7 +202,6 @@ in
   '' else "";
 
   wayland.windowManager.hyprland = {
-    package = hyprland;
     enable = true;
 
     settings = {

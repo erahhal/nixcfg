@@ -150,6 +150,7 @@ in
         cmake
         deno
         nodejs
+        tokei
         yarn
 
         ## python
