@@ -5,6 +5,7 @@ let
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
+  asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
   hyprland = pkgs.hyprland;
   # hyprland = pkgs.trunk.hyprland;
   # hyprland = pkgs.unstable.hyprland-patched;
@@ -213,6 +214,40 @@ in
               "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
               "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
               "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
+            ];
+          };
+        }
+        {
+          profile = {
+            name = "desk-asus-hyprland";
+            outputs = [
+              {
+                criteria = asus-monitor;
+                status = "enable";
+                mode = "3840x2160";
+                position = "0,0";
+                # Resolution must be integer divisible by scale
+                scale = 1.5;
+              }
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                mode = "2880x1800@90.000999";
+                position = "2560,900";
+                # Resolution must be integer divisible by scale
+                scale = 1.8;
+              }
+            ];
+            exec = [
+              "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 2 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 6 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 7 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 8 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 9 eDP-1"
             ];
           };
         }
