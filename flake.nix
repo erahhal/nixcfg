@@ -10,6 +10,9 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
+    lanzaboote.url = "github:nix-community/lanzaboote/v0.4.1";
+    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
+
     # Should match nixpkgs version
     # home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.url = "github:nix-community/home-manager/release-24.11";
@@ -189,6 +192,7 @@
         system = system;
         modules = [
           inputs.disko.nixosModules.disko
+          inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/antikythera/configuration.nix
           inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default

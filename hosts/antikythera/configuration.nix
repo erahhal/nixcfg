@@ -27,7 +27,7 @@ in
       ../../profiles/wireless.nix
 
       # device specific
-      ./disk-config.nix
+      ./disk-config-zfs.nix
       ./hardware-configuration.nix
       ../../profiles/android.nix
       ../../profiles/exclusive-lan.nix

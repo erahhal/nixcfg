@@ -33,6 +33,7 @@ in
       ../../profiles/gfx-intel.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
+      ../../profiles/tailscale.nix
 
       # host specific
       ../../modules/snapclient.nix
