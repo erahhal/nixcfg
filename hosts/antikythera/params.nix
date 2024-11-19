@@ -21,17 +21,20 @@
 
   ## Use with no Xwayland scaling (in Hyperland)
   dpi = 192;
+  dpiSddm = 192;
   ## Use with Xwayland scaling (in Sway)
   # dpi = 96;
 
-  wallpaper = ../../wallpapers/yellowstone.jpg;
-
   defaultBrowser = "firefox";
 
-  wireguardIp = "192.168.2.4";
+  useHyprlandFlake = false;
 
   virtualboxEnabled = false;
+
   vmwareEnabled = false;
+
+  wallpaper = ../../wallpapers/yellowstone.jpg;
+
   waydroidEnabled = false;
 
   waydroid = {
@@ -40,5 +43,7 @@
     width = 1600;
     height = 1000;
   };
+
+  wireguardIp = "192.168.2.4";
 }
 

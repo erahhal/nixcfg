@@ -26,10 +26,12 @@
   defaultBrowser = "chromium-browser";
   # defaultBrowser = "firefox";
 
-  wireguardIp = "192.168.2.4";
+  useHyprlandFlake = false;
 
   virtualboxEnabled = false;
+
   vmwareEnabled = true;
+
   waydroidEnabled = false;
 
   waydroid = {
@@ -38,5 +40,7 @@
     width = 1600;
     height = 1000;
   };
+
+  wireguardIp = "192.168.2.4";
 }
 

@@ -22,11 +22,11 @@ in
     };
 
     ## As of v0.45, should no longer be crashing
-    # nixpkgs.overlays = [
-    #   (final: prev: {
-    #     hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    #   })
-    # ];
+    nixpkgs.overlays = if hostParams.useHyprlandFlake == true then [
+      (final: prev: {
+        hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      })
+    ] else [];
 
     programs.hyprland = {
       enable = true;

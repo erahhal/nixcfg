@@ -416,7 +416,8 @@ in
         teams-for-linux
 
         # Visualization
-        cava
+        ## Currently broken
+        # cava
         mandelbulber
         qosmic
         xaos

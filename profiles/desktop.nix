@@ -30,7 +30,7 @@ in
 {
   imports =
     [
-      ./xserver.nix
+      # ./xserver.nix
       ./sddm.nix
       ./lightdm.nix
       ./i3.nix

@@ -43,7 +43,7 @@ in
     services.xserver.upscaleDefaultCursor = true; # default false
 
     services.xserver = {
-      enable = true;
+      enable = false;
       displayManager = {
         ## Does not work to change SDDM cursor theme or size
         setupCommands = ''
@@ -73,7 +73,7 @@ in
       sddm = {
         enable = true;
         enableHidpi = true;
-        # wayland.enable = true;
+        wayland.enable = true;
         settings = {
           Theme = {
             ## Wayland
@@ -85,10 +85,9 @@ in
             ## see profile/desktop.nix for how this is changed
             CursorTheme = "bibata-cursors";
           };
-          ## Does not work to change SDDM cursor size
-          # X11 = {
-          #   ServerArguments = "-nolisten tcp -dpi ${builtins.toString hostParams.dpiSddm}";
-          # };
+          General = {
+            GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=192";
+          };
         };
         theme = hostParams.sddmTheme;
       };

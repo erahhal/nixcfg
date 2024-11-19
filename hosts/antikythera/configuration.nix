@@ -240,6 +240,9 @@ in
   boot.kernelParams = [
     "mem_sleep_default=s2idle"
     "acpi.ec_no_wakeup=1"
+    ## Fixes input lag issue in Hyprland
+    ## @TODO: Remove after fixed in kernel
+    "amdgpu.dcdebugmask=0x610"
     # "msr.allow_writes=on"
     # "cpuidle.governor=teo"
 
