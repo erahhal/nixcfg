@@ -34,6 +34,7 @@ in
       ../../profiles/gfx-amd.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
+      ../../profiles/secure-boot.nix
 
       # host specific
       ../../profiles/homefree.nix
