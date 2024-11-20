@@ -3,6 +3,7 @@
 
 ## See: https://nixos.wiki/wiki/Internet_Connection_Sharing
 
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 WIFI_INTERFACE=$(iw dev | awk '$1=="Interface"{print $2}')
 # gets first physical interface that starts with the letter "e"
 ETH_INTERFACE=$(find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n' | grep "^e" | head -n 1)
@@ -24,7 +25,7 @@ up () {
     # -p0 disables DNS
     # --server=10.3.0.1 specifies DNS server to use
     # --dhcp-option=6,10.3.0.1 forces client to use DNS server
-    dnsmasq -d -p0 --server=10.3.0.1 --dhcp-option=6,10.3.0.1 -i $ETH_INTERFACE --dhcp-range=10.3.0.2,10.3.0.255,255.255.255.0,24h
+    dnsmasq -d -p0 --server=10.3.0.1 --dhcp-leasefile="${SCRIPTPATH}/dnsmasq.leases" --dhcp-option=6,10.3.0.1 -i $ETH_INTERFACE --dhcp-range=10.3.0.2,10.3.0.255,255.255.255.0,24h
 
     down
 }

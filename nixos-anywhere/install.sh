@@ -7,9 +7,11 @@ echo '       users.users.root.openssh.authorizedKeys.keys = ['
 echo '         "ssh-rsa blahblah"'
 echo '       ];'
 echo '  - Boot minimal NixOS image on target'
+echo '  - Do NOT use Ventoy, as it doesnt work on some devices. Use a direct image on a USB stick'
 echo '  - On target: Change password with `passwd`'
 echo '  - On source: `scp ~/.ssh/authorized_keys nixos@<address>:/home/nixos`'
 echo '  - On target: `mkdir -p ~/.ssh; mv ~/authorized_keys ~/.ssh/authorized_keys'
+echo '  - MAKE SURE YOUR NIX CONFIG DOES NOT INCLUDE LANZABOOTE, AS SECURE KEYS ARE NOT YET INSTALLED'
 echo '  - Then continue by entering the values below'
 echo ''
 
@@ -41,4 +43,4 @@ DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 
 cd $DIR
 
-nix run github:nix-community/nixos-anywhere -- --flake ../#${CONFIG_NAME} nixos@$ADDRESS
+NIX_SSHOPTS=-tt nix run github:nix-community/nixos-anywhere -- --flake ../#${CONFIG_NAME} nixos@$ADDRESS

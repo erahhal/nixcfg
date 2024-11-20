@@ -27,14 +27,14 @@ in
       ../../profiles/wireless.nix
 
       # device specific
-      ./disk-config-zfs.nix
+      ./disk-config-btrfs.nix
       ./hardware-configuration.nix
       ../../profiles/android.nix
       ../../profiles/exclusive-lan.nix
       ../../profiles/gfx-amd.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
-      ../../profiles/secure-boot.nix
+      # ../../profiles/secure-boot.nix
 
       # host specific
       ../../profiles/homefree.nix

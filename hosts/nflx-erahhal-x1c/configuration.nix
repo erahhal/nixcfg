@@ -29,7 +29,7 @@ in
       # device specific
       ./hardware-configuration.nix
       ../../profiles/android.nix
-      ../../profiles/exclusive-lan.nix
+      # ../../profiles/exclusive-lan.nix
       ../../profiles/gfx-intel.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
@@ -196,11 +196,7 @@ in
     ];
   };
 
-  services.snapclient = {
-    enable = false;
-    username = userParams.username;
-    serverHost = "partymusic.localdomain";
-  };
+  services.flatpak.enable = true;
 
   # --------------------------------------------------------------------------------------
   # Hardware specific
