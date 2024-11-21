@@ -5,6 +5,16 @@ let
     pkgs.jq
     pkgs.gamescope
   ];
+
+  ## Starting fullscreen seems to lock mouse movement within bounds
+  ## Start the game in windowed mode, then hit mod-f to go fullscreen after play starts to avoid this
+  ## UPDATE: NOPE, this just worked twice, probably coincidentally, then started getting stuck again
+  ## Probably has nothing to do with fullscreen setting.
+      # --fullscreen \
+
+  ## This isn't needed
+      # --backend wayland \
+
   steam-gamescope-script = pkgs.writeShellScriptBin "steam-gamescope-script" ''
     WIDTH=$(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .width")
     HEIGHT=$(hyprctl monitors -j | jq ".[] | select(.id==$(hyprctl activeworkspace -j | jq '.monitorID')) | .height")
@@ -14,9 +24,7 @@ let
       -w $WIDTH \
       -H $HEIGHT \
       -h $HEIGHT \
-      --fullscreen \
       --borderless \
-      --backend wayland \
       --force-grab-cursor \
       --cursor-scale-height $HEIGHT \
       --adaptive-sync \

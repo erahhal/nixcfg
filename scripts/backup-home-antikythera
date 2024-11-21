@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+BACKUP_PATH=/mnt/ellis/Backups/antikythera-home
+
+sudo mkdir -p $BACKUP_PATH
+sudo chown erahhal:users $BACKUP_PATH
+
+wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
+
+rsync -aP \
+  --exclude=.BitwigStudio \
+  --exclude="VirtualBox VMs" \
+  --exclude=Android \
+  --exclude=.android \
+  --exclude=.gradle \
+  --exclude=.config/Signal \
+  --exclude=.local/share/Steam \
+  --exclude-from=/var/tmp/ignorelist \
+  --progress /home/$USER $BACKUP_PATH

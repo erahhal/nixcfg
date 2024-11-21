@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, inputs, lib, pkgs, userParams, hostParams, ... }:
+{ inputs, lib, pkgs, userParams, hostParams, ... }:
 
 let
   thinkpad-dock-udev-rules = pkgs.callPackage ../../pkgs/thinkpad-dock-udev-rules { };
@@ -94,8 +94,7 @@ in
     };
   };
 
-  ## Latest kernel doesn't always work with ZFS
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
   # Device specific
@@ -107,7 +106,9 @@ in
   ## Enable zramswap (must disable swap above)
   ## Supposedly helps with out of memory errors during compilation of big projects
   zramSwap = {
-    enable = true;
+    ## Currently no swap partition configured
+    ## @TODO: Can zramswap be used with an encrypted LUKS partition?
+    enable = false;
     writebackDevice = "/dev/nvme0n1p2";
   };
 
@@ -241,9 +242,11 @@ in
   boot.kernelParams = [
     "mem_sleep_default=s2idle"
     "acpi.ec_no_wakeup=1"
+
     ## Fixes input lag issue in Hyprland
     ## @TODO: Remove after fixed in kernel
     "amdgpu.dcdebugmask=0x610"
+
     # "msr.allow_writes=on"
     # "cpuidle.governor=teo"
 
