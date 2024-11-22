@@ -24,6 +24,7 @@ in
       ../../profiles/common.nix
       ../../profiles/desktop.nix
       ../../profiles/pipewire.nix
+      ../../profiles/snapcast.nix
       ../../profiles/wireless.nix
 
       # device specific

@@ -706,8 +706,8 @@
           vim.keymap.set('n', ',d', function()
             if next(require('diffview.lib').views) == nil then
               vim.cmd('DiffviewOpen origin')
-              else
-            vim.cmd('DiffviewClose')
+            else
+              vim.cmd('DiffviewClose')
             end
           end)
           EOF
