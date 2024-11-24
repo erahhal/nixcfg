@@ -27,7 +27,7 @@
 
   defaultBrowser = "firefox";
 
-  useHyprlandFlake = true;
+  useHyprlandFlake = false;
 
   virtualboxEnabled = false;
 
