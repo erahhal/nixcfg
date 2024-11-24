@@ -24,7 +24,7 @@ in
     ## As of v0.45, should no longer be crashing
     nixpkgs.overlays = if hostParams.useHyprlandFlake == true then [
       (final: prev: {
-        hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+        hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland-debug;
       })
     ] else [];
 
