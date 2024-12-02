@@ -46,6 +46,8 @@
     # Secrets management
     agenix.url = "github:ryantm/agenix";
 
+    sops-nix.url = "github:Mic92/sops-nix";
+
     # Wine wrapper
     erosanix.url = "github:emmanuelrosa/erosanix";
     erosanix.inputs.nixpkgs.follows = "nixpkgs";
@@ -144,7 +146,6 @@
         system = system;
         modules = [
           ./hosts/nflx-erahhal-x1c/configuration.nix
-          inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
@@ -194,7 +195,6 @@
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/antikythera/configuration.nix
-          inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           # @TODO: Switch to gen5 when available
@@ -239,7 +239,6 @@
         system = system;
         modules = [
           ./hosts/upaya/configuration.nix
-          inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.dell-xps-15-9560
@@ -274,7 +273,6 @@
         system = system;
         modules = [
           ./hosts/sicmundus/configuration.nix
-          inputs.agenix.nixosModules.default
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager

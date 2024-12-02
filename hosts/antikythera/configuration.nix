@@ -40,6 +40,7 @@ in
       # host specific
       ../../profiles/homefree.nix
       ../../profiles/mullvad.nix
+      ../../profiles/tailscale.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
@@ -72,7 +73,6 @@ in
 
   ## @TODO: Move elsewhere or just get rid of it
   networking.hostId = "8425e349";
-
 
   # --------------------------------------------------------------------------------------
   # Nix

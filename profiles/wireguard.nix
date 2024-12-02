@@ -49,7 +49,7 @@ in
       [ipv4]
       address1=${hostParams.wireguardIp}/32
       dns=192.168.2.1;
-      dns-search=localdomain;rahh.al;
+      dns-search=localdomain;rahh.al;homefree.host;
       method=manual
 
       [ipv6]
