@@ -74,6 +74,8 @@ in
     enable = true;
   };
 
+  services.gnome.gnome-keyring.enable = true;
+
   home-manager.users.${userParams.username} = {
     imports = [
       # Terminals
@@ -349,6 +351,7 @@ in
         unstable.digikam
         discord
         element-desktop
+        errands
         evolutionWithPlugins
         feh
         firefox

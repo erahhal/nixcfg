@@ -49,6 +49,7 @@ in
         cool-retro-term
         thunderbird
         transmission_4-gtk
+        nicotine-plus
 
         ## arduino
         arduino
