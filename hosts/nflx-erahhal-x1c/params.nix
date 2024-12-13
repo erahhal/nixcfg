@@ -26,7 +26,7 @@
   defaultBrowser = "chromium-browser";
   # defaultBrowser = "firefox";
 
-  useHyprlandFlake = false;
+  useHyprlandFlake = true;
 
   virtualboxEnabled = false;
 

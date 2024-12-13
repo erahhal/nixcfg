@@ -9,6 +9,8 @@
     };
     extraUpFlags = [
       "--accept-routes"
+      "--netfilter-mode=nodivert"
+      "--login-server=https://headscale.homefree.host"
     ];
   };
 }

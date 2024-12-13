@@ -1922,7 +1922,6 @@
       nodejs
       nodePackages.eslint
       nodePackages.prettier
-      nodePackages.neovim
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
     ];

@@ -240,7 +240,7 @@
   # Networking
   # --------------------------------------------------------------------------------------
 
-  networking.search = [ "localdomain" ];
+  networking.search = [ ];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

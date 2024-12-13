@@ -149,7 +149,7 @@
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
-          inputs.nur.nixosModules.nur
+          inputs.nur.modules.nixos.default
           {
             nixpkgs.overlays = [
               inputs.nur.overlay
@@ -199,7 +199,7 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen4
-          inputs.nur.nixosModules.nur
+          inputs.nur.modules.nixos.default
           {
             nixpkgs.overlays = [
               inputs.nur.overlay
@@ -246,7 +246,7 @@
           # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel-kaby-lake
           # inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
-          inputs.nur.nixosModules.nur
+          inputs.nur.modules.nixos.default
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           {
             home-manager.useGlobalPkgs = true;
@@ -276,7 +276,7 @@
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager
-          inputs.nur.nixosModules.nur
+          inputs.nur.modules.nixos.default
           { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           {
             home-manager.useGlobalPkgs = true;

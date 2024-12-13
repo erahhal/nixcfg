@@ -1,5 +1,5 @@
 { config, pkgs, userParams, ... }:
-rec {
+{
   environment.systemPackages = [ pkgs.restic ];
 
   # --------------------------------------------------------------------------------------

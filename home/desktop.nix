@@ -392,6 +392,7 @@ in
         # guvcview
         ## BEST - works great
         obs-studio
+        wf-recorder
 
         ## desktop
 
