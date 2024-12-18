@@ -81,9 +81,9 @@
     nix-software-center.url = "github:vlinkz/nix-software-center";
 
     # Hyprland WM
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     # hyprland.url = "git+https://github.com/hyprwm/hyprland?ref=keepDebugInfo&submodules=1";
-    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.43.0";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.46.1";
 
     # hyprland-plugins = {
     #   url = "github:hyprwm/hyprland-plugins";
