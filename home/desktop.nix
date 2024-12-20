@@ -160,12 +160,12 @@ in
         "application/pdf" = [ defaultBrowserApp ];
         "x-www-browser" = [ defaultBrowserApp ];
         "x-scheme-handler/webcal" = [ defaultBrowserApp ];
-        "image/png" = [ "org.gnome.gThumb.desktop" ];
-        "image/jpg" = [ "org.gnome.gThumb.desktop" ];
-        "image/jpeg" = [ "org.gnome.gThumb.desktop" ];
-        "image/tiff" = [ "org.gnome.gThumb.desktop" ];
-        "image/webp" = [ "org.gnome.gThumb.desktop" ];
-        "image/gif" = [ "org.gnome.gThumb.desktop" ];
+        "image/png" =  [ "vimiv.desktop" ];
+        "image/jpg" =  [ "vimiv.desktop" ];
+        "image/jpeg" = [ "vimiv.desktop" ];
+        "image/tiff" = [ "vimiv.desktop" ];
+        "image/webp" = [ "vimiv.desktop" ];
+        "image/gif" =  [ "vimiv.desktop" ];
         "video/x-flv" = [ "mpv.desktop" ];
         "video/mp4" = [ "mpv.desktop" ];
         "application/x-mpegURL" = [ "mpv.desktop" ];
@@ -196,12 +196,12 @@ in
         "application/pdf" = [ defaultBrowserApp ];
         "x-www-browser" = [ defaultBrowserApp ];
         "x-scheme-handler/webcal" = [ defaultBrowserApp ];
-        "image/png" = [ "org.gnome.gThumb.desktop" ];
-        "image/jpg" = [ "org.gnome.gThumb.desktop" ];
-        "image/jpeg" = [ "org.gnome.gThumb.desktop" ];
-        "image/tiff" = [ "org.gnome.gThumb.desktop" ];
-        "image/webp" = [ "org.gnome.gThumb.desktop" ];
-        "image/gif" = [ "org.gnome.gThumb.desktop" ];
+        "image/png" =  [ "vimiv.desktop" ];
+        "image/jpg" =  [ "vimiv.desktop" ];
+        "image/jpeg" = [ "vimiv.desktop" ];
+        "image/tiff" = [ "vimiv.desktop" ];
+        "image/webp" = [ "vimiv.desktop" ];
+        "image/gif" =  [ "vimiv.desktop" ];
         "video/x-flv" = [ "mpv.desktop" ];
         "video/mp4" = [ "mpv.desktop" ];
         "application/x-mpegURL" = [ "mpv.desktop" ];
@@ -377,6 +377,7 @@ in
         sxiv # image viewer with vim bindings
         stellarium
         telegram-desktop
+        vimiv-qt
         waydroid
         whatsapp-for-linux
         xournalpp

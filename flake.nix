@@ -150,16 +150,11 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
           inputs.nur.modules.nixos.default
-          {
-            nixpkgs.overlays = [
-              inputs.nur.overlay
-            ];
-          }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
 
           inputs.nflx-vpn.nixosModules.default
@@ -200,16 +195,11 @@
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen4
           inputs.nur.modules.nixos.default
-          {
-            nixpkgs.overlays = [
-              inputs.nur.overlay
-            ];
-          }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
 
           inputs.nix-snapd.nixosModules.default
@@ -247,11 +237,10 @@
           # inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.modules.nixos.default
-          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
         ];
         specialArgs = {
@@ -277,11 +266,10 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.modules.nixos.default
-          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
         ];
         specialArgs = {

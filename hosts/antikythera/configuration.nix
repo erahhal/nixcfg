@@ -248,6 +248,9 @@ in
     ## @TODO: Remove after fixed in kernel
     "amdgpu.dcdebugmask=0x610"
 
+    "amd_pstate=active"
+    "processor=ignore_ppc=1"
+
     # "msr.allow_writes=on"
     # "cpuidle.governor=teo"
 
