@@ -1,4 +1,4 @@
-{ pkgs, inputs, hostParams, userParams, ... }:
+{ pkgs, inputs, userParams, ... }:
 
 let
   env_vars = {
@@ -252,35 +252,36 @@ in
         ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
         daemon = {
           enabled = true;
+          systemd_socket = true;
+          socket_path = "/home/${userParams.username}/.local/share/atuin/atuin.sock";
         };
       };
     };
 
-    ## @TODO: Is this needed anymore? It seems to be working without it now
-    ## Need 18.3.0 to fix zfs zpool timeout issue;
-    ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
+    systemd.user.sockets.atuin = {
+      Unit = {
+        Description = "Atuin Magical Shell History Daemon";
+        ConditionPathIsDirectory = "/home/${userParams.username}/.local/share/atuin";
+        ConditionPathExists = "/home/${userParams.username}/.config/atuin/config.toml";
+      };
+      Install.WantedBy = [ "default.target" ];
+      Socket = {
+        Restart = "always";
+        ListenStream = "/home/${userParams.username}/.local/share/atuin/atuin.sock";
+        Accept = false;
+        SocketMode = "0600";
+      };
+    };
     systemd.user.services.atuin = {
       Unit = {
-        Description = "Atuin daemon to avoid zpool timeout error";
-        After = [ "network.target" ];
+        Description = "Atuin Magical Shell History Daemon";
+        ConditionPathIsDirectory = "/home/${userParams.username}/.local/share/atuin";
+        ConditionPathExists = "/home/${userParams.username}/.config/atuin/config.toml";
       };
+      Install.WantedBy = [ "default.target" ];
       Service = {
         Restart = "always";
-        ExecStart =
-          let runScript = pkgs.writeShellScriptBin "start-atuin-daemon" ''
-              rm -f /home/${userParams.username}/.local/share/atuin/atuin.sock | true
-              ${pkgs.unstable.atuin}/bin/atuin daemon
-            '';
-          in "${runScript}/bin/start-atuin-daemon";
-        Environment = [
-          "HOME=/home/${userParams.username}"
-          # @TODO: This is hacky - better to get PATH programmatically
-          "PATH=/etc/profiles/per-user/${userParams.username}/bin:/run/current-system/sw/bin"
-        ];
-      };
-
-      Install = {
-        WantedBy = [ "default.target" ];
+        ExecStart = "${pkgs.atuin}/bin/atuin daemon";
       };
     };
 
