@@ -740,6 +740,11 @@ in
 
     programs.go.enable = true;
 
+    programs.java = {
+      enable = true;
+      package = pkgs.zulu17;
+    };
+
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage
     # when a new Home Manager release introduces backwards
