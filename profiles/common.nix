@@ -326,9 +326,10 @@
     iotop
     iperf3
     libarchive   # provides bsdtar
-    luarocks
+    lm_sensors
     lshw
     lsof
+    luarocks
     lxqt.lxqt-policykit # For GVFS
     iw
     iwd
@@ -337,6 +338,7 @@
     minicom
     neofetch
     nethogs
+    networkmanager
     nix
     nix-output-monitor
     nixos-generators
@@ -351,7 +353,7 @@
     powertop
     pstree
     pv
-    networkmanager
+    ryzenadj
     sshpass
     steam-run
     steampipe

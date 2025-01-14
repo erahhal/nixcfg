@@ -54,17 +54,17 @@
                     # Subvolume name is different from mountpoint
                     "/root" = {
                       mountpoint = "/";
-                      mountOptions = [ "subvol=root" "compress=zstd" "noatime" ];
+                      mountOptions = [ "subvol=root" "compress=zstd" "discard=async" "noatime" ];
                     };
                     # Subvolume name is the same as the mountpoint
                     "/home" = {
                       mountpoint = "/home";
-                      mountOptions = [ "subvol=home"  "compress=zstd" "noatime" ];
+                      mountOptions = [ "subvol=home"  "compress=zstd" "discard=async" "noatime" ];
                     };
                     # Parent is not mounted so the mountpoint must be set
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [ "subvol=nix" "compress=zstd" "noatime" ];
+                      mountOptions = [ "subvol=nix" "compress=zstd" "discard=async" "noatime" ];
                     };
                     # Subvolume for the swapfile
                     "/swap" = {

@@ -33,7 +33,7 @@ in
         POSTGRES_DB = "nextcloud";
         POSTGRES_USER = "nextcloud";
         POSTGRES_PORT = "5432";
-        POSTGRES_HOST = "postgres.localdomain";
+        POSTGRES_HOST = "postgres.lan";
         VIRTUAL_HOST = "nextcloud";
         TZ = "America/Los_Angeles";
       };

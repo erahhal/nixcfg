@@ -276,17 +276,17 @@ in
     options = ["${automount_opts},credentials=${config.age.secrets.homeassistant-samba.path}"];
   in {
     "/mnt/homeassistant-backups" = {
-      device = "//ha.localdomain/backup";
+      device = "//ha.lan/backup";
       fsType = "cifs";
       options = options;
     };
     "/mnt/homeassistant-config" = {
-      device = "//ha.localdomain/config";
+      device = "//ha.lan/config";
       fsType = "cifs";
       options = options;
     };
     "/mnt/homeassistant-addons" = {
-      device = "//ha.localdomain/addons";
+      device = "//ha.lan/addons";
       fsType = "cifs";
       options = options;
     };

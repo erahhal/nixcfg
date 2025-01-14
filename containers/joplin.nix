@@ -26,7 +26,7 @@ in
         POSTGRES_DATABASE = "joplin";
         POSTGRES_USER = "nextcloud";
         POSTGRES_PORT = "5432";
-        POSTGRES_HOST = "postgres.localdomain";
+        POSTGRES_HOST = "postgres.lan";
         APP_BASE_URL = "https://joplin.rahh.al";
         TZ = "America/Los_Angeles";
       };

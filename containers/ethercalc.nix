@@ -19,7 +19,7 @@ in
         "${service_ip}:80:8000"
       ];
       environment = {
-        REDIS_PORT_6379_TCP_ADDR = "redis.localdomain";
+        REDIS_PORT_6379_TCP_ADDR = "redis.lan";
         REDIS_PORT_6379_TCP_PORT = "6379";
         TZ = "America/Los_Angeles";
         PUID = toString userParams.uid;

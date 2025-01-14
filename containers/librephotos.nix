@@ -92,9 +92,9 @@ in
         DB_BACKEND = "postgresql";
         DB_NAME = "librephotos";
         DB_USER = "nextcloud";
-        DB_HOST = "postgres.localdomain";
+        DB_HOST = "postgres.lan";
         DB_PORT = "5432";
-        REDIS_HOST = "redis.localdomain";
+        REDIS_HOST = "redis.lan";
         REDIS_PORT = "6379";
         # MAPBOX_API_KEY = "${mapApiKey}";
         WEB_CONCURRENCY = "2";

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 # iperf -c 10.0.0.42
-iperf -c nas.localdomain
+iperf -c nas.lan

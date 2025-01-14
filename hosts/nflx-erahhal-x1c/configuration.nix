@@ -182,7 +182,7 @@ in
       menu = Home
       title = Home Network
       ++ nasserver
-      host = nas.localdomain
+      host = nas.lan
     '';
   };
 

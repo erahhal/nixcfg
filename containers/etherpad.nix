@@ -20,7 +20,7 @@ in
       ];
       environment = {
         DB_TYPE = "postgres";
-        DB_HOST = "postgres.localdomain";
+        DB_HOST = "postgres.lan";
         DB_NAME = "etherpad";
         DB_USER = "nextcloud";
         TZ = "America/Los_Angeles";

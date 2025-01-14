@@ -114,11 +114,11 @@ in
         JWT_ENABLED = "true";
         JWT_HEADER = "AuthorizationJwt";
         # DB_TYPE = "postgres";
-        # DB_HOST = "postgres.localdomain";
+        # DB_HOST = "postgres.lan";
         # DB_PORT = "5432";
         # DB_NAME = "onlyoffice";
         # DB_USER = "nextcloud";
-        # REDIS_SERVER_HOST = "redis.localdomain";
+        # REDIS_SERVER_HOST = "redis.lan";
         # REDIS_SERVER_PORT = "6379";
       };
     };

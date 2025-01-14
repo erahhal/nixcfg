@@ -65,8 +65,8 @@ in
         "${containerDataPath}/geoip:/geoip"
       ];
       environment = {
-        AUTHENTIK_REDIS__HOST = "redis.localdomain";
-        AUTHENTIK_POSTGRESQL__HOST = "postgres.localdomain";
+        AUTHENTIK_REDIS__HOST = "redis.lan";
+        AUTHENTIK_POSTGRESQL__HOST = "postgres.lan";
         AUTHENTIK_POSTGRESQL__USER = "nextcloud";
         AUTHENTIK_POSTGRESQL__NAME = "authentik";
         AUTHENTIK_LOG_LEVEL = "trace";
@@ -99,8 +99,8 @@ in
         "/var/run/docker.sock:/var/run/docker.sock"
       ];
       environment = {
-        AUTHENTIK_REDIS__HOST = "redis.localdomain";
-        AUTHENTIK_POSTGRESQL__HOST = "postgres.localdomain";
+        AUTHENTIK_REDIS__HOST = "redis.lan";
+        AUTHENTIK_POSTGRESQL__HOST = "postgres.lan";
         AUTHENTIK_POSTGRESQL__USER = "nextcloud";
         AUTHENTIK_POSTGRESQL__NAME = "authentik";
       };

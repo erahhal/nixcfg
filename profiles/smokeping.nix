@@ -34,7 +34,7 @@
       title = NAS
 
       ++ nasserver
-      host = nas.localdomain
+      host = nas.lan
     '';
   };
 }

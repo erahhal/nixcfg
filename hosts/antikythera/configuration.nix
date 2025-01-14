@@ -174,7 +174,7 @@ in
 
   services.smokeping = {
     enable = false;
-    hostName = "antikythera.localdomain";
+    hostName = "antikythera.lan";
     targetConfig = ''
       probe = FPing
       menu = Top
@@ -196,7 +196,7 @@ in
       menu = Home
       title = Home Network
       ++ nasserver
-      host = nas.localdomain
+      host = nas.lan
     '';
   };
 
@@ -257,6 +257,19 @@ in
     # "usbcore.use_both_schemes=y"
     "usbcore.autosuspend=-1"
   ];
+
+  ## Make sure CPU runs at max performance
+  systemd.services.ryzenadj = {
+    description = "Set AMD CPU Power Limits";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "syslog.target" "systemd-modules-load.service" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.ryzenadj}/bin/ryzenadj --stapm-limit=54000 --fast-limit=65000 --slow-limit=54000 --tctl-temp=95 --vrm-current=150000 --vrmmax-current=150000";
+    };
+  };
 
   services.upower = {
     enable = true;
