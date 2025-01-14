@@ -255,7 +255,7 @@ in
     # "cpuidle.governor=teo"
 
     # "usbcore.use_both_schemes=y"
-    # "usbcore.autosuspend=-1"
+    "usbcore.autosuspend=-1"
   ];
 
   services.upower = {
