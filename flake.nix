@@ -82,7 +82,6 @@
 
     # Hyprland WM
     # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    # hyprland.url = "git+https://github.com/hyprwm/hyprland?ref=keepDebugInfo&submodules=1";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.46.2";
 
     # hyprland-plugins = {
