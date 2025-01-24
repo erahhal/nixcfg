@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, inputs, pkgs, userParams, hostParams, ... }:
+{ inputs, pkgs, userParams, hostParams, ... }:
 
 let
   thinkpad-dock-udev-rules = pkgs.callPackage ../../pkgs/thinkpad-dock-udev-rules { };
@@ -28,6 +28,7 @@ in
       ../../profiles/wireless.nix
 
       # device specific
+      ./disk-config-btrfs.nix
       ./hardware-configuration.nix
       ../../profiles/android.nix
       # ../../profiles/exclusive-lan.nix
@@ -58,7 +59,7 @@ in
       ./launch-apps-config-sway.nix
 
       # Temporary
-      # ../../profiles/nfs-mounts.nix
+      ../../profiles/nfs-mounts.nix
     ];
 
 

@@ -5,7 +5,7 @@ sudo chown erahhal:users /mnt/ellisBackups/x1c-home
 
 wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
 
-rsync -aP \
+sudo rsync -aP \
   --exclude=.BitwigStudio \
   --exclude="VirtualBox VMs" \
   --exclude=Android \
@@ -13,5 +13,6 @@ rsync -aP \
   --exclude=.gradle \
   --exclude=.config/Signal \
   --exclude=.local/share/Steam \
+  --exclude=.local/share/bottles \
   --exclude-from=/var/tmp/ignorelist \
   --progress /home/$USER /mnt/ellis/Backups/x1c-home

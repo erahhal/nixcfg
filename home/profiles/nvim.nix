@@ -860,6 +860,16 @@
       # =======================
 
       {
+        plugin = vim-graphql;
+        config = ''
+        '';
+      }
+
+      # =======================
+      # LSP/Code parsing
+      # =======================
+
+      {
         # Needs to be loaded before nvim-lspconfig
         plugin = cmp-nvim-lsp;
         config = ''

@@ -262,7 +262,8 @@ in
             "systemctl --user restart hypridle"
         )
 
-        hyprland-bitwarden-resize
+        ## Disabled as it doesn't work with tabbed groups
+        # hyprland-bitwarden-resize
       ];
 
       xwayland = {
