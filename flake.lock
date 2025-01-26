@@ -183,23 +183,6 @@
         "type": "github"
       }
     },
-    "dcc": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-m2yWL8a9JirF9l7SRc2dX8r/1xyfMucrnqJNIfS3PiI=",
-        "path": "flakes/dcc",
-        "type": "path"
-      },
-      "original": {
-        "path": "flakes/dcc",
-        "type": "path"
-      }
-    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -2158,7 +2141,6 @@
       "inputs": {
         "agenix": "agenix",
         "comma": "comma",
-        "dcc": "dcc",
         "disko": "disko",
         "erosanix": "erosanix",
         "flake-utils": "flake-utils",
