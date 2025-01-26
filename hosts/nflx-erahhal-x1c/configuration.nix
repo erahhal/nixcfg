@@ -35,12 +35,11 @@ in
       ../../profiles/gfx-intel.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
-      ../../profiles/tailscale.nix
 
       # host specific
-      ../../modules/snapclient.nix
       ../../profiles/homefree.nix
       ../../profiles/mullvad.nix
+      ../../profiles/tailscale.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
@@ -84,10 +83,7 @@ in
     };
   };
 
-  ## Latest kernel doesn't always work with ZFS
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = pkgs.linuxPackages_latest.zfs_unstable;
-  # boot.kernelPackages = pkgs.linuxPackages_6_6_hardened.zfs;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
   # Device specific
@@ -161,7 +157,7 @@ in
 
   services.smokeping = {
     enable = false;
-    hostName = "localhost";
+    hostName = "nflx-erahhal-x1c.lan";
     targetConfig = ''
       probe = FPing
       menu = Top

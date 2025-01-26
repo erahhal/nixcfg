@@ -35,7 +35,6 @@ in
       ../../profiles/gfx-amd.nix
       ../../profiles/laptop-hardware.nix
       ../../profiles/steam.nix
-      # ../../profiles/secure-boot.nix
 
       # host specific
       ../../profiles/homefree.nix
@@ -172,6 +171,20 @@ in
     # interfaces."wlp0s20f3".useDHCP = true;
   };
 
+
+  programs.captive-browser = {
+    enable = true;
+    interface = "wlp0s20f3";
+  };
+
+  ## Sound support
+  hardware.enableAllFirmware = true;
+
+  # Enable fingerprint reading daemon.
+  services.fprintd.enable = true;
+  security.pam.services.login.fprintAuth = true;
+  security.pam.services.xscreensaver.fprintAuth = true;
+
   services.smokeping = {
     enable = false;
     hostName = "antikythera.lan";
@@ -200,16 +213,6 @@ in
     '';
   };
 
-  programs.captive-browser = {
-    enable = true;
-    interface = "wlp0s20f3";
-  };
-
-  # Enable fingerprint reading daemon.
-  services.fprintd.enable = true;
-  security.pam.services.login.fprintAuth = true;
-  security.pam.services.xscreensaver.fprintAuth = true;
-
   networking.firewall = {
     allowedUDPPorts = [
     ];
@@ -220,6 +223,9 @@ in
       8080
     ];
   };
+
+
+  services.flatpak.enable = true;
 
   # --------------------------------------------------------------------------------------
   # Hardware specific
@@ -278,7 +284,8 @@ in
 
   # Thinkpad power and performance management
   # https://linrunner.de/tlp/settings/usb.html
-  services.tlp = { enable = true;
+  services.tlp = {
+    enable = true;
     settings = {
       # ------------------------------------------------------------------------------
       # tlp - Parameters for power saving

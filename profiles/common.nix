@@ -216,6 +216,20 @@
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images
 
+  ## Mount optical disks automatically
+  services.udisks2.enable = true;
+  services.devmon.enable = true;
+  services.udev.extraRules = ''
+    ACTION=="change", KERNEL=="sr0", ENV{DISK_MEDIA_CHANGE}=="1", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart devmon@$env{USER}.service"
+  '';
+
+  security.wrappers.udevil = {
+    owner = "root";
+    group = "root";
+    source = "${pkgs.udevil}/bin/udevil";
+    setuid = true;
+  };
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
@@ -360,6 +374,8 @@
     stress-ng
     sysstat
     tmux
+    udevil
+    udisks
     unrar
     usbutils
     utillinux

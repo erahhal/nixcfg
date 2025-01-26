@@ -251,39 +251,39 @@ in
         ## Need 18.3.0 to fix zfs zpool timeout issue;
         ## https://github.com/atuinsh/atuin/issues/952#issuecomment-2121671620
         daemon = {
-          enabled = true;
-          systemd_socket = true;
-          socket_path = "/home/${userParams.username}/.local/share/atuin/atuin.sock";
+          enabled = false;
+          # systemd_socket = true;
+          # socket_path = "/home/${userParams.username}/.local/share/atuin/atuin.sock";
         };
       };
     };
 
-    systemd.user.sockets.atuin = {
-      Unit = {
-        Description = "Atuin Magical Shell History Daemon";
-        ConditionPathIsDirectory = "/home/${userParams.username}/.local/share/atuin";
-        ConditionPathExists = "/home/${userParams.username}/.config/atuin/config.toml";
-      };
-      Install.WantedBy = [ "default.target" ];
-      Socket = {
-        Restart = "always";
-        ListenStream = "/home/${userParams.username}/.local/share/atuin/atuin.sock";
-        Accept = false;
-        SocketMode = "0600";
-      };
-    };
-    systemd.user.services.atuin = {
-      Unit = {
-        Description = "Atuin Magical Shell History Daemon";
-        ConditionPathIsDirectory = "/home/${userParams.username}/.local/share/atuin";
-        ConditionPathExists = "/home/${userParams.username}/.config/atuin/config.toml";
-      };
-      Install.WantedBy = [ "default.target" ];
-      Service = {
-        Restart = "always";
-        ExecStart = "${pkgs.atuin}/bin/atuin daemon";
-      };
-    };
+    # systemd.user.sockets.atuin = {
+    #   Unit = {
+    #     Description = "Atuin Magical Shell History Daemon";
+    #     ConditionPathIsDirectory = "/home/${userParams.username}/.local/share/atuin";
+    #     ConditionPathExists = "/home/${userParams.username}/.config/atuin/config.toml";
+    #   };
+    #   Install.WantedBy = [ "default.target" ];
+    #   Socket = {
+    #     Restart = "always";
+    #     ListenStream = "/home/${userParams.username}/.local/share/atuin/atuin.sock";
+    #     Accept = false;
+    #     SocketMode = "0600";
+    #   };
+    # };
+    # systemd.user.services.atuin = {
+    #   Unit = {
+    #     Description = "Atuin Magical Shell History Daemon";
+    #     ConditionPathIsDirectory = "/home/${userParams.username}/.local/share/atuin";
+    #     ConditionPathExists = "/home/${userParams.username}/.config/atuin/config.toml";
+    #   };
+    #   Install.WantedBy = [ "default.target" ];
+    #   Service = {
+    #     Restart = "always";
+    #     ExecStart = "${pkgs.atuin}/bin/atuin daemon";
+    #   };
+    # };
 
     programs.zsh = {
       enable = if userParams.shell == "zsh" then true else false;
