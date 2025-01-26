@@ -104,7 +104,7 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
     # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
@@ -159,7 +159,7 @@
           }
 
           inputs.nflx-vpn.nixosModules.default
-          # inputs.nflx.nixosModules.default
+          inputs.nflx.nixosModules.default
 
           inputs.nix-snapd.nixosModules.default
           {

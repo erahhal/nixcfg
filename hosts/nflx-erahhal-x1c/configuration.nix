@@ -58,7 +58,7 @@ in
       ./launch-apps-config-sway.nix
 
       # Temporary
-      ../../profiles/nfs-mounts.nix
+      # ../../profiles/nfs-mounts.nix
     ];
 
 

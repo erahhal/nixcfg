@@ -15,5 +15,8 @@ rsync -aP \
   --exclude=.gradle \
   --exclude=.config/Signal \
   --exclude=.local/share/Steam \
+  --exclude=.local/share/bottles \
+  --exclude=.local/state/nix \
+  --exclude=.local/state/home-manager \
   --exclude-from=/var/tmp/ignorelist \
   --progress /home/$USER $BACKUP_PATH
