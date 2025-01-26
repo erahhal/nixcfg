@@ -63,8 +63,8 @@
     # DCC
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    dcc.url = "path:flakes/dcc";
-    dcc.inputs.nixpkgs.follows = "nixpkgs";
+    # dcc.url = "path:flakes/dcc";
+    # dcc.inputs.nixpkgs.follows = "nixpkgs";
 
     # Pulse Secure
     # See the following about why relative paths can cause build issues:
@@ -144,6 +144,8 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          inputs.disko.nixosModules.disko
+          inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/nflx-erahhal-x1c/configuration.nix
           inputs.secrets.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
