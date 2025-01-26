@@ -1,7 +1,7 @@
 { pkgs, hostParams, userParams, ... }:
 
 let
-  cursor = pkgs.callPackage ../../pkgs/cursor { };
+  # cursor = pkgs.callPackage ../../pkgs/cursor { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
 in
 {
@@ -39,7 +39,7 @@ in
         # AI
         # streamlit
         # vespa-cli
-        cursor
+        # cursor
 
         # Games
         prismlauncher
