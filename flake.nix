@@ -4,8 +4,8 @@
   inputs = {
     # Use stable for main
     # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -15,7 +15,8 @@
 
     # Should match nixpkgs version
     # home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    # home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Trails trunk - latest packages with broken commits filtered out
@@ -82,7 +83,7 @@
 
     # Hyprland WM
     # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.46.2";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=refs/tags/v0.47.1";
 
     # hyprland-plugins = {
     #   url = "github:hyprwm/hyprland-plugins";

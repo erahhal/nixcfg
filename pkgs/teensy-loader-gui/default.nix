@@ -22,14 +22,14 @@ let
   };
 in
 # @TODO: try patching and including required packages instead
-pkgs.buildFHSUserEnv {
+pkgs.buildFHSEnv {
   name = "teensy-loader-gui";
   targetPkgs = pkgs: with pkgs;
     [
       cairo
       gdk-pixbuf
       glib
-      gnome2.pango
+      pango
       gtk2-x11
       udev
       xorg.libSM

@@ -1,4 +1,4 @@
-{ pkgs, inputs, lib }:
+{ pkgs, lib, ... }:
 let
   runtime-paths = lib.makeBinPath [
     pkgs.hyprland

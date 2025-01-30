@@ -111,8 +111,9 @@ let
     if [ "$($HYPRCTL activewindow -j | jq -r ".class")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
     elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "foot" ]; then
-        address=$($HYPRCTL activewindow -j | jq -r ".address")
-        nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address" --default-cancel
+        echo "Not closing."
+        # address=$($HYPRCTL activewindow -j | jq -r ".address")
+        # nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address" --default-cancel
     else
         $HYPRCTL dispatch killactive ""
     fi
@@ -306,6 +307,9 @@ in
 
         # jump to window that requests activation
         focus_on_activate = true;
+
+        # Font family
+        font_family = "DejaVu Sans";
       };
 
       # touchpad gestures

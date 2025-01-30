@@ -4,7 +4,7 @@
   home.packages = with pkgs; [
     blueman
     hicolor-icon-theme
-    gnome2.gnome_icon_theme
+    gnome-icon-theme
     adwaita-icon-theme
   ];
 

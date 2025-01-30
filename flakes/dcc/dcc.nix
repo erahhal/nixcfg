@@ -8,13 +8,13 @@ let
   dcc = stdenv.mkDerivation {
     pname = "dcc";
     version = cc_version;
-  
+
     src = ./dcc.zip;
-  
+
     buildInputs = [ unzip bzip2 dpkg ];
-      
+
     phases = [ "installPhase" "fixupPhase" ];
-  
+
     installPhase = ''
       unzip -P dell-blocks-downloads $src
       tar xvzf command-configure_${cc_version}.ubuntu20_amd64.tar.gz
@@ -25,7 +25,7 @@ let
       mkdir -p $out/lib
       cp srvadmin/opt/dell/srvadmin/lib64/* $out/lib
     '';
-  
+
       postFixup = ''
         patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
@@ -36,10 +36,10 @@ let
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${dcc}/lib:${dcc}/bin ${dcc}/bin/cctk
   '';
 in
-pkgs.buildFHSUserEnv {
+pkgs.buildFHSEnv {
   name = "cctk";
   targetPkgs = pkgs: with pkgs;
-    [ 
+    [
       openssl.out
       cctk-wrapper
     ];

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   # Thunderbolt
@@ -52,7 +52,7 @@
     fonts =  [
       {
         name = "DejaVu Sans Mono";
-        package = pkgs.nerdfonts;
+        package = pkgs.nerd-fonts.droid-sans-mono;
       }
     ];
     extraOptions = ''

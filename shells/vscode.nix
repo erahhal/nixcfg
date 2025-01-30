@@ -1,14 +1,14 @@
 { pkgs ? import <nixpkgs> {} }:
-(pkgs.buildFHSUserEnv {
+(pkgs.buildFHSEnv {
   name = "vscode";
   targetPkgs = pkgs: with pkgs;
-    [ 
+    [
       libSM
       gtk2-x11
       gcc
     ];
   multiPkgs = pkgs: with pkgs;
-    [ 
+    [
       udev
     ];
 }).env

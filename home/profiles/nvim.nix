@@ -1847,9 +1847,9 @@
       #     extraPackages = [
       #       pkgs.cairo
       #     ];
-      #   }; in pkgs.buildFHSUserEnv {
+      #   }; in pkgs.buildFHSEnv {
       #     # @TODO: There has to be a better way of including runtime dependencies here
-      #     # buildFHSUserEnv is too crude
+      #     # buildFHSEnv is too crude
       #     # Some say makeWrapper better for runtime dependencies
       #     name = "kui-nvim";
       #     targetPkgs = pkgs: with pkgs; [

@@ -80,7 +80,8 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
-      ./profiles/bambu-studio.nix
+      ## Currently broken
+      # ./profiles/bambu-studio.nix
       ./profiles/foot.nix
       ./profiles/kitty.nix
 
@@ -421,9 +422,9 @@ in
         teams-for-linux
 
         # Visualization
+        cava
         ## Currently broken
-        # cava
-        mandelbulber
+        # mandelbulber
         qosmic
         xaos
 
