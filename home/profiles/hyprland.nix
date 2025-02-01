@@ -27,7 +27,8 @@ let
     killall mpvpaper
     killall swaybg
     # ${pkgs.swaybg}/bin/swaybg -i "$(${pkgs.findutils}/bin/find ~/.config/wallpapers/. -type f| ${pkgs.coreutils}/bin/shuf -n1)"
-    ${pkgs.swaybg}/bin/swaybg -i ${hostParams.wallpaper} -m fill
+    # ${pkgs.swaybg}/bin/swaybg -i ${hostParams.wallpaper} -m fill
+    ${pkgs.hyprpaper}/bin/hyprpaper
   '' else "";
 
   ## This is fun, but eats up a ton of GPU

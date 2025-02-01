@@ -228,17 +228,17 @@ in
     #
     # @SHIT: seems that /etc/profiles/per-user/erahhal/share/applications/mimeinfo.cache still overriding everything
     #        location: echo $(readlink /etc/static/profiles/per-user/erahhal)/share/applications/mimeinfo.cache
-    #
-    xdg.dataFile."applications/mimeinfo.cache".text = ''
-      [MIME Cache]
-      application/rdf+xml=${defaultBrowserApp};
-      application/rss+xml=${defaultBrowserApp};
-      application/xhtml+xml=${defaultBrowserApp};
-      application/xhtml_xml=${defaultBrowserApp};
-      application/xml=${defaultBrowserApp};
-      text/html=${defaultBrowserApp};
-      text/xml=${defaultBrowserApp};
-    '';
+
+    # xdg.dataFile."applications/mimeinfo.cache".text = ''
+    #   [MIME Cache]
+    #   application/rdf+xml=${defaultBrowserApp};
+    #   application/rss+xml=${defaultBrowserApp};
+    #   application/xhtml+xml=${defaultBrowserApp};
+    #   application/xhtml_xml=${defaultBrowserApp};
+    #   application/xml=${defaultBrowserApp};
+    #   text/html=${defaultBrowserApp};
+    #   text/xml=${defaultBrowserApp};
+    # '';
 
     # ---------------------------------------------------------------------------
     # Display, Theme, DPI, Cursor Size settings

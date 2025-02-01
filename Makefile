@@ -83,6 +83,7 @@ clear-sddm-cache:
 
 clear-mimeapps:
 	[ -L "${HOME}/.config/mimeapps.list" ] || rm -f ${HOME}/.config/mimeapps.list
+	# [ -L "${HOME}/.local/share/applications/mimeinfo.cache" ] || rm -f ${HOME}/.config/mimeapps.list
 
 clear-gtkrc:
 	# Plasma6 overwrites this, messing up the dark theme

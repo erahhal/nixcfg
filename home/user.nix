@@ -4,7 +4,7 @@ let
   env_vars = {
     EDITOR = "vim";
     # PATH = "$HOME/Scripts:$HOME/.yarn/bin:$HOME/.local/bin:$PATH";
-    PATH = "$HOME/Scripts:$HOME/.local/bin:$PATH:/snap/bin";
+    PATH = "$HOME/Scripts:$HOME/.local/bin:$PATH:/snap/bin:$HOME/.local/share/JetBrains/Toolbox/scripts";
     # NODE_PATH = "$HOME/.local/share/yarn/global/node_modules";
     SSH_ASKPASS = "";
   };

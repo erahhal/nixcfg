@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 
-sudo mkdir -p /mnt/ellis/Backups/x1c-home
-sudo chown erahhal:users /mnt/ellisBackups/x1c-home
+BASE_PATH=/mnt/ellis/Backups/x1c
+
+mkdir -p ${BASE_PATH}/home
+sudo chown ${USER}:users ${BASE_PATH}
 
 wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
 
+## Wifi passwords
+mkdir -p ${BASE_PATH}/etc/NetworkManager
 sudo rsync -aP \
+  --progress /etc/NetworkManager/system-connections ${BASE_PATH}/etc/NetworkManager/
+
+## Home directory
+rsync -aP \
   --exclude=.BitwigStudio \
   --exclude="VirtualBox VMs" \
   --exclude=Android \
