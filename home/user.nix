@@ -149,6 +149,7 @@ in
         cargo
         cmake
         deno
+        maven
         nodejs
         tokei
         yarn

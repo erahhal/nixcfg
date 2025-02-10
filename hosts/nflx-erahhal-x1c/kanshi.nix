@@ -82,8 +82,8 @@ in
               }
               {
                 criteria = "eDP-1";
-                # status = "disable";
-                status = "enable";
+                status = "disable";
+                # status = "enable";
                 mode = "2880x1800@90";
                 position = "4520,1440";
                 scale = 1.8;
@@ -192,7 +192,7 @@ in
                 scale = 1.8;
               }
               {
-                criteria = "LG Electronics 16MQ70 204NZKZ005285";
+                criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
                 position = "1599,0";
@@ -210,6 +210,74 @@ in
               "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
               "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
               "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
+            ];
+          };
+        }
+        # {
+        #   profile = {
+        #     name = "desk-portable-left-hyprland";
+        #     outputs = [
+        #       {
+        #         criteria = portable-monitor;
+        #         status = "enable";
+        #         mode = "2560x1600@59.972000Hz";
+        #         position = "0,0";
+        #         # Resolution must be integer divisible by scale
+        #         scale = 1.6;
+        #       }
+        #       {
+        #         criteria = "eDP-1";
+        #         status = "enable";
+        #         mode = "2880x1800@90.000999";
+        #         position = "1601,101";
+        #         # Resolution must be integer divisible by scale
+        #         scale = 1.8;
+        #       }
+        #     ];
+        #     exec = [
+        #       "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 2 eDP-1"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${portable-monitor}"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${portable-monitor}"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 6 desc:${portable-monitor}"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
+        #       "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
+        #     ];
+        #   };
+        # }
+        {
+          profile = {
+            name = "desk-asus-hyprland";
+            outputs = [
+              {
+                criteria = asus-monitor;
+                status = "enable";
+                mode = "3840x2160";
+                position = "0,0";
+                # Resolution must be integer divisible by scale
+                scale = 1.5;
+              }
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                mode = "2880x1800@90.000999";
+                position = "2560,900";
+                # Resolution must be integer divisible by scale
+                scale = 1.8;
+              }
+            ];
+            exec = [
+              "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 2 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${asus-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 6 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 7 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 8 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 9 eDP-1"
             ];
           };
         }
