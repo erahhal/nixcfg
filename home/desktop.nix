@@ -456,6 +456,9 @@ in
         ## unfree
         bcompare
         # bcompare-beta
+        # nixpkgs-windsurf.windsurf
+        windsurf
+        code-cursor
       ];
     };
 

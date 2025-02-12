@@ -85,6 +85,12 @@ in
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  boot.kernel.sysctl = {
+    ## attempt to get rid of "rpfilter drop" messages in dmesg, which may be causing intermittent connectivity issues
+    "net.ipv4.conf.all.rp_filter" = 0;
+    "net.ipv4.conf.default.rp_filter" = 0;
+  };
+
   # --------------------------------------------------------------------------------------
   # Device specific
   # --------------------------------------------------------------------------------------
@@ -113,6 +119,12 @@ in
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ thinkpad-dock-udev-rules ];
 
+  ## Attempt to address wifi connectivity issues
+  boot.extraModprobeConfig = ''
+    options iwlwifi power_save=0
+    options iwlmvm power_scheme=1
+  '';
+
   networking = {
     hostName = "nflx-erahhal-x1c";
     useNetworkd = true;
@@ -124,7 +136,7 @@ in
       #     hard freeze when on battery.
       wifi = {
         # backend = "iwd";
-        # powersave = false;
+        powersave = false;
         scanRandMacAddress = false;
       };
       ## When NtworkManager-wait-online.service is enabled, having wg0

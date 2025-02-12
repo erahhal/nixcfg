@@ -137,6 +137,10 @@
           config = config.nixpkgs.config;
           inherit system;
         };
+        nixpkgs-windsurf = import inputs.nixpkgs-windsurf {
+          config = config.nixpkgs.config;
+          inherit system;
+        };
       };
     };
   };
@@ -308,7 +312,8 @@
     appimage-run
     at-spi2-core
     axel
-    backblaze-b2
+    ## @TODO: broken
+    # backblaze-b2
     bashmount
     bfg-repo-cleaner
     bind
@@ -380,7 +385,8 @@
     usbutils
     utillinux
     vim
-    vulnix
+    ## @TODO: broken
+    # vulnix
     wireguard-tools
     wirelesstools
     wget

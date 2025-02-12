@@ -60,7 +60,7 @@ let
     set -g @resurrect-strategy-nvim 'session'
     # set -g @resurrect-capture-pane-contents 'on'
     # set -g @resurrect-save-bash-history 'on'
-    run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/resurrect.tmux
+    run-shell ${pkgs.trunk.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/resurrect.tmux
 
     ## Continuum - automatically save and restore using Resurrect
     set -g @continuum-restore 'on'
@@ -131,7 +131,9 @@ in
     tmuxPlugins.continuum
     tmuxPlugins.cpu
     tmuxPlugins.open
-    tmuxPlugins.resurrect
+    ## Currently broken
+    # tmuxPlugins.resurrect
+    trunk.tmuxPlugins.resurrect
     tmuxPlugins.sensible
     tmuxPlugins.yank
   ];

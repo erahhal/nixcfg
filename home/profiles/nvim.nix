@@ -3,7 +3,8 @@
   home.packages = with pkgs; [
     inputs.nixd.packages.${pkgs.system}.default
     tree-sitter
-    nodePackages.eslint
+    ## @TODO: Broken
+    # nodePackages.eslint
     nodePackages.prettier
     jdt-language-server
   ];
@@ -1930,7 +1931,8 @@
       fd
 
       nodejs
-      nodePackages.eslint
+      ## @TODO: broken
+      # nodePackages.eslint
       nodePackages.prettier
       # nodePackages.neovim
       nodePackages.typescript-language-server

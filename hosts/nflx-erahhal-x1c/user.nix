@@ -22,7 +22,8 @@ in
 
       packages = with pkgs; [
         awscli
-        blender
+        ## @TODO: Broken
+        # blender
         chromium
 
         jetbrains-toolbox
