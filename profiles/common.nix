@@ -1,11 +1,14 @@
-{ config, pkgs, inputs, system, userParams, ...}:
+{ config, lib, pkgs, inputs, system, userParams, ...}:
+let
+  backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
+in
 {
 
   # --------------------------------------------------------------------------------------
   # Base Nix config
   # --------------------------------------------------------------------------------------
 
-  # system.autoUpgrade = {
+  # system.autoUpgrade = {c
   #   enable = true;
   #   allowReboot = true;
   #   flake = "github:erahhal/nixcfg";
@@ -312,8 +315,7 @@
     appimage-run
     at-spi2-core
     axel
-    ## @TODO: broken
-    # backblaze-b2
+    backblaze-b2
     bashmount
     bfg-repo-cleaner
     bind
@@ -385,8 +387,7 @@
     usbutils
     utillinux
     vim
-    ## @TODO: broken
-    # vulnix
+    vulnix
     wireguard-tools
     wirelesstools
     wget

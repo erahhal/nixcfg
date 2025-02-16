@@ -212,6 +212,11 @@
             nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
 
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-startify = true;
+          }
           inputs.nix-snapd.nixosModules.default
           {
             services.snap.enable = true;
@@ -252,6 +257,11 @@
             home-manager.useUserPackages = true;
             nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-startify = true;
+          }
         ];
         specialArgs = {
           inherit inputs;
@@ -280,6 +290,11 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             nixpkgs.overlays = [ inputs.nur.overlays.default ];
+          }
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-startify = true;
           }
         ];
         specialArgs = {

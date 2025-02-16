@@ -3,8 +3,7 @@
   home.packages = with pkgs; [
     inputs.nixd.packages.${pkgs.system}.default
     tree-sitter
-    ## @TODO: Broken
-    # nodePackages.eslint
+    nodePackages.eslint
     nodePackages.prettier
     jdt-language-server
   ];
@@ -1974,10 +1973,8 @@
       fd
 
       nodejs
-      ## @TODO: broken
-      # nodePackages.eslint
+      nodePackages.eslint
       nodePackages.prettier
-      # nodePackages.neovim
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
     ];

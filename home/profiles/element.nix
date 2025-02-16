@@ -18,6 +18,6 @@ in
   home.packages = [
     ## Broken in wayland for now
     # elementFix
-    pkgs.unstable.element-desktop
+    pkgs.element-desktop
   ];
 }

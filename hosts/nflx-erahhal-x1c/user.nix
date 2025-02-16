@@ -2,7 +2,7 @@
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
-  blender = (pkgs.runCommandLocal "blender" { meta.broken = true; } (lib.warn "Package blender is currently disabled" "mkdir -p $out"));
+  # blender = (pkgs.runCommandLocal "blender" { meta.broken = true; } (lib.warn "Package blender is currently disabled" "mkdir -p $out"));
 in
 {
   imports = [
