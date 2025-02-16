@@ -49,6 +49,9 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
+    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+
     # Wine wrapper
     erosanix.url = "github:emmanuelrosa/erosanix";
     erosanix.inputs.nixpkgs.follows = "nixpkgs";
@@ -159,6 +162,11 @@
             nixpkgs.overlays = [ inputs.nur.overlays.default ];
           }
 
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-startify = true;
+          }
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
 

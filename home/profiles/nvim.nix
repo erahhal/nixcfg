@@ -871,6 +871,26 @@
       # =======================
 
       {
+        plugin = blink-cmp;
+        config = ''
+          lua << EOF
+          require("blink").setup({
+            opts = {
+              keymap = {
+                preset = "enter",
+                ["<S-Tab>"] = { "select_prev", "fallback" },
+                ["<Tab>"] = { "select_next", "fallback" },
+              },
+              sources = {
+                default = { "lsp", "path", "buffer", "codecompanion" },
+                cmdline = {}, -- Disable sources for command-line mode
+              },
+            },
+          })
+          EOF
+        '';
+      }
+      {
         # Needs to be loaded before nvim-lspconfig
         plugin = cmp-nvim-lsp;
         config = ''
@@ -1809,6 +1829,29 @@
             -- will get overriden by `get_icons` option
             default = true;
           }
+          EOF
+        '';
+      }
+
+      # =======================
+      # GenAI
+      # =======================
+
+      {
+        plugin = codecompanion-nvim;
+        config = ''
+          lua << EOF
+          require("codecompanion").setup({
+            opts = {
+              -- Refer to: https://github.com/olimorris/codecompanion.nvim/blob/main/lua/codecompanion/config.lua
+              strategies = {
+                --NOTE: Change the adapter as required
+                chat = { adapter = "copilot" },
+                inline = { adapter = "copilot" },
+              },
+              log_level = "DEBUG", -- or "TRACE"
+            }
+          })
           EOF
         '';
       }

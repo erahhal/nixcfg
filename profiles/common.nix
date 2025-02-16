@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, system, userParams, hyprland-unstable, ...}:
+{ config, pkgs, inputs, system, userParams, ...}:
 {
 
   # --------------------------------------------------------------------------------------

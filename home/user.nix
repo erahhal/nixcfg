@@ -51,7 +51,7 @@ in
       ./profiles/btop.nix
       # ./profiles/captive-browser.nix
       # ./profiles/node-modules.nix
-      ./profiles/nvim.nix
+      # ./profiles/nvim.nix
       # ./profiles/syncthing.nix
       ./profiles/vifm.nix
       # ./profiles/weechat.nix

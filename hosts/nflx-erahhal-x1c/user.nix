@@ -1,8 +1,8 @@
-{ pkgs, hostParams, userParams, ... }:
+{ pkgs, lib, hostParams, userParams, ... }:
 
 let
-  # cursor = pkgs.callPackage ../../pkgs/cursor { };
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
+  blender = (pkgs.runCommandLocal "blender" { meta.broken = true; } (lib.warn "Package blender is currently disabled" "mkdir -p $out"));
 in
 {
   imports = [
@@ -22,8 +22,7 @@ in
 
       packages = with pkgs; [
         awscli
-        ## @TODO: Broken
-        # blender
+        blender
         chromium
 
         jetbrains-toolbox
@@ -40,7 +39,6 @@ in
         # AI
         # streamlit
         # vespa-cli
-        # cursor
 
         # Games
         prismlauncher
