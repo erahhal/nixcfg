@@ -251,7 +251,8 @@ in
 
     ## Fixes input lag issue in Hyprland
     ## @TODO: Remove after fixed in kernel
-    "amdgpu.dcdebugmask=0x610"
+    # "amdgpu.dcdebugmask=0x610"
+    "amdgpu.dcdebugmask=0x10"
 
     "amd_pstate=active"
     "processor=ignore_ppc=1"

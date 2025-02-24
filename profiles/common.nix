@@ -375,6 +375,7 @@ in
     pstree
     pv
     ryzenadj
+    sqlite
     sshpass
     steam-run
     steampipe

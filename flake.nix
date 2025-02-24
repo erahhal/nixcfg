@@ -165,7 +165,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
-            nixvim-config.enable-startify = true;
+            nixvim-config.enable-startify-cowsay = true;
           }
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
@@ -215,7 +215,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
-            nixvim-config.enable-startify = true;
+            nixvim-config.enable-startify-cowsay = true;
           }
           inputs.nix-snapd.nixosModules.default
           {
@@ -260,7 +260,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
-            nixvim-config.enable-startify = true;
+            nixvim-config.enable-startify-cowsay = true;
           }
         ];
         specialArgs = {
@@ -294,7 +294,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
-            nixvim-config.enable-startify = true;
+            nixvim-config.enable-startify-cowsay = true;
           }
         ];
         specialArgs = {

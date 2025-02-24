@@ -339,7 +339,7 @@ in
         ## disk space
         baobab
         qdirstat
-        filelight
+        kdePackages.filelight
 
         ## audio
         easyeffects
@@ -364,7 +364,7 @@ in
         gnome-calculator
         inkscape
         joplin-desktop
-        kcalc
+        kdePackages.kcalc
         # Not yet available in stable
         unstable.kphotoalbum
         krita

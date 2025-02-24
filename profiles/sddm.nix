@@ -25,7 +25,7 @@ in
 
   config = if hostParams.displayManager == "sddm" then {
     environment.systemPackages = with pkgs; [
-      sddm
+      kdePackages.sddm
       sddm-themes  # Must be installed globally, not home
       bibata-cursors
     ];
