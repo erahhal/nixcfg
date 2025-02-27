@@ -62,6 +62,28 @@ in
         }
         {
           profile = {
+            name = "desk-hyprland-thinkvision";
+            outputs = [
+              {
+                criteria = "Lenovo Group Limited P40w-20 V90DFGMV";
+                status = "enable";
+                mode = "5120x2160";
+                position = "0,0";
+                scale = 1.333333;
+              }
+              {
+                criteria = "eDP-1";
+                status = "disable";
+                # status = "enable";
+                mode = "2880x1800@120";
+                position = "6249,1440";
+                scale = 1.8;
+              }
+            ];
+          };
+        }
+        {
+          profile = {
             name = "desk-hyprland";
             outputs = [
               {
