@@ -344,6 +344,11 @@ in
         ## audio
         easyeffects
 
+        # Browsers
+        # firefox-wayland
+        librewolf-wayland
+        floorp
+
         ## apps
         audacity
         unstable.bitwarden
@@ -355,7 +360,6 @@ in
         errands
         evolutionWithPlugins
         feh
-        firefox
         gimp-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins
         # pr67576-gimp-wayland.gimp

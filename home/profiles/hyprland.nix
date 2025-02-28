@@ -209,6 +209,8 @@ in
     settings = {
       debug = {
         disable_logs = false;
+        # Temporary, to get rid of clean divisor error on 5k2k monitor
+        # suppress_errors = true;
       };
 
       "$mod" = "SUPER";

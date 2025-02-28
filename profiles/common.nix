@@ -185,6 +185,12 @@ in
     magicOrExtension = ''\x7fELF....AI\x02'';
   };
 
+  ## To address issues with neovim nvimtree plugin
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 1048576;
+    "fs.inotify.max_user_instances" = 1024;
+  };
+
   # --------------------------------------------------------------------------------------
   # Services
   # --------------------------------------------------------------------------------------

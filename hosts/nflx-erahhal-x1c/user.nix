@@ -34,7 +34,7 @@ in
         mcreator
         postgresql
         # nodejs-16_x
-        transmission_3-gtk
+        transmission_4-gtk
 
         # AI
         # streamlit

@@ -63,6 +63,40 @@ in
         }
         {
           profile = {
+            name = "desk-hyprland-thinkvision";
+            outputs = [
+              {
+                criteria = "Lenovo Group Limited P40w-20 V90DFGMV";
+                status = "enable";
+                mode = "5120x2160";
+                position = "0,0";
+                scale = 1.333333;
+              }
+              {
+                criteria = "eDP-1";
+                status = "disable";
+                # status = "enable";
+                mode = "2880x1800@90";
+                position = "5120,1440";
+                scale = 1.8;
+              }
+            ];
+            exec = [
+              "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 2 desc:${home-monitor-right-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 3 desc:${home-monitor-right-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 6 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${home-monitor-left-hyprland}"
+              "${hyprctl} dispatch dpms on"
+            ];
+          };
+        }
+        {
+          profile = {
             name = "desk-hyprland";
             outputs = [
               {

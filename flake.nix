@@ -49,9 +49,6 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
-
     # Wine wrapper
     erosanix.url = "github:emmanuelrosa/erosanix";
     erosanix.inputs.nixpkgs.follows = "nixpkgs";
@@ -108,14 +105,17 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
     # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
+
+    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
   };
 
   outputs = { ... }@inputs:
@@ -165,6 +165,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
+            nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
           }
           inputs.nflx-vpn.nixosModules.default
@@ -215,6 +216,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
+            nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
           }
           inputs.nix-snapd.nixosModules.default
@@ -260,6 +262,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
+            nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
           }
         ];
@@ -294,6 +297,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
+            nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
           }
         ];

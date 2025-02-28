@@ -83,3 +83,7 @@ sudo mount -o rw --bind /nix/store /mnt/store_rw/
 sudo rm /mnt/store_rw/<path>/file
 sudo umount /mnt/store_rw
 ```
+
+### Building a docker container using Nix
+
+* https://github.com/identinet/did-web-server/blob/main/flake.nix
