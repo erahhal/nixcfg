@@ -347,7 +347,6 @@ in
         # Browsers
         # firefox-wayland
         librewolf-wayland
-        floorp
 
         ## apps
         audacity
