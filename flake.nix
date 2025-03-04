@@ -114,8 +114,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
   };
 
   outputs = { ... }@inputs:
