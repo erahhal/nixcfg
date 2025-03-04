@@ -14,19 +14,21 @@
   ];
 
   hardware.printers = {
-    ensureDefaultPrinter = "brother";
-    ensurePrinters = [
-      {
-        name = "brother";
-        description = "Brother MFC-L2710DW";
-        location = "Master Bedroom";
-        # ipp:// seems to stop working a lot. Found out about using socket:// here:
-        # https://askubuntu.com/questions/1411604/status-the-printer-may-not-exist-or-is-unavailable-at-this-time
-        deviceUri = "socket://10.0.0.44:9100";
-        # Found in /nix/store/...-brlaser-6/share/cups/drv/brlasrer.drv
-        model = "drv:///brlaser.drv/brl2710.ppd";
-      }
-    ];
+    ## Causes cupsd restart failures
+
+    # ensureDefaultPrinter = "brother";
+    # ensurePrinters = [
+    #   {
+    #     name = "brother";
+    #     description = "Brother MFC-L2710DW";
+    #     location = "Master Bedroom";
+    #     # ipp:// seems to stop working a lot. Found out about using socket:// here:
+    #     # https://askubuntu.com/questions/1411604/status-the-printer-may-not-exist-or-is-unavailable-at-this-time
+    #     deviceUri = "socket://10.0.0.44:9100";
+    #     # Found in /nix/store/...-brlaser-6/share/cups/drv/brlasrer.drv
+    #     model = "drv:///brlaser.drv/brl2710.ppd";
+    #   }
+    # ];
   };
 
   hardware.sane = {

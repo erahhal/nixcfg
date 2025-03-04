@@ -1,7 +1,7 @@
 { config, lib, pkgs, inputs, system, userParams, ...}:
-let
-  backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
-in
+# let
+#   backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
+# in
 {
 
   # --------------------------------------------------------------------------------------
