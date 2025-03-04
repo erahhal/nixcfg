@@ -1292,14 +1292,17 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1740536736,
-        "narHash": "sha256-4kqhdSlEpXrYS5k+uR6hMt6FG+QC1Nd7AwdpDnBKsfI=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1741118850,
+        "narHash": "sha256-lHyMtgm50UBaHWxhXYY3Ch4+Z0wTs1yQY5jXvkDfCEM=",
+        "ref": "refs/heads/master",
+        "rev": "a70d95dbb000ac79d65d646427c43b9146fe56be",
+        "revCount": 29,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nflx-vpn": {
