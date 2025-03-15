@@ -71,6 +71,10 @@
 
         # Prevents garbage collector from deleting outputs of derivations.
         keep-outputs = true
+
+        # Create a "fine grained access token" with no extra permissions:
+        # https://github.com/settings/personal-access-tokens/new
+        !include ${config.sops.secrets."nix-config".path}
       '';
 
     registry.nixpkgs.flake = inputs.nixpkgs;

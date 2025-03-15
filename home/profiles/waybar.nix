@@ -42,13 +42,18 @@ let
       exit
     fi
 
-    ${pkgs.wget}/bin/wget -q --timeout=1 --tries=1 --spider https://github.com
+    if ${pkgs.procps}/bin/pgrep -x "openconnect" > /dev/null; then
+      URL=https://data.netflix.net
+    else
+      URL=https://github.com
+    fi
+    ${pkgs.wget}/bin/wget -q --timeout=1 --tries=1 --spider $URL
     # "tooltip" field can't match the icon name, or else it will be replaced by icon
     #  so it is capitalized here to avoid that.
     if [ $? -eq 0 ]; then
-      echo '{ "text": "online", "alt": "online", "tooltip": "Online", "class": "online" }'
+      echo "{ \"text\": \"online\", \"alt\": \"online\", \"tooltip\": \"Online ($URL)\", \"class\": \"online\" }"
     else
-      echo '{ "text": "online", "alt": "offline", "tooltip": "Offline", "class": "offline" }'
+      echo "{ \"text\": \"online\", \"alt\": \"offline\", \"tooltip\": \"Offline ($URL)\", \"class\": \"offline\" }"
     fi
   '';
 in
