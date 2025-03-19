@@ -348,10 +348,11 @@
           inherit userParams;
         };
       };
+
       ## Default hostname for WSL is nixos
       ## Will be renamed to msi-desktop after first installation
       nixos = msi-desktop;
-    };
+
       msi-linux =
       let
         system = "x86_64-linux";
@@ -392,5 +393,6 @@
           inherit userParams;
         };
       };
+    };
   };
 }

@@ -67,7 +67,7 @@ in
   # Nix
   # --------------------------------------------------------------------------------------
 
-  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" "nixos-config=/home/Code/${userParams.username}/nixcfg" ];
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" "nixos-config=/home/${userParams.username}/Code/nixcfg" ];
 
   # --------------------------------------------------------------------------------------
   # Boot

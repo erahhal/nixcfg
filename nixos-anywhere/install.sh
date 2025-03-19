@@ -11,6 +11,8 @@ echo '  - Do NOT use Ventoy, as it doesnt work on some devices. Use a direct ima
 echo '  - On target: Change password with `passwd`'
 echo '  - On source: `scp ~/.ssh/authorized_keys nixos@<address>:/home/nixos`'
 echo '  - On target: `mkdir -p ~/.ssh; mv ~/authorized_keys ~/.ssh/authorized_keys'
+echo '  - You make need to run `nix flake update` for a system that has never been installed before.'
+echo '  - To check for errors try `nix repl .` followed by `nixosConfigurations.<config-name>.config.system.build.toplevel`'
 echo '  - MAKE SURE YOUR NIX CONFIG DOES NOT INCLUDE LANZABOOTE, AS SECURE KEYS ARE NOT YET INSTALLED'
 echo '  - Then continue by entering the values below'
 echo ''
