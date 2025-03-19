@@ -7,6 +7,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -136,7 +138,7 @@
         inherit recursiveMerge;
       };
     };
-    nixosConfigurations = {
+    nixosConfigurations = rec {
       nflx-erahhal-x1c =
       let
         system = "x86_64-linux";
@@ -309,6 +311,46 @@
           inherit userParams;
         };
       };
+      msi-desktop = 
+      let
+        system = "x86_64-linux";
+        hostParams = import ./hosts/msi-desktop/params.nix {};
+        userParams = import ./user-params.nix {};
+      in
+      inputs.nixpkgs.lib.nixosSystem {
+        system = system;
+        modules = [
+          ./hosts/msi-desktop/configuration.nix
+          inputs.nixos-wsl.nixosModules.default
+          {
+            wsl.enable = true;
+          }
+          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+          inputs.home-manager.nixosModules.home-manager
+          inputs.secrets.nixosModules.default
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
+          }
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-ai = false;
+            nixvim-config.enable-startify-cowsay = true;
+          }
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit system;
+          inherit hostParams;
+          inherit recursiveMerge;
+          inherit userParams;
+        };
+      };
+      ## Default hostname for WSL is nixos
+      ## Will be renamed to msi-desktop after first installation
+      nixos = msi-desktop;
     };
   };
 }

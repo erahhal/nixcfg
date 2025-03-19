@@ -234,6 +234,12 @@ in
     "usbcore.autosuspend=-1"
   ];
 
+  # Enable power management
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
+
   services.upower = {
     enable = true;
     criticalPowerAction = "Hibernate";

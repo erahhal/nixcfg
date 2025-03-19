@@ -296,6 +296,12 @@ in
   # Hardware specific
   # --------------------------------------------------------------------------------------
 
+  # Enable power management
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
+
   # https://support.hpe.com/hpesc/public/docDisplay?docId=emr_na-c04565693
   # https://forum.manjaro.org/t/pcc-cpufreq-initstate-no-such-device-error/14172
   boot.kernelParams = [ "intel_iommu=off" "intel_pstate=active" ];

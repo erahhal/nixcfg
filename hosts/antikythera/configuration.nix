@@ -277,6 +277,12 @@ in
     };
   };
 
+  # Enable power management
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
+
   services.upower = {
     enable = true;
     criticalPowerAction = "Hibernate";

@@ -1,4 +1,4 @@
-{ pkgs, inputs, userParams, ... }:
+{ pkgs, inputs, hostParams, userParams, ... }:
 
 let
   env_vars = {
@@ -44,6 +44,8 @@ in
 
   home-manager.users.${userParams.username} = {config, ...}: {
     _module.args.inputs = inputs;
+    _module.args.hostParams = hostParams;
+    _module.args.userParams = userParams;
 
     imports = [
       inputs.nix-colors.homeManagerModules.default
