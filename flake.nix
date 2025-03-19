@@ -118,11 +118,12 @@
 
     nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
     # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+
+    jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
   };
 
   outputs = { ... }@inputs:
   let
-    userParams = import ./user-params.nix {};
     recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
   in {
     # lib.pkgsParameters = {
@@ -143,6 +144,7 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/nflx-erahhal-x1c/params.nix {};
+        userParams = import ./hosts/nflx-erahhal-x1x/user-params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -193,6 +195,7 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/antikythera/params.nix {};
+        userParams = import ./hosts/antikythera/user-params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -241,7 +244,7 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/upaya/params.nix {};
-        userParams = import ./user-params.nix {};
+        userParams = import ./hosts/upaya/user-params.nix {};
         recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
@@ -280,7 +283,7 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/sicmundus/params.nix {};
-        userParams = import ./user-params.nix {};
+        userParams = import ./hosts/sicmundus/user-params.nix {};
         recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
@@ -315,7 +318,7 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/msi-desktop/params.nix {};
-        userParams = import ./user-params.nix {};
+        userParams = import ./hosts/msi-desktop/user-params.nix {};
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
@@ -327,8 +330,8 @@
             wsl.defaultUser = userParams.username;
           }
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.home-manager.nixosModules.home-manager
           inputs.secrets.nixosModules.default
+          inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -353,5 +356,46 @@
       ## Will be renamed to msi-desktop after first installation
       nixos = msi-desktop;
     };
+      msi-linux =
+      let
+        system = "x86_64-linux";
+        hostParams = import ./hosts/msi-linux/params.nix {};
+        userParams = import ./hosts/msi-linux/user-params.nix {};
+      in
+      inputs.nixpkgs.lib.nixosSystem {
+        system = system;
+        modules = [
+          inputs.disko.nixosModules.disko
+          inputs.lanzaboote.nixosModules.lanzaboote
+          ./hosts/msi-linux/configuration.nix
+          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+          inputs.secrets.nixosModules.default
+          inputs.jovian.nixosModules.default
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
+          }
+
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-ai = true;
+            nixvim-config.enable-startify-cowsay = true;
+          }
+          inputs.nix-snapd.nixosModules.default
+          {
+            services.snap.enable = true;
+          }
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit system;
+          inherit hostParams;
+          inherit recursiveMerge;
+          inherit userParams;
+        };
+      };
   };
 }
