@@ -20,13 +20,13 @@ in
       volumes = [
         "${containerDataPath}/wikijs:/data"
       ];
-      # user = "${toString userParams.uid}:${toString userParams.gid}";
+      # user = "${toString hostParams.uid}:${toString hostParams.gid}";
       environment = {
         DB_TYPE = "sqlite";
         DB_FILEPATH ="/data/wikijs.sqlite";
         TZ = "America/Los_Angeles";
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
     };
   };

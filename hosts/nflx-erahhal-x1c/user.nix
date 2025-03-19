@@ -10,8 +10,6 @@ in
   ];
 
   home-manager.users.${userParams.username} = {
-    _module.args.hostParams = hostParams;
-    _module.args.userParams = userParams;
 
     imports = [
       ./launch-apps-config-hyprland.nix

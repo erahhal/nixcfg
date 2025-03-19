@@ -1,4 +1,4 @@
-{ config, pkgs, userParams, ... }:
+{ hostParams, userParams, ... }:
 let
   containerDataPath = "/home/${userParams.username}/DockerData";
 in
@@ -26,8 +26,8 @@ in
       ];
       environment = {
         TZ = "America/Los_Angeles";
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
     };
   };

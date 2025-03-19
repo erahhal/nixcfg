@@ -27,7 +27,7 @@ in
       "video"
       "wheel"
     ];
-    uid = userParams.uid;
+    uid = hostParams.uid;
     shell = if userParams.shell == "zsh" then pkgs.zsh else pkgs.bash;
   };
 

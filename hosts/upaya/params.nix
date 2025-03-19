@@ -4,6 +4,9 @@
   # Host
   # -------------------------------------------------------------
 
+  uid = 1000;
+  gid = 100;
+
   hostName = "upaya";
   timeZone = "America/Los_Angeles";
   containerBackend = "docker";

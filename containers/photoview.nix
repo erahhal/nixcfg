@@ -30,8 +30,8 @@ in
         MYSQL_USER = "photoview";
         MYSQL_RANDOM_ROOT_PASSWORD = "1";
         TZ = "America/Los_Angeles";
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
     };
 
@@ -57,8 +57,8 @@ in
         PHOTOVIEW_LISTEN_PORT = "80";
         PHOTOVIEW_MEDIA_CACHE = "/app/cache";
         TZ = "America/Los_Angeles";
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
     };
   };

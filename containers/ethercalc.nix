@@ -1,4 +1,4 @@
-{ config, pkgs, hostParams, userParams, ... }:
+{ config, hostParams, userParams, ... }:
 let
   containerDataPath = "/home/${userParams.username}/DockerData";
   service_ip = "10.0.0.72";
@@ -22,8 +22,8 @@ in
         REDIS_PORT_6379_TCP_ADDR = "redis.lan";
         REDIS_PORT_6379_TCP_PORT = "6379";
         TZ = "America/Los_Angeles";
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
     };
   };

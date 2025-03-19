@@ -68,8 +68,8 @@ in
         "${containerDataPath}/wekan/mongodb-dump/data/db"
       ];
       environment = {
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
       dependsOn = [
         "init-network-${network}"
@@ -91,8 +91,8 @@ in
         "${containerDataPath}/wekan/files:/data:rw"
       ];
       environment = {
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
 
         # See: https://github.com/wekan/wekan/blob/main/docker-compose.yml
         WRITABLE_PATH = "/data";

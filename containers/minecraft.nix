@@ -139,7 +139,7 @@ in
           "--pull=always"
           "--env-file=${config.age.secrets.docker.path}"
         ];
-        user = "${toString userParams.uid}:${toString userParams.gid}";
+        user = "${toString hostParams.uid}:${toString hostParams.gid}";
         volumes = [
           "${containerDataPath}/minecraft/mysql-data:/var/lib/mysql"
         ];
@@ -179,15 +179,15 @@ in
         extraOptions = [
           "--pull=always"
         ];
-        user = "${toString userParams.uid}:${toString userParams.gid}";
+        user = "${toString hostParams.uid}:${toString hostParams.gid}";
         volumes = [
           "${containerDataPath}/minecraft/config-bungeecord:/config"
           "${containerDataPath}/minecraft/plugins-bungeecord:/plugins"
           "${containerDataPath}/minecraft/server-bungeecord:/server"
         ];
         environment = {
-          UID = toString userParams.uid;
-          GID = toString userParams.gid;
+          UID = toString hostParams.uid;
+          GID = toString hostParams.gid;
           TYPE = "BUNGEECORD";
         };
       };
@@ -231,15 +231,15 @@ in
           "--pull=always"
         ];
         ## DO NOT add this, as it conflicts with UID and GID in the "environment section"
-        # user = "${toString userParams.uid}:${toString userParams.gid}";
+        # user = "${toString hostParams.uid}:${toString hostParams.gid}";
         volumes = [
           "${containerDataPath}/minecraft/data-lobby:/data"
           "${containerDataPath}/minecraft/plugins-spigot:/plugins:ro"
           "${containerDataPath}/minecraft/worlds:/worlds:ro"
         ];
         environment = {
-          UID = toString userParams.uid;
-          GID = toString userParams.gid;
+          UID = toString hostParams.uid;
+          GID = toString hostParams.gid;
           VERSION = minecraft_version;
           # OPS = "jumpingnosepizza,theomobile";
           OPS = "ektoklast";
@@ -311,14 +311,14 @@ in
           "--pull=always"
         ];
         ## DO NOT add this, as it conflicts with UID and GID in the "environment section"
-        # user = "${toString userParams.uid}:${toString userParams.gid}";
+        # user = "${toString hostParams.uid}:${toString hostParams.gid}";
         volumes = [
           "${containerDataPath}/minecraft/data-creative:/data"
           "${containerDataPath}/minecraft/plugins-spigot:/plugins:ro"
         ];
         environment = {
-          UID = toString userParams.uid;
-          GID = toString userParams.gid;
+          UID = toString hostParams.uid;
+          GID = toString hostParams.gid;
           VERSION = minecraft_version;
           OPS = "jumpingnosepizza,theomobile";
           EULA = "TRUE";
@@ -384,14 +384,14 @@ in
           "--pull=always"
         ];
         ## DO NOT add this, as it conflicts with UID and GID in the "environment section"
-        # user = "${toString userParams.uid}:${toString userParams.gid}";
+        # user = "${toString hostParams.uid}:${toString hostParams.gid}";
         volumes = [
           "${containerDataPath}/minecraft/data-survival:/data"
           "${containerDataPath}/minecraft/plugins-spigot:/plugins:ro"
         ];
         environment = {
-          UID = toString userParams.uid;
-          GID = toString userParams.gid;
+          UID = toString hostParams.uid;
+          GID = toString hostParams.gid;
           VERSION = minecraft_version;
           OPS = "jumpingnosepizza,theomobile";
           EULA = "TRUE";
@@ -459,15 +459,15 @@ in
     #       "--pull=always"
     #     ];
     #     ## DO NOT add this, as it conflicts with UID and GID in the "environment section"
-    #     # user = "${toString userParams.uid}:${toString userParams.gid}";
+    #     # user = "${toString hostParams.uid}:${toString hostParams.gid}";
     #     volumes = [
     #       "${containerDataPath}/minecraft/data-portal-gun:/data"
     #       "${containerDataPath}/minecraft/plugins-spigot:/plugins:ro"
     #       "${containerDataPath}/minecraft/plugins-portal-gun:/mods:ro"
     #     ];
     #     environment = {
-    #       UID = toString userParams.uid;
-    #       GID = toString userParams.gid;
+    #       UID = toString hostParams.uid;
+    #       GID = toString hostParams.gid;
     #       VERSION = minecraft_version;
     #       OPS = "jumpingnosepizza,theomobile,ektoklast";
     #       EULA = "TRUE";

@@ -67,7 +67,7 @@ in
         "/mnt/ellis/Photos - Import:/photoprism/import"
       ];
       ## Start as non-root user before initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
-      user = "${toString userParams.uid}:${toString userParams.gid}";
+      user = "${toString hostParams.uid}:${toString hostParams.gid}";
       environment = {
         PHOTOPRISM_AUTH_MODE = "password";                    # authentication mode (public, password)
         PHOTOPRISM_SITE_URL = "https://photoprism.rahh.al/";  # public server URL incl http:// or https:// and /path, :port is optional
@@ -100,8 +100,8 @@ in
         # PHOTOPRISM_FFMPEG_ENCODER = "software"        # FFmpeg encoder ("software", "intel", "nvidia", "apple", "raspberry";)
         # PHOTOPRISM_FFMPEG_BITRATE = "32";              # FFmpeg encoding bitrate limit in Mbit/s (default: 50)
         ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
-        PHOTOPRISM_UID = toString userParams.uid;
-        PHOTOPRISM_GID = toString userParams.gid;
+        PHOTOPRISM_UID = toString hostParams.uid;
+        PHOTOPRISM_GID = toString hostParams.gid;
         # PHOTOPRISM_UMASK: 0000
       };
     };

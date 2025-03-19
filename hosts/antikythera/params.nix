@@ -4,6 +4,10 @@
   # Host
   # -------------------------------------------------------------
 
+  # Match the UID of admin user on Synology NAS
+  uid = 1026;
+  gid = 100;
+
   hostName = "antikythera";
   timeZone = "America/Los_Angeles";
   containerBackend = "docker";

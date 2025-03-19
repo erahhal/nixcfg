@@ -10,6 +10,7 @@
 
   imports =
     [
+      ./disk-config-btrfs.nix
       ../../profiles/common.nix
       ../../home/user.nix
     ];

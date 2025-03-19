@@ -1,9 +1,9 @@
-{ config, pkgs, userParams, ... }:
+{ config, pkgs, hostParams, userParams, ... }:
 
 let
   # this line prevents hanging on network split
   automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-  options = ["${automount_opts},credentials=${config.age.secrets.samba-secrets.path},uid=${toString userParams.uid},gid=${toString userParams.gid}"];
+  options = ["${automount_opts},credentials=${config.age.secrets.samba-secrets.path},uid=${toString hostParams.uid},gid=${toString hostParams.gid}"];
 in
 {
   environment.systemPackages = [ pkgs.cifs-utils ];

@@ -102,9 +102,9 @@ in
         ];
         environment = {
           TZ = "America/Los_Angeles";
-          PUID = toString userParams.uid;
-          GUID = toString userParams.gid;
-          PGID = toString userParams.gid;
+          PUID = toString hostParams.uid;
+          GUID = toString hostParams.gid;
+          PGID = toString hostParams.gid;
           PACKAGES = "iputils";
         };
       };
@@ -190,8 +190,8 @@ in
         ];
         environment = {
           TZ = "America/Los_Angeles";
-          PUID = toString userParams.uid;
-          PGID = toString userParams.gid;
+          PUID = toString hostParams.uid;
+          PGID = toString hostParams.gid;
           UMASK_SET = "000";
         };
       };

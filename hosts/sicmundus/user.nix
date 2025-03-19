@@ -5,8 +5,6 @@ in
 {
 
   home-manager.users.${userParams.username} = {
-    _module.args.hostParams = hostParams;
-    _module.args.userParams = userParams;
 
     # ---------------------------------------------------------------------------
     # Host-specific user packages

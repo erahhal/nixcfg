@@ -250,7 +250,7 @@ in
   environment.etc.subuid = {
     text = ''
       ${userParams.username}:0:1000
-      ${userParams.username}:${toString userParams.uid}:65536
+      ${userParams.username}:${toString hostParams.uid}:65536
     '';
     mode = "0440";
   };

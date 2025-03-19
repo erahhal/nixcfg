@@ -39,8 +39,8 @@ in
         GRIST_SAML_IDP_CERTS = "/sso/idp.pem";
         GRIST_SAML_IDP_UNENCRYPTED = "1";
         TZ = "America/Los_Angeles";
-        PUID = toString userParams.uid;
-        PGID = toString userParams.gid;
+        PUID = toString hostParams.uid;
+        PGID = toString hostParams.gid;
       };
     };
   };

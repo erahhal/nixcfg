@@ -125,6 +125,7 @@
   outputs = { ... }@inputs:
   let
     recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
+    userParams = import ./user-params.nix {};
   in {
     # lib.pkgsParameters = {
     #   overlays = [ ];
@@ -144,7 +145,6 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/nflx-erahhal-x1c/params.nix {};
-        userParams = import ./hosts/nflx-erahhal-x1x/user-params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -195,7 +195,6 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/antikythera/params.nix {};
-        userParams = import ./hosts/antikythera/user-params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -244,7 +243,6 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/upaya/params.nix {};
-        userParams = import ./hosts/upaya/user-params.nix {};
         recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
@@ -283,7 +281,6 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/sicmundus/params.nix {};
-        userParams = import ./hosts/sicmundus/user-params.nix {};
         recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
@@ -318,7 +315,6 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/msi-desktop/params.nix {};
-        userParams = import ./hosts/msi-desktop/user-params.nix {};
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
@@ -360,7 +356,6 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/msi-linux/params.nix {};
-        userParams = import ./hosts/msi-linux/user-params.nix {};
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;

@@ -84,8 +84,8 @@ in
         ];
         environment = {
           TZ = "America/Los_Angeles";
-          PUID = toString userParams.uid;
-          PGID = toString userParams.gid;
+          PUID = toString hostParams.uid;
+          PGID = toString hostParams.gid;
           XBROWSERSYNC_DB_USER = db_user;
         };
       };
@@ -128,8 +128,8 @@ in
         ];
         environment = {
           TZ = "America/Los_Angeles";
-          PUID = toString userParams.uid;
-          PGID = toString userParams.gid;
+          PUID = toString hostParams.uid;
+          PGID = toString hostParams.gid;
           MONGO_INITDB_ROOT_USERNAME = db_user;
         };
       };
