@@ -3,8 +3,8 @@
   disko.devices = {
     disk = {
       main = {
-        type = "disk";
         device = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_4000GB_24521J802608";
+        type = "disk";
         content = {
           type = "gpt";
           partitions = {
@@ -52,6 +52,13 @@
                     swap = {
                       swapfile.size = "64G";
                     };
+                  };
+                };
+
+                mountpoint = "/partition-root";
+                swap = {
+                  swapfile = {
+                    size = "64G";
                   };
                 };
               };
