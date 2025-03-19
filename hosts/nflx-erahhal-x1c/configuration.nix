@@ -22,6 +22,7 @@ in
       ../../home/user.nix
       ../../home/desktop.nix
       ../../profiles/common.nix
+      ../../profiles/appimage.nix
       ../../profiles/desktop.nix
       ../../profiles/pipewire.nix
       ../../profiles/snapcast.nix
@@ -152,6 +153,11 @@ in
     ## Don't include this line - it will add an additional default route.
     ## It's not necessary.
     # interfaces."wlp0s20f3".useDHCP = true;
+  };
+
+  services.resolved = {
+    enable = true;
+    dnssec = "false";
   };
 
   programs.captive-browser = {

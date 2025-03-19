@@ -324,6 +324,7 @@
           inputs.nixos-wsl.nixosModules.default
           {
             wsl.enable = true;
+            wsl.defaultUser = userParams.username;
           }
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager

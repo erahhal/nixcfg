@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, system, userParams, ...}:
+{ config, pkgs, inputs, system, userParams, ...}:
 # let
 #   backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
 # in
@@ -177,18 +177,6 @@
   # Nix mounts read-write automatically when it needs to write to it.
   boot.readOnlyNixStore = true;
 
-  # "natively" run appimages
-  # https://nixos.wiki/wiki/Appimage
-  # Unfortunately, causes full rebuild of many packages
-  boot.binfmt.registrations.appimage = {
-    wrapInterpreterInShell = false;
-    interpreter = "${pkgs.appimage-run}/bin/appimage-run";
-    recognitionType = "magic";
-    offset = 0;
-    mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
-    magicOrExtension = ''\x7fELF....AI\x02'';
-  };
-
   ## To address issues with neovim nvimtree plugin
   boot.kernel.sysctl = {
     "fs.inotify.max_user_watches" = 1048576;
@@ -203,11 +191,6 @@
 
   # Firmware/BIOS updates
   services.fwupd.enable = true;
-
-  services.resolved = {
-    enable = true;
-    dnssec = "false";
-  };
 
   ## Used for debugging DNS calls
   # systemd.services.systemd-resolved = {

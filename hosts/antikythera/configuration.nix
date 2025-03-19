@@ -22,6 +22,7 @@ in
       ../../home/user.nix
       ../../home/desktop.nix
       ../../profiles/common.nix
+      ../../profiles/appimage.nix
       ../../profiles/desktop.nix
       ../../profiles/pipewire.nix
       ../../profiles/snapcast.nix
@@ -170,6 +171,10 @@ in
     # interfaces."wlp0s20f3".useDHCP = true;
   };
 
+  services.resolved = {
+    enable = true;
+    dnssec = "false";
+  };
 
   programs.captive-browser = {
     enable = true;

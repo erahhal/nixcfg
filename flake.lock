@@ -2501,11 +2501,11 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1742342670,
-        "narHash": "sha256-53MQuxAgLLx8Zt72yIDA9FxF8OnUfxHCGlheqzegznI=",
+        "lastModified": 1742345354,
+        "narHash": "sha256-f5ft8k6XJ1K0rcwINu/GLwLMt+yoLhFnE+uycCnw1Kg=",
         "ref": "refs/heads/master",
-        "rev": "1dcddef451425e7a7c0befa4ef569fa9b3cb6433",
-        "revCount": 18,
+        "rev": "a26cc0f287d9f061880bb359b09e3ed99633987f",
+        "revCount": 19,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

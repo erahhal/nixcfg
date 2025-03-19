@@ -32,6 +32,10 @@ switch:
 		systemctl --user restart toggle-theme ;\
 	fi
 
+boot:
+	nixos-rebuild --use-remote-sudo boot --flake .#${HOSTNAME} -L
+	
+
 remote-install:
 	./nixos-anywhere/install.sh
 

@@ -23,6 +23,7 @@ in
       ../../home/user.nix
       ../../home/desktop.nix
       ../../profiles/common.nix
+      ../../profiles/appimage.nix
       ../../profiles/desktop.nix
       ../../profiles/wayland-nvidia.nix
       ../../profiles/pipewire.nix
@@ -196,6 +197,11 @@ in
     #     ];
     #   };
     # };
+  };
+
+  services.resolved = {
+    enable = true;
+    dnssec = "false";
   };
 
   # Enable fingerprint reading daemon.
