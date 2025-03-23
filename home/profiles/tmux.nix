@@ -132,7 +132,6 @@ in
     tmuxPlugins.cpu
     tmuxPlugins.open
     tmuxPlugins.resurrect
-    trunk.tmuxPlugins.resurrect
     tmuxPlugins.sensible
     tmuxPlugins.yank
   ];

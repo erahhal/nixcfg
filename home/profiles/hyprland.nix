@@ -359,6 +359,7 @@ in
         gaps_out = 0;
         border_size = 1;
         resize_on_border = true;
+        extend_border_grab_area = 25;
         no_border_on_floating = true;
         "col.active_border" = "rgba(4a7697ff)";
         "col.inactive_border" = "rgba(2b2b2bff)";

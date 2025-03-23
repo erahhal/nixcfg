@@ -356,7 +356,6 @@ in
         unstable.digikam
         discord
         element-desktop
-        errands
         evolutionWithPlugins
         feh
         gimp-with-plugins
