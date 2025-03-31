@@ -1327,14 +1327,17 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1743380209,
-        "narHash": "sha256-5PVZGCuwxh9NEU1i8eD74NMupwk0i3Bc5DKJMJClvGo=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1743401284,
+        "narHash": "sha256-jOOnfIDqc1fvEPgLjRMcX5vHfOYQZ7svLGw4JlWTsuk=",
+        "ref": "refs/heads/master",
+        "rev": "591895dbd791ee702b143a5140a384ba78ae2857",
+        "revCount": 33,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nflx-vpn": {
@@ -1342,14 +1345,17 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1743383793,
-        "narHash": "sha256-rBM4XpHDY5/aX+G1pRox0rjfjWAdZd9I2pUBmcXILNY=",
-        "path": "/home/erahhal/Code/nixcfg-nflx-vpn",
-        "type": "path"
+        "lastModified": 1733891529,
+        "narHash": "sha256-gznD0jBz7wzIILS/kVlUnK/kBWqTSsBadU1OGhsCYq8=",
+        "ref": "refs/heads/master",
+        "rev": "b749bdf40eb99b209d6266ffae076a0cc3eb6e8c",
+        "revCount": 9,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx-vpn",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       }
     },
     "nix": {
@@ -2078,14 +2084,17 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1743143756,
-        "narHash": "sha256-fgdMbeR3uHpw+0TZxg1LBX1bqzOn8lFfj6iJV9y74bw=",
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "lastModified": 1743144265,
+        "narHash": "sha256-jkVxoujtFXmAvxGAJynWM4s2hqgeymAnnHe8rRjAg7M=",
+        "ref": "refs/heads/main",
+        "rev": "a4488ddf9069fc2fc24a906fee3e4bac90f08ac9",
+        "revCount": 20,
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       }
     },
     "nur": {
@@ -2137,14 +2146,17 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1743382828,
-        "narHash": "sha256-93jD7Zz7ghEnMJm87Hqc29UJtB2Nsnw5+zoK2jmIUbg=",
-        "path": "/home/erahhal/Code/openconnect-pulse-launcher",
-        "type": "path"
+        "lastModified": 1738698633,
+        "narHash": "sha256-4TKOkh0RtNumhvg8D+qReMIqz4su/kdlgBWs8RatU/0=",
+        "owner": "erahhal",
+        "repo": "openconnect-pulse-launcher",
+        "rev": "944f5de26c1e3cea6dcb24fe06e926c834078a0c",
+        "type": "github"
       },
       "original": {
-        "path": "/home/erahhal/Code/openconnect-pulse-launcher",
-        "type": "path"
+        "owner": "erahhal",
+        "repo": "openconnect-pulse-launcher",
+        "type": "github"
       }
     },
     "parts": {
