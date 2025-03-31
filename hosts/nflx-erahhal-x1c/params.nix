@@ -13,6 +13,9 @@
   containerBackend = "docker";
   displayManager = "sddm";
   sddmTheme = "nflx";
+  sddmThemeQt6 = false;
+  # sddmTheme = "sddm-astronaut-theme";
+  # sddmThemeQt6 = true;
   defaultSession = "hyprland";
   multipleSessions = true;
   # defaultLockProgram = "swaylock";

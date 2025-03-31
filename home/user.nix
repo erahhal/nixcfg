@@ -746,7 +746,7 @@ in
 
     programs.java = {
       enable = true;
-      package = pkgs.zulu17;
+      # package = pkgs.zulu17;
     };
 
     # This value determines the Home Manager release that your

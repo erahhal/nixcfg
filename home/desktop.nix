@@ -345,7 +345,7 @@ in
         easyeffects
 
         # Browsers
-        # firefox-wayland
+        firefox-wayland
         librewolf-wayland
 
         ## apps

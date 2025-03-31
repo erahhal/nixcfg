@@ -12,7 +12,10 @@
   timeZone = "America/Los_Angeles";
   containerBackend = "docker";
   displayManager = "sddm";
-  sddmTheme = "adapta";
+  # sddmTheme = "adapta";
+  # sddmThemeQt6 = false;
+  sddmTheme = "sddm-astronaut-theme";
+  sddmThemeQt6 = true;
   defaultSession = "hyprland";
   multipleSessions = true;
   # defaultLockProgram = "swaylock";

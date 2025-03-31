@@ -411,6 +411,7 @@ in
     "col.border_active" = "rgba(285577ff)";
     "col.border_inactive" = "rgba(2b2b2bff)";
     groupbar = {
+      gradients = true;
       font_size = 20;
       height = 22;
       text_color = "rgba(ffffffff)";

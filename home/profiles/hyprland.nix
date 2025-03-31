@@ -293,6 +293,10 @@ in
       ];
 
       misc = {
+
+        ## Disable "Application is not responding" dialog
+        enable_anr_dialog = false;
+
         # See: https://wiki.hyprland.org/Configuring/Perfomance/
         # vfr = true;
 

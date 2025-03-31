@@ -105,4 +105,6 @@ in
       }
     }
   '';
+
+  xdg.configFile."swaync/style.css".source = "${pkgs.swaynotificationcenter}/etc/xdg/saync/style.css";
 }

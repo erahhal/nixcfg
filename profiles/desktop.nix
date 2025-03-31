@@ -1,4 +1,4 @@
-{ lib, pkgs, userParams, ...}:
+{ lib, pkgs, hostParams, userParams, ...}:
 let
   # This is needed to set the cursor for SDDM
   default-mouse-cursor = pkgs.stdenv.mkDerivation {
@@ -28,18 +28,19 @@ let
   };
 in
 {
-  imports =
-    [
-      # ./xserver.nix
-      ./sddm.nix
-      ./lightdm.nix
-      ./i3.nix
-      ./wayland-window-manager.nix
-      # ./plasma6.nix
-      ./sway.nix
-      ./hyprland.nix
-      ./fonts.nix
-    ];
+  imports = [
+    # ./xserver.nix
+    ./i3.nix
+    ./wayland-window-manager.nix
+    # ./plasma6.nix
+    ./sway.nix
+    ./hyprland.nix
+    ./fonts.nix
+  ] ++ (if hostParams.displayManager == "sddm" then [
+    ./sddm.nix
+  ] else if hostParams.displayManager == "lightdm" then [
+    ./lightdm.nix
+  ] else []);
 
   environment.systemPackages = with pkgs; [
     glxinfo
