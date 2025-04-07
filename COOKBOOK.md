@@ -16,7 +16,7 @@ Various information and commands and techniques to get things done.
 ### Read-Eval-Print Loop (REPL)
 
 `nix repl`
-`nix repl --expr 'import <nixpkgs>{}`
+`nix repl --expr 'import <nixpkgs>{}'`
 
 ### nix eval
 

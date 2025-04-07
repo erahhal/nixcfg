@@ -372,12 +372,16 @@ in
       decoration = {
         # rounding = 8;
         rounding = 0;
+
+        shadow = {
+          enabled = false;
+        };
       };
 
       dwindle = {
         # keep floating dimentions while tiling
-        pseudotile = 1;
-        preserve_split = 1;
+        pseudotile = true;
+        preserve_split = true;
       };
 
       layerrule = [

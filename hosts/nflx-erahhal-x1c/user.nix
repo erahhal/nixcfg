@@ -47,7 +47,7 @@ in
         ## arduino
         arduino
         arduino-ide
-        platformio
+        # platformio
       ];
     };
   };

@@ -415,11 +415,14 @@ in
     "col.border_inactive" = "rgba(afafafff)";
     groupbar = {
       gradients = true;
-      font_size = 20;
+      font_size = 14;
       height = 22;
+      indicator_height = 0;
       text_color = "rgba(000000ff)";
       "col.active" = "rgba(c4d4f1ff)";
       "col.inactive" = "rgba(afafafff)";
+      gaps_in = 0;
+      gaps_out = 0;
     };
   };
 

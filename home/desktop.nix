@@ -80,8 +80,7 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
-      ## Currently broken
-      # ./profiles/bambu-studio.nix
+      ./profiles/bambu-studio.nix
       ./profiles/foot.nix
       ./profiles/kitty.nix
 
