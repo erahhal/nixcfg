@@ -41,23 +41,23 @@ args@{ lib, hostParams, userParams, ... }:
 
       # From NixOS wiki: https://nixos.wiki/wiki/Nvidia
 
-      __NV_PRIME_RENDER_OFFLOAD = "1";
-      __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-      __VK_LAYER_NV_optimus = "NVIDIA_only";
+      # __NV_PRIME_RENDER_OFFLOAD = "1";
+      # __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
+      # __VK_LAYER_NV_optimus = "NVIDIA_only";
 
       # Needed by Hyprland
 
-      # LIBVA_DRIVER_NAME = "nvidia";
-      LIBVA_DRIVER_NAME = "vdpau";
+      LIBVA_DRIVER_NAME = "nvidia";
+      # LIBVA_DRIVER_NAME = "vdpau";
 
       # XDG_SESSION_TYPE = "wayland";           # set elsewhere
-      GBM_BACKEND = lib.mkForce "nvidia-drm";   # Overrides value in gfx-nvidia
+      # GBM_BACKEND = lib.mkForce "nvidia-drm";   # Overrides value in gfx-nvidia
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       WLR_NO_HARDWARE_CURSORS = "1";
 
       ## See: https://wiki.hyprland.org/Nvidia/
       ## For hardware video decoding. Needs "libva-nvidia-driver"
-      NVD_BACKEND = "direct";
+      # NVD_BACKEND = "direct";
 
       #-------------------------------------------------
       # Unknown impact/use

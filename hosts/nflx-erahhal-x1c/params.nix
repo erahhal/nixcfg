@@ -20,6 +20,7 @@
   multipleSessions = true;
   # defaultLockProgram = "swaylock";
   defaultLockProgram = "hyprlock";
+  autoLogin = false;
 
   ttyFontSize = 9;
   ## Only 10 seems to get rid of the gaps in Foot terminal

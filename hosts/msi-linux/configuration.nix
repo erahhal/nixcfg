@@ -1,4 +1,4 @@
-{ inputs, userParams, hostParams, ... }:
+{ inputs, pkgs, userParams, hostParams, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -12,7 +12,29 @@
     [
       ./disk-config-btrfs.nix
       ../../profiles/common.nix
+      ../../profiles/desktop.nix
+      ../../profiles/gfx-nvidia.nix
+      ../../profiles/mullvad.nix
+      ../../profiles/pipewire.nix
+      # ../../profiles/steambox.nix
+      ../../profiles/steam.nix
+      ../../profiles/udev.nix
+      ../../profiles/wayland-nvidia.nix
+      ## @TODO: rename workstation-hardware.nix
+      ../../profiles/laptop-hardware.nix
+
       ../../home/user.nix
+      ../../home/desktop.nix
+
+      # user specific
+      ./user.nix
+
+      # display
+      ./launch-apps-config-sway.nix
+      ./kanshi.nix
+
+      ../../profiles/nfs-mounts.nix
+      # ../../profiles/smb-mounts.nix
     ];
 
   # Needed to setup passwords
@@ -23,6 +45,8 @@
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNvmGn1/uFnfgnv5qsec0GC04LeVB1Qy/G7WivvvUZVBBDzp8goe1DsE8M8iqnBSin56gQZDWsd50co2MbFAWuqH2HxY7OGay7P/V2q+SziTYFva85WGl84qWvYMmdB+alAFBT3L4eH5cegC5NhNp+OGsQuq32RdojgXXQt6vyZnaOypuz90k3rqV6Rt+iBTLz6VziasCLcYydwOvi9f1q6YQwGPLKaupDrV6gxvoX9bXLdopqwnXPSE/Eqczxgwc3PefvAJPSd6TOqIXvbtpv/B3Evt5SPe2gq+qASc5K0tzgra8KAe813kkpq4FuKJzHbT+EmO70wiJjru7zMEhd erahhal@nfml-erahhalQFL"
   ];
 
+  time.timeZone = hostParams.timeZone;
+
   # --------------------------------------------------------------------------------------
   # Nix
   # --------------------------------------------------------------------------------------
@@ -31,6 +55,9 @@
 
   networking = {
     hostName = hostParams.hostName;
+    networkmanager = {
+      enable = true;
+    };
   };
 
   # --------------------------------------------------------------------------------------
@@ -96,5 +123,21 @@
   # --------------------------------------------------------------------------------------
 
   services.syslogd.enable = true;
+
+  # -------
+  # OpenRGB
+  # -------
+
+  services.udev.packages = [ pkgs.openrgb ];
+  boot.kernelModules = [ "i2c-dev" ];
+  hardware.i2c.enable = true;
+
+  services.hardware.openrgb = {
+    enable = true;
+    server.port = 6742;
+    motherboard = "intel";
+  };
+
+  environment.systemPackages = with pkgs; [ openrgb-with-all-plugins ];
 }
 

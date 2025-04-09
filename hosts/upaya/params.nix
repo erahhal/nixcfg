@@ -18,6 +18,7 @@
   multipleSessions = true;
   #d efaultLockProgram = "swaylock";
   defaultLockProgram = "hyprlock";
+  autoLogin = false;
 
   ## @TODO: make xorg-specific
   ## Xorg settings

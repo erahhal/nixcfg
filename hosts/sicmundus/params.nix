@@ -12,6 +12,7 @@
   mainInterface = "enp4s0f0";
   containerBackend = "docker";
   defaultSession = "none";
+  autoLogin = false;
 
   dpi = 96;
 }

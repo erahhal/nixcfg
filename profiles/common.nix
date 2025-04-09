@@ -187,6 +187,8 @@
   # Services
   # --------------------------------------------------------------------------------------
 
+  services.ntp.enable = true;
+
   systemd.coredump.enable = true;
 
   # Firmware/BIOS updates
@@ -212,6 +214,7 @@
   environment.variables = {
     ET_NO_TELEMETRY = "1";
   };
+  
 
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images

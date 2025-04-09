@@ -24,7 +24,7 @@
       };
 
       autoLogin = {
-        enable = false;
+        enable =hostParams.autoLogin;
         user = userParams.username;
       };
     };

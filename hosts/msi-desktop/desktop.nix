@@ -1,14 +1,7 @@
 { pkgs, inputs, hostParams, userParams, ... }:
 
 let
-  bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
   defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
-  kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
-    ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
-  '';
-  kvantumpreview = pkgs.writeShellScriptBin "kvantumpreview" ''
-    ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantumpreview $@
-  '';
 in
 {
   imports = [
@@ -16,22 +9,10 @@ in
     ../profiles/vlc-wayland.nix
   ];
 
-  environment.systemPackages = with pkgs; [
-    ##  mkWindowsApp apps together conflict in home-manager, so install globally
-    # inputs.remarkable.packages."${system}".remarkable
-  ];
-
   environment.sessionVariables = {
     # ---------------------------------------------------------------------------
     # IME
     # ---------------------------------------------------------------------------
-    # XMODIFIERS = "@im=ibus";
-    # GTK_IM_MODULE = "ibus";
-    # QT_IM_MODULE = "ibus";
-    # SDL_IM_MODULE = "ibus";
-    # INPUT_METHOD = "ibus";
-    # XIM_SERVERS = "ibus";
-    # GLFW_IM_MODULE = "ibus";
 
     GLFW_IM_MODULE = "fcitx";
     ## This interferes with wayland input, and should be set per-app
@@ -80,7 +61,8 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
-      ./profiles/bambu-studio.nix
+      ## Currently broken
+      # ./profiles/bambu-studio.nix
       ./profiles/foot.nix
       ./profiles/kitty.nix
 
@@ -344,8 +326,8 @@ in
         easyeffects
 
         # Browsers
-        firefox-wayland
-        # librewolf-wayland
+        # firefox-wayland
+        librewolf-wayland
 
         ## apps
         audacity

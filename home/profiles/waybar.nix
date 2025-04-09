@@ -93,7 +93,17 @@ in
           all-outputs = true;
         };
 
-        modules-right = [
+        modules-right = if (hostParams.waybarMinimal or false) then [
+          "backlight"
+          "pulseaudio"
+          "cpu"
+          "clock"
+          "idle_inhibitor"
+          "custom/toggletheme"
+          "custom/online-monitor"
+          "tray"
+          "custom/notification"
+        ] else [
           "network"
           "backlight"
           "pulseaudio"

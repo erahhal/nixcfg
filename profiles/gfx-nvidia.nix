@@ -4,16 +4,38 @@
 
 let
   truecrack-cuda = pkgs.callPackage ../pkgs/truecrack-cuda { };
+  package = config.boot.kernelPackages.nvidiaPackages.stable;
 in
 {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-     extraPackages = with pkgs; [nvidia-vaapi-driver];
+    enable32Bit = true;
+    extraPackages = with pkgs; [
+      ## creates missing nvidia_gbm.so file
+      # (runCommand "nvidia-gbm-wrapper" { 
+      #   buildInputs = [ package ]; } ''
+      #   mkdir -p $out/lib/gbm
+      #   # Create an absolute symlink to the nvidia-drm_gbm.so file from the nvidia_x11 package
+      #   ln -s ${package}/lib/gbm/nvidia-drm_gbm.so $out/lib/gbm/nvidia_gbm.so
+      # '')
+      libvdpau-va-gl
+      vaapiVdpau
+      libva
+      vulkan-loader
+      vulkan-validation-layers
+      libvdpau-va-gl
+    ];
+    extraPackages32 = with pkgs; [
+      libvdpau-va-gl
+      vaapiVdpau
+      libva
+      vulkan-loader
+      vulkan-validation-layers
+      libvdpau-va-gl
+    ];
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -32,10 +54,16 @@ in
   # };
 
   environment.systemPackages = with pkgs; [
-    intel-gpu-tools
-    primus
+    # intel-gpu-tools
+    # primus
     # truecrack-cuda
     # unstable.cudaPackages_12_3.cudatoolkit
+    libglvnd
+    libdrm
+    mesa
+    vulkan-loader
+    vulkan-tools
+    vulkan-validation-layers
   ];
 
   # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
@@ -56,7 +84,8 @@ in
 
   hardware.nvidia = {
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
-    # package = config.boot.kernelPackages.nvidiaPackages.stable;
+    # package = config.boot.kernelPackages.nvidiaPackages.latest;
+    package = package;
 
     # nvidiaPersistenced = true;
 
@@ -82,7 +111,7 @@ in
     # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
     # Only available from driver 515.43.04+
     # Do not disable this unless your GPU is unsupported or if you have a good reason to.
-    open = false;
+    open = true;
 
     # Enable the Nvidia settings menu,
     # accessible via `nvidia-settings`.
@@ -94,7 +123,7 @@ in
       ## expense of higher power consumption since the Nvidia GPU will not go to sleep
       ## completely unless called for, as is the case in Offload Mode.
 
-      sync.enable = true;
+      # sync.enable = true;
 
       ## With Reverse Prime the primary rendering device is the device's APU and the
       ## NVIDIA GPU acts as an offload device. This is done while also allowing to use
@@ -104,8 +133,8 @@ in
 
       # reverseSync.enable = true;
 
-      # offload.enable = true;
-      # offload.enableOffloadCmd = true;
+      offload.enable = true;
+      offload.enableOffloadCmd = true;
 
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
