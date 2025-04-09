@@ -26,7 +26,16 @@ let
   #     systemctl poweroff
   #   fi
   # '';
-  launch = "${pkgs.nwg-menu}/bin/nwg-menu";
+
+  hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
+  exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
+    ${builtins.readFile ../../scripts/kill-all-apps.sh}
+
+    pkill Hyprland
+  '';
+
+  # launch = ''${pkgs.nwg-menu}/bin/nwg-menu -wm hyprland -d -term foot -cmd-lock "${hyprlockCommand}" -cmd-logout "${exit-hyprland}" -cmd-restart "systemctl reboot" -cmd-shutdown "systemctl -i poweroff"'';
+  launch = ''${pkgs.nwg-drawer}/bin/nwg-drawer'';
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
   check-online-script = pkgs.writeShellScriptBin "check-online-script" ''
     ## Mullvad statuses
@@ -59,9 +68,7 @@ let
 in
 {
   home.packages = with pkgs; [
-    # need >= 0.10.4. Stable has 0.10.3 which crashes on monitor changes
-    unstable.waybar
-    # inputs.waybar.packages.${pkgs.system}.waybar
+    waybar
   ];
 
   programs.waybar = {
@@ -76,7 +83,15 @@ in
 
         position = "bottom";
 
-        modules-left = [
+        modules-left = if (hostParams.waybarSimple or false) then [
+          "custom/launcher"
+          "sway/workspaces"
+          "sway/mode"
+          "sway/window"
+          "wlr/taskbar"
+          "hyprland/workspaces"
+          "hyprland/window"
+        ] else [
           "custom/launcher"
           "sway/workspaces"
           "sway/mode"
@@ -93,8 +108,24 @@ in
           all-outputs = true;
         };
 
-        modules-right = if (hostParams.waybarMinimal or false) then [
-          "backlight"
+        "wlr/taskbar" = {
+          format= "{icon}";
+          icon-size = 14;
+          icon-theme = "Numix-Circle";
+          tooltip-format = "{title}";
+          on-click = "activate";
+          on-click-middle = "close";
+          ignore-list = [ "Alacritty" ];
+          app_ids-mapping = {
+            firefoxdeveloperedition = "firefox-developer-edition";
+          };
+          rewrite = {
+            "Firefox Web Browser" = "Firefox";
+            "Foot Server" = "Terminal";
+          };
+        };
+
+        modules-right = if (hostParams.waybarSimple or false) then [
           "pulseaudio"
           "cpu"
           "clock"
@@ -151,6 +182,13 @@ in
         };
 
         "sway/mode" = { format = ''<span style="italic">{}</span>''; };
+
+        wireplumber = {
+          format = "{volume}% {icon}";
+          format-muted = "";
+          on-click = "helvum";
+          format-icons = ["" "" ""];
+        };
 
         pulseaudio = {
           tooltip = false;
@@ -289,7 +327,7 @@ in
 
         "custom/launcher" ={
           tooltip = false;
-          format = "ꅾ";
+          format = if (hostParams.waybarSimple or false) then "🔘" else "ꅾ";
           on-click = launch;
           on-click-right = "pkill wofi";
         };

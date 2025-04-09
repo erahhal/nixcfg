@@ -23,7 +23,8 @@
   trolltechFontSize = 10;
   defaultBrowser = "firefox";
   autoLogin = true;
-  wallpaper = ../../wallpapers/tokyo-park.jpeg;
-  waybarMinimal = true;
+  wallpaper = ../../wallpapers/hawaii-dylan-theo.jpg;
+  waybarSimple = true;
+  enableSteamGamescope = false;
 }
 

@@ -53,5 +53,7 @@
   };
 
   wireguardIp = "192.168.2.4";
+
+  enableSteamGamescope = true;
 }
 
