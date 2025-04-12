@@ -456,6 +456,11 @@ in
         ## See: https://github.com/hyprwm/Hyprland/issues/6698
         "stayfocused, class:^(BambuStudio)$,title:^()$"
         "suppressevent activate, class:^(BambuStudio)$,title:^()$"
+
+        ## Fix issue with Jetbrains focus
+        ## https://github.com/hyprwm/Hyprland/discussions/9866
+        "noinitialfocus, class:(jetbrains-idea), title:^win(.*)"
+        "noinitialfocus, class:(jetbrains-studio), title:^win(.*)"
       ];
 
       "$screenshotarea" = "${hyprctl} keyword animation \"fadeOut,0,0,default\"; grimblast --notify copysave area; ${hyprctl} keyword animation \"fadeOut,1,4,default\"";

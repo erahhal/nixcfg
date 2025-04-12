@@ -16,6 +16,10 @@
         # letter-spacing = 0;
         # horizontal-letter-offset = 0;
         # vertical-letter-offset = 0;
+
+        ## Attept to get rid of flickering next to waybar in hyprland
+        ## BUT DOES NOT WORK
+        resize-by-cells = "no";
       };
 
       mouse = {
