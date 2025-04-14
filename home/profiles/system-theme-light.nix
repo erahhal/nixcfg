@@ -221,6 +221,8 @@ in
     };
   };
 
+  programs.ghostty.settings.theme = lib.mkForce "Tango Half Adapted";
+
   xdg.configFile."lsd/config.yaml".text = ''
     color:
       theme: custom

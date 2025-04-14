@@ -111,7 +111,7 @@ let
     HYPRCTL=${hyprctl};
     if [ "$($HYPRCTL activewindow -j | jq -r ".class")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
-    elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "foot" ]; then
+    elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "ghostty" ]; then
         echo "Not closing."
         # address=$($HYPRCTL activewindow -j | jq -r ".address")
         # nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address" --default-cancel
@@ -216,7 +216,7 @@ in
       "$mod" = "SUPER";
 
       # "$term" = "${pkgs.kitty}/bin/kitty";
-      "$term" = "${pkgs.foot}/bin/foot";
+      "$term" = "${pkgs.ghostty}/bin/ghostty";
 
       exec-once = [
         # Update hyprland signature so hyprctl works with long-lived tmux sessions

@@ -372,6 +372,8 @@
     stress-ng
     sysstat
     tmux
+    udev
+    libudev-zero
     udevil
     udisks
     unrar

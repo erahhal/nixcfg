@@ -82,6 +82,7 @@ in
       ./profiles/alacritty.nix
       ./profiles/bambu-studio.nix
       ./profiles/foot.nix
+      ./profiles/ghostty.nix
       ./profiles/kitty.nix
 
       ./profiles/gthumb.nix
