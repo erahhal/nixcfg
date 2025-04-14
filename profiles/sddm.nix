@@ -44,30 +44,35 @@ in
   services.xserver.upscaleDefaultCursor = true; # default false
 
   services.xserver = {
-    enable = false;
-    displayManager = {
-      ## Does not work to change SDDM cursor theme or size
-      setupCommands = ''
-        # export XCURSOR_SIZE=64
-        ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
-        ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
-          Xft.dpi: ${toString hostParams.dpi}
-          Xcursor.theme: Bibata-Modern-Classic
-          Xcursor.size: 64
-        EOF
-      '';
-      ## Does not work to change SDDM cursor theme or size
-      sessionCommands = ''
-        # export XCURSOR_SIZE=64
-        ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
-        ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
-          Xft.dpi: ${toString hostParams.dpi}
-          Xcursor.theme: Bibata-Modern-Classic
-          Xcursor.size: 64
-        EOF
-      '';
-    };
+    enable = true;
+    dpi = hostParams.dpi;
   };
+
+  # services.xserver = {
+  #   enable = false;
+  #   displayManager = {
+  #     ## Does not work to change SDDM cursor theme or size
+  #     setupCommands = ''
+  #       # export XCURSOR_SIZE=64
+  #       ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
+  #       ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+  #         Xft.dpi: ${toString hostParams.dpi}
+  #         Xcursor.theme: Bibata-Modern-Classic
+  #         Xcursor.size: 64
+  #       EOF
+  #     '';
+  #     ## Does not work to change SDDM cursor theme or size
+  #     sessionCommands = ''
+  #       # export XCURSOR_SIZE=64
+  #       ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
+  #       ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+  #         Xft.dpi: ${toString hostParams.dpi}
+  #         Xcursor.theme: Bibata-Modern-Classic
+  #         Xcursor.size: 64
+  #       EOF
+  #     '';
+  #   };
+  # };
 
   services.displayManager = {
     defaultSession = hostParams.defaultSession;

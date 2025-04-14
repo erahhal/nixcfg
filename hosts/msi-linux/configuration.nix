@@ -19,9 +19,10 @@
       # ../../profiles/steambox.nix
       ../../profiles/steam.nix
       ../../profiles/udev.nix
-      ../../profiles/wayland-nvidia.nix
+      # ../../profiles/wayland-nvidia.nix
       ## @TODO: rename workstation-hardware.nix
       ../../profiles/laptop-hardware.nix
+      ../../overlays/chromium-wayland-ime.nix
 
       ../../home/user.nix
       ../../home/desktop.nix
@@ -50,7 +51,6 @@
   # --------------------------------------------------------------------------------------
   # Nix
   # --------------------------------------------------------------------------------------
-
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" "nixos-config=/home/${userParams.username}/Code/nixcfg" ];
 
   networking = {
@@ -65,9 +65,11 @@
   # --------------------------------------------------------------------------------------
 
   boot.loader = {
+    timeout = 75;
+
     systemd-boot = {
       enable = true;
-      configurationLimit = 10;
+      configurationLimit = 4;
 
       windows = {
         "windows" =

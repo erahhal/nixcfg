@@ -19,7 +19,7 @@
   multipleSessions = true;
   useHyprlandFlake = false;
   defaultLockProgram = "hyprlock";
-  ttyFontSize = 9;
+  ttyFontSize = 9.5;
   trolltechFontSize = 10;
   defaultBrowser = "firefox";
   autoLogin = true;

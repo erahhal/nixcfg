@@ -298,7 +298,8 @@ in
         enable_anr_dialog = false;
 
         # See: https://wiki.hyprland.org/Configuring/Perfomance/
-        # vfr = true;
+        ## disabling significantly reduces flickering/repeat rendering with nvidia in some apps
+        vfr = false;
 
         # Don't show anime girl in background
         disable_hyprland_logo = true;
@@ -499,7 +500,8 @@ in
         "$mod, Y, exec, systemctl --user restart kanshi"
         "$mod, T, exec, ${toggle-group}"
         "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '${exit-hyprland}'"
-        "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'"
+        # "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'"
+        "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff'"
         "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'"
         (
           if hostParams.defaultLockProgram == "swaylock" then

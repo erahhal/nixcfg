@@ -1,13 +1,16 @@
-{ ... }:
-let chromiumWaylandIme = final: prev: {
+{ pkgs, ... }:
+let 
+  chromiumWaylandIme = final: prev: {
   chromium = prev.chromium.override {
     commandLineArgs = [
+      "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
       "--enable-wayland-ime"
     ];
   };
 
   brave = prev.brave.override {
     commandLineArgs = [
+      "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
       "--enable-wayland-ime"
       "--password-store=basic" # Don't show kwallet login at start
     ];
@@ -16,21 +19,23 @@ let chromiumWaylandIme = final: prev: {
   slack = prev.slack.overrideAttrs (oldAttrs: {
     postInstall = oldAttrs.postInstall or "" + ''
       wrapProgram $out/bin/slack \
-        --add-flags "--enable-wayland-ime"
+        --add-flags "--enable-wayland-ime" \
+        --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
     '';
   });
 
   signal-desktop = prev.signal-desktop.overrideAttrs (oldAttrs: {
     postInstall = oldAttrs.postInstall or "" + ''
       wrapProgram $out/bin/signal-desktop \
-        --add-flags "--enable-wayland-ime"
+        --add-flags "--enable-wayland-ime" \
+        --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
     '';
   });
 
   element-desktop = prev.element-desktop.overrideAttrs (oldAttrs: {
-    postInstall = oldAttrs.postInstall or "" + ''
+    postFixup = oldAttrs.postFixup or "" + ''
       wrapProgram $out/bin/element-desktop \
-        --add-flags "--enable-wayland-ime"
+        --add-flags "--enable-features=WaylandLinuxDrmSyncobj"
     '';
   });
 
@@ -42,11 +47,13 @@ let chromiumWaylandIme = final: prev: {
   });
 
   discord = prev.discord.overrideAttrs (oldAttrs: {
+    buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.makeWrapper ];
     postInstall = oldAttrs.postInstall or "" + ''
-      wrapProgram $out/bin/discord \
-        --add-flags "--enable-wayland-ime"
+      wrapProgramShell $out/opt/Discord/Discord \
+          --add-flags "--enable-features=WaylandLinuxDrmSyncobj"
     '';
   });
+
 
   ## Whatsapp works out of the box
 
