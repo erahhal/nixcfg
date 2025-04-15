@@ -144,6 +144,7 @@ in
         weechat
 
         ## dev
+        claude-code
         devbox
         difftastic
         git-secrets

@@ -38,7 +38,15 @@
 
   virtualboxEnabled = false;
 
-  vmwareEnabled = true;
+  # This thing sucks, requires manually downloading vmware first
+  ## Message
+  # > Unfortunately, we cannot download file VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle automatically.
+  # > Please go to https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Workstation%20Pro&freeDownloads=true to download it yourself, and add it to the Nix store
+  # > using either
+  # >   nix-store --add-fixed sha256 VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle
+  # > or
+  # >   nix-prefetch-url --type sha256 file:///path/to/VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle
+  vmwareEnabled = false;
 
   waydroidEnabled = false;
 

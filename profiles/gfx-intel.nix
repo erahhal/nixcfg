@@ -5,7 +5,8 @@
 
 {
   environment.systemPackages = with pkgs; [
-    intel-gpu-tools
+    ## broken
+    # intel-gpu-tools
     libva-utils
   ];
 
