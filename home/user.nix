@@ -140,7 +140,7 @@ in
         pandoc
         ranger
         # unstable.youtube-dl
-        unstable.yt-dlp
+        trunk.yt-dlp
         weechat
 
         ## dev

@@ -220,7 +220,7 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
-            nixvim-config.enable-ai = true;
+            nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
           }
           inputs.nix-snapd.nixosModules.default

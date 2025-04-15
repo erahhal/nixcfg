@@ -47,6 +47,8 @@
         "workspace 4, silent, title:^(Spotify)$"
         "workspace 4, silent, class:^(brave-browser)$"
         # "workspace 5, silent, class:^(firefox)$"
+        # "workspace 5, silent, class:^(floorp)$"
+        # "workspace 5, silent, class:^(librewolf)$"
         "workspace 6, class:^(signal)$"
         "workspace 6, class:^(org.telegram.desktop)$"
         "workspace 6, class:^(whatsapp-for-linux)$"
