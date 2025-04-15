@@ -1,5 +1,5 @@
 { pkgs, ... }:
-let 
+let
   chromiumWaylandIme = final: prev: {
   chromium = prev.chromium.override {
     commandLineArgs = [
@@ -24,7 +24,7 @@ let
     '';
   });
 
-  signal-desktop = prev.signal-desktop.overrideAttrs (oldAttrs: {
+  signal-desktop-bin = prev.signal-desktop-bin.overrideAttrs (oldAttrs: {
     postInstall = oldAttrs.postInstall or "" + ''
       wrapProgram $out/bin/signal-desktop \
         --add-flags "--enable-wayland-ime" \

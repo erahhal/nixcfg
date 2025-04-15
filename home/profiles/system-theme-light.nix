@@ -312,9 +312,11 @@ in
       if hostParams.defaultSession == "none+i3" then {
         "gtk-cursor-theme-name" = "Adwaita";
         "gtk-cursor-theme-size" = 48;
+        "gtk-application-prefer-dark-theme" = 0;
       } else {
         "gtk-cursor-theme-name" = "Adwaita";
         "gtk-cursor-theme-size" = 24;
+        "gtk-application-prefer-dark-theme" = 0;
       };
   };
 

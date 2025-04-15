@@ -1,6 +1,9 @@
 { inputs, pkgs, hostParams, ... }:
 
 let
+  terminal = "foot";
+  # terminal = "kitty";
+  # terminal = "ghostty";
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
@@ -111,7 +114,7 @@ let
     HYPRCTL=${hyprctl};
     if [ "$($HYPRCTL activewindow -j | jq -r ".class")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
-    elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "ghostty" ]; then
+    elif [ "$($HYPRCTL activewindow -j | jq -r ".class")" =  "${terminal}" ]; then
         echo "Not closing."
         # address=$($HYPRCTL activewindow -j | jq -r ".address")
         # nag-graphical 'Exit Foot?' "$HYPRCTL dispatch closewindow address:$address" --default-cancel
@@ -215,8 +218,7 @@ in
 
       "$mod" = "SUPER";
 
-      # "$term" = "${pkgs.kitty}/bin/kitty";
-      "$term" = "${pkgs.ghostty}/bin/ghostty";
+      "$term" = "${pkgs.${terminal}}/bin/${terminal}";
 
       exec-once = [
         # Update hyprland signature so hyprctl works with long-lived tmux sessions
@@ -398,6 +400,7 @@ in
 
       windowrulev2 = [
         "float, title:^(KCalc)$"
+        "float, class:^(org.gnome.Calculator)$"
 
         # telegram media viewer
         "float, title:^(Media viewer)$"

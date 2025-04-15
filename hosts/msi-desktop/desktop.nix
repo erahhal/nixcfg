@@ -355,7 +355,7 @@ in
         mpv
         unstable.rpi-imager
         shotwell
-        signal-desktop
+        signal-desktop-bin
         slack
         spotify
         sxiv # image viewer with vim bindings

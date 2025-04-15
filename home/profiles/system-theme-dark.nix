@@ -87,6 +87,10 @@ in
     text = "dark-mode";
   };
 
+  home.packages = with pkgs; [
+    libadwaita
+  ];
+
   imports = [
     ( import ./tmux.nix (args // {
       forceConfig = false;
@@ -271,14 +275,18 @@ in
       size = 10;
     };
 
-    theme.name = "Arc-Dark";
-    theme.package = pkgs.arc-theme;
+    # theme.name = "Adwaita-dark";
+    # theme.package = pkgs.gnome-themes-extra;
+    # theme.name = "Arc-Dark";
+    # theme.package = pkgs.arc-theme;
     # theme.name = "SolArc-Dark";
     # theme.package = pkgs.solarc-gtk-theme;
-    # theme.name = "Materia";
-    # theme.package = pkgs.materia-theme;
+    theme.name = "Materia-dark";
+    theme.package = pkgs.materia-theme;
     iconTheme.package = pkgs.adwaita-icon-theme;
     iconTheme.name = "Adwaita";
+    # iconTheme.name = "Papirus-Dark";
+    # iconTheme.package = pkgs.papirus-icon-theme;
 
     gtk2.extraConfig =
       if hostParams.defaultSession == "none+i3" then ''
@@ -292,21 +300,23 @@ in
       '';
     gtk3.extraConfig =
       if hostParams.defaultSession == "none+i3" then {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 48;
-        "gtk-application-prefer-dark-theme" = 1;
+        gtk-cursor-theme-name = "Adwaita";
+        gtk-cursor-theme-size = 48;
+        gtk-application-prefer-dark-theme = 1;
       } else {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 24;
-        "gtk-application-prefer-dark-theme" = 1;
+        # gtk-cursor-theme-name = "Adwaita";
+        # gtk-cursor-theme-size = 24;
+        gtk-application-prefer-dark-theme = 1;
       };
     gtk4.extraConfig =
       if hostParams.defaultSession == "none+i3" then {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 48;
+        gtk-cursor-theme-name = "Adwaita";
+        gtk-cursor-theme-size = 48;
+        gtk-application-prefer-dark-theme = 1;
       } else {
-        "gtk-cursor-theme-name" = "Adwaita";
-        "gtk-cursor-theme-size" = 24;
+        # gtk-cursor-theme-name = "Adwaita";
+        # gtk-cursor-theme-size = 24;
+        gtk-application-prefer-dark-theme = 1;
       };
   };
 
@@ -324,7 +334,7 @@ in
 
   qt = {
     enable = true;
-    platformTheme.name = "adwaita";
+    platformTheme.name = "gnome";
     style = {
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;

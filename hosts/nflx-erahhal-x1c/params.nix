@@ -17,7 +17,7 @@
   # sddmTheme = "sddm-astronaut-theme";
   # sddmThemeQt6 = true;
   defaultSession = "hyprland";
-  multipleSessions = true;
+  multipleSessions = false;
   # defaultLockProgram = "swaylock";
   defaultLockProgram = "hyprlock";
   autoLogin = false;
