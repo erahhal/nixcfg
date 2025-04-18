@@ -1,7 +1,7 @@
 args@{ pkgs, lib, inputs, hostParams, userParams, ... }:
 let
 xwayland_settings = ''
-  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
+  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "32" else "16"}
   # Xcursor.theme: Adwaita
   Xcursor.theme: Bibata-Modern-Classic
   Xft.dpi: ${toString hostParams.dpi}
@@ -420,7 +420,7 @@ in
     groupbar = {
       gradients = true;
       font_size = 14;
-      height = 22;
+      height = 24;
       indicator_height = 0;
       text_color = "rgba(000000ff)";
       "col.active" = "rgba(c4d4f1ff)";

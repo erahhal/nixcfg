@@ -1,9 +1,10 @@
-{ pkgs, ...}:
+{ inputs, pkgs, ...}:
 let
   startSNC = pkgs.writeShellScript "startsnc.sh" ''
     ${pkgs.procps}/bin/pkill swaync
     ${pkgs.swaynotificationcenter}/bin/swaync
   '';
+  hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
 in
 {
   home.packages = with pkgs; [
@@ -78,7 +79,11 @@ in
         "inhibitors",
         "title",
         "dnd",
-        "notifications"
+        "notifications",
+        "mpris",
+        "volume",
+        "backlight",
+        "buttons-grid"
       ],
       "widget-config": {
         "inhibitors": {
@@ -99,8 +104,51 @@ in
           "text": "Label Text"
         },
         "mpris": {
-          "image-size": 96,
-          "image-radius": 12
+          "image-size": 80,
+          "image-radius": 10
+        },
+        "volume": {
+          "label": "",
+          "step": 5
+        },
+        "backlight": {
+          "label": "󰃞",
+          "step": 5
+        },
+        "buttons-grid": {
+          "actions": [
+            {
+              "label": "",
+              "command": "${pkgs.networkmanagerapplet}/bin/nm-connection-editor",
+              "tooltip": "Network"
+            },
+            {
+              "label": "",
+              "command": "${pkgs.blueman}/bin/blueman-manager",
+              "tooltip": "Bluetooth"
+            },
+            {
+              "label": "󰂛",
+              "command": "${pkgs.swaynotificationcenter}/bin/swaync-client -d",
+              "type": "toggle",
+              "tooltip": "DND"
+            },
+            {
+              "label": "󰷛",
+              "command": "${hyprlockCommand}",
+              "tooltip": "Lock"
+            },
+            {
+              "label": "󰜉",
+              "command": "systemctl reboot",
+              "tooltip": "Reboot"
+            },
+            {
+              "label": "⏻",
+              "command": "systemctl poweroff",
+              "tooltip": "Power Off"
+            }
+          ]
         }
       }
     }

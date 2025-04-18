@@ -1,7 +1,8 @@
 args@{ inputs, pkgs, lib, hostParams, userParams, ... }:
 let
 xwayland_settings = ''
-  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "48" else "24"}
+  ## Used in QT and other Xwayland apps
+  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "32" else "16"}
   # Xcursor.theme: Adwaita
   Xcursor.theme: Bibata-Modern-Classic
   Xft.dpi: ${toString hostParams.dpi}
@@ -275,16 +276,113 @@ in
       size = 10;
     };
 
+    ##----------------------------------------------
+    ## Works well
+    ##----------------------------------------------
+
+    ## Good looking, some buttons are same color as background
+    theme.name = "Tokyonight-Dark";
+    theme.package = pkgs.tokyonight-gtk-theme;
+
+    ## OK, kind of old-school
+    # theme.name = "Zukitwo-dark";
+    ## More modern, but some black on dark fonts
+    # theme.name = "Zukitre-dark";
+    # theme.package = pkgs.zuki-themes;
+
+    ## Decent looking
+    # theme.name = "Orchis-Dark";
+    ## Nice and tight
+    # theme.name = "Orchis-Dark-Compact";
+    # theme.name = "Orchis-Teal-Dark";
+    ## Even better
+    # theme.name = "Orchis-Teal-Dark-Compact";
+    # theme.name = "Orchis-<color>";
+    # theme.name = "Orchis-<color>-Dark";
+    # theme.name = "Orchis-<color>-Compact";
+    # theme.name = "Orchis-<color>-Dark-Compact";
+    # theme.package = pkgs.orchis-theme;
+
+    ## Dark bluish with green highlights
+    # theme.name = "Matrix-Dark";
+    # theme.package = pkgs.matrix-gtk-theme;
+
+    ## Decent, dark violet with light blue highlights
+    # theme.name = "Nightfox-Dark";
+    # theme.package = pkgs.nightfox-gtk-theme;
+
+    ## Ok, a bit too tight with padding
+    # theme.name = "Layan-Dark";
+    # theme.name = "Layan-Dark-Solid";
+    # theme.package = pkgs.layan-gtk-theme;
+
+    ## Nice dark brown theme with dark blue highlights
+    # theme.name = "Gruvbox-Dark";
+    # theme.package = pkgs.gruvbox-gtk-theme;
+
+    # theme.name = "Gruvbox-Material-Dark";
+    # theme.package = pkgs.gruvbox-material-gtk-theme;
+
+    ## Dark with white highlights
+    # theme.name = "Graphite-Dark";
+    # theme.package = pkgs.graphite-gtk-theme;
+
+    ## Dark with white highlights
+    # theme.name = "Fluent-Dark";
+    # theme.package = pkgs.fluent-gtk-theme;
+
+    ##----------------------------------------------
+    ## Problematic
+    ##----------------------------------------------
+
+    ## Dark mode, but gtk4 apps are light
+    # theme.name = "Plano";
+    # theme.name = "Plano-dark-titlebar";
+    # theme.package = pkgs.plano-theme;
+
+    ## "light" theme with darkish chrome
+    # theme.name = "rose-pine";
+    ## "dark" theme with light-ish chrome, white title bars
+    # theme.name = "rose-pine-dawn";
+    ## "light" theme with darkish chrome
+    # theme.name = "rose-pine-moon";
+    # theme.package = pkgs.rose-pine-gtk-theme;
+
+    ## Dark mode, but bright white title bars
+    # theme.name = "Materia-dark";
+    # theme.package = pkgs.materia-theme;
+
+    ##----------------------------------------------
+    ## Broken/Unimplemented on GTK4
+    ##----------------------------------------------
+
     # theme.name = "Adwaita-dark";
     # theme.package = pkgs.gnome-themes-extra;
     # theme.name = "Arc-Dark";
     # theme.package = pkgs.arc-theme;
     # theme.name = "SolArc-Dark";
     # theme.package = pkgs.solarc-gtk-theme;
-    theme.name = "Materia-dark";
-    theme.package = pkgs.materia-theme;
+    # theme.name = "Pop-dark";
+    # theme.package = pkgs.pop-gtk-theme;
+    # theme.name = "Plata-noir";
+    # theme.package = pkgs.plata-theme;
+    # theme.name = "Paper";
+    # theme.package = pkgs.paper-gtk-theme;
+    # theme.name = "palenight";
+    # theme.package = pkgs.palenight-theme;
+    # theme.name = "oceanic";
+    # theme.package = pkgs.oceanic-theme;
+    # theme.name = "Numix";
+    # theme.package = pkgs.numix-gtk-theme;
+    # theme.name = "Omni";
+    # theme.package = pkgs.omni-gtk-theme;
+    # theme.name = "Adapta";
+    # theme.package = pkgs.adapta-gtk-theme;
+
     iconTheme.package = pkgs.adwaita-icon-theme;
     iconTheme.name = "Adwaita";
+    # iconTheme.package = pkgs.pop-icon-theme;
+    # iconTheme.name = "Pop";
     # iconTheme.name = "Papirus-Dark";
     # iconTheme.package = pkgs.papirus-icon-theme;
 
@@ -300,22 +398,22 @@ in
       '';
     gtk3.extraConfig =
       if hostParams.defaultSession == "none+i3" then {
-        gtk-cursor-theme-name = "Adwaita";
+        gtk-cursor-theme-name = "Bibata-Modern-Classic";
         gtk-cursor-theme-size = 48;
         gtk-application-prefer-dark-theme = 1;
       } else {
-        # gtk-cursor-theme-name = "Adwaita";
-        # gtk-cursor-theme-size = 24;
+        gtk-cursor-theme-name = "Bibata-Modern-Classic";
+        gtk-cursor-theme-size = 24;
         gtk-application-prefer-dark-theme = 1;
       };
     gtk4.extraConfig =
       if hostParams.defaultSession == "none+i3" then {
-        gtk-cursor-theme-name = "Adwaita";
+        gtk-cursor-theme-name = "Bibata-Modern-Classic";
         gtk-cursor-theme-size = 48;
         gtk-application-prefer-dark-theme = 1;
       } else {
-        # gtk-cursor-theme-name = "Adwaita";
-        # gtk-cursor-theme-size = 24;
+        gtk-cursor-theme-name = "Bibata-Modern-Classic";
+        gtk-cursor-theme-size = 24;
         gtk-application-prefer-dark-theme = 1;
       };
   };
@@ -334,7 +432,7 @@ in
 
   qt = {
     enable = true;
-    platformTheme.name = "gnome";
+    platformTheme.name = "adwaita";
     style = {
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;
@@ -423,7 +521,7 @@ in
     groupbar = {
       gradients = true;
       font_size = 14;
-      height = 22;
+      height = 24;
       indicator_height = 0;
       text_color = "rgba(ffffffff)";
       "col.active" = "rgba(285577ff)";

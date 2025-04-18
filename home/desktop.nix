@@ -123,8 +123,19 @@ in
     ## so set it explicitly
     systemd.user.services.fcitx5-daemon = {
       Service = {
+        PassEnvironment = [
+          "HOME"
+          "XDG_DATA_HOME"
+          "XDG_CONFIG_HOME"
+          "XDG_CACHE_HOME"
+          "XDG_RUNTIME_DIR"
+          "DISPLAY"  # If needed for GUI applications
+          "WAYLAND_DISPLAY"  # If using Wayland
+        ];
+        # You can also set them explicitly if needed
         Environment = [
-          "QT_SCALE_FACTOR=2"
+          "HOME=%h"  # %h is a special variable that expands to the user's home directory
+          "QT_SCALE_FACTOR=1.5"
         ];
       };
     };

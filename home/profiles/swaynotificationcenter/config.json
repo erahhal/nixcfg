@@ -50,7 +50,11 @@
     "inhibitors",
     "title",
     "dnd",
-    "notifications"
+    "notifications",
+    "mpris",
+    "volume",
+    "backlight",
+    "buttons-grid"
   ],
   "widget-config": {
     "inhibitors": {
@@ -71,8 +75,66 @@
       "text": "Label Text"
     },
     "mpris": {
-      "image-size": 96,
-      "image-radius": 12
+      "image-size": 80,
+      "image-radius": 10
+    },
+    "volume": {
+      "label": "",
+      "step": 5
+    },
+    "backlight": {
+      "label": "󰃞",
+      "step": 5
+    },
+    "buttons-grid": {
+      "actions": [
+        {
+          "label": "",
+          "command": "foot nmtui",
+          "tooltip": "Network"
+        },
+        {
+          "label": "",
+          "command": "blueman-manager",
+          "tooltip": "Bluetooth"
+        },
+        {
+          "label": "󰂛",
+          "command": "swaync-client -d",
+          "type": "toggle",
+          "tooltip": "DND"
+        },
+        {
+          "label": "󰍜",
+          "command": "gnome-network-displays",
+          "tooltip": "Screens"
+        },
+        {
+          "label": "󰈙",
+          "command": "foot bash -i -c 'Docs'",
+          "tooltip": "Files"
+        },
+        {
+          "label": "",
+          "command": "foot bash -i -c 'Settings'",
+          "tooltip": "Settings"
+        },
+        {
+          "label": "",
+          "command": "hyprlock",
+          "tooltip": "Lock"
+        },
+        {
+          "label": "󰜉",
+          "command": "reboot",
+          "tooltip": "Reboot"
+        },
+        {
+          "label": "⏻",
+          "command": "shutdown now",
+          "tooltip": "Power Off"
+        }
+      ]
     }
   }
 }

@@ -13,6 +13,7 @@
         awscli
         blender
         chromium
+        nicotine-plus
 
         jetbrains-toolbox
         ## These are installed by jetbrains-toolbox with a corporate license
