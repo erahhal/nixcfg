@@ -16,7 +16,7 @@ window#waybar {
 
 #window {
     transition: none;
-    padding: 0 20px 0 20px;
+    padding: 0 20px 4px 20px;
     background: #efefef;
     background: rgba(255, 255, 255, 0.7);
     min-height: 32px;
@@ -130,16 +130,47 @@ window#waybar.empty #window {
 #custom-wallpaper,
 #custom-updates,
 #custom-media,
+#custom-launcher,
+#custom-notification,
 #tray {
     background: #efefef;
-    padding: 0 10px 4px 10px;
     border-left: #262626;
 }
 
+#network,
+#temperature,
+#pulseaudio,
+#battery,
+#backlight,
+#clock,
+#memory,
+#cpu,
+#custom-notification,
+#custom-power,
+#custom-wallpaper,
+#custom-updates,
+#custom-media {
+    padding: 0 10px 4px 10px;
+}
+#custom-online-monitor {
+    padding: 3px 4px 4px 4px;
+}
+#idle_inhibitor,
+#custom-toggletheme {
+    padding: 3px 8px 4px 8px;
+}
 #custom-launcher {
-    background: #efefef;
-    padding: 2px 10px 0 10px;
-    border-left: #262626;
+    padding: 1px 10px 0 10px;
+}
+#custom-notification {
+    padding: 2px 10px 2px 10px;
+}
+#tray {
+    padding: 2px 10px 3px 10px;
+}
+#tray menu {
+  margin-bottom: 32px;
+  padding: 12px;
 }
 
 #network {
@@ -190,7 +221,6 @@ window#waybar.empty #window {
 }
 
 #idle_inhibitor {
-    padding: 0 16px 0 8px;
     color: #4f4f47;
 }
 
@@ -198,12 +228,7 @@ window#waybar.empty #window {
     color: #9c9e18;
 }
 
-#custom-online-monitor {
-    padding: 0 8px 0 6px;
-}
-
 #custom-toggletheme {
-    padding: 0 8px 0 6px;
     color: #4a4811;
 }
 
@@ -230,9 +255,4 @@ window#waybar.empty #window {
 
 #custom-media {
     color: #362e2e;
-}
-
-#tray menu {
-  margin-bottom: 32px;
-  padding: 12px;
 }
