@@ -26,6 +26,7 @@
         "eDP-1,preferred,0x1440,1.8"
         "desc:LG Electronics LG Ultra HD 0x00043EAD,preferred,652x0,1.5"
         "desc:LG Electronics LG HDR 4K 0x00020F5B,preferred,3212x0,1.5"
+        "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@74.978996,0x0,1.250000"
       ];
 
       workspace = [

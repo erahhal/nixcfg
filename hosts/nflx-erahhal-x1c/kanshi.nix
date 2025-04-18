@@ -70,7 +70,7 @@ in
                 status = "enable";
                 mode = "5120x2160";
                 position = "0,0";
-                scale = 1.333333;
+                scale = 1.250000;
               }
               {
                 criteria = "eDP-1";
