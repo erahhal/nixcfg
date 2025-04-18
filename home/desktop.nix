@@ -364,12 +364,12 @@ in
         unstable.bitwarden
         brave
         czkawka
-        unstable.digikam
+        # digikam
         discord
         element-desktop
         evolutionWithPlugins
         feh
-        gimp-with-plugins
+        gimp3-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins
         # pr67576-gimp-wayland.gimp
         glava
@@ -389,7 +389,7 @@ in
         slack
         spotify
         sxiv # image viewer with vim bindings
-        stellarium
+        # stellarium
         telegram-desktop
         vimiv-qt
         waydroid
