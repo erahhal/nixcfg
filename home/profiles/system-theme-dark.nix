@@ -535,6 +535,8 @@ in
     ${builtins.readFile ./waybar/waybar-angular.css}
   '';
 
+  xdg.configFile."nwg-drawer/drawer.css".source = ./nwg-drawer/drawer.css;
+
   programs.waybar.settings.mainBar."custom/toggletheme".format = "☽";
 
   # @TODO: split this up so only the color bits are not shared

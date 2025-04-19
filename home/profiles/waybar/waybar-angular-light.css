@@ -172,6 +172,9 @@ window#waybar.empty #window {
   margin-bottom: 32px;
   padding: 12px;
 }
+#tray menuitem {
+  padding: 8px 8px 10px 8px;
+}
 
 #network {
     color: #342647;

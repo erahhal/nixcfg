@@ -1,32 +1,5 @@
-{  inputs, pkgs, lib, hostParams, ... }:
+{  config, inputs, pkgs, hostParams, ... }:
 let
-  # launch = pkgs.writeShellScript "launch.sh" ''
-  #   if ${pkgs.procps}/bin/pgrep -x ".wofi-wrapped" >/dev/null; then
-  #     pkill wofi
-  #     exit
-  #   fi
-  #   GDK_DPI_SCALE=1.5 ${pkgs.wofi}/bin/wofi --show run --location bottom_left -x 6 -y -34 -W 400 -H 500
-  # '';
-  # # @TODO: de-duplicate swaylock command here
-  # logout = pkgs.writeShellScript "logout.sh" ''
-  #   if ${pkgs.procps}/bin/pgrep -x ".wofi-wrapped" >/dev/null; then
-  #     pkill wofi
-  #     exit
-  #   fi
-  #   choice=$(${pkgs.coreutils}/bin/printf "Lock\nLogout\nSuspend\nReboot\nShutdown" | GDK_DPI_SCALE=1.5 ${pkgs.wofi}/bin/wofi --insensitive --dmenu -W 100 -H 160 --location bottom_right -x -80 -y -40)
-  #   if [[ $choice == "Lock" ]];then
-  #     ${pkgs.swaylock}/bin/swaylock -c '#000000' --indicator-radius 100 --indicator-thickness 20 --show-failed-attempts
-  #   elif [[ $choice == "Logout" ]];then
-  #     pkill -KILL -u "$USER"
-  #   elif [[ $choice == "Suspend" ]];then
-  #     systemctl suspend
-  #   elif [[ $choice == "Reboot" ]];then
-  #     systemctl reboot
-  #   elif [[ $choice == "Shutdown" ]];then
-  #     systemctl poweroff
-  #   fi
-  # '';
-
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
     ${builtins.readFile ../../scripts/kill-all-apps.sh}
@@ -35,7 +8,7 @@ let
   '';
 
   # launch = ''${pkgs.nwg-menu}/bin/nwg-menu -wm hyprland -d -term foot -cmd-lock "${hyprlockCommand}" -cmd-logout "${exit-hyprland}" -cmd-restart "systemctl reboot" -cmd-shutdown "systemctl -i poweroff"'';
-  launch = ''${pkgs.nwg-drawer}/bin/nwg-drawer'';
+  launch = ''${pkgs.nwg-drawer}/bin/nwg-drawer -open'';
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
   check-online-script = pkgs.writeShellScriptBin "check-online-script" ''
     ## Mullvad statuses
@@ -70,6 +43,32 @@ in
   home.packages = with pkgs; [
     waybar
   ];
+
+  systemd.user.services.nwg-drawer = {
+    Unit = {
+      Description = "Start the nwg-drawer resident service";
+      PartOf = [ "graphical-session.target" ];
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+    Service = {
+      Restart = "always";
+      RestartSec = 2;
+      ExecStart = "${pkgs.nwg-drawer}/bin/nwg-drawer -r -g '${config.gtk.theme.name}' -i '${config.gtk.iconTheme.name}' -pbuseicontheme -pbexit '${exit-hyprland}' -pblock '${hyprlockCommand}' -pbpoweroff 'systemctl poweroff' --pbreboot 'systemctl reboot' --pbsleep '${hyprlockCommand} suspend'";
+      PassEnvironment = [
+        "HOME"
+        "XDG_DATA_HOME"
+        "XDG_CONFIG_HOME"
+        "XDG_CACHE_HOME"
+        "XDG_RUNTIME_DIR"
+        "WAYLAND_DISPLAY"
+      ];
+      Environment = [
+        "HOME=%h"  # %h is a special variable that expands to the user's home directory
+      ];
+    };
+  };
 
   programs.waybar = {
     enable = true;
