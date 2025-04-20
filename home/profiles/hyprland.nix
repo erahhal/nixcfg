@@ -221,6 +221,8 @@ in
       "$term" = "${pkgs.${terminal}}/bin/${terminal}";
 
       exec-once = [
+        # Import all environment variables from the systemd user session
+        "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all"
         # Update hyprland signature so hyprctl works with long-lived tmux sessions
         # Only works with new tmux panes, not existing ones
         ''tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"''
@@ -503,7 +505,6 @@ in
         "$mod, Y, exec, systemctl --user restart kanshi"
         "$mod, T, exec, ${toggle-group}"
         "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '${exit-hyprland}'"
-        # "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff -i, mode \"default\"'"
         "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff'"
         "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'"
         (

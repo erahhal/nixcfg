@@ -63,6 +63,15 @@ in
         "XDG_CACHE_HOME"
         "XDG_RUNTIME_DIR"
         "WAYLAND_DISPLAY"
+        "QT_QPA_PLATFORMTHEME"
+        "QT_SCALE_FACTOR"
+        "XCURSOR_SIZE"
+        "XCURSOR_THEME"
+        "HYPRCURSOR_SIZE"
+        "HYPRCURSOR_THEME"
+        "GDK_SCALE"
+        "XAUTHORITY"
+        "XDG_CURRENT_DESKTOP"
       ];
       Environment = [
         "HOME=%h"  # %h is a special variable that expands to the user's home directory
