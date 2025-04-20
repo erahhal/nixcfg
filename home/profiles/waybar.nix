@@ -87,7 +87,8 @@ in
     systemd.enable = false;
     settings = {
       mainBar = {
-        layer = "top";
+        ## Make sure menus are on top of the bar
+        layer = "bottom";
 
         position = "bottom";
 
