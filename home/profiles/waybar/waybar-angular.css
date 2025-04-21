@@ -133,6 +133,9 @@ window#waybar.empty #window {
     background: #1a1a1a;
     border-left: #262626;
 }
+#taskbar {
+    background: #000000;
+}
 
 #network,
 #temperature,
@@ -146,6 +149,7 @@ window#waybar.empty #window {
 #custom-power,
 #custom-wallpaper,
 #custom-updates,
+#wlr-taskbar,
 #custom-media {
     padding: 0 10px 4px 10px;
 }
@@ -171,6 +175,13 @@ window#waybar.empty #window {
 }
 #tray menuitem {
   padding: 8px 8px 10px 8px;
+}
+#taskbar {
+    padding: 0 10px 6px 10px;
+}
+#taskbar button {
+    padding: 4px;
+    margin: 6px 0 0 0;
 }
 
 #network {

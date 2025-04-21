@@ -311,7 +311,7 @@
           inherit userParams;
         };
       };
-      msi-desktop = 
+      msi-desktop =
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/msi-desktop/params.nix {};

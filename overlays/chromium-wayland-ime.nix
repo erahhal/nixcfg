@@ -54,6 +54,13 @@ let
     '';
   });
 
+  ## @TODO: Doesn't work
+  joplin-desktop = prev.joplin-desktop.overrideAttrs (oldAttrs: {
+    extraInstallCommands = oldAttrs.extraInstallCommands or "" + ''
+      wrapProgram $out/bin/joplin-desktop \
+        --add-flags "--enable-features=WaylandLinuxDrmSyncobj"
+    '';
+  });
 
   ## Whatsapp works out of the box
 

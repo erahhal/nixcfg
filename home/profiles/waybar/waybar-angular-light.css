@@ -136,6 +136,9 @@ window#waybar.empty #window {
     background: #efefef;
     border-left: #262626;
 }
+#taskbar {
+    background: #efefef;
+}
 
 #network,
 #temperature,
@@ -174,6 +177,13 @@ window#waybar.empty #window {
 }
 #tray menuitem {
   padding: 8px 8px 10px 8px;
+}
+#taskbar {
+    padding: 0 10px 6px 10px;
+}
+#taskbar button {
+    padding: 4px;
+    margin: 6px 0 0 0;
 }
 
 #network {
