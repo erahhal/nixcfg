@@ -357,6 +357,7 @@
       let
         system = "x86_64-linux";
         hostParams = import ./hosts/msi-linux/params.nix {};
+        header-space = "      ";
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;

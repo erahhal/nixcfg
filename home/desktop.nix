@@ -119,6 +119,18 @@ in
       };
     };
 
+    gtk = {
+      gtk2.extraConfig = ''
+        gtk-im-module="fcitx"
+      '';
+      gtk3.extraConfig = {
+        gtk-im-module = "fcitx";
+      };
+      gtk4.extraConfig = {
+        gtk-im-module = "fcitx";
+      };
+    };
+
     ## Screen scaling doesn't seem to make it into the systemd service,
     ## so set it explicitly
     systemd.user.services.fcitx5-daemon = {
