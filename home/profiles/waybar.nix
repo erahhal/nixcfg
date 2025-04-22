@@ -6,43 +6,7 @@ let
 
     pkill Hyprland
   '';
-  toggle-drawer = pkgs.writeShellScript "toggle-drawer" ''
-    STATE_FILE="/tmp/nwg-drawer-state"
-
-    # Function to track when drawer is opened
-    open_drawer() {
-        pkill -USR2 nwg-drawer
-        echo "open" > "$STATE_FILE"
-    }
-
-    # Function to track when drawer is closed
-    close_drawer() {
-        pkill -SIGRTMIN+3 nwg-drawer
-        echo "closed" > "$STATE_FILE"
-    }
-
-    # Function to check current state
-    check_drawer() {
-        if [ -f "$STATE_FILE" ]; then
-            cat "$STATE_FILE"
-        else
-            # Default state if file doesn't exist
-            echo "closed" > "$STATE_FILE"
-            echo "closed"
-        fi
-    }
-
-    # If you want to use this script to toggle the drawer
-    toggle_drawer() {
-        if [ "$(check_drawer)" = "open" ]; then
-            close_drawer
-        else
-            open_drawer
-        fi
-    }
-
-    toggle_drawer
-  '';
+  toggle-drawer = "pkill -10 nwg-drawer";
 
   # launch = ''${pkgs.nwg-menu}/bin/nwg-menu -wm hyprland -d -term foot -cmd-lock "${hyprlockCommand}" -cmd-logout "${exit-hyprland}" -cmd-restart "systemctl reboot" -cmd-shutdown "systemctl -i poweroff"'';
   launch = ''${pkgs.nwg-drawer}/bin/nwg-drawer -open'';
