@@ -56,7 +56,7 @@ in
     Service = {
       Restart = "always";
       RestartSec = 2;
-      ExecStart = "${pkgs.nwg-drawer}/bin/nwg-drawer -r -g '${config.gtk.theme.name}' -i '${config.gtk.iconTheme.name}' -pbuseicontheme -pbexit '${exit-hyprland}' -pblock '${hyprlockCommand}' -pbpoweroff 'systemctl poweroff' --pbreboot 'systemctl reboot' --pbsleep '${hyprlockCommand} suspend'";
+      ExecStart = "${pkgs.nwg-drawer}/bin/nwg-drawer -r -wm hyprland -fm ${pkgs.nemo}/bin/nemo -g '${config.gtk.theme.name}' -i '${config.gtk.iconTheme.name}' -nofs -pbuseicontheme -pbexit '${exit-hyprland}' -pblock '${hyprlockCommand}' -pbpoweroff 'systemctl poweroff' --pbreboot 'systemctl reboot' --pbsleep '${hyprlockCommand} suspend'";
       PassEnvironment = [
         "HOME"
         "XDG_DATA_HOME"

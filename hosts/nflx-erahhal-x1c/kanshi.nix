@@ -196,7 +196,7 @@ in
         #         criteria = "LG Electronics 16MQ70 204NZKZ005285";
         #         status = "enable";
         #         mode = "2560x1600@59.972000Hz";
-        #         position = "1599,0";
+        #         position = "1i6,0";
         #         scale = 1.6;
         #       }
         #     ];
@@ -229,7 +229,7 @@ in
                 criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
-                position = "1599,0";
+                position = "1600,0";
                 # Resolution must be integer divisible by scale
                 scale = 1.6;
               }
