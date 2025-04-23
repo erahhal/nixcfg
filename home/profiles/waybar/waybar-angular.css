@@ -225,10 +225,12 @@ window#waybar.empty #window {
 
 #memory {
     color: #DDB6F2;
+    min-width: 50px;
 }
 
 #cpu {
     color: #96CDFB;
+    min-width: 55px;
 }
 
 #idle_inhibitor {

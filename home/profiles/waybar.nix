@@ -151,7 +151,7 @@ in
           "battery"
           "cpu"
           "memory"
-          "temperature"
+          # "temperature"
           "clock"
           "idle_inhibitor"
           "custom/toggletheme"
@@ -332,14 +332,14 @@ in
         };
 
         cpu = {
-          interval = 15;
-          format = " {}%";
-          max-length = 10;
+          interval = 5;
+          format = "  {usage}%";
+          max-length = 3;
         };
 
         memory = {
           interval = 30;
-          format = " {}%";
+          format = " {}%";
           max-length = 10;
         };
 

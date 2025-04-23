@@ -227,10 +227,12 @@ window#waybar.empty #window {
 
 #memory {
     color: #5f4e69;
+    min-width: 50px;
 }
 
 #cpu {
     color: #263440;
+    min-width: 50px;
 }
 
 #idle_inhibitor {
