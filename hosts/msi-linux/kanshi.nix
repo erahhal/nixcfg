@@ -2,7 +2,7 @@
 let
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   tv = "LG Electronics LG TV SSCR2 0x01010101";
-  index = "Valve Corporation Index HMD 0x92B574CE ";
+  index = "Valve Corporation Index HMD 0x92B574CE";
 in
 {
   home-manager.users.${userParams.username} = {
@@ -23,7 +23,7 @@ in
               }
             ];
             exec = [
-              "${hyprctl} dispatch dpms on"
+              "${hyprctl} dispatch dpms on | true"
             ];
           };
         }
@@ -47,33 +47,7 @@ in
               }
             ];
             exec = [
-              "${hyprctl} dispatch dpms on"
-            ];
-          };
-        }
-        {
-          profile = {
-            name = "tv-index-simple";
-            outputs = [
-              {
-                ## TV
-                criteria = "HDMI-A-4";
-                status = "enable";
-                mode = "3840x2160";
-                position = "0,0";
-                scale = 3.0;
-              }
-              {
-                ## Valve Index
-                criteria = "DP-3";
-                status = "disable";
-                mode = "2880x1600";
-                position = "0,0";
-                scale = 1.0;
-              }
-            ];
-            exec = [
-              "${hyprctl} dispatch dpms on"
+              "${hyprctl} dispatch dpms on | true"
             ];
           };
         }
