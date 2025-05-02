@@ -33,6 +33,7 @@ in
     ./i3.nix
     ./wayland-window-manager.nix
     # ./plasma6.nix
+    ./spacenavd.nix    # Needed for autodesk fusion 360
     ./sway.nix
     ./hyprland.nix
     ./fonts.nix

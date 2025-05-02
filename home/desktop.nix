@@ -80,7 +80,7 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
-      ./profiles/bambu-studio.nix
+      # ./profiles/bambu-studio.nix
       ./profiles/foot.nix
       ./profiles/ghostty.nix
       ./profiles/kitty.nix
@@ -337,6 +337,7 @@ in
     # ---------------------------------------------------------------------------
 
     home = {
+      ## @TODO: Is this still necessary?
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
       packages = with pkgs; [
@@ -373,7 +374,8 @@ in
 
         ## apps
         audacity
-        unstable.bitwarden
+        bambu-studio
+        bitwarden
         brave
         czkawka
         # digikam
@@ -381,6 +383,7 @@ in
         element-desktop
         evolutionWithPlugins
         feh
+        git-sync
         gimp3-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins
         # pr67576-gimp-wayland.gimp
@@ -389,11 +392,11 @@ in
         gnome-calculator
         inkscape
         joplin-desktop
-        kdePackages.kcalc
         # Not yet available in stable
         unstable.kphotoalbum
         krita
         libreoffice
+        logseq
         mpv
         unstable.rpi-imager
         shotwell

@@ -405,6 +405,22 @@ in
       ];
 
       windowrulev2 = [
+        # Hack to workaround transparent border around floating windows
+        # "opacity 0.999 0.999, floating:1"
+        "opacity 0.999 0.999, class:^(.*)$"
+
+        "float, title:^(Open File)$"
+        "float, initialTitle:^(Open File)$"
+        "float, title:^(Open Folder)$"
+        "float, initialTitle:^(Open Folder)$"
+        "float, title:^(Open Workspace.*)$"
+        "float, initialTitle:^(Open Workspace.*)$"
+        "float, title:^(Save Workspace.*)$"
+        "float, initialTitle:^(Save Workspace.*)$"
+        "float, title:^(Add Folder.*)$"
+        "float, initialTitle:^(Add Folder.*)$"
+        "float, title:^(Save File)$"
+        "float, initialTitle:^(Save File)$"
         "float, title:^(KCalc)$"
         "float, class:^(org.gnome.Calculator)$"
 
@@ -562,7 +578,10 @@ in
         "$mod, O, exec, run-as-service wl-ocr"
 
         # window resize
-        "$mod, S, submap, resize"
+        # "$mod, S, submap, resize"
+
+        # Pin window
+        "$mod, S, pin"
 
         # screenshot
         # stop animations while screenshotting; makes black border go away

@@ -347,7 +347,6 @@ in
         gnome-calculator
         inkscape
         joplin-desktop
-        kdePackages.kcalc
         # Not yet available in stable
         unstable.kphotoalbum
         krita

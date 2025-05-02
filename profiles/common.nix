@@ -214,7 +214,7 @@
   environment.variables = {
     ET_NO_TELEMETRY = "1";
   };
-  
+
 
   services.gvfs.enable = true; # SMB mounts, trash, and other functionality
   services.tumbler.enable = true; # Thumbnail support for images
@@ -307,8 +307,10 @@
     axel
     backblaze-b2
     bashmount
+    bc
     bfg-repo-cleaner
     bind
+    cabextract
     ccze             # readable system log parser
     cdrkit           # provides genisoimage
     cpufrequtils
@@ -325,6 +327,7 @@
     fx                # Terminal-based JSON viewer and processor
     gcc
     gdb
+    gettext
     git
     git-lfs
     gnumake
@@ -338,6 +341,7 @@
     iperf3
     libarchive   # provides bsdtar
     lm_sensors
+    lsb-release
     lshw
     lsof
     luarocks
@@ -347,6 +351,7 @@
     jhead
     memtest86plus
     minicom
+    mokutil
     neofetch
     nethogs
     networkmanager
@@ -365,6 +370,7 @@
     pstree
     pv
     ryzenadj
+    sambaFull # to get rid of wine ntml_auth errors
     sqlite
     sshpass
     steam-run

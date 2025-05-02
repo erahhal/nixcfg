@@ -52,6 +52,7 @@ in
       ./profiles/system-theme.nix
       ./profiles/btop.nix
       # ./profiles/captive-browser.nix
+      ./profiles/logseq.nix
       # ./profiles/node-modules.nix
       # ./profiles/nvim.nix
       # ./profiles/syncthing.nix
@@ -107,7 +108,6 @@ in
         dconf
         docker-compose
         man-pages
-        samba # to get rid of wine ntml_auth errors
         speedtest-cli
         stress
         stress-ng
@@ -155,6 +155,7 @@ in
         maven
         nodejs
         tokei
+        uv
         yarn
 
         ## python
