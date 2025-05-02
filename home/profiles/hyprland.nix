@@ -381,6 +381,10 @@ in
         shadow = {
           enabled = false;
         };
+
+        blur = {
+          enabled = false;
+        };
       };
 
       dwindle = {

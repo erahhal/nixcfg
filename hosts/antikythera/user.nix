@@ -3,6 +3,9 @@
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   teensy-loader-gui = pkgs.callPackage ../../pkgs/teensy-loader-gui {};
+  telegram-mz =  pkgs.writeShellScriptBin "telegram-mz" ''
+    telegram-desktop -workdir ~/.mz
+  '';
 in
 {
   imports = [
@@ -46,9 +49,10 @@ in
 
         ## Desktop
         cool-retro-term
+        nicotine-plus
+        telegram-mz
         thunderbird
         transmission_4-gtk
-        nicotine-plus
 
         ## arduino
         arduino

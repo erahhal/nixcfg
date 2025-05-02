@@ -119,7 +119,7 @@ in
         };
 
         "wlr/taskbar" = {
-          format= "{icon}";
+          format = "{icon}";
           icon-size = 14;
           icon-theme = "Numix-Circle";
           tooltip-format = "{title}";
