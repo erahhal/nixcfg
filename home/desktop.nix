@@ -105,7 +105,8 @@ in
       inputMethod = {
         # enabled = "ibus";
         # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
-        enabled = "fcitx5";
+        type = "fcitx5";
+        enable = true;
         fcitx5.addons = with pkgs; [
           fcitx5-configtool
           fcitx5-chinese-addons

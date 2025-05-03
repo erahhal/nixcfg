@@ -186,7 +186,7 @@ in
       bashrcExtra = ''
         TERM=xterm-256color
       '';
-      # initExtra = builtins.readFile ../dotfiles/bashrc;
+      # initContent = builtins.readFile ../dotfiles/bashrc;
       # bashrcExtra = ''
       #   export EDITOR=vim
       #
@@ -332,7 +332,7 @@ in
         ];
       };
 
-      initExtra = ''
+      initContent = ''
         # Use ctrl-p in addition to the default up-arrow for activating atuin
         bindkey '^p' _atuin_search_widget
 

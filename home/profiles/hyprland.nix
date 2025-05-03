@@ -369,7 +369,7 @@ in
         border_size = 2;
         resize_on_border = true;
         extend_border_grab_area = 25;
-        no_border_on_floating = true;
+        no_border_on_floating = false;
         "col.active_border" = "rgba(4a7697ff)";
         "col.inactive_border" = "rgba(2b2b2bff)";
       };
@@ -419,6 +419,8 @@ in
         "float, initialTitle:^(Save Workspace.*)$"
         "float, title:^(Add Folder.*)$"
         "float, initialTitle:^(Add Folder.*)$"
+        "float, title:^(Save As)$"
+        "float, initialTitle:^(Save As)$"
         "float, title:^(Save File)$"
         "float, initialTitle:^(Save File)$"
         "float, title:^(KCalc)$"
