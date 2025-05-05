@@ -3,6 +3,7 @@ let
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   tv = "LG Electronics LG TV SSCR2 0x01010101";
   index = "Valve Corporation Index HMD 0x92B574CE";
+  yamama = "Yamaha Corporation RX-A2A";
 in
 {
   home-manager.users.${userParams.username} = {

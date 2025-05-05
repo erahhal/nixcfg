@@ -57,7 +57,11 @@ in
     gamescopeSession.enable = true;
   };
 
-  programs.gamescope.enable = true;
+  # programs.gamescope = {
+  #   enable = true;
+  #   # make sure gamescope runs at full performance
+  #   capSysNice = true;
+  # };
 
   environment.systemPackages = with pkgs; [
     gamemode

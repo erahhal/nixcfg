@@ -164,8 +164,7 @@ in
     # echo $XDG_DATA_DIRS to see full list
 
     xdg.enable = true;
-    xdg.mimeApps = {
-      enable = true;
+    xdg.mimeApps = { enable = true;
       # Make sure VSCode doesn't take over file mimetype
       associations.added = {
         "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
@@ -439,6 +438,7 @@ in
         adwaita-icon-theme
         eog # image viewer
         evince # PDF viewer
+        openscad-unstable
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application

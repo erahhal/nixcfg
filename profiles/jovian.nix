@@ -20,12 +20,13 @@
     localNetworkGameTransfers.openFirewall = true;
   };
 
-
   jovian = {
     steam = {
       enable = true;
-      autoStart = true;
+      autoStart = false;
       desktopSession = "hyprland";
+      # desktopSession = "steam";
+      # desktopSession = "gamescope-wayland";
       user = userParams.username;
     };
   };

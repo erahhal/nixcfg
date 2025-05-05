@@ -14,10 +14,11 @@
       ../../profiles/common.nix
       ../../profiles/desktop.nix
       ../../profiles/gfx-nvidia.nix
+      ../../profiles/jovian.nix
       ../../profiles/mullvad.nix
       ../../profiles/pipewire.nix
       # ../../profiles/steambox.nix
-      ../../profiles/steam.nix
+      # ../../profiles/steam.nix
       ../../profiles/udev.nix
       # ../../profiles/wayland-nvidia.nix
       ## @TODO: rename workstation-hardware.nix
