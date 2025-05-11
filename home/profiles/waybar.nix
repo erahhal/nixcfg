@@ -335,6 +335,7 @@ in
           interval = 5;
           format = "  {usage}%";
           max-length = 3;
+          on-click = "btop";
         };
 
         memory = {
