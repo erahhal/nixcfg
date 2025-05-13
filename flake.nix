@@ -156,6 +156,7 @@
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/nflx-erahhal-x1c/configuration.nix
           inputs.secrets.nixosModules.default
+          inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
           inputs.nur.modules.nixos.default
@@ -206,6 +207,7 @@
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/antikythera/configuration.nix
           inputs.secrets.nixosModules.default
+          inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen4
@@ -250,6 +252,7 @@
         modules = [
           ./hosts/upaya/configuration.nix
           inputs.secrets.nixosModules.default
+          inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.dell-xps-15-9560
           # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel
