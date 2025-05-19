@@ -158,6 +158,45 @@ let
     # Listen to the Hyprland socket for events and process each line with the handle function
     ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock | while read -r line; do handle "$line"; done
   '';
+
+  # Create a script to toggle between inputs only on P40w-20 monitors
+  toggle-input = pkgs.writeShellScript "toggle-input" ''
+    # Check if P40w-20 monitor is connected
+    MONITOR_CONNECTED=$(${pkgs.ddcutil}/bin/ddcutil detect | grep -i "P40w-20")
+
+    if [ -z "$MONITOR_CONNECTED" ]; then
+      echo "ThinkVision P40w-20 monitor not detected. No action taken."
+      exit 1
+    fi
+
+    # Get the monitor's I2C bus number
+    BUS_NUMBER=$(${pkgs.ddcutil}/bin/ddcutil detect | grep -B 4 "P40w-20" | grep "I2C bus:" | sed -E 's/.*\/dev\/i2c-([0-9]+).*/\1/')
+
+    if [ -z "$BUS_NUMBER" ]; then
+      echo "Could not determine I2C bus for ThinkVision P40w-20. No action taken."
+      exit 1
+    fi
+
+    echo "Found ThinkVision P40w-20 on bus $BUS_NUMBER"
+
+    # Get the current input source
+    CURRENT_INPUT=$(${pkgs.ddcutil}/bin/ddcutil --bus $BUS_NUMBER getvcp 60 | grep -o "sl=0x[0-9a-f]\+" | cut -d'x' -f2)
+
+    # Strip 0x prefix if present
+    CURRENT_INPUT=''${CURRENT_INPUT#0x}
+
+    # Convert to lowercase for comparison
+    CURRENT_INPUT=$(echo "$CURRENT_INPUT" | tr '[:upper:]' '[:lower:]')
+
+    # Toggle between inputs 0f and 31
+    if [ "$CURRENT_INPUT" = "0f" ] || [ "$CURRENT_INPUT" = "f" ]; then
+      echo "Switching ThinkVision P40w-20 to input 0x31"
+      ${pkgs.ddcutil}/bin/ddcutil --bus $BUS_NUMBER setvcp 60 0x31
+    elif [ "$CURRENT_INPUT" = "31" ]; then
+      echo "Switching ThinkVision P40w-20 to DisplayPort-1 (0x0F)"
+      ${pkgs.ddcutil}/bin/ddcutil --bus $BUS_NUMBER setvcp 60 0x0f
+    fi
+  '';
 in
 {
   imports = [
@@ -423,6 +462,12 @@ in
         "float, initialTitle:^(Save As)$"
         "float, title:^(Save File)$"
         "float, initialTitle:^(Save File)$"
+        "float, title:^(Print)$"
+        "float, initialTitle:^(Print)$"
+        "float, title:^(Send by Email)$"
+        "float, initialTitle:^(Send by Email)$"
+        "float, title:^(Export Image.*)$"
+        "float, initialTitle:^(Export Image.*)$"
         "float, title:^(KCalc)$"
         "float, class:^(org.gnome.Calculator)$"
 
@@ -546,6 +591,8 @@ in
         "$mod_SHIFT, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -C -sw"
         ## Toggle notification do-not-disturb
         "$mod_SHIFT_CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw"
+
+        "$mod, G, exec, ${toggle-input}"
 
         ## @TODO: Replace with hyprshot
         "SHIFT_CTRL, 3, exec, ${pkgs.grim}/bin/grim -o $(${hyprctl} -j activeworkspace | jq -r '.monitor') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png"

@@ -37,6 +37,7 @@ in
     ./sway.nix
     ./hyprland.nix
     ./fonts.nix
+    ./i2c.nix
   ] ++ (if hostParams.displayManager == "sddm" then [
     ./sddm.nix
   ] else if hostParams.displayManager == "lightdm" then [
@@ -48,6 +49,7 @@ in
     inxi
     libcamera
     bibata-cursors
+    ddcutil
 
     default-mouse-cursor
 
