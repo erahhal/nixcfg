@@ -1308,14 +1308,17 @@
     },
     "nflx": {
       "locked": {
-        "lastModified": 1747759637,
-        "narHash": "sha256-3zNc06TzQ+iaiiW01eH3BDuP4msnDvElulNPGtBwYP0=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1747848610,
+        "narHash": "sha256-SARlpDz9Xm+vra5mu18jjGrh4wTS/XkE2jjezRO4SkY=",
+        "ref": "refs/heads/master",
+        "rev": "71904eea99df2fab7892e70354fcfbd788685351",
+        "revCount": 35,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nflx-vpn": {
@@ -1323,14 +1326,17 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1747773433,
-        "narHash": "sha256-MwROtKdq1G7dmeKVhVvxPZHkQ5xwjkoEB3l3J4og8V8=",
-        "path": "/home/erahhal/Code/nixcfg-nflx-vpn",
-        "type": "path"
+        "lastModified": 1747849301,
+        "narHash": "sha256-60BMigvN31ZNFNbcQahIE6UnbqnJ0PjvY46juggb0U0=",
+        "ref": "refs/heads/master",
+        "rev": "237c8edfd52d76c3f753f93f84ee2def5c597340",
+        "revCount": 17,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx-vpn",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       }
     },
     "nix": {
@@ -2123,14 +2129,18 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1747777240,
-        "narHash": "sha256-SwRcSrR5fmhbdk0yd5g2Yb2jg+eJs+Q994Dt9CHJ/+A=",
-        "path": "/home/erahhal/Code/openconnect-pulse-launcher",
-        "type": "path"
+        "lastModified": 1747848845,
+        "narHash": "sha256-xAuBLAcawo4tIyUZQOHKZSwr3kgeMs7A0B/HQzzuZcY=",
+        "owner": "erahhal",
+        "repo": "openconnect-pulse-launcher",
+        "rev": "1be0b378071a967f7796fbe97d070b5a7b23a59d",
+        "type": "github"
       },
       "original": {
-        "path": "/home/erahhal/Code/openconnect-pulse-launcher",
-        "type": "path"
+        "owner": "erahhal",
+        "ref": "use-default-browser",
+        "repo": "openconnect-pulse-launcher",
+        "type": "github"
       }
     },
     "parts": {
