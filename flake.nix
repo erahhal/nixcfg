@@ -91,11 +91,6 @@
     #   url = "github:hyprwm/hyprland-plugins";
     # };
 
-    waybar = {
-      url = "github:Alexays/Waybar";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
     swayfx.url = "github:willpower3309/swayfx";
     swayfx.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -107,11 +102,11 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
-    nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
-    # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
+    # nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
+    nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
@@ -156,7 +151,7 @@
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/nflx-erahhal-x1c/configuration.nix
           inputs.secrets.nixosModules.default
-          inputs.jovian.nixosModules.default
+          # inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
           inputs.nur.modules.nixos.default
@@ -176,10 +171,10 @@
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
 
-          inputs.nix-snapd.nixosModules.default
-          {
-            services.snap.enable = true;
-          }
+          # inputs.nix-snapd.nixosModules.default
+          # {
+          #   services.snap.enable = true;
+          # }
         ];
         specialArgs = {
           inherit inputs;
@@ -225,10 +220,10 @@
             nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
           }
-          inputs.nix-snapd.nixosModules.default
-          {
-            services.snap.enable = true;
-          }
+          # inputs.nix-snapd.nixosModules.default
+          # {
+          #   services.snap.enable = true;
+          # }
         ];
         specialArgs = {
           inherit inputs;
@@ -384,10 +379,10 @@
             nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
           }
-          inputs.nix-snapd.nixosModules.default
-          {
-            services.snap.enable = true;
-          }
+          # inputs.nix-snapd.nixosModules.default
+          # {
+          #   services.snap.enable = true;
+          # }
         ];
         specialArgs = {
           inherit inputs;

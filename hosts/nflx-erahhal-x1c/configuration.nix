@@ -3,10 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { inputs, pkgs, userParams, hostParams, ... }:
-
-let
-  thinkpad-dock-udev-rules = pkgs.callPackage ../../pkgs/thinkpad-dock-udev-rules { };
-in
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -34,7 +30,7 @@ in
       ../../profiles/android.nix
       # ../../profiles/exclusive-lan.nix
       ../../profiles/gfx-intel.nix
-      ../../profiles/jovian.nix
+      # ../../profiles/jovian.nix
       ../../profiles/laptop-hardware.nix
       # ../../profiles/steam.nix
 
@@ -42,6 +38,7 @@ in
       ../../profiles/homefree.nix
       ../../profiles/mullvad.nix
       ../../profiles/tailscale.nix
+      ../../profiles/thinkpad-dock-udev-rules.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
@@ -117,9 +114,6 @@ in
       "wlp0s20f3"
     ];
   };
-
-  # Rename dock interface to dock_eth0 instead of the crazy default name;
-  services.udev.packages = [ thinkpad-dock-udev-rules ];
 
   ## Attempt to address wifi connectivity issues
   boot.extraModprobeConfig = ''

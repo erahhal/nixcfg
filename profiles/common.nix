@@ -307,6 +307,7 @@
     cabextract
     ccze             # readable system log parser
     cdrkit           # provides genisoimage
+    cowsay
     cpufrequtils
     distrobox
     dmidecode

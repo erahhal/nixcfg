@@ -1,12 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { inputs, lib, pkgs, userParams, hostParams, ... }:
-
-let
-  thinkpad-dock-udev-rules = pkgs.callPackage ../../pkgs/thinkpad-dock-udev-rules { };
-in
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -42,6 +34,7 @@ in
       ../../profiles/homefree.nix
       ../../profiles/mullvad.nix
       ../../profiles/tailscale.nix
+      ../../profiles/thinkpad-dock-udev-rules.nix
       ../../profiles/totp.nix
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
@@ -142,9 +135,6 @@ in
       monthly = 1;
     };
   };
-
-  # Rename dock interface to dock_eth0 instead of the crazy default name;
-  services.udev.packages = [ thinkpad-dock-udev-rules ];
 
   networking = {
     hostName = hostParams.hostName;

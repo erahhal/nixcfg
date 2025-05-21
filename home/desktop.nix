@@ -201,6 +201,7 @@ in
         "video/x-ms-wmv" = [ "mpv.desktop" ];
         "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
+        "x-scheme-handler/jetbrains" = [ "jetbrains-toolbox.desktop" ];
       };
       defaultApplications = {
         "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
@@ -239,6 +240,7 @@ in
         "application/x-zoom" = [ "Zoom.desktop" ];
         "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
+        "x-scheme-handler/jetbrains" = [ "jetbrains-toolbox.desktop" ];
       };
     };
 
@@ -403,6 +405,7 @@ in
         signal-desktop-bin
         slack
         spotify
+        subsurface
         sxiv # image viewer with vim bindings
         # stellarium
         telegram-desktop
@@ -438,7 +441,7 @@ in
         adwaita-icon-theme
         eog # image viewer
         evince # PDF viewer
-        openscad-unstable
+        openscad
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application

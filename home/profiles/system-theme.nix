@@ -44,7 +44,6 @@ let
     pkgs.tmux
     pkgs.hyprland
     pkgs.waybar
-    # inputs.waybar.packages.${pkgs.system}.waybar
   ];
   toggle-theme = pkgs.stdenv.mkDerivation {
     name = "toggle-theme";

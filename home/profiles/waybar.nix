@@ -82,8 +82,6 @@ in
 
   programs.waybar = {
     enable = true;
-    package = pkgs.unstable.waybar;
-    # package = inputs.waybar.packages.${pkgs.system}.waybar;
     # If enabled, this will load waybar separately from sway's own config, leading to two bars being loaded
     systemd.enable = false;
     settings = {

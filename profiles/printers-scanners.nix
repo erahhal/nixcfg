@@ -31,16 +31,17 @@
     # ];
   };
 
-  hardware.sane = {
-    enable = true;
-    brscan5 = {
-      enable = true;
-      netDevices = {
-        brother = {
-          model = "MFC-L2710DW";
-          nodename = "BRW8CC84B1E2FC1";
-        };
-      };
-    };
-  };
+  ## @TODO: Re-enable when udev rules are fixed
+  # hardware.sane = {
+  #   enable = true;
+  #   brscan5 = {
+  #     enable = true;
+  #     netDevices = {
+  #       brother = {
+  #         model = "MFC-L2710DW";
+  #         nodename = "BRW8CC84B1E2FC1";
+  #       };
+  #     };
+  #   };
+  # };
 }

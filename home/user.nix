@@ -339,6 +339,32 @@ in
         tree () {
           ${pkgs.tree}/bin/tree -C $1 | less
         }
+
+        random_quote_cow() {
+          local quotes_file="$1"
+          local cow_file="$2"
+
+          if [[ -z "$quotes_file" ]]; then
+            echo "Usage: random_quote_cow /path/to/quotes.txt [cow_name]"
+            return 1
+          fi
+
+          if [[ ! -f "$quotes_file" ]]; then
+            echo "Error: Quotes file '$quotes_file' not found"
+            return 1
+          fi
+
+          if [[ -z "$cow_file" ]]; then
+            # No cow specified, use a random cow
+            cowsay "$(shuf -n 1 "$quotes_file")"
+          else
+            # Use the specified cow
+            cowsay -f "$cow_file" "$(shuf -n 1 "$quotes_file")"
+          fi
+          echo ""
+        }
+
+        random_quote_cow "${../profiles/cowsay/buddha.txt}" "$1"
       '';
 
       oh-my-zsh = {

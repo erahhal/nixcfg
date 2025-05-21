@@ -30,11 +30,11 @@ in
 {
   imports = [
     # ./xserver.nix
-    ./i3.nix
+    # ./i3.nix
     ./wayland-window-manager.nix
     # ./plasma6.nix
     ./spacenavd.nix    # Needed for autodesk fusion 360
-    ./sway.nix
+    # ./sway.nix
     ./hyprland.nix
     ./fonts.nix
     ./i2c.nix
