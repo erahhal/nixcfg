@@ -92,6 +92,8 @@ in
       cacheFolder: "./.yarn/cache"
     '';
 
+    home.file.".ideavimrc".source = ./profiles/ideavim/ideavimrc;
+
     # Some apps require ~/.local/bin to exist
     home.file.".local/bin/.keep".text = "";
 
@@ -139,6 +141,7 @@ in
         joplin
         pandoc
         ranger
+        spotify-player
         # unstable.youtube-dl
         trunk.yt-dlp
         weechat

@@ -1,0 +1,158 @@
+" .ideavimrc is a configuration file for IdeaVim plugin. It uses
+"   the same commands as the original .vimrc configuration.
+" You can find a list of commands here: https://jb.gg/h38q75
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+
+"" -- Suggested options --
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+set scrolloff=5
+
+" Do incremental searching.
+set incsearch
+
+" Don't use Ex mode, use Q for formatting.
+map Q gq
+
+" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
+
+" Highlight copied text
+Plug 'machakann/vim-highlightedyank'
+" Commentary plugin
+Plug 'tpope/vim-commentary'
+
+" ================================================================================================
+" ideavim config
+" ================================================================================================
+
+" input method switch
+set keep-english-in-normal
+set keep-english-in-normal-and-restore-in-insert
+
+" ==================== plugins ====================
+set which-key           " which key
+set notimeout           " no timeout for display
+set NERDTree            " NERDTree
+
+let mapleader = " "     " use space as easy motion leader key
+
+" ==================== g:generator ====================
+let g:WhichKeyDesc_Generate = "<leader>g generate"
+let g:WhichKeyDesc_Generate_GenerateGetter = "<leader>gg GenerateGetter"
+nmap <leader>gg :action GenerateGetter<CR>
+let g:WhichKeyDesc_Generate_GenerateSetter = "<leader>gs GenerateSetter"
+nmap <leader>gs :action GenerateSetter<CR>
+let g:WhichKeyDesc_Generate_GenerateGetterAndSetter = "<leader>ga GenerateGetterAndSetter"
+nmap <leader>ga <action>(GenerateGetterAndSetter)
+let g:WhichKeyDesc_Generate_GenerateEquals = "<leader>ge GenerateEquals"
+nmap <leader>ge <action>(GenerateEquals)
+let g:WhichKeyDesc_Generate_GenerateToString = "<leader>ge GenerateToString"
+nmap <leader>gt <action>(Actions.ActionsPlugin.GenerateToString)
+
+" ==================== g:goto ====================
+nmap gt <action>(GotoTest)
+nmap ga <action>(GotoImplementation)
+nmap gs <action>(GotoSuperMethod)
+nmap H <action>(PreviousTab)
+nmap L <action>(NextTab)
+
+" ==================== r:run ====================
+let g:WhichKeyDesc_run = "<leader>r run or rename"
+let g:WhichKeyDesc_run_RunClass = "<leader>ru RunClass"
+nmap <leader>ru :action RunClass<CR>
+let g:WhichKeyDesc_run_ReRun = "<leader>rr ReRun"
+nmap <leader>rr <action>(Rerun)
+let g:WhichKeyDesc_run_ReRunTests = "<leader>rt ReRunTests"
+nmap <leader>rt <action>(RerunTests)
+let g:WhichKeyDesc_run_RunCoverage = "<leader>rc RunCoverage"
+nmap <leader>rc <action>(RunCoverage)
+
+" ==================== r:refactor ====================
+let g:WhichKeyDesc_run_Rename = "<leader>r rename"
+map <leader>r <action>(RenameElement)
+
+" ==================== w:window ====================
+let g:WhichKeyDesc_Window_SplitRight = "<leader>wr SplitRight"
+nmap <leader>wr <action>(MoveTabRight)
+fet g:WhichKeyDesc_Window_CloseContent = "<leader>wc CloseContent"
+nmap <leader>wc <action>(CloseContent)
+let g:WhichKeyDesc_Window_RecentFiles = "<leader>ww RecentFiles"
+nmap <leader>ww <action>(RecentFiles)
+let g:WhichKeyDesc_Window_HideActiveWindow = "<leader>wh HideActiveWindow"
+nmap <leader>wh <action>(HideActiveWindow)
+
+" ==================== edit ====================
+let g:WhichKeyDesc_InsertSemicolon = "<leader>j insert semicolon"
+nmap <leader>j A;<ESC>o
+
+" ================================================================================================
+" nerd tree
+" ================================================================================================
+let g:WhichKeyDesc_NERDTree = "<leader>n NERDTree"
+let g:WhichKeyDesc_NERDTree_NERDTreeFocus = "<leader>nn NERDTreeFocus"
+nnoremap <leader>nn :NERDTreeFocus<CR>
+let g:WhichKeyDesc_NERDTree_NewDir = "<leader>nd NewDir"
+nmap <leader>nd <action>(NewDir)
+let g:WhichKeyDesc_NERDTree_NewClass = "<leader>nc NewClass"
+nmap <leader>nc <action>(NewClass)
+let g:WhichKeyDesc_NERDTree_NERDTreeToggle = "<leader>nt NERDTreeToggle"
+nmap <leader>nt :NERDTreeToggle<CR>
+let g:WhichKeyDesc_NERDTree_NERDTreeFind = "<leader>nf NERDTreeFind"
+nmap <leader>nf :NERDTreeFind<CR>
+
+
+" ================================================================================================
+" vim config
+" ================================================================================================
+set nocompatible           " disable vi
+
+filetype plugin indent on  " Load plugins according to detected filetype.
+syntax on                  " Enable syntax highlighting.
+
+set autoindent             " Indent according to previous line.
+set expandtab              " Use spaces instead of tabs.
+set softtabstop =4         " Tab key indents by 4 spaces.
+set shiftwidth  =4         " >> indents by 4 spaces.
+set shiftround             " >> indents to next multiple of 'shiftwidth'.
+
+set backspace   =indent,eol,start  " Make backspace work as you would expect.;
+set laststatus  =2         " Always show statusline.
+set display     =lastline  " Show as much as possible of the last line.
+
+set list                   " Show non-printable characters.
+if has('multi_byte') && &encoding ==# 'utf-8'
+  let &listchars = 'tab:▸ ,extends:❯,precedes:❮,nbsp:±'
+else
+  let &listchars = 'tab:> ,extends:>,precedes:<,nbsp:.'
+endif
+
+
+" ================================================================================================
+" my vim config
+" ================================================================================================
+
+" search
+set showmatch
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" share paste
+set clipboard+=unnamedplus
+
+" d and x save to _ register
+nnoremap x "_x
+nnoremap X "_X
+nnoremap c "_c
+nnoremap C "_C
+" nnoremap d "_d
+" nnoremap D "_D
+
+" show number
+set number
+set relativenumber
+
+" key map
+inoremap jk <Esc>

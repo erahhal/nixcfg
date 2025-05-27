@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+
+# Function to parse wpctl status and get sinks
+parse_wpctl_status() {
+    # Get wpctl status output and clean up ASCII tree characters
+    wpctl status | sed 's/[├─│└]//g' | \
+    # Find the Sinks section and extract lines until blank line
+    awk '
+    /Sinks:/ { in_sinks=1; next }
+    in_sinks && /^[[:space:]]*$/ { exit }
+    in_sinks && NF > 0 {
+        # Remove leading whitespace
+        gsub(/^[[:space:]]+/, "")
+        # Remove volume info [vol:...]
+        gsub(/\[vol:.*$/, "")
+        # Remove trailing whitespace
+        gsub(/[[:space:]]+$/, "")
+        print
+    }'
+}
+
+# Build the output for wofi
+build_menu_output() {
+    parse_wpctl_status | while IFS= read -r line; do
+        if [[ $line == *"*"* ]]; then
+            # This is the default sink - remove * and add "- Default"
+            sink_name=$(echo "$line" | sed 's/^\*[[:space:]]*//' | cut -d'.' -f2- | sed 's/^[[:space:]]*//')
+            echo "<b>-> ${sink_name} - Default</b>"
+        else
+            # Regular sink
+            sink_name=$(echo "$line" | cut -d'.' -f2- | sed 's/^[[:space:]]*//')
+            echo "$sink_name"
+        fi
+    done
+}
+
+# Get menu output
+output=$(build_menu_output)
+
+
+# # Show wofi menu
+# selected_sink_name=$(echo "$output" | wofi \
+#     --show=dmenu \
+#     --hide-scroll \
+#     --allow-markup \
+#     --define=hide_search=true \
+#     --location=top_right \
+#     --width=600 \
+#     --height=200 \
+#     --xoffset=-60 \
+#     --no-actions)
+
+# Create temporary theme file
+temp_theme=$(mktemp)
+cat > "$temp_theme" << 'EOF'
+window {
+    location: southeast;
+    anchor: southeast;
+    x-offset: -60px;
+    width: 600px;
+    background-color: #1e1e2e;
+    border: 2px;
+    border-color: #313244;
+    border-radius: 8px;
+}
+
+mainbox {
+    background-color: transparent;
+}
+
+inputbar {
+    background-color: #313244;
+    text-color: #cdd6f4;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 8px;
+}
+
+prompt {
+    text-color: #89b4fa;
+}
+
+listview {
+    lines: 8;
+    background-color: transparent;
+    padding: 8px;
+}
+
+element {
+    background-color: transparent;
+    text-color: #cdd6f4;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+element selected {
+    background-color: #89b4fa;
+    text-color: #1e1e2e;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+}
+EOF
+
+# Show rofi menu
+selected_sink_name=$(echo "$output" | rofi \
+    -dmenu \
+    -i \
+    -markup-rows \
+    -no-custom \
+    -p "Audio Sink" \
+    -theme "$temp_theme" \
+    -click-to-exit)
+
+# Clean up temporary theme file
+rm "$temp_theme"
+
+# Check if user cancelled
+if [[ $? -ne 0 ]] || [[ -z "$selected_sink_name" ]]; then
+    echo "User cancelled the operation."
+    exit 0
+fi
+
+# Clean up the selected sink name (remove markup and "- Default" suffix)
+clean_selected_name=$(echo "$selected_sink_name" | sed 's/<[^>]*>//g' | sed 's/^-> //' | sed 's/ - Default$//')
+
+# Find the sink ID for the selected sink
+selected_sink_id=$(parse_wpctl_status | while IFS= read -r line; do
+    # Remove * prefix and get the sink name
+    clean_line=$(echo "$line" | sed 's/^\*[[:space:]]*//')
+    sink_id=$(echo "$clean_line" | cut -d'.' -f1)
+    sink_name=$(echo "$clean_line" | cut -d'.' -f2- | sed 's/^[[:space:]]*//')
+
+    if [[ "$sink_name" == "$clean_selected_name" ]]; then
+        echo "$sink_id"
+        break
+    fi
+done)
+
+# Set the default sink
+if [[ -n "$selected_sink_id" ]]; then
+    wpctl set-default "$selected_sink_id"
+else
+    echo "Error: Could not find sink ID for selected sink"
+    exit 1
+fi

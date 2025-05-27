@@ -12,6 +12,7 @@
             # pipe.filename = "/run/snapserver/pipewire_snapcast_pipe"
             pipe.filename = "/tmp/pipewire_snapcast_pipe"
             node.name = "snapcast"
+            node.description = "Snapcast"
             audio.rate = 44100
             audio.channels = 2
             audio.format = S16LE

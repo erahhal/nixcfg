@@ -1,4 +1,4 @@
-{  config, inputs, pkgs, hostParams, ... }:
+{  config, inputs, lib, pkgs, hostParams, ... }:
 let
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
@@ -7,6 +7,31 @@ let
     pkill Hyprland
   '';
   toggle-drawer = "pkill -10 nwg-drawer";
+
+  wireplumber-selector-runtime-paths = lib.makeBinPath [
+    pkgs.coreutils
+    pkgs.gnused
+    pkgs.gawk
+    pkgs.rofi
+    pkgs.wireplumber
+  ];
+
+  wireplumber-selector = pkgs.stdenv.mkDerivation {
+    name = "wireplumber-selector";
+
+    dontUnpack = true;
+
+    nativeBuildInputs = [
+      pkgs.makeWrapper
+    ];
+
+    installPhase = ''
+      install -Dm755 ${./waybar/wireplumber-selector} $out/bin/wireplumber-selector
+
+      wrapProgram $out/bin/wireplumber-selector \
+        --suffix PATH : ${wireplumber-selector-runtime-paths}
+    '';
+  };
 
   # launch = ''${pkgs.nwg-menu}/bin/nwg-menu -wm hyprland -d -term foot -cmd-lock "${hyprlockCommand}" -cmd-logout "${exit-hyprland}" -cmd-restart "systemctl reboot" -cmd-shutdown "systemctl -i poweroff"'';
   launch = ''${pkgs.nwg-drawer}/bin/nwg-drawer -open'';
@@ -208,8 +233,9 @@ in
           format-bluetooth-muted = "🔇 {icon} {format_source}";
 
           on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-          on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
-          on-click-middle = "${pkgs.qpwgraph}/bin/qpwgraph";
+          # on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
+          on-click-right = "${wireplumber-selector}/bin/wireplumber-selector";
+          # on-click-middle = "${pkgs.qpwgraph}/bin/qpwgraph";
 
           format-icons = {
             car = "";

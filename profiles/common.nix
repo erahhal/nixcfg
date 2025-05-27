@@ -325,6 +325,7 @@
     gettext
     git
     git-lfs
+    glow
     gnumake
     gnupg
     gparted # need to be installed as system, not user package
