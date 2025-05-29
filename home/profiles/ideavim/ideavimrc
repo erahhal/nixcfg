@@ -57,6 +57,13 @@ nmap gs <action>(GotoSuperMethod)
 nmap H <action>(PreviousTab)
 nmap L <action>(NextTab)
 
+" ==================== g:files ====================
+nmap <c-p> <action>(GotoFile)
+nmap <c-s> <action>(FindInPath)
+nmap <c-/> <action>(RecentFiles)
+nmap ,m :NERDTreeToggle<CR>
+nmap ,n :NERDTreeFind<CR>
+
 " ==================== r:run ====================
 let g:WhichKeyDesc_run = "<leader>r run or rename"
 let g:WhichKeyDesc_run_RunClass = "<leader>ru RunClass"
@@ -67,6 +74,12 @@ let g:WhichKeyDesc_run_ReRunTests = "<leader>rt ReRunTests"
 nmap <leader>rt <action>(RerunTests)
 let g:WhichKeyDesc_run_RunCoverage = "<leader>rc RunCoverage"
 nmap <leader>rc <action>(RunCoverage)
+
+" ==================== r:errors ====================
+map ,j <Action>(ReSharperGotoNextErrorInSolution)
+map ,k <Action>(ReSharperGotoPrevErrorInSolution)
+map ,j <Action>(GotoNextError)
+map ,k <Action>(GotoPreviousError)
 
 " ==================== r:refactor ====================
 let g:WhichKeyDesc_run_Rename = "<leader>r rename"
@@ -85,22 +98,6 @@ nmap <leader>wh <action>(HideActiveWindow)
 " ==================== edit ====================
 let g:WhichKeyDesc_InsertSemicolon = "<leader>j insert semicolon"
 nmap <leader>j A;<ESC>o
-
-" ================================================================================================
-" nerd tree
-" ================================================================================================
-let g:WhichKeyDesc_NERDTree = "<leader>n NERDTree"
-let g:WhichKeyDesc_NERDTree_NERDTreeFocus = "<leader>nn NERDTreeFocus"
-nnoremap <leader>nn :NERDTreeFocus<CR>
-let g:WhichKeyDesc_NERDTree_NewDir = "<leader>nd NewDir"
-nmap <leader>nd <action>(NewDir)
-let g:WhichKeyDesc_NERDTree_NewClass = "<leader>nc NewClass"
-nmap <leader>nc <action>(NewClass)
-let g:WhichKeyDesc_NERDTree_NERDTreeToggle = "<leader>nt NERDTreeToggle"
-nmap <leader>nt :NERDTreeToggle<CR>
-let g:WhichKeyDesc_NERDTree_NERDTreeFind = "<leader>nf NERDTreeFind"
-nmap <leader>nf :NERDTreeFind<CR>
-
 
 " ================================================================================================
 " vim config
@@ -150,9 +147,9 @@ nnoremap C "_C
 " nnoremap d "_d
 " nnoremap D "_D
 
-" show number
+" line numbers
 set number
-set relativenumber
+" set relativenumber
 
 " key map
 inoremap jk <Esc>
