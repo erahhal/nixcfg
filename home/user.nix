@@ -134,7 +134,6 @@ in
         fortune
         fzf
         ripgrep
-        thefuck
         wol
 
         ## terminal apps
@@ -424,8 +423,6 @@ in
           "safe-paste"
           ## hit ESC twice to prefix previous command with sudo
           "sudo"
-          ## needs: pkgs.thefuck
-          "thefuck"
           ## See: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
           "vi-mode"
           ## works with fzf

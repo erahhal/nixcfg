@@ -95,6 +95,11 @@ nmap <leader>ww <action>(RecentFiles)
 let g:WhichKeyDesc_Window_HideActiveWindow = "<leader>wh HideActiveWindow"
 nmap <leader>wh <action>(HideActiveWindow)
 
+nnoremap <c-h> <C-w>h
+nnoremap <c-l> <C-w>l
+nnoremap <c-k> <C-w>k
+nnoremap <c-j> <C-w>j
+
 " ==================== edit ====================
 let g:WhichKeyDesc_InsertSemicolon = "<leader>j insert semicolon"
 nmap <leader>j A;<ESC>o
