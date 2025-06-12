@@ -202,6 +202,7 @@ in
   imports = [
     ./swaynotificationcenter.nix
     ./network-manager-applet.nix
+    # ./quickshell
     ./rofi.nix
     ./hyprlock.nix
     ./waybar.nix
