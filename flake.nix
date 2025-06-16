@@ -215,7 +215,7 @@
           inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           # @TODO: Switch to gen5 when available
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen4
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
           inputs.home-manager.nixosModules.home-manager
           {

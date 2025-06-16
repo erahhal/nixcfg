@@ -1,8 +1,8 @@
-{ config, pkgs, inputs, lib, ... }:
+{ pkgs, inputs, lib, ... }:
 
 let
   # Caelestia scripts derivation with Python shebang fixes
-  caelestia-scripts = pkgs.stdenv.mkDerivation rec {
+  caelestia-scripts = pkgs.stdenv.mkDerivation {
     pname = "caelestia-scripts";
     version = "unstable-2024-01-07";
 
@@ -10,7 +10,7 @@ let
       owner = "caelestia-dots";
       repo = "scripts";
       rev = "main";
-      sha256 = "sha256-agQPRI7mnbIHyW5M+Wr0NJMOLeRe0i5qFrAYsGTDEzI=";
+      sha256 = "sha256-nvibOyUhkjPyUv/arRrF8kD+ivYVyB494OayFsB/czM=";
     };
 
     nativeBuildInputs = with pkgs; [

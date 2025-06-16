@@ -9,7 +9,8 @@
   gid = 100;
 
   hostName = "antikythera";
-  timeZone = "America/Los_Angeles";
+  # timeZone = "America/Los_Angeles";
+  timeZone = "Asia/Tokyo";
   containerBackend = "docker";
   displayManager = "sddm";
   # sddmTheme = "adapta";

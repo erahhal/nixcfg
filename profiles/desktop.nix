@@ -1,4 +1,4 @@
-{ lib, pkgs, hostParams, userParams, ...}:
+{ lib, pkgs, hostParams, ...}:
 let
   # This is needed to set the cursor for SDDM
   default-mouse-cursor = pkgs.stdenv.mkDerivation {

@@ -74,12 +74,9 @@ in
     # };
 
 
-    home-manager.users.${userParams.username} = args@{ pkgs, ... }: {
+    home-manager.users.${userParams.username} = { pkgs, ... }: {
       imports = [
-        ( import ../home/profiles/hyprland.nix (args // {
-          inputs = inputs;
-          hostParams = hostParams;
-        }))
+        ../home/profiles/hyprland.nix
       ];
 
       wayland.windowManager.hyprland = {

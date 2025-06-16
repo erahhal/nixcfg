@@ -163,16 +163,16 @@ in
         ## python
         pyright
         s-tui
-        (python3.withPackages(python-packages: with python-packages; [
-          docker
-          docker-compose
-          lxml
-          pandas
-          pip
-          pyyaml
-          requests
-          virtualenv
-        ]))
+        # (python3.withPackages(python-packages: with python-packages; [
+        #   docker
+        #   docker-compose
+        #   lxml
+        #   pandas
+        #   pip
+        #   pyyaml
+        #   requests
+        #   virtualenv
+        # ]))
 
         ## Unfree apps
         obsidian

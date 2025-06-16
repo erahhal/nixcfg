@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+history -c
+echo > ~/.local/share/recently-used.xbel
+echo > ~/.local/share/autojump/autojump.txt
