@@ -4,7 +4,7 @@ let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
   teensy-loader-gui = pkgs.callPackage ../../pkgs/teensy-loader-gui {};
   telegram-mz =  pkgs.writeShellScriptBin "telegram-mz" ''
-    telegram-desktop -workdir ~/.mz
+    ${pkgs.telegram-desktop}/bin/Telegram -workdir ~/.mz
   '';
 in
 {
@@ -50,6 +50,7 @@ in
         ## Desktop
         cool-retro-term
         nicotine-plus
+        telegram-desktop
         telegram-mz
         thunderbird
         transmission_4-gtk

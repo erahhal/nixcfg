@@ -16,15 +16,19 @@ ifeq (, $(shell which nom))
 endif
 
 ## nom currently broken, covers password prompt.
-NOM := nom
+# NOM := nom 
+# LOGFORMAT := --log-format internal-json
+NOM := cat
+LOGFORMAT := 
 
 switch: 
 	# make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
 	make clear-gtkrc
-	sudo true && nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --flake .#${HOSTNAME} -L |& ${NOM} --json
-	# nixos-rebuild --use-remote-sudo switch --flake .#${HOSTNAME} -L
+	# sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
+	nixos-rebuild ${LOGFORMAT} --sudo switch --flake .#${HOSTNAME}
+	# nixos-rebuild --sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before
 	NEW_THEME=$$(cat ~/.system-theme) ;\
@@ -33,7 +37,7 @@ switch:
 	fi
 
 boot:
-	nixos-rebuild --use-remote-sudo boot --flake .#${HOSTNAME} -L
+	nixos-rebuild --sudo boot --flake .#${HOSTNAME} -L
 	
 
 remote-install:
@@ -42,13 +46,13 @@ remote-install:
 show-trace:
 	make clear-sddm-cache
 	make clear-mimeapps
-	sudo true && nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --show-trace --flake .#${HOSTNAME} -L |& ${NOM} --json
-	# nixos-rebuild --use-remote-sudo switch --show-trace --flake .#${HOSTNAME} -L
+	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --show-trace --flake .#${HOSTNAME} -L |& ${NOM}
+	# nixos-rebuild --sudo switch --show-trace --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 
 offline:
-	sudo true && nixos-rebuild --log-format internal-json -v --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L |& ${NOM} --json
-	# nixos-rebuild -v --use-remote-sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
+	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L |& ${NOM} 
+	# nixos-rebuild -v --sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
 
 clear-gpu-cache:
 	mkdir -p ~/.config
@@ -62,10 +66,10 @@ gc:
 	nix-env --delete-generations old
 
 boot:
-	nixos-rebuild --use-remote-sudo boot --flake .#${HOSTNAME} -L
+	nixos-rebuild --sudo boot --flake .#${HOSTNAME} -L
 
 test:
-	nixos-rebuild --use-remote-sudo test --flake .#${HOSTNAME} -L
+	nixos-rebuild --sudo test --flake .#${HOSTNAME} -L
 
 update:
 	nix flake update

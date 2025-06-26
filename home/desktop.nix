@@ -427,6 +427,11 @@ in
         obs-studio
         wf-recorder
 
+        ## Video editing
+
+        kdePackages.kdenlive
+        shotcut
+
         ## desktop
 
         ## file managers

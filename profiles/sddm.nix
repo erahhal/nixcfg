@@ -87,7 +87,7 @@ in
       enableHidpi = true;
       wayland.enable = true;
       settings = {
-        Wayland.SessionDir = "${pkgs.hyprland}/share/wayland-sessions";
+        # Wayland.SessionDir = "${pkgs.hyprland}/share/wayland-sessions";
         Theme = {
           CursorSize = 28;
 
@@ -98,11 +98,12 @@ in
           # CursorTheme = "bibata-cursors";
         };
         General = {
-          GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=192";
+          # GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=192";
         };
-        };
+      };
     } // (if hostParams.sddmThemeQt6 then {
-      package = pkgs.kdePackages.sddm;
+      ## Have to mkForce in case plasma6 is managing it as well.
+      package = lib.mkForce pkgs.kdePackages.sddm;
     } else {});
 
     autoLogin = {
