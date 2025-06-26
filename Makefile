@@ -16,18 +16,16 @@ ifeq (, $(shell which nom))
 endif
 
 ## nom currently broken, covers password prompt.
-# NOM := nom 
-# LOGFORMAT := --log-format internal-json
-NOM := cat
-LOGFORMAT := 
+NOM := nom --json
+# NOM := cat
+LOGFORMAT := --log-format internal-json
 
-switch: 
+switch:
 	# make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
 	make clear-gtkrc
-	# sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
-	nixos-rebuild ${LOGFORMAT} --sudo switch --flake .#${HOSTNAME}
+	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
 	# nixos-rebuild --sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before

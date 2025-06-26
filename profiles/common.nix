@@ -173,10 +173,6 @@
   # boot.crashDump.enable = true;
   # services.das_watchdog.enable = true;
 
-  # Disables writing to Nix store by mounting read-only. "false" should only be used as a last resort.
-  # Nix mounts read-write automatically when it needs to write to it.
-  boot.readOnlyNixStore = true;
-
   ## To address issues with neovim nvimtree plugin
   boot.kernel.sysctl = {
     "fs.inotify.max_user_watches" = 1048576;
