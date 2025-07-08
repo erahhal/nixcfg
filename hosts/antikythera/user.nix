@@ -23,6 +23,7 @@ in
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
       packages = with pkgs; [
+        (pkgs.callPackage ../../pkgs/curseforge {})
         ## terminal apps
         exercism
         awscli

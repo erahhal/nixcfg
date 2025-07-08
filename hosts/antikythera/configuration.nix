@@ -52,7 +52,7 @@
       ./kanshi.nix
       ./launch-apps-config-sway.nix
 
-      # ../../profiles/nfs-mounts.nix
+      ../../profiles/nfs-mounts.nix
       # ../../profiles/smb-mounts.nix
     ];
 
@@ -798,14 +798,14 @@
       # Note: also use for batteries BATC, BATT and CMB0
       # Default: <none>
 
-      # # Battery charge level below which charging will begin.
-      # START_CHARGE_THRESH_BAT0 = 75;
-      # # Battery charge level above which charging will stop.
-      # STOP_CHARGE_THRESH_BAT0 = 80;
+      # Battery charge level below which charging will begin.
+      START_CHARGE_THRESH_BAT0 = 75;
+      # Battery charge level above which charging will stop.
+      STOP_CHARGE_THRESH_BAT0 = 80;
 
-      ## High charge
-      START_CHARGE_THRESH_BAT0 = 98;
-      STOP_CHARGE_THRESH_BAT0 = 99;
+      # ## High charge
+      # START_CHARGE_THRESH_BAT0 = 98;
+      # STOP_CHARGE_THRESH_BAT0 = 99;
 
       # BAT1: Secondary / Ultrabay / Slice / Replaceable battery
       # Note: primary on some laptops
