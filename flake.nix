@@ -108,8 +108,8 @@
     nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
     # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
 
-    secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
-    # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
+    # secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
+    secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
     nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
     # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
@@ -152,6 +152,51 @@
       };
     };
     nixosConfigurations = rec {
+      nflx-erahhal-p16 =
+      let
+        system = "x86_64-linux";
+        hostParams = import ./hosts/nflx-erahhal-p16/params.nix {};
+        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
+        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
+      in
+      inputs.nixpkgs.lib.nixosSystem {
+        system = system;
+        modules = [
+          inputs.disko.nixosModules.disko
+          inputs.lanzaboote.nixosModules.lanzaboote
+          ./hosts/nflx-erahhal-p16/configuration.nix
+          inputs.secrets.nixosModules.default
+          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
+          inputs.nur.modules.nixos.default
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
+          }
+
+          inputs.nixvim-config.nixosModules.default
+          {
+            nixvim-config.enable = true;
+            nixvim-config.enable-ai = true;
+            nixvim-config.enable-startify-cowsay = true;
+          }
+          # inputs.nflx-vpn.nixosModules.default
+          # inputs.nflx.nixosModules.default
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit system;
+          inherit hostParams;
+          inherit copyDesktopIcons;
+          inherit copyDesktopItems;
+          inherit mkWindowsApp;
+          inherit recursiveMerge;
+          inherit userParams;
+        };
+      };
       nflx-erahhal-x1c =
       let
         system = "x86_64-linux";

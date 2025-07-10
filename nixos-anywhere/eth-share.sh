@@ -9,8 +9,15 @@ WIFI_INTERFACE=$(iw dev | awk '$1=="Interface"{print $2}')
 ETH_INTERFACE=$(find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n' | grep "^e" | head -n 1)
 
 up () {
+    ip link set down $ETH_INTERFACE
+    sleep 1
+
     # Setup ethernet device
     ip link set up $ETH_INTERFACE
+    ip addr flush dev $ETH_INTERFACE
+
+    nmcli device set $ETH_INTERFACE managed no 2>/dev/null || true
+
     ip addr add 10.3.0.1/24 dev $ETH_INTERFACE
 
     # Enable packet forwarding
@@ -33,6 +40,7 @@ up () {
 down () {
     pkill socat
     ip addr del 10.3.0.1/24 dev $ETH_INTERFACE
+    nmcli device set $ETH_INTERFACE managed yes 2>/dev/null || true
     ip link set down $ETH_INTERFACE
     while nft -a list table nat | grep -q $WIFI_INTERFACE; do
         HANDLE_NUM=$(nft -a list table nat | grep $WIFI_INTERFACE | head -n 1 | awk '{ print $6 }')
