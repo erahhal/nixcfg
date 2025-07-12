@@ -1,4 +1,4 @@
-{ pkgs, lib, hostParams, userParams, ... }:
+{ pkgs, userParams, ... }:
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
@@ -12,6 +12,9 @@ in
 
     imports = [
       ./launch-apps-config-hyprland.nix
+      ## Needed to create .desktop entry which is currently broken
+      ## Also used to register mime types
+      ../../home/profiles/jetbrains-toolbox.nix
     ];
 
     home = {
@@ -21,11 +24,6 @@ in
         awscli
         blender
         chromium
-
-        jetbrains-toolbox
-        ## These are installed by jetbrains-toolbox with a corporate license
-        # jetbrains.datagrip
-        # jetbrains.idea-ultimate
 
         lutris
         mcreator

@@ -2,6 +2,12 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
+      env = [
+        "LIBVA_DRIVER_NAME,nvidia"
+        "_GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "STEAM_FORCE_DESKTOPUI_SCALING,2.0"
+      ];
+
       animations = {
         animation = [
           "border, 1, 2, default"
@@ -18,7 +24,7 @@
         ## It might be enabling VRR or inconsistent frequencies
 
         # "eDP-1,disable"
-        "eDP-1,2880x1800@90,0x0,1.8"
+        "eDP-1,3840x2160@60,0x0,2.0"
         "desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6"
         "desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5"
         "desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5"
@@ -60,7 +66,7 @@
         "[workspace 6 silent] signal-desktop"
         # "[workspace 6 silent] telegram-desktop"
         # "[workspace 6 silent] whatsapp-for-linux"
-        # "[workspace 7 silent] discord"
+        "[workspace 7 silent] discord"
         # "[workspace 7 silent] element-desktop"
         "[workspace 1 silent] chromium"
       ];

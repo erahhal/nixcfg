@@ -21,9 +21,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "0,0";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -54,9 +54,9 @@ in
                 criteria = "eDP-1";
                 status = "disable";
                 # status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "4521,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
           };
@@ -77,9 +77,9 @@ in
                 criteria = "eDP-1";
                 status = "disable";
                 # status = "enable";
-                mode = "2880x1800@90";
+                mode = "3840x2400@60";
                 position = "5120,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -119,9 +119,9 @@ in
                 criteria = "eDP-1";
                 status = "disable";
                 # status = "enable";
-                mode = "2880x1800@90";
+                mode = "3840x2400@60";
                 position = "4520,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -153,9 +153,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1678,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
           };
@@ -175,9 +175,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1678,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
           };
@@ -221,10 +221,10 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "0,67";
                 # Resolution must be integer divisible by scale
-                scale = 1.8;
+                scale = 2.0;
               }
               {
                 criteria = portable-monitor;
@@ -297,10 +297,10 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "2560,900";
                 # Resolution must be integer divisible by scale
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -331,10 +331,10 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "2560,900";
                 # Resolution must be integer divisible by scale
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -397,9 +397,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1287,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
           };
@@ -426,9 +426,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
           };
@@ -449,9 +449,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "900,1440";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
           };
@@ -477,9 +477,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -506,9 +506,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 1.8;
+                scale = 2.0;
               }
             ];
             exec = [
@@ -535,9 +535,9 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "2880x1800@90.000999";
+                mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 1.8;
+                scale = 2.0;
               }
               {
                 criteria = "LG Electronics 16MQ70 204NZKZ005285";

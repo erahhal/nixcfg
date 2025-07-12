@@ -164,7 +164,8 @@ in
     # echo $XDG_DATA_DIRS to see full list
 
     xdg.enable = true;
-    xdg.mimeApps = { enable = true;
+    xdg.mimeApps = {
+      enable = true;
       # Make sure VSCode doesn't take over file mimetype
       associations.added = {
         "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
@@ -201,7 +202,6 @@ in
         "video/x-ms-wmv" = [ "mpv.desktop" ];
         "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
-        "x-scheme-handler/jetbrains" = [ "jetbrains-toolbox.desktop" ];
       };
       defaultApplications = {
         "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
@@ -240,7 +240,6 @@ in
         "application/x-zoom" = [ "Zoom.desktop" ];
         "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
-        "x-scheme-handler/jetbrains" = [ "jetbrains-toolbox.desktop" ];
       };
     };
 

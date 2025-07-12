@@ -1371,11 +1371,11 @@
     },
     "nflx": {
       "locked": {
-        "lastModified": 1748625940,
-        "narHash": "sha256-1bR06Ou/+yWTHkHrkrIKx3Hn7l5k+BTdcM/0Up9r6N8=",
+        "lastModified": 1752346634,
+        "narHash": "sha256-JfEfXXAPSOfglxBXan41k3JC9g/HJJTD/bIvHKG/xU4=",
         "ref": "refs/heads/master",
-        "rev": "d627d29898e7ffd913db824eddcc8f8dcb7c8e9a",
-        "revCount": 38,
+        "rev": "9548551788eb45e37393dae9a714326c51b59b86",
+        "revCount": 40,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
@@ -2682,14 +2682,17 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1752175602,
-        "narHash": "sha256-+jh3GSJkDCimly7xPpPBNYQO56SPnP9SbaeLr5Sbz5w=",
-        "path": "/home/erahhal/Code/nixcfg-secrets",
-        "type": "path"
+        "lastModified": 1752266979,
+        "narHash": "sha256-cDKAEJbX3De2x6WXCupDfw1yqgIVk2WexXgrkOJqSVw=",
+        "ref": "refs/heads/master",
+        "rev": "07f6114ea13449f9c5d0909bc6ed1f5ac3d42129",
+        "revCount": 24,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-secrets",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       }
     },
     "sg-nvim": {

@@ -98,7 +98,7 @@ in
           # CursorTheme = "bibata-cursors";
         };
         General = {
-          # GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=192";
+          GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString hostParams.dpi}";
         };
       };
     } // (if hostParams.sddmThemeQt6 then {

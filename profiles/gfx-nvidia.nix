@@ -16,10 +16,11 @@ in
     enable32Bit = true;
     extraPackages = with pkgs; [
       nvidia-vaapi-driver
+      egl-wayland
     ];
     # extraPackages = with pkgs; [
     #   # creates missing nvidia_gbm.so file
-    #   (runCommand "nvidia-gbm-wrapper" { 
+    #   (runCommand "nvidia-gbm-wrapper" {
     #     buildInputs = [ package ]; } ''
     #     mkdir -p $out/lib/gbm
     #     # Create an absolute symlink to the nvidia-drm_gbm.so file from the nvidia_x11 package
@@ -46,8 +47,9 @@ in
   services.xserver.videoDrivers = [ "nvidia" ];
 
   boot.kernelModules = [ "nvidia-uvm" ];
-  boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-  boot.blacklistedKernelModules = [ "nouveau" "bbswitch" "i915" ];
+  boot.initrd.kernelModules = [ "i915" "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  # boot.blacklistedKernelModules = [ "nouveau" "bbswitch" "i915" ];
+  boot.blacklistedKernelModules = [ "nouveau" ];
 
   # services.xserver = {
   #   # @TODO: Are these still needed?
@@ -73,22 +75,22 @@ in
     libva-utils
   ];
 
-  # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
-  boot.kernelParams = [
-    "vga=0"
-    "rdblacklist=nouveau"
-    "nouveau.modeset=0"
-    ## Supposedly solves issues with corrupted desktop / videos after waking
-    ## See: https://wiki.hyprland.org/Nvidia/
-    # "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-
-    "nvidia.NVreg_UsePageAttributeTable=1" # why this isn't default is beyond me.
-    "nvidia_modeset.disable_vrr_memclk_switch=1" # stop really high memclk when vrr is in use.
-
-    # (lib.mkIf config.hardware.nvidia.powerManagement.enable [
-    "nvidia.NVreg_TemporaryFilePath=/var/tmp" # store on disk, not /tmp which is on RAM
-    # ])
-  ];
+  # # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
+  # boot.kernelParams = [
+  #   "vga=0"
+  #   "rdblacklist=nouveau"
+  #   "nouveau.modeset=0"
+  #   ## Supposedly solves issues with corrupted desktop / videos after waking
+  #   ## See: https://wiki.hyprland.org/Nvidia/
+  #   # "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+  #
+  #   "nvidia.NVreg_UsePageAttributeTable=1" # why this isn't default is beyond me.
+  #   "nvidia_modeset.disable_vrr_memclk_switch=1" # stop really high memclk when vrr is in use.
+  #
+  #   # (lib.mkIf config.hardware.nvidia.powerManagement.enable [
+  #   "nvidia.NVreg_TemporaryFilePath=/var/tmp" # store on disk, not /tmp which is on RAM
+  #   # ])
+  # ];
 
   # hardware.bumblebee.enable = false;
 
@@ -128,27 +130,27 @@ in
     nvidiaSettings = true;
 
     # !!! PRIME Sync and Offload Mode cannot be enabled at the same time.
-    # prime = {
-    #   ## sync introduces better performance and greatly reduces screen tearing, at the
-    #   ## expense of higher power consumption since the Nvidia GPU will not go to sleep
-    #   ## completely unless called for, as is the case in Offload Mode.
-    #
-    #   # sync.enable = true;
-    #
-    #   ## With Reverse Prime the primary rendering device is the device's APU and the
-    #   ## NVIDIA GPU acts as an offload device. This is done while also allowing to use
-    #   ## the video outputs connected to the NVIDIA device. Additionally, this might use
-    #   ## less power than Prime Sync since the more power efficient APU does most of the
-    #   ## rendering, thus, allowing the NVIDIA card to sleep where possible.
-    #
-    #   # reverseSync.enable = true;
-    #
-    #   offload.enable = true;
-    #   offload.enableOffloadCmd = true;
-    #
-    #   intelBusId = "PCI:0:2:0";
-    #   nvidiaBusId = "PCI:1:0:0";
-    #};
+    prime = {
+      ## sync introduces better performance and greatly reduces screen tearing, at the
+      ## expense of higher power consumption since the Nvidia GPU will not go to sleep
+      ## completely unless called for, as is the case in Offload Mode.
+
+      # sync.enable = true;
+
+      ## With Reverse Prime the primary rendering device is the device's APU and the
+      ## NVIDIA GPU acts as an offload device. This is done while also allowing to use
+      ## the video outputs connected to the NVIDIA device. Additionally, this might use
+      ## less power than Prime Sync since the more power efficient APU does most of the
+      ## rendering, thus, allowing the NVIDIA card to sleep where possible.
+
+      # reverseSync.enable = true;
+
+      offload.enable = true;
+      offload.enableOffloadCmd = true;
+
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
   };
 
   ## Generate different boot profiles when rebuilding your system.
@@ -168,13 +170,13 @@ in
   #   };
   # };
 
-  home-manager.users.${userParams.username} = { pkgs, ... }: {
-    home.sessionVariables = {
-      GBM_BACKEND = "nvidia-drm";
-      # GBM_BACKEND = "nvidia";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      __EGL_VENDOR_LIBRARY_FILENAMES = "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json";
-    };
-  };
+  # home-manager.users.${userParams.username} = { pkgs, ... }: {
+  #   home.sessionVariables = {
+  #     GBM_BACKEND = "nvidia-drm";
+  #     # GBM_BACKEND = "nvidia";
+  #     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  #     __EGL_VENDOR_LIBRARY_FILENAMES = "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json";
+  #   };
+  # };
 }
 

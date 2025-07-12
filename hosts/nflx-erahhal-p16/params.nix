@@ -26,7 +26,8 @@
   ## Only 10 seems to get rid of the gaps in Foot terminal
   ttyLineHeight = 10;
   trolltechFontSize = 10;
-  dpi = 190;
+  # dpi = 190;
+  dpi = 210;
   # dpiSddm = 210;
   # dpiLaptop = 210;
   wallpaper = ../../wallpapers/tokyo-park.jpeg;
