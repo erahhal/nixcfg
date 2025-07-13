@@ -197,7 +197,7 @@ in
         #         criteria = "LG Electronics 16MQ70 204NZKZ005285";
         #         status = "enable";
         #         mode = "2560x1600@59.972000Hz";
-        #         position = "1600,0";
+        #         position = "1920,440";
         #         scale = 1.6;
         #       }
         #     ];
@@ -230,7 +230,7 @@ in
                 criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
-                position = "1600,0";
+                position = "1920,440";
                 # Resolution must be integer divisible by scale
                 scale = 1.6;
               }
@@ -264,7 +264,7 @@ in
         #         criteria = "eDP-1";
         #         status = "enable";
         #         mode = "2880x1800@90.000999";
-        #         position = "1601,101";
+        #         position = "1920,440";
         #         # Resolution must be integer divisible by scale
         #         scale = 1.8;
         #       }
@@ -358,14 +358,14 @@ in
         #         criteria = "LG Electronics 16MQ70 204NZKZ005285";
         #         status = "enable";
         #         mode = "2560x1600@59.972000Hz";
-        #         position = "0,0";
+        #         position = "0,440";
         #         scale = 1.5;
         #       }
         #       {
         #         criteria = "eDP-1";
         #         status = "enable";
         #         mode = "2880x1800@90.000999";
-        #         position = "1706,100";
+        #         position = "1920,0";
         #         scale = 1.8;
         #       }
         #     ];
