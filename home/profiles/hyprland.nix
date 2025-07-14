@@ -340,9 +340,6 @@ in
         ## Disable "Application is not responding" dialog
         enable_anr_dialog = false;
 
-        # See: https://wiki.hyprland.org/Configuring/Perfomance/
-        ## disabling significantly reduces flickering/repeat rendering with nvidia in some apps
-        vrr = 0;
         vfr = true;
 
         # Don't show anime girl in background
@@ -392,15 +389,6 @@ in
           clickfinger_behavior = true;
         };
         accel_profile = "adaptive";
-      };
-
-      render = {
-        direct_scanout = false;
-        explicit_sync = true;
-      };
-
-      cursor = {
-        no_hardware_cursors = true;
       };
 
       # Thinkpad Trackpoint

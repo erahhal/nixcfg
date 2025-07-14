@@ -2,6 +2,19 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
+      misc = {
+        vrr = 0;
+      };
+
+      render = {
+        direct_scanout = false;
+        explicit_sync = true;
+      };
+
+      cursor = {
+        no_hardware_cursors = true;
+      };
+
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
