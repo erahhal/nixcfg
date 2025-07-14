@@ -16,7 +16,16 @@ in
     enable32Bit = true;
     extraPackages = with pkgs; [
       nvidia-vaapi-driver
+      vaapiVdpau           # VDPAU backend for VA-API
+      libvdpau-va-gl       # VDPAU driver with VA-API/OpenGL backend
+      vulkan-loader
+      vulkan-validation-layers
       egl-wayland
+    ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      nvidia-vaapi-driver
+      vaapiVdpau
+      libvdpau-va-gl
     ];
     # extraPackages = with pkgs; [
     #   # creates missing nvidia_gbm.so file
@@ -46,10 +55,12 @@ in
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  boot.kernelModules = [ "nvidia-uvm" ];
-  boot.initrd.kernelModules = [ "i915" "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-  # boot.blacklistedKernelModules = [ "nouveau" "bbswitch" "i915" ];
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  # boot.kernelModules = [ "nvidia-uvm" ];
+  boot.initrd.kernelModules = [ "i915" ];
+  boot.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  # boot.blacklistedKernelModules = [ "nouveau" "bbswitch" "i915" "xe" ];
+  boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ];
+  # boot.blacklistedKernelModules = [ "nouveau" ];
 
   # services.xserver = {
   #   # @TODO: Are these still needed?
@@ -76,21 +87,25 @@ in
   ];
 
   # # vga=0, rdblacklist=nouveau, and nouveau.modeset=0 fix issue with external screens not turning on
-  # boot.kernelParams = [
-  #   "vga=0"
-  #   "rdblacklist=nouveau"
-  #   "nouveau.modeset=0"
-  #   ## Supposedly solves issues with corrupted desktop / videos after waking
-  #   ## See: https://wiki.hyprland.org/Nvidia/
-  #   # "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-  #
-  #   "nvidia.NVreg_UsePageAttributeTable=1" # why this isn't default is beyond me.
-  #   "nvidia_modeset.disable_vrr_memclk_switch=1" # stop really high memclk when vrr is in use.
-  #
-  #   # (lib.mkIf config.hardware.nvidia.powerManagement.enable [
-  #   "nvidia.NVreg_TemporaryFilePath=/var/tmp" # store on disk, not /tmp which is on RAM
-  #   # ])
-  # ];
+  boot.kernelParams = [
+    "vga=0"
+    "rdblacklist=nouveau"
+    # "module_blacklist=i915,nouveau"
+    "module_blacklist=nouveau"
+    "nouveau.modeset=0"
+    ## Supposedly solves issues with corrupted desktop / videos after waking
+    ## See: https://wiki.hyprland.org/Nvidia/
+    # "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+
+    "nvidia.NVreg_UsePageAttributeTable=1" # why this isn't default is beyond me.
+    "nvidia_modeset.disable_vrr_memclk_switch=1" # stop really high memclk when vrr is in use.
+    #
+    # # (lib.mkIf config.hardware.nvidia.powerManagement.enable [
+    "nvidia.NVreg_TemporaryFilePath=/var/tmp" # store on disk, not /tmp which is on RAM
+    # ])
+    "nvidia-drm.modeset=1"
+    "nvidia-drm.fbdev=1"
+  ];
 
   # hardware.bumblebee.enable = false;
 
@@ -145,6 +160,7 @@ in
 
       # reverseSync.enable = true;
 
+      # offload.enable = false;
       offload.enable = true;
       offload.enableOffloadCmd = true;
 
@@ -170,13 +186,25 @@ in
   #   };
   # };
 
-  # home-manager.users.${userParams.username} = { pkgs, ... }: {
-  #   home.sessionVariables = {
-  #     GBM_BACKEND = "nvidia-drm";
-  #     # GBM_BACKEND = "nvidia";
-  #     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  #     __EGL_VENDOR_LIBRARY_FILENAMES = "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json";
-  #   };
-  # };
+  home-manager.users.${userParams.username} = { pkgs, ... }: {
+    home.sessionVariables = {
+      GBM_BACKEND = "nvidia-drm";
+      GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
+      # GBM_BACKEND = "nvidia";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      # __EGL_VENDOR_LIBRARY_FILENAMES = "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json";
+      NIXOS_OZONE_WL = "1";
+      WLR_NO_HARDWARE_CURSORS = "1";
+      EGL_PLATFORM = "wayland";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
+      LIBVA_DRIVER_NAME = "nvidia";
+      AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
+      AQ_FORCE_LINEAR_BLIT = "1";
+      __GL_SYNC_TO_VBLANK = "1";
+      __GL_GSYNC_ALLOWED = "0";
+      __GL_VRR_ALLOWED = "0";
+      # __GL_TRIPLE_BUFFER = "1";
+    };
+  };
 }
 

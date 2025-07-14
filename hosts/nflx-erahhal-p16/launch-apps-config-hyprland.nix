@@ -4,7 +4,19 @@
     settings = {
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
-        "_GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "GBM_BACKEND,nvidia-drm"
+
+        # "__NV_PRIME_RENDER_OFFLOAD,1"
+        # "__VK_LAYER_NV_optimus,NVIDIA_only"
+        #
+        "AQ_DRM_DEVICES,/dev/dri/card0:/dev/dri/card1"
+        "AQ_FORCE_LINEAR_BLIT,1"
+        "__GL_SYNC_TO_VBLANK,1"
+        "__GL_GSYNC_ALLOWED,0"
+        "__GL_VRR_ALLOWED,0"
+        "__GL_TRIPLE_BUFFER,1"
+
         "STEAM_FORCE_DESKTOPUI_SCALING,2.0"
       ];
 
@@ -28,8 +40,8 @@
         "desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6"
         "desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5"
         "desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5"
-        # "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@74.978996,0x0,1.250000"
         "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@74.978996,0x0,1.333333"
+        # "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@60,0x0,1.0"
       ];
 
       workspace = [
@@ -59,16 +71,16 @@
 
       exec-once = [
         "[workspace 2 silent] ${userParams.tty} tmux a -dt code"
-        "[workspace 3 silent] slack"
-        "[workspace 4 silent] spotify"
-        "[workspace 4 silent] brave"
-        "[workspace 5 silent] firefox"
-        "[workspace 6 silent] signal-desktop"
-        # "[workspace 6 silent] telegram-desktop"
-        # "[workspace 6 silent] whatsapp-for-linux"
-        "[workspace 7 silent] discord"
-        # "[workspace 7 silent] element-desktop"
-        "[workspace 1 silent] chromium"
+        # "[workspace 3 silent] slack"
+        # "[workspace 4 silent] spotify"
+        # "[workspace 4 silent] brave"
+        # "[workspace 5 silent] firefox"
+        # "[workspace 6 silent] signal-desktop"
+        # # "[workspace 6 silent] telegram-desktop"
+        # # "[workspace 6 silent] whatsapp-for-linux"
+        # "[workspace 7 silent] discord"
+        # # "[workspace 7 silent] element-desktop"
+        # "[workspace 1 silent] chromium"
       ];
     };
   };

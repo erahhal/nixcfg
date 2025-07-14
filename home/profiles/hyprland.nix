@@ -342,6 +342,8 @@ in
 
         # See: https://wiki.hyprland.org/Configuring/Perfomance/
         ## disabling significantly reduces flickering/repeat rendering with nvidia in some apps
+        # vrr = 0;
+        # vfr = true;
         vfr = false;
 
         # Don't show anime girl in background
@@ -392,6 +394,15 @@ in
         };
         accel_profile = "adaptive";
       };
+
+      # render = {
+      #   direct_scanout = false;
+      #   explicit_sync = true;
+      # };
+
+      # cursor = {
+      #   no_hardware_cursors = true;
+      # };
 
       # Thinkpad Trackpoint
       device = {

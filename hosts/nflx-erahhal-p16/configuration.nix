@@ -59,6 +59,16 @@
     # Temporary
     # ../../profiles/nfs-mounts.nix
   ];
+  nixpkgs.overlays = [
+    (final: prev: {
+      chromium = prev.chromium.override {
+        commandLineArgs = [
+          "--ozone-platform=x11"
+          "--force-device-scale-factor=1.5"
+        ];
+      };
+    })
+  ];
 
   # Needed to setup passwords
   users.users.root.openssh.authorizedKeys.keys = [
@@ -273,14 +283,9 @@
       ## "performance" severely degrades IO performance on X1C. Leave as default ("powersave").
       ## Options are "performance" and "powersave" when intel_pstate is active
       ## cat /sys/devices/system/cpu/intel_pstate/status
-      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
-      # CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      # CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-      # Supposedly gets rid of stutter in Hyprland
-      # https://wiki.hyprland.org/Configuring/Perfomance/
-      INTEL_GPU_MIN_FREQ_ON_AC = 500;
-      INTEL_GPU_MIN_FREQ_ON_BAT = 500;
 
       # 100 being the maximum, limit the speed of my CPU to reduce
       # heat and decrease battery usage:
@@ -300,17 +305,17 @@
       # full charge.
       # https://linrunner.de/tlp/faq/battery.html#how-to-choose-good-battery-charge-thresholds
 
-      # START_CHARGE_THRESH_BAT0 = 75;
-      # STOP_CHARGE_THRESH_BAT0 = 85;
-      # START_CHARGE_THRESH_BAT1 = 75;
-      # STOP_CHARGE_THRESH_BAT1 = 85;
+      START_CHARGE_THRESH_BAT0 = 75;
+      STOP_CHARGE_THRESH_BAT0 = 85;
+      START_CHARGE_THRESH_BAT1 = 75;
+      STOP_CHARGE_THRESH_BAT1 = 85;
 
       ## High charge settings
 
-      START_CHARGE_THRESH_BAT0=85;
-      STOP_CHARGE_THRESH_BAT0=95;
-      START_CHARGE_THRESH_BAT1=85;
-      STOP_CHARGE_THRESH_BAT1=95;
+      # START_CHARGE_THRESH_BAT0=85;
+      # STOP_CHARGE_THRESH_BAT0=95;
+      # START_CHARGE_THRESH_BAT1=85;
+      # STOP_CHARGE_THRESH_BAT1=95;
 
       ## Travel settings
       ## START can't be above 99

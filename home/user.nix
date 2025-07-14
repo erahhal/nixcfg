@@ -22,6 +22,7 @@ in
       "nac"
       "networkmanager"
       "podman"
+      # "render"
       "scanner"
       "sudo"
       "video"
