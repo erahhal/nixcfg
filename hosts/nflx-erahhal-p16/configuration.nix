@@ -63,8 +63,9 @@
     (final: prev: {
       chromium = prev.chromium.override {
         commandLineArgs = [
+          ## WebGL doesn't work with Hyprland Nvidia yet
           "--ozone-platform=x11"
-          "--force-device-scale-factor=1.5"
+          "--force-device-scale-factor=1.75"
         ];
       };
     })

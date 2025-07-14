@@ -71,16 +71,16 @@
 
       exec-once = [
         "[workspace 2 silent] ${userParams.tty} tmux a -dt code"
-        # "[workspace 3 silent] slack"
-        # "[workspace 4 silent] spotify"
-        # "[workspace 4 silent] brave"
-        # "[workspace 5 silent] firefox"
-        # "[workspace 6 silent] signal-desktop"
-        # # "[workspace 6 silent] telegram-desktop"
-        # # "[workspace 6 silent] whatsapp-for-linux"
-        # "[workspace 7 silent] discord"
-        # # "[workspace 7 silent] element-desktop"
-        # "[workspace 1 silent] chromium"
+        "[workspace 3 silent] slack"
+        "[workspace 4 silent] spotify"
+        "[workspace 4 silent] brave"
+        "[workspace 5 silent] firefox"
+        "[workspace 6 silent] signal-desktop"
+        # "[workspace 6 silent] telegram-desktop"
+        # "[workspace 6 silent] whatsapp-for-linux"
+        "[workspace 7 silent] discord"
+        # "[workspace 7 silent] element-desktop"
+        "[workspace 1 silent] chromium"
       ];
     };
   };
