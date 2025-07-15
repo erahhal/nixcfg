@@ -60,15 +60,15 @@
     # ../../profiles/nfs-mounts.nix
   ];
   nixpkgs.overlays = [
-    (final: prev: {
-      chromium = prev.chromium.override {
-        commandLineArgs = [
-          ## WebGL doesn't work with Hyprland Nvidia yet
-          "--ozone-platform=x11"
-          "--force-device-scale-factor=1.75"
-        ];
-      };
-    })
+    # (final: prev: {
+    #   chromium = prev.chromium.override {
+    #     commandLineArgs = [
+    #       ## WebGL doesn't work with Hyprland Nvidia yet
+    #       "--ozone-platform=x11"
+    #       "--force-device-scale-factor=1.5"
+    #     ];
+    #   };
+    # })
   ];
 
   # Needed to setup passwords

@@ -3,7 +3,7 @@
   wayland.windowManager.hyprland = {
     settings = {
       misc = {
-        vrr = 0;
+        # vrr = 0;
       };
 
       render = {
@@ -20,15 +20,19 @@
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "GBM_BACKEND,nvidia-drm"
 
+        # "AQ_DRM_DEVICES,/dev/dri/card0:/dev/dri/card1"
+        # "AQ_FORCE_LINEAR_BLIT,1"
+        # "__GL_SYNC_TO_VBLANK,1"
+        # "__GL_GSYNC_ALLOWED,0"
+        # "__GL_VRR_ALLOWED,0"
+        # "__GL_TRIPLE_BUFFER,1"
+
         # "__NV_PRIME_RENDER_OFFLOAD,1"
         # "__VK_LAYER_NV_optimus,NVIDIA_only"
-        #
-        "AQ_DRM_DEVICES,/dev/dri/card0:/dev/dri/card1"
-        "AQ_FORCE_LINEAR_BLIT,1"
-        "__GL_SYNC_TO_VBLANK,1"
-        "__GL_GSYNC_ALLOWED,0"
-        "__GL_VRR_ALLOWED,0"
-        "__GL_TRIPLE_BUFFER,1"
+
+        # "WLR_DRM_NO_ATOMIC,1"
+        # "__VK_LAYER_NV_optimus,NVIDIA_only"
+        # "NVD_BACKEND,direct"
 
         "STEAM_FORCE_DESKTOPUI_SCALING,2.0"
       ];

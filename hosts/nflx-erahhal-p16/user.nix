@@ -24,6 +24,7 @@ in
         awscli
         blender
         chromium
+        google-chrome
 
         lutris
         mcreator
