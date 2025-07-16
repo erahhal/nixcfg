@@ -53,10 +53,10 @@
         ## It might be enabling VRR or inconsistent frequencies
 
         # "eDP-1,disable"
-        "eDP-1,3840x2160@60,0x0,2.0"
+        "eDP-1,3840x2160@60,0x0,2.133333"
         "desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6"
         "desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5"
-        "desc:LG Electronics LG HDR 4K 0x00020F5B,3840x2160@60,2560x0,1.5"
+        "desc:LG Electronics L33HD334K 0x00020F5B,3840x2160@60,2560x0,1.5"
         "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@74.978996,0x0,1.333333"
         # "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@60,0x0,1.0"
       ];

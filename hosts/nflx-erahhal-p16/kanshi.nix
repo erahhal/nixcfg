@@ -5,8 +5,10 @@ let
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
+  portable-monitor-scale = 1.6;
   asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
+  eDP-1-scale = 2.133333;
 in
 {
   home-manager.users.${userParams.username} = {
@@ -23,7 +25,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "0,0";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -56,7 +58,7 @@ in
                 # status = "enable";
                 mode = "3840x2400@60";
                 position = "4521,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -79,7 +81,7 @@ in
                 # status = "enable";
                 mode = "3840x2400@60";
                 position = "5120,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -121,7 +123,7 @@ in
                 # status = "enable";
                 mode = "3840x2400@60";
                 position = "4520,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -155,7 +157,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1678,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -177,7 +179,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1678,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -194,11 +196,11 @@ in
         #         scale = 1.8;
         #       }
         #       {
-        #         criteria = "LG Electronics 16MQ70 204NZKZ005285";
+        #         criteria = portable-monitor;
         #         status = "enable";
         #         mode = "2560x1600@59.972000Hz";
         #         position = "1920,440";
-        #         scale = 1.6;
+        #         scale = portable-monitor-scale;
         #       }
         #     ];
         #     exec = [
@@ -224,15 +226,15 @@ in
                 mode = "3840x2400@60";
                 position = "0,67";
                 # Resolution must be integer divisible by scale
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
               {
                 criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
-                position = "1920,440";
+                position = "1800,300";
                 # Resolution must be integer divisible by scale
-                scale = 1.6;
+                scale = portable-monitor-scale;
               }
             ];
             exec = [
@@ -258,7 +260,7 @@ in
         #         mode = "2560x1600@59.972000Hz";
         #         position = "0,0";
         #         # Resolution must be integer divisible by scale
-        #         scale = 1.6;
+        #         scale = portable-monitor-scale;
         #       }
         #       {
         #         criteria = "eDP-1";
@@ -300,7 +302,7 @@ in
                 mode = "3840x2400@60";
                 position = "2560,900";
                 # Resolution must be integer divisible by scale
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -334,7 +336,7 @@ in
                 mode = "3840x2400@60";
                 position = "2560,900";
                 # Resolution must be integer divisible by scale
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -399,7 +401,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1287,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -428,7 +430,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -451,7 +453,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "900,1440";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -479,7 +481,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -508,7 +510,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
@@ -537,7 +539,7 @@ in
                 status = "enable";
                 mode = "3840x2400@60";
                 position = "1287,2149";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
               {
                 criteria = "LG Electronics 16MQ70 204NZKZ005285";

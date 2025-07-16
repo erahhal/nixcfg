@@ -37,7 +37,6 @@ in
       # ../../modules/rkvm.nix
       ../../profiles/android.nix
       ../../profiles/exclusive-lan.nix
-      ../../profiles/gfx-nvidia.nix
       ../../profiles/dell-dcc.nix
       ../../profiles/laptop-hardware.nix
 

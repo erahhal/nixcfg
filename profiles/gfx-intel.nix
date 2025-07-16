@@ -4,64 +4,66 @@
 { config, lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    ## broken
-    # intel-gpu-tools
-    libva-utils
-  ];
+  config = lib.mkIf config.hostParams.gpu.intel.enable {
+    environment.systemPackages = with pkgs; [
+      ## broken
+      # intel-gpu-tools
+      libva-utils
+    ];
 
-  # From: https://github.com/NixOS/nixos-hardware/blob/master/common/gpu/intel/default.nix
-  # environment.variables = {
-  #   VDPAU_DRIVER = lib.mkIf config.hardware.graphics.enable (lib.mkDefault "va_gl");
-  # };
-  environment.variables = {
-     LIBVA_DRIVER_NAME = lib.mkIf config.hardware.graphics.enable ( lib.mkDefault "iHD" );
-     # LIBVA_DRIVER_NAME = lib.mkIf config.hardware.graphics.enable ( lib.mkDefault "i965" );
-  };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override {
-      enableHybridCodec = true;
+    # From: https://github.com/NixOS/nixos-hardware/blob/master/common/gpu/intel/default.nix
+    # environment.variables = {
+    #   VDPAU_DRIVER = lib.mkIf config.hardware.graphics.enable (lib.mkDefault "va_gl");
+    # };
+    environment.variables = {
+       LIBVA_DRIVER_NAME = lib.mkIf config.hardware.graphics.enable ( lib.mkDefault "iHD" );
+       # LIBVA_DRIVER_NAME = lib.mkIf config.hardware.graphics.enable ( lib.mkDefault "i965" );
     };
-  };
 
-  hardware = {
-    graphics = {
-      enable = true;
-      extraPackages = with pkgs; [
-        vpl-gpu-rt          # for newer GPUs on NixOS >24.05 or unstable
-        intel-media-driver # LIBVA_DRIVER_NAME=iHD
-        # intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-        #libvdpau-va-gl
-
-        # intel-media-driver
-        # vaapiVdpau
-        libvdpau-va-gl
-
-        ## should this be used?
-        ## Enabling it causes a nix build conflict with intel-vaapi-driver even though it's not installed explicitly
-        # vaapiIntel
-
-        ## Should this really be used instead? seems to already be installed by enabling GL
-        # intel-vaapi-driver
-      ];
-
-      extraPackages32 = with pkgs.pkgsi686Linux; [
-        intel-media-driver
-        # intel-vaapi-driver
-        libvdpau-va-gl
-      ];
+    nixpkgs.config.packageOverrides = pkgs: {
+      intel-vaapi-driver = pkgs.intel-vaapi-driver.override {
+        enableHybridCodec = true;
+      };
     };
-  };
 
-  ## These settings seem to slow down the desktop
-  # services.xserver = {
-  #   videoDrivers = [ "modesetting" ];
-  #   deviceSection = ''
-  #       Option "TearFree" "true"
-  #       Option "AccelMod" "uxa"
-  #       Option "DRI" "3"
-  #   '';
-  #   useGlamor = true;
-  # };
+    hardware = {
+      graphics = {
+        enable = true;
+        extraPackages = with pkgs; [
+          vpl-gpu-rt          # for newer GPUs on NixOS >24.05 or unstable
+          intel-media-driver # LIBVA_DRIVER_NAME=iHD
+          # intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+          #libvdpau-va-gl
+
+          # intel-media-driver
+          # vaapiVdpau
+          libvdpau-va-gl
+
+          ## should this be used?
+          ## Enabling it causes a nix build conflict with intel-vaapi-driver even though it's not installed explicitly
+          # vaapiIntel
+
+          ## Should this really be used instead? seems to already be installed by enabling GL
+          # intel-vaapi-driver
+        ];
+
+        extraPackages32 = with pkgs.pkgsi686Linux; [
+          intel-media-driver
+          # intel-vaapi-driver
+          libvdpau-va-gl
+        ];
+      };
+    };
+
+    ## These settings seem to slow down the desktop
+    # services.xserver = {
+    #   videoDrivers = [ "modesetting" ];
+    #   deviceSection = ''
+    #       Option "TearFree" "true"
+    #       Option "AccelMod" "uxa"
+    #       Option "DRI" "3"
+    #   '';
+    #   useGlamor = true;
+    # };
+  };
 }

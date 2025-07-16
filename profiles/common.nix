@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, system, userParams, ...}:
+{ config, lib, pkgs, inputs, system, userParams, ...}:
 # let
 #   backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
 # in
@@ -261,6 +261,9 @@
   # --------------------------------------------------------------------------------------
 
   imports = [
+    ./gfx-nvidia.nix
+    ./gfx-amd.nix
+    ./gfx-intel.nix
     ../modules/macchanger.nix
 
     # ../overlays/steam-with-nvidia-offload.nix

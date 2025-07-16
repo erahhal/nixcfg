@@ -1893,11 +1893,11 @@
     },
     "nixpkgs_14": {
       "locked": {
-        "lastModified": 1751786137,
-        "narHash": "sha256-lIlUKVGCGsh0Q2EA7/6xRtKUZjaQ/ur8uUyY+MynHXQ=",
+        "lastModified": 1752077645,
+        "narHash": "sha256-HM791ZQtXV93xtCY+ZxG1REzhQenSQO020cu6rHtAPk=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ceb24d94c6feaa4e8737a8e2bd3cf71c3a7eaaa0",
+        "rev": "be9e214982e20b8310878ac2baa063a961c1bdf6",
         "type": "github"
       },
       "original": {
@@ -2139,11 +2139,11 @@
         "systems": "systems_8"
       },
       "locked": {
-        "lastModified": 1751904655,
-        "narHash": "sha256-lHAj9Xh/vBf3cXns1wN5HPw/zwGTO/Uv/ttloBok1n4=",
+        "lastModified": 1752546848,
+        "narHash": "sha256-WzHqmJ1wEZoUGAedomwcVLCuNsiB9bZzZXk7K9ZDBwk=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "bc997a240953bda9fa526e8a3d6f798a6072308a",
+        "rev": "1fb1bf8a73ccf207dbe967cdb7f2f4e0122c8bd5",
         "type": "github"
       },
       "original": {
@@ -2157,17 +2157,14 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1751956076,
-        "narHash": "sha256-OqK7YOomRHNsbPMltGCG/0voshNzcOgPEIuBOEOe2Iw=",
-        "ref": "refs/heads/main",
-        "rev": "7a55114b036ada9bac8f94d4cf23e7a9f874841c",
-        "revCount": 26,
-        "type": "git",
-        "url": "https://git.homefree.host/homefree/nixvim-config"
+        "lastModified": 1752608267,
+        "narHash": "sha256-0pPYm6YBaQo+FIuBChaK030uu6FFUEGMoNLvvvRovsI=",
+        "path": "/home/erahhal/Code/nixvim-config",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "https://git.homefree.host/homefree/nixvim-config"
+        "path": "/home/erahhal/Code/nixvim-config",
+        "type": "path"
       }
     },
     "nur": {
@@ -2682,11 +2679,11 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1752266979,
-        "narHash": "sha256-cDKAEJbX3De2x6WXCupDfw1yqgIVk2WexXgrkOJqSVw=",
+        "lastModified": 1752692792,
+        "narHash": "sha256-/dC6ZlXfnuI8KokoQBRkNkV+b+bf0rvF7hi7a/GjzQE=",
         "ref": "refs/heads/master",
-        "rev": "07f6114ea13449f9c5d0909bc6ed1f5ac3d42129",
-        "revCount": 24,
+        "rev": "3bb695374188ebb0fc1295d38c108450e74cbb90",
+        "revCount": 25,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

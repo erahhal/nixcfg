@@ -1,15 +1,34 @@
-{ pkgs, userParams, ... }:
+{ lib, pkgs, userParams, ... }:
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
-  # blender = (pkgs.runCommandLocal "blender" { meta.broken = true; } (lib.warn "Package blender is currently disabled" "mkdir -p $out"));
 in
 {
-  imports = [
+  nixpkgs.overlays = [
+    (final: prev: {
+      chromium = prev.chromium.override {
+        commandLineArgs = [
+          # "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
+          "--enable-wayland-ime"
+          "--password-store=basic" # Don't show kwallet login at start
+          "--ozone-platform=x11"
+          "--force-device-scale-factor=1.5"
+        ];
+      };
+
+      brave = prev.brave.override {
+        commandLineArgs = [
+          # "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
+          "--enable-wayland-ime"
+          "--password-store=basic" # Don't show kwallet login at start
+          "--ozone-platform=x11"
+          "--force-device-scale-factor=1.5"
+        ];
+      };
+    })
   ];
 
   home-manager.users.${userParams.username} = {
-
     imports = [
       ./launch-apps-config-hyprland.nix
       ## Needed to create .desktop entry which is currently broken
@@ -24,7 +43,6 @@ in
         awscli
         blender
         chromium
-        google-chrome
 
         lutris
         mcreator

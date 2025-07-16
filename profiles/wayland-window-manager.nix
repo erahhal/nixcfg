@@ -1,9 +1,5 @@
-{ pkgs, hostParams, userParams, ... }:
+{ pkgs, userParams, ... }:
 {
-  imports = [
-    ../hosts/${hostParams.hostName}/kanshi.nix
-  ];
-
   # XDG portals - allow desktop apps to use resources outside their sandbox
   xdg.portal = {
     enable = true;

@@ -111,8 +111,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 
@@ -163,10 +163,12 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/nflx-erahhal-p16/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/nflx-erahhal-p16/configuration.nix
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.nflx-erahhal-p16
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
           inputs.nur.modules.nixos.default
@@ -211,7 +213,7 @@
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/nflx-erahhal-x1c/configuration.nix
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.nflx-erahhal-x1c
           # inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
@@ -262,7 +264,7 @@
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/antikythera/configuration.nix
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.antikythera
           inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           # @TODO: Switch to gen5 when available
@@ -307,7 +309,7 @@
         system = system;
         modules = [
           ./hosts/upaya/configuration.nix
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.upaya
           inputs.jovian.nixosModules.default
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.dell-xps-15-9560
@@ -346,7 +348,7 @@
         system = system;
         modules = [
           ./hosts/sicmundus/configuration.nix
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.sicmundus
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager
           inputs.nur.modules.nixos.default
@@ -385,7 +387,7 @@
             wsl.defaultUser = userParams.username;
           }
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.msi-desktop
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -425,7 +427,7 @@
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/msi-linux/configuration.nix
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.secrets.nixosModules.default
+          inputs.secrets.nixosModules.msi-linux
           inputs.jovian.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
           {

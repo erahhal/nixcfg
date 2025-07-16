@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, pkgs, userParams, hostParams, ... }:
+{ config, inputs, pkgs, userParams, hostParams, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -26,8 +26,6 @@
     # device specific
     ./disk-config-btrfs.nix
     ./hardware-configuration.nix
-    ../../profiles/gfx-nvidia.nix
-    ../../profiles/gfx-intel.nix
     ../../profiles/android.nix
     ../../profiles/exclusive-lan.nix
     # ../../profiles/jovian.nix
@@ -58,17 +56,6 @@
 
     # Temporary
     # ../../profiles/nfs-mounts.nix
-  ];
-  nixpkgs.overlays = [
-    # (final: prev: {
-    #   chromium = prev.chromium.override {
-    #     commandLineArgs = [
-    #       ## WebGL doesn't work with Hyprland Nvidia yet
-    #       "--ozone-platform=x11"
-    #       "--force-device-scale-factor=1.5"
-    #     ];
-    #   };
-    # })
   ];
 
   # Needed to setup passwords
@@ -113,7 +100,7 @@
   # Device specific
   # --------------------------------------------------------------------------------------
 
-  time.timeZone = hostParams.timeZone;
+  time.timeZone = config.hostParams.system.timeZone;
 
   ## Fixes microphone
   ## See: https://askubuntu.com/questions/1283440/how-to-fix-ubuntu-incorrectly-seeing-the-internal-microphone-as-an-unplugged-h
@@ -141,7 +128,7 @@
   # '';
 
   networking = {
-    hostName = hostParams.hostName;
+    hostName = "nflx-erahhal-p16";
     useNetworkd = true;
     networkmanager = {
       enable = true;
@@ -189,7 +176,7 @@
 
   services.smokeping = {
     enable = false;
-    hostName = "${hostParams.hostName}.lan";
+    hostName = "${config.hostParams.hostName}.lan";
     targetConfig = ''
       probe = FPing
       menu = Top

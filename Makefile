@@ -26,6 +26,7 @@ switch:
 	make clear-gpu-cache
 	make clear-gtkrc
 	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
+	sudo systemctl restart home-manager-${USER}
 	# nixos-rebuild --sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before
@@ -45,11 +46,13 @@ show-trace:
 	make clear-sddm-cache
 	make clear-mimeapps
 	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --show-trace --flake .#${HOSTNAME} -L |& ${NOM}
+	sudo systemctl restart home-manager-${USER}
 	# nixos-rebuild --sudo switch --show-trace --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 
 offline:
 	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L |& ${NOM} 
+	sudo systemctl restart home-manager-${USER}
 	# nixos-rebuild -v --sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
 
 clear-gpu-cache:

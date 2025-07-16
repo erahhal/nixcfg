@@ -1,0 +1,8 @@
+{ ... }:
+{
+  hostParams = {
+    system = {
+      hostName = "sicmundus";
+    };
+  };
+}

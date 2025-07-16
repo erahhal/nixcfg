@@ -8,8 +8,8 @@
   uid = 1026;
   gid = 100;
 
-  hostName = "nflx-erahhal-p16";
-  timeZone = "America/Los_Angeles";
+  # hostName = "nflx-erahhal-p16";
+  # timeZone = "America/Los_Angeles";
   containerBackend = "docker";
   displayManager = "sddm";
   sddmTheme = "nflx";

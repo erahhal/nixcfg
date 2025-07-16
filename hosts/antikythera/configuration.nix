@@ -25,7 +25,6 @@
       ./hardware-configuration.nix
       ../../profiles/android.nix
       ../../profiles/exclusive-lan.nix
-      ../../profiles/gfx-amd.nix
       # ../../profiles/jovian.nix
       ../../profiles/laptop-hardware.nix
       # ../../profiles/steam.nix
