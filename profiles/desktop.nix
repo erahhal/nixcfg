@@ -1,4 +1,4 @@
-{ lib, pkgs, hostParams, ...}:
+{ lib, pkgs, ...}:
 let
   # This is needed to set the cursor for SDDM
   default-mouse-cursor = pkgs.stdenv.mkDerivation {
@@ -38,11 +38,9 @@ in
     ./hyprland.nix
     ./fonts.nix
     ./i2c.nix
-  ] ++ (if hostParams.displayManager == "sddm" then [
     ./sddm.nix
-  ] else if hostParams.displayManager == "lightdm" then [
     ./lightdm.nix
-  ] else []);
+  ];
 
   environment.systemPackages = with pkgs; [
     glxinfo

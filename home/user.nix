@@ -1,4 +1,4 @@
-{ pkgs, inputs, hostParams, userParams, ... }:
+{ config, pkgs, inputs, userParams, ... }:
 
 let
   env_vars = {
@@ -28,7 +28,7 @@ in
       "video"
       "wheel"
     ];
-    uid = hostParams.uid;
+    uid = config.hostParams.system.uid;
     shell = if userParams.shell == "zsh" then pkgs.zsh else pkgs.bash;
   };
 
@@ -45,7 +45,6 @@ in
 
   home-manager.users.${userParams.username} = {config, ...}: {
     _module.args.inputs = inputs;
-    _module.args.hostParams = hostParams;
     _module.args.userParams = userParams;
 
     imports = [

@@ -1,8 +1,8 @@
-{ pkgs, inputs, hostParams, userParams, ... }:
+{ config, pkgs, userParams, ... }:
 
 let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
-  defaultBrowserApp = "${hostParams.defaultBrowser}.desktop";
+  defaultBrowserApp = "${config.hostParams.programs.defaultBrowser}.desktop";
   kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
   '';
@@ -76,7 +76,7 @@ in
 
   services.gnome.gnome-keyring.enable = true;
 
-  home-manager.users.${userParams.username} = {
+  home-manager.users.${userParams.username} = { osConfig, ... }: {
     imports = [
       # Terminals
       ./profiles/alacritty.nix
@@ -297,7 +297,7 @@ in
       # ---------------------------------------------------------------------------
       # GDK_SCALE = "1";
       # @TODO: HACK, why are the machines acting differently?
-      # GDK_DPI_SCALE = if hostParams.hostName == "upaya" then "1.75" else "1";
+      # GDK_DPI_SCALE = if osConfig.hostParams.system.hostName == "upaya" then "1.75" else "1";
       # GDK_DPI_SCALE = "1";
       # QT_AUTO_SCREEN_SCALE_FACTOR = "0";
       ## Fractional QT_SCALE_FACTOR results in rendering artifacts, e.g. transparent lines

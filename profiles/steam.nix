@@ -1,4 +1,4 @@
-{ pkgs, inputs, lib, hostParams, userParams, ... }:
+{ config, pkgs, lib, userParams, ... }:
 let
   steam-gamescope-runtime-paths = lib.makeBinPath [
     pkgs.hyprland
@@ -73,7 +73,7 @@ in
     steam-gs
   ];
 
-  home-manager.users.${userParams.username} = if (hostParams.enableSteamGamescope or false) then {
+  home-manager.users.${userParams.username} = lib.mkIf config.hostParams.programs.steam.enableGamescope {
     xdg.desktopEntries.steam-gamescope = {
       name = "SteamGs";
       exec = "steam-gs";
@@ -81,5 +81,5 @@ in
       type = "Application";
       icon = "steam";
     };
-  } else {};
+  };
 }

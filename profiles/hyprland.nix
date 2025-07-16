@@ -1,4 +1,4 @@
-{ inputs, hostParams, pkgs, userParams, ... }:
+{ config, inputs, lib, pkgs, userParams, ... }:
 let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this
@@ -13,7 +13,7 @@ let
   hyprlockCommand = pkgs.callPackage ../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
 in
 {
-  config = if (hostParams.defaultSession == "hyprland" || hostParams.multipleSessions) then {
+  config = lib.mkIf (config.hostParams.desktop.defaultSession == "hyprland" || config.hostParams.desktop.multipleSessions) {
     services.displayManager.sessionPackages = [pkgs.hyprland ];
 
     nix.settings = {
@@ -22,7 +22,7 @@ in
     };
 
     ## As of v0.45, should no longer be crashing
-    nixpkgs.overlays = if hostParams.useHyprlandFlake == true then [
+    nixpkgs.overlays = if config.hostParams.desktop.useHyprlandFlake == true then [
       (final: prev: {
         hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
       })
@@ -83,7 +83,7 @@ in
         settings = {
           bind = [
             (
-              if hostParams.defaultLockProgram == "swaylock" then
+              if config.hostParams.desktop.defaultLockProgram == "swaylock" then
                 '',switch:on:Lid Switch,exec,${swayLockCommand} suspend''
               else
                 '',switch:on:Lid Switch,exec,${hyprlockCommand} suspend''
@@ -91,7 +91,6 @@ in
           ];
         };
       };
-
     };
-  } else {};
+  };
 }

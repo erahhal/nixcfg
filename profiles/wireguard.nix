@@ -1,11 +1,11 @@
-{ config, pkgs, hostParams, ... }:
+{ config, pkgs, ... }:
 let
   wg0-scripts = pkgs.callPackage ../pkgs/wg0-scripts { secrets = config.age.secrets; };
   wg-port-num = 64210;
   wg-port = toString wg-port-num;
 in
 {
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     wg0-scripts
   ];
 
@@ -47,7 +47,7 @@ in
       allowed-ips=10.0.0.0/24;192.168.2.0/24;
 
       [ipv4]
-      address1=${hostParams.wireguardIp}/32
+      address1=${config.hostParams.networking.wireguardIp}/32
       dns=192.168.2.1;
       dns-search=lan;rahh.al;homefree.host;
       method=manual

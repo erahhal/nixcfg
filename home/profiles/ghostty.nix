@@ -1,4 +1,4 @@
-{ hostParams, userParams, ... }:
+{ osConfig, ... }:
 {
   programs.ghostty = {
     enable = true;
@@ -8,7 +8,7 @@
     settings = {
       theme = "tokyonight_night";
       font-family = "DejaVu Sans Mono";
-      font-size = toString hostParams.ttyFontSize;
+      font-size = toString osConfig.hostParams.desktop.ttyFontSize;
       link-url = true;
       clipboard-read = "allow";
       clipboard-write = "allow";

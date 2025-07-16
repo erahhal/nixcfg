@@ -1,6 +1,6 @@
-{ inputs, lib, hostParams, userParams, ... }:
+{ config, inputs, lib, userParams, ... }:
 {
-  config = if (hostParams.defaultSession == "plasma" || hostParams.multipleSessions) then {
+  config = lib.mkIf (config.hostParams.desktop.defaultSession == "plasma" || config.hostParams.desktop.multipleSessions) {
     services.desktopManager.plasma6.enable = true;
 
     services.power-profiles-daemon.enable = lib.mkForce false;
@@ -309,5 +309,5 @@
         };
       };
     };
-  } else {};
+  };
 }

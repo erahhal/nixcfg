@@ -1,4 +1,4 @@
-{ config, pkgs, hostParams, recursiveMerge, ... }:
+{ config, lib, pkgs, hostParams, recursiveMerge, ... }:
 {
   imports = [
     ../../profiles/virtual-machines.nix
@@ -37,7 +37,7 @@
         };
       };
     in
-    if hostParams.containerBackend == "podman" then
+    if config.hostParams.containers.backend == "podman" then
       recursiveMerge [ baseConfig podmanConfig ]
     else
       recursiveMerge [ baseConfig dockerConfig ]

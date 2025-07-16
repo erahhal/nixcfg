@@ -1,4 +1,4 @@
-{ pkgs, hostParams, ... }:
+{ osConfig, pkgs, ... }:
 {
   programs.kitty = {
     enable = true;
@@ -7,7 +7,7 @@
       # package = pkgs.terminus_font_ttf;
       name = "DejaVu Sans Mono";
       package = pkgs.dejavu_fonts;
-      size = hostParams.ttyFontSize;
+      size = osConfig.hostParams.desktop.ttyFontSize;
     };
     settings = {
       enable_audio_bell = false;

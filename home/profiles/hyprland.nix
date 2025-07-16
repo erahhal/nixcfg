@@ -1,4 +1,4 @@
-{ inputs, pkgs, hostParams, ... }:
+{ osConfig, lib, inputs, pkgs, ... }:
 
 let
   terminal = "foot";
@@ -25,12 +25,12 @@ let
 
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
-  wallpaper = if builtins.hasAttr "wallpaper" hostParams then pkgs.writeShellScript "hyprland-wallpaper" ''
+  wallpaper-cmd = if (osConfig.hostParams.desktop.wallpaper != null) then pkgs.writeShellScript "hyprland-wallpaper" ''
     killall hyprpaper
     killall mpvpaper
     killall swaybg
     # ${pkgs.swaybg}/bin/swaybg -i "$(${pkgs.findutils}/bin/find ~/.config/wallpapers/. -type f| ${pkgs.coreutils}/bin/shuf -n1)"
-    # ${pkgs.swaybg}/bin/swaybg -i ${hostParams.wallpaper} -m fill
+    # ${pkgs.swaybg}/bin/swaybg -i ${osConfig.hostParams.desktop.wallpaper} -m fill
     ${pkgs.hyprpaper}/bin/hyprpaper
   '' else "";
 
@@ -240,11 +240,11 @@ in
     }
   '';
 
-  xdg.configFile."hypr/hyprpaper.conf".text = if builtins.hasAttr "wallpaper" hostParams then ''
+  xdg.configFile."hypr/hyprpaper.conf".text = lib.mkIf (osConfig.hostParams.desktop.wallpaper != null) ''
     splash = false
-    preload = ${hostParams.wallpaper}
-    wallpaper = ,${hostParams.wallpaper}
-  '' else "";
+    preload = ${osConfig.hostParams.desktop.wallpaper}
+    wallpaper = ${osConfig.hostParams.desktop.wallpaper}
+  '';
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -279,7 +279,7 @@ in
 
       # Refresh services and processes
       exec = [
-        wallpaper
+        wallpaper-cmd
         "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
         ## Running as a service seems to cause Dbus errors
         # "systemctl --user restart blueman-manager-applet"
@@ -297,13 +297,13 @@ in
         # "systemctl --user restart fcitx5-daemon"
         ## hyprlock currently broken
         (
-          if hostParams.defaultLockProgram == "swaylock" then
+          if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
             "systemctl --user stop hypridle"
           else
             "systemctl --user stop sway-idle"
         )
         (
-          if hostParams.defaultLockProgram == "swaylock" then
+          if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
             "systemctl --user restart sway-idle"
           else
             "systemctl --user restart hypridle"
@@ -554,7 +554,7 @@ in
 
         "$mod, Return, exec, $term"
         (
-          if hostParams.defaultLockProgram == "swaylock" then
+          if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
             "$mod, X, exec, ${swayLockCommand}"
           else
             "$mod, X, exec, ${hyprlockCommand}"
@@ -573,7 +573,7 @@ in
         "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff'"
         "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'"
         (
-          if hostParams.defaultLockProgram == "swaylock" then
+          if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
             "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${swayLockCommand} suspend'"
           else
             "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${hyprlockCommand} suspend'"

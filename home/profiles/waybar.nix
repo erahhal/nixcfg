@@ -1,4 +1,4 @@
-{  config, inputs, lib, pkgs, hostParams, ... }:
+{ osConfig, config, inputs, lib, pkgs, ... }:
 let
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
@@ -116,7 +116,7 @@ in
 
         position = "bottom";
 
-        modules-left = if (hostParams.waybarSimple or false) then [
+        modules-left = if osConfig.hostParams.desktop.waybarSimple then [
           "custom/launcher"
           "sway/workspaces"
           "sway/mode"
@@ -158,7 +158,7 @@ in
           };
         };
 
-        modules-right = if (hostParams.waybarSimple or false) then [
+        modules-right = if osConfig.hostParams.desktop.waybarSimple then [
           "pulseaudio"
           "cpu"
           "clock"
@@ -384,7 +384,7 @@ in
 
         "custom/launcher" ={
           tooltip = false;
-          format = if (hostParams.waybarSimple or false) then "🔘" else "ꅾ";
+          format = if osConfig.hostParams.desktop.waybarSimple then "🔘" else "ꅾ";
           on-click = toggle-drawer;
           on-click-right = "pkill wofi";
         };

@@ -1,4 +1,4 @@
-{ lib, hostParams, ... }:
+{ osConfig, lib, ... }:
 let
   # Need to escape bash variables so they aren't interpolated by home-manager during activation
   configFile = builtins.replaceStrings ["\$"] ["\\$"] (builtins.readFile ./qt4-hidpi/Trolltech.conf);
@@ -13,7 +13,7 @@ EOF
     fi
 
     if grep --quiet "font=" ~/.config/Trolltech.conf; then
-      sed -i 's/font=.*$/font="Sans Serif,${toString hostParams.trolltechFontSize},-1.5,50,0,0,0,0,0"/g' ~/.config/Trolltech.conf
+      sed -i 's/font=.*$/font="Sans Serif,${toString osConfig.hostParams.desktop.trolltechFontSize},-1.5,50,0,0,0,0,0"/g' ~/.config/Trolltech.conf
     elif ! grep --quiet "\[Qt\]" ~/.config/Trolltech.conf; then
       cat >> ~/.config/Trolltech.conf<< EOF
 
@@ -21,7 +21,7 @@ EOF
 ${configFile}
 EOF
     else
-      sed -i '/^\[Qt\]/a font="Sans Serif,${toString hostParams.trolltechFontSize},-1.5,50,0,0,0,0,0"' ~/.config/Trolltech.conf
+      sed -i '/^\[Qt\]/a font="Sans Serif,${toString osConfig.hostParams.desktop.trolltechFontSize},-1.5,50,0,0,0,0,0"' ~/.config/Trolltech.conf
     fi
   '';
 }

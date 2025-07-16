@@ -20,7 +20,7 @@
 #
 #   Connect
 
-{ pkgs, hostParams, userParams, ...}:
+{ config, lib, pkgs, userParams, ...}:
 let
   run-windows = pkgs.writeScriptBin "run-windows" ''
     #!${pkgs.stdenv.shell}
@@ -228,7 +228,7 @@ in
   ## Virtualbox
   #-------------------------------------------
 
-  virtualisation.virtualbox = if hostParams.virtualboxEnabled == true then {
+  virtualisation.virtualbox = lib.mkIf config.hostParams.virtualisation.virtualbox.enable {
     host = {
       enable = true;
       enableExtensionPack = true;
@@ -237,7 +237,7 @@ in
     #   enable = true;
     #   x11 = true;
     # };
-  } else {};
+  };
 
   #-------------------------------------------
   ## VMWare
@@ -251,9 +251,9 @@ in
   # >   nix-store --add-fixed sha256 VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle
   # > or
   # >   nix-prefetch-url --type sha256 file:///path/to/VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle
-  virtualisation.vmware.host = if hostParams.vmwareEnabled == true then {
+  virtualisation.vmware.host = lib.mkIf config.hostParams.virtualisation.vmware.enable {
     enable = true;
-  } else {};
+  };
 
   #-------------------------------------------
   ## lxd

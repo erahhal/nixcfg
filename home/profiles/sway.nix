@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, launchAppsConfig, hostParams, userParams, ... }:
+{ config, inputs, lib, pkgs, launchAppsConfig, hostParams, userParams, ... }:
 
 let
   swaynagmode = pkgs.callPackage ../../pkgs/swaynagmode {};
@@ -149,9 +149,7 @@ in
           # Choose "button_areas" for left and right buttons
           # Choode "clickfinger" for one-button touchpad
           ## @TODO: Move this to hostParams
-          click_method = if builtins.hasAttr "touchpad_click_method" hostParams
-                         then hostParams.touchpad_click_method
-                         else "clickfinger";
+          click_method = config.hostParams.desktop.swayTouchpadClickMethod;
           drag = "enabled";
           # dwt = "disable-while-typing"
           dwt = "enabled";

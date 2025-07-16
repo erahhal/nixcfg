@@ -1,19 +1,19 @@
-{ hostParams, pkgs, ... }:
+{ osConfig, lib, pkgs, ... }:
 {
   programs.hyprlock = {
     enable = true;
     package = pkgs.hyprlock;
 
     settings = {
-      background = if builtins.hasAttr "wallpaper" hostParams then {
+      background = lib.mkIf (osConfig.hostParams.desktop.wallpaper != null) {
         monitor = "";
-        path = "${hostParams.wallpaper}";
+        path = toString osConfig.hostParams.desktop.wallpaper;
         blur_passes = 2;
         contrast = 1;
         brightness = "0.5";
         vibrancy = "0.2";
         vibrancy_darkness = "0.2";
-      } else {};
+      };
 
       general = {
         no_fade_in = true;

@@ -7,10 +7,10 @@
 # Download f-droid then install:
 # waydroid app install fdroid.apk
 
-{ userParams, hostParams, ...}:
+{ config, userParams, ...}:
 {
   virtualisation = {
-    waydroid.enable = hostParams.waydroidEnabled;
+    waydroid.enable = config.hostParams.virtualisation.waydroid.enable;
     lxd.enable = true;
   };
 
@@ -23,11 +23,11 @@
   # ];
   # boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
-  home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
+  home-manager.users.${userParams.username} = { osConfig, lib, pkgs, ... }: {
     home.activation.waydroid = lib.hm.dag.entryAfter [ "installPackages" ] ''
       ## Settings allow small gaps around windows
-      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.width ${toString hostParams.waydroid.width}
-      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.height ${toString hostParams.waydroid.height}
+      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.width ${toString osConfig.hostParams.virtualisation.waydroid.width}
+      ${pkgs.waydroid}/bin/waydroid prop set persist.waydroid.height ${toString osConfig.hostParams.virtualisation.waydroid.height}
     '';
   };
 }

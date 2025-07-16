@@ -2,7 +2,17 @@
 {
   hostParams = {
     system = {
-      hostName = "nflx-erahhal-p16";
+      hostName = "upaya";
+    };
+
+    containers = {
+      backend = "docker";
+    };
+
+    desktop = {
+      dpi = 210;
+      swayTouchpadClickMethod = "button_areas";
+      wallpaper = ../../wallpapers/teundenouden-polar-gilds-darkened-CC-BY-NC-ND-3.0.png;
     };
 
     gpu = {

@@ -1,4 +1,4 @@
-{ hostParams, userParams, ... }:
+{ osConfig, userParams, ... }:
 {
   programs.foot = {
     enable = true;
@@ -7,7 +7,7 @@
         shell = userParams.shell;
         term = "xterm-256color";
         dpi-aware = "no";
-        font = "DejaVu Sans Mono:size=" + toString hostParams.ttyFontSize;
+        font = "DejaVu Sans Mono:size=" + toString osConfig.hostParams.desktop.ttyFontSize;
         # line-height = hostParams.ttyLineHeight;
         # font-bold = "";
         # font-italic = "";

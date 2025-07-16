@@ -1,4 +1,4 @@
-{ pkgs, hostParams, userParams, ... }:
+{ osConfig, pkgs, userParams, ... }:
 {
   programs.alacritty = {
     enable = true;
@@ -15,7 +15,7 @@
           family = "DejaVu Sans Mono";
           # style = "Medium";
         };
-        size = hostParams.ttyFontSize;
+        size = osConfig.hostParams.desktop.ttyFontSize;
       };
       hints.enabled = [
         {

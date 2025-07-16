@@ -1,11 +1,11 @@
-args@{ inputs, pkgs, lib, hostParams, userParams, ... }:
+args@{ osConfig, inputs, pkgs, lib, userParams, ... }:
 let
 xwayland_settings = ''
   ## Used in QT and other Xwayland apps
-  Xcursor.size: ${if hostParams.defaultSession == "none+i3" then "32" else "16"}
+  Xcursor.size: ${if osConfig.hostParams.desktop.defaultSession == "none+i3" then "32" else "16"}
   # Xcursor.theme: Adwaita
   Xcursor.theme: Bibata-Modern-Classic
-  Xft.dpi: ${toString hostParams.dpi}
+  Xft.dpi: ${toString osConfig.hostParams.desktop.dpi}
   xterm*background: black
   xterm*faceName: Monospace
   xterm*faceSize: 12
@@ -387,7 +387,7 @@ in
     # iconTheme.package = pkgs.papirus-icon-theme;
 
     gtk2.extraConfig =
-      if hostParams.defaultSession == "none+i3" then ''
+      if osConfig.hostParams.desktop.defaultSession == "none+i3" then ''
         gtk-cursor-theme-name="Adwaita"
         gtk-cursor-theme-size=48
         gtk-application-prefer-dark-theme=1
@@ -397,7 +397,7 @@ in
         gtk-application-prefer-dark-theme=1
       '';
     gtk3.extraConfig =
-      if hostParams.defaultSession == "none+i3" then {
+      if osConfig.hostParams.desktop.defaultSession == "none+i3" then {
         gtk-cursor-theme-name = "Bibata-Modern-Classic";
         gtk-cursor-theme-size = 48;
         gtk-application-prefer-dark-theme = 1;
@@ -407,7 +407,7 @@ in
         gtk-application-prefer-dark-theme = 1;
       };
     gtk4.extraConfig =
-      if hostParams.defaultSession == "none+i3" then {
+      if osConfig.hostParams.desktop.defaultSession == "none+i3" then {
         gtk-cursor-theme-name = "Bibata-Modern-Classic";
         gtk-cursor-theme-size = 48;
         gtk-application-prefer-dark-theme = 1;
@@ -422,7 +422,7 @@ in
     enable = true;
     settings = {
       "org/gnome/desktop/interface" = {
-        # "cursor-size" = if hostParams.defaultSession == "none+i3" then 48 else 24;
+        # "cursor-size" = if osConfig.hostParams.desktop.defaultSession == "none+i3" then 48 else 24;
         "color-scheme" = "prefer-dark";
         # Disable trackpad middle click paste
         "gtk-enable-primary-paste" = false;

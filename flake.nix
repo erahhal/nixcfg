@@ -155,7 +155,6 @@
       nflx-erahhal-p16 =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/nflx-erahhal-p16/params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -191,7 +190,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit copyDesktopIcons;
           inherit copyDesktopItems;
           inherit mkWindowsApp;
@@ -202,7 +200,6 @@
       nflx-erahhal-x1c =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/nflx-erahhal-x1c/params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -210,6 +207,8 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/nflx-erahhal-x1c/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/nflx-erahhal-x1c/configuration.nix
@@ -242,7 +241,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit copyDesktopIcons;
           inherit copyDesktopItems;
           inherit mkWindowsApp;
@@ -253,7 +251,6 @@
       antikythera =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/antikythera/params.nix {};
         copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
         copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
         mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
@@ -261,6 +258,8 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/antikythera/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/antikythera/configuration.nix
@@ -291,7 +290,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit copyDesktopIcons;
           inherit copyDesktopItems;
           inherit mkWindowsApp;
@@ -302,12 +300,13 @@
       upaya =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/upaya/params.nix {};
         recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/upaya/host-params.nix
           ./hosts/upaya/configuration.nix
           inputs.secrets.nixosModules.upaya
           inputs.jovian.nixosModules.default
@@ -333,7 +332,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -341,12 +339,13 @@
       sicmundus =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/sicmundus/params.nix {};
         recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/sicmundus/host-params.nix
           ./hosts/sicmundus/configuration.nix
           inputs.secrets.nixosModules.sicmundus
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
@@ -367,7 +366,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -375,11 +373,12 @@
       msi-desktop =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/msi-desktop/params.nix {};
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/msi-desktop/host-params.nix
           ./hosts/msi-desktop/configuration.nix
           inputs.nixos-wsl.nixosModules.default
           {
@@ -404,7 +403,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -417,12 +415,13 @@
       msi-linux =
       let
         system = "x86_64-linux";
-        hostParams = import ./hosts/msi-linux/params.nix {};
         header-space = "      ";
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          ./modules/host-params.nix
+          ./hosts/msi-linux/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           ./hosts/msi-linux/configuration.nix
@@ -450,7 +449,6 @@
         specialArgs = {
           inherit inputs;
           inherit system;
-          inherit hostParams;
           inherit recursiveMerge;
           inherit userParams;
         };
