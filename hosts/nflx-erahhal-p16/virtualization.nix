@@ -27,7 +27,7 @@
           enable = true;
           daemon.settings = {
             # "exec-opts" = [ "native.cgroupdriver=systemd" ];
-            "exec-opts" = [ "native.cgroupdriver=cgroupfs" "--iptables=false" "--cgroup-parent=docker" ];
+            "exec-opts" = [ "native.cgroupdriver=cgroupfs" ];
             "features" = { "buildkit" = true; };
             "experimental" = true;
             "default-cgroupns-mode" = "host";

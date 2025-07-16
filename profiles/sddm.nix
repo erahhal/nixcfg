@@ -53,7 +53,7 @@ in
     #       # export XCURSOR_SIZE=64
     #       ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
     #       ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
-    #         Xft.dpi: ${toString hostParams.dpi}
+    #         Xft.dpi: ${toString config.hostParams.desktop.dpi}
     #         Xcursor.theme: Bibata-Modern-Classic
     #         Xcursor.size: 64
     #       EOF
@@ -63,7 +63,7 @@ in
     #       # export XCURSOR_SIZE=64
     #       ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name ${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic/cursors/left_ptr 128 &disown
     #       ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
-    #         Xft.dpi: ${toString hostParams.dpi}
+    #         Xft.dpi: ${toString config.hostParams.dekstop.dpi}
     #         Xcursor.theme: Bibata-Modern-Classic
     #         Xcursor.size: 64
     #       EOF
@@ -78,7 +78,7 @@ in
         extraPackages = with pkgs; [
           sddm-themes  # Must be installed globally, not home
           bibata-cursors
-        ] ++ lib.mkIf config.hostParams.desktop.sddmThemeQt6 [ sddm-astronaut ];
+        ] ++ (if config.hostParams.desktop.sddmThemeQt6 then [ sddm-astronaut ] else []);
         enableHidpi = true;
         wayland.enable = true;
         settings = {
@@ -96,10 +96,10 @@ in
             GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
           };
         };
-      } // lib.mkIf config.hostParams.desktop.sddmThemeQt6 {
+      } // (if config.hostParams.desktop.sddmThemeQt6 then {
         ## Have to mkForce in case plasma6 is managing it as well.
         package = lib.mkForce pkgs.kdePackages.sddm;
-      };
+      } else {});
 
       autoLogin = {
         enable = config.hostParams.desktop.autoLogin;

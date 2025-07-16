@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostParams, userParams,... }:
+{ config, lib, pkgs, userParams,... }:
 
 {
   config = lib.mkIf (config.hostParams.desktop.displayManager == "lightdm") {
@@ -6,9 +6,9 @@
 
     services.xserver = {
       enable = true;
-      dpi = hostParams.dpi;
+      dpi = config.hostParams.desktop.dpi;
       displayManager = {
-        defaultSession = hostParams.defaultSession;
+        defaultSession = config.hostParams.desktop.defaultSession;
         lightdm = {
           enable = true;
           greeters = {
@@ -25,7 +25,7 @@
         };
 
         autoLogin = {
-          enable =hostParams.autoLogin;
+          enable = config.hostParams.desktop.autoLogin;
           user = userParams.username;
         };
       };
