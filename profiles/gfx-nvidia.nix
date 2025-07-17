@@ -196,6 +196,7 @@ in
 
     home-manager.users.${userParams.username} = { pkgs, ... }: {
       home.sessionVariables = {
+        LIBVA_DRIVER_NAME = "nvidia";
         # GBM_BACKEND = "nvidia";
         GBM_BACKEND = "nvidia-drm";
         GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
@@ -206,8 +207,8 @@ in
         WLR_NO_HARDWARE_CURSORS = "1";
         EGL_PLATFORM = "wayland";
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
-        LIBVA_DRIVER_NAME = "nvidia";
-        AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
+        # AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
+        AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
 
         # WLR_DRM_NO_ATOMIC = "1";
         # __VK_LAYER_NV_optimus = "NVIDIA_only";
