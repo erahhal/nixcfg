@@ -2157,14 +2157,17 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1752608267,
-        "narHash": "sha256-0pPYm6YBaQo+FIuBChaK030uu6FFUEGMoNLvvvRovsI=",
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "lastModified": 1752711156,
+        "narHash": "sha256-JTycnQR8c0ddEVGUmugo3tF1XJRQ8YWDFyQh7aBHMIY=",
+        "ref": "refs/heads/main",
+        "rev": "b3c13d362f193c41212e3b541f1d762fdd0efdbc",
+        "revCount": 27,
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       }
     },
     "nur": {
