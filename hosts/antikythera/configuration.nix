@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, userParams, hostParams, ... }:
+{ config, inputs, lib, pkgs, userParams, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -105,7 +105,7 @@
     writebackDevice = "/dev/nvme0n1p2";
   };
 
-  time.timeZone = hostParams.timeZone;
+  time.timeZone = config.hostParams.system.timeZone;
 
   # Prevent hanging when waiting for network to be up
   systemd.network.wait-online.anyInterface = true;
@@ -136,7 +136,7 @@
   };
 
   networking = {
-    hostName = hostParams.hostName;
+    hostName = config.hostParams.system.hostName;
     useNetworkd = true;
     networkmanager = {
       enable = true;

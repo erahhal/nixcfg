@@ -243,7 +243,8 @@ in
   xdg.configFile."hypr/hyprpaper.conf".text = lib.mkIf (osConfig.hostParams.desktop.wallpaper != null) ''
     splash = false
     preload = ${osConfig.hostParams.desktop.wallpaper}
-    wallpaper = ${osConfig.hostParams.desktop.wallpaper}
+    # Note the comma below. Put a monitor name before it to display wallpaper on a specific screen
+    wallpaper = ,${osConfig.hostParams.desktop.wallpaper}
   '';
 
   wayland.windowManager.hyprland = {
