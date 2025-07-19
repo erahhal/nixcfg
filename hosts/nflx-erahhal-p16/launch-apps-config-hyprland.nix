@@ -1,4 +1,8 @@
-{ userParams, ... }:
+{ inputs, pkgs, userParams, ... }:
+let
+  hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
+  hyprctl="${pkgs.hyprland}/bin/hyprctl";
+in
 {
   wayland.windowManager.hyprland = { settings = {
       misc = {
@@ -31,6 +35,21 @@
           "workspaces, 1, 2, default, slide"
         ];
       };
+
+      bindl = [
+        # trigger when the switch is toggled
+        '', switch:on:[Lid Switch], exec, "${hyprlockCommand}"''
+        # trigger when the switch is turning on
+        # '', switch:on:[switch name], exec, hyprctl keyword monitor "eDP-1, disable"''
+        # trigger when the switch is turning off
+        '', switch:off:[Lid Switch], exec, ${hyprctl} keyword monitor "eDP-1, 3840x2400"''
+        # (
+        #   if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
+        #     "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${swayLockCommand} suspend'"
+        #   else
+        #     "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${hyprlockCommand} suspend'"
+        # )
+      ];
 
       monitor = [
         ## These are set by kanshi, but need to be set here as well to get cursor size correct
