@@ -22,7 +22,7 @@
       defaultLockProgram = "hyprlock";
       autoLogin = false;
 
-      ttyFontSize = 9;
+      ttyFontSize = 9.0;
       ttyLineHeight = 10;
       dpi = 210;
 
@@ -35,7 +35,8 @@
 
     gpu = {
       nvidia.enable = true;
-      intel.enable = true;
+      ## If the intel GPU is disabled, you must also set the GPU to "discrete" in the BIOS
+      intel.enable = false;
     };
   };
 }
