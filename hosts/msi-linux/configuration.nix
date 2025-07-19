@@ -1,4 +1,4 @@
-{ inputs, pkgs, userParams, hostParams, ... }:
+{ config, inputs, pkgs, userParams, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -13,11 +13,11 @@
       ./disk-config-btrfs.nix
       ../../profiles/common.nix
       ../../profiles/desktop.nix
-      ../../profiles/jovian.nix
+      # ../../profiles/jovian.nix
       ../../profiles/mullvad.nix
       ../../profiles/pipewire.nix
       # ../../profiles/steambox.nix
-      # ../../profiles/steam.nix
+      ../../profiles/steam.nix
       ../../profiles/udev.nix
       # ../../profiles/wayland-nvidia.nix
       ## @TODO: rename workstation-hardware.nix
@@ -46,7 +46,7 @@
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNvmGn1/uFnfgnv5qsec0GC04LeVB1Qy/G7WivvvUZVBBDzp8goe1DsE8M8iqnBSin56gQZDWsd50co2MbFAWuqH2HxY7OGay7P/V2q+SziTYFva85WGl84qWvYMmdB+alAFBT3L4eH5cegC5NhNp+OGsQuq32RdojgXXQt6vyZnaOypuz90k3rqV6Rt+iBTLz6VziasCLcYydwOvi9f1q6YQwGPLKaupDrV6gxvoX9bXLdopqwnXPSE/Eqczxgwc3PefvAJPSd6TOqIXvbtpv/B3Evt5SPe2gq+qASc5K0tzgra8KAe813kkpq4FuKJzHbT+EmO70wiJjru7zMEhd erahhal@nfml-erahhalQFL"
   ];
 
-  time.timeZone = hostParams.timeZone;
+  time.timeZone = config.hostParams.system.timeZone;
 
   # --------------------------------------------------------------------------------------
   # Nix
@@ -54,7 +54,7 @@
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" "nixos-config=/home/${userParams.username}/Code/nixcfg" ];
 
   networking = {
-    hostName = hostParams.hostName;
+    hostName = config.hostParams.system.hostName;
     networkmanager = {
       enable = true;
     };

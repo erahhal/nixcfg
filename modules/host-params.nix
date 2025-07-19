@@ -157,8 +157,8 @@
       };
 
       ttyFontSize = lib.mkOption {
-        type = lib.types.int;
-        default = 9;
+        type = lib.types.float;
+        default = 9.0;
         description = "Default TTY font size";
       };
 

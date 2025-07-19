@@ -3,6 +3,7 @@
 # See: https://nixos.wiki/wiki/Nvidia
 
 let
+  usingIntel = config.hostParams.gpu.intel == true;
   truecrack-cuda = pkgs.callPackage ../pkgs/truecrack-cuda { };
   # package = config.boot.kernelPackages.nvidiaPackages.stable;
   package = config.boot.kernelPackages.nvidiaPackages.latest;
@@ -60,11 +61,10 @@ in
 
     services.xserver.videoDrivers = [ "nvidia" ];
 
-    # boot.kernelModules = [ "nvidia-uvm" ];
-    boot.initrd.kernelModules = [ "i915" ];
+    ## Make sure this is loadedbefore the rest to avoid issues with chromium, according to Hyprland wiki
+    boot.initrd.kernelModules = lib.mkIf usingIntel [ "i915" ];
     boot.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-    # boot.blacklistedKernelModules = [ "nouveau" "bbswitch" "i915" "xe" ];
-    boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ];
+    boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ] ++ (if usingIntel then [] else [ "i915" "xe" ]);
     # boot.blacklistedKernelModules = [ "nouveau" ];
 
     # services.xserver = {
@@ -95,7 +95,6 @@ in
     boot.kernelParams = [
       "vga=0"
       "rdblacklist=nouveau"
-      "module_blacklist=nouveau"
       "nouveau.modeset=0"
 
       ## Supposedly solves issues with corrupted desktop / videos after waking
@@ -113,7 +112,11 @@ in
 
       ## Shouldn't be needed as it's set automatically with modeset=1 in latest drivers
       "nvidia-drm.fbdev=1"
-    ];
+    ] ++ (if usingIntel then [
+      "module_blacklist=nouveau"
+    ] else [
+      "module_blacklist=nouveau,i915,xe"
+    ]);
 
     # hardware.bumblebee.enable = false;
 
@@ -153,7 +156,7 @@ in
       nvidiaSettings = true;
 
       # !!! PRIME Sync and Offload Mode cannot be enabled at the same time.
-      prime = {
+      prime = lib.mkIf usingIntel {
         ## sync introduces better performance and greatly reduces screen tearing, at the
         ## expense of higher power consumption since the Nvidia GPU will not go to sleep
         ## completely unless called for, as is the case in Offload Mode.
@@ -208,7 +211,6 @@ in
         EGL_PLATFORM = "wayland";
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         # AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
-        AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
 
         # WLR_DRM_NO_ATOMIC = "1";
         # __VK_LAYER_NV_optimus = "NVIDIA_only";
@@ -219,7 +221,9 @@ in
         # __GL_GSYNC_ALLOWED = "0";
         # __GL_VRR_ALLOWED = "0";
         # __GL_TRIPLE_BUFFER = "1";
-      };
+      } // (if usingIntel then {
+        AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
+      } else {});
     };
   };
 }

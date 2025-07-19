@@ -5,7 +5,7 @@
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "_GLX_VENDOR_LIBRARY_NAME,nvidia"
-        "STEAM_FORCE_DESKTOPUI_SCALING,3.0"
+        "STEAM_FORCE_DESKTOPUI_SCALING,2.666667"
 
         "__GLX_VRM_DEVICES,nvidia"
         "ELECTRON_OZONE_PLATFORM_HINT,auto"
@@ -30,7 +30,7 @@
         ## "failed to apply  configuration for profile 'desk-hyprland'"
         ## It might be enabling VRR or inconsistent frequencies
 
-        "desc:LG Electronics LG TV SSCR2 0x01010101,preferred,0x0,3.0"
+        "desc:LG Electronics LG TV SSCR2 0x01010101,preferred,0x0,2.666667"
         "desc:Valve Corporation Index HMD 0x92B574CE,preferred,0x0,1.0"
       ];
 

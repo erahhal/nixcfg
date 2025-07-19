@@ -19,7 +19,7 @@
 
     gpu = {
       nvidia.enable = true;
-      intel.enable = true;
+      intel.enable = false;
     };
   };
 }
