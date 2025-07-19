@@ -64,6 +64,7 @@ in
           };
         }
         {
+          # echo "off" | sudo tee /sys/class/drm/card0/dpms
           profile = {
             name = "desk-hyprland-thinkvision";
             outputs = [

@@ -2,8 +2,114 @@
 
 # See: https://nixos.wiki/wiki/Nvidia
 
+# BIOS hybrid/discrete GPU
+# intel modules loaded/not loaded
+# AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0", AQ_DRM_DEVICES = "/dev/dri/card1", AQ_DRM_DEVICES = "/dev/dri/card0";
+
+# hybrid, modules loaded, "/dev/dri/card0:/dev/dri/card1"
+#  - Hyprland works at all with external monitor
+#  - Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  - Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  x Chromium-based apps use GPU
+#  - GPU-based apps work at all
+
+# hybrid, modules loaded, "/dev/dri/card1:/dev/dri/card0"
+#  - Hyprland works at all with external monitor
+#  x Hyprland performance/animations smooth on external monitor
+#  ~ Laptop display DPMS works
+#  - Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  - Chromium-based apps use GPU
+#  - GPU-based apps work at all
+
+# hybrid, modules loaded, "/dev/dri/card0"
+#  - Hyprland works at all with external monitor
+#  - Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  - Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  x Chromium-based apps use GPU
+#  - GPU-based apps work at all
+
+# hybrid, modules loaded, "/dev/dri/card1"
+#  x Hyprland works at all with external monitor
+#  x Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  - Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  - Chromium-based apps use GPU
+#  - GPU-based apps work at all
+
+# hybrid, modules UNLOADED, "/dev/dri/card1"
+#  - Hyprland works at all with external monitor
+#  x Hyprland works at all with laptop display
+#  - Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  x Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  - Chromium-based apps use GPU
+#  - GPU-based apps work at all
+
+# hybrid, modules UNLOADED, "/dev/dri/card0"
+#  x Hyprland works at all with external monitor
+#  x Hyprland works at all with laptop display
+#  - Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  x Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  x Chromium-based apps use GPU
+#  x GPU-based apps work at all
+
+# hybrid, modules UNLOADED, "/dev/dri/card1:/dev/dri/card0"
+#  - Hyprland works at all with external monitor
+#  x Hyprland works at all with laptop display
+#  x Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  x Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  x  Chromium-based apps use GPU
+#  x  GPU-based apps work at all
+
+# hybrid, modules UNLOADED, "/dev/dri/card0:/dev/dri/card1"
+#  -  Hyprland works at all with external monitor
+#  x  Hyprland works at all with laptop display
+#  x  Hyprland performance/animations smooth on external monitor
+#  x  Laptop display DPMS works
+#  x  Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  x  Chromium-based apps use GPU
+#  x  GPU-based apps work at all
+
+# discrete, modules loaded, "/dev/dri/card0:/dev/dri/card1"
+#   Hyprland works at all with external monitor
+#   Hyprland performance/animations smooth on external monitor
+#   Laptop display DPMS works
+#   Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#   Chromium-based apps use GPU
+#   GPU-based apps work at all
+
+# discrete, modules loaded, "/dev/dri/card1:/dev/dri/card0"
+#   Hyprland works at all with external monitor
+#   Hyprland performance/animations smooth on external monitor
+#   Laptop display DPMS works
+#   Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#   Chromium-based apps use GPU
+#   GPU-based apps work at all
+
+# discrete, modules loaded, "/dev/dri/card0"
+#   Hyprland works at all with external monitor
+#   Hyprland performance/animations smooth on external monitor
+#   Laptop display DPMS works
+#   Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#   Chromium-based apps use GPU
+#   GPU-based apps work at all
+
+## !!!! SOLUTION
+# discrete, modules loaded, "/dev/dri/card1"
+#  - Hyprland works at all with external monitor
+#  - Hyprland performance/animations smooth on external monitor
+#  - Laptop display DPMS works
+#  x Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
+#  - Chromium-based apps use GPU
+#  - GPU-based apps work at all
+
 let
-  usingIntel = config.hostParams.gpu.intel == true;
+  usingIntel = config.hostParams.gpu.intel.enable == true;
+  disableIntelModules = config.hostParams.gpu.intel.enable == false && config.hostParams.gpu.intel.disableModules == true;
   truecrack-cuda = pkgs.callPackage ../pkgs/truecrack-cuda { };
   # package = config.boot.kernelPackages.nvidiaPackages.stable;
   package = config.boot.kernelPackages.nvidiaPackages.latest;
@@ -62,9 +168,10 @@ in
     services.xserver.videoDrivers = [ "nvidia" ];
 
     ## Make sure this is loadedbefore the rest to avoid issues with chromium, according to Hyprland wiki
-    boot.initrd.kernelModules = lib.mkIf usingIntel [ "i915" ];
+    boot.initrd.kernelModules = lib.mkIf (disableIntelModules == false) [ "i915" ];
     boot.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-    boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ] ++ (if usingIntel then [] else [ "i915" "xe" ]);
+    ## Must blacklist intel modules if using nvidias as only GPU, otherwise external monitors are not available in Hyprland
+    boot.blacklistedKernelModules = [ "nouveau" "bbswitch" ] ++ (if disableIntelModules then [ "i915" "xe" ] else []);
     # boot.blacklistedKernelModules = [ "nouveau" ];
 
     # services.xserver = {
@@ -112,10 +219,11 @@ in
 
       ## Shouldn't be needed as it's set automatically with modeset=1 in latest drivers
       "nvidia-drm.fbdev=1"
-    ] ++ (if usingIntel then [
-      "module_blacklist=nouveau"
-    ] else [
+    ] ++ (if disableIntelModules then [
+      ## Adding to boot.blacklistedKernelModules is not enough
       "module_blacklist=nouveau,i915,xe"
+    ] else [
+      "module_blacklist=nouveau"
     ]);
 
     # hardware.bumblebee.enable = false;
@@ -200,30 +308,38 @@ in
     home-manager.users.${userParams.username} = { pkgs, ... }: {
       home.sessionVariables = {
         LIBVA_DRIVER_NAME = "nvidia";
-        # GBM_BACKEND = "nvidia";
         GBM_BACKEND = "nvidia-drm";
         GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
         __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        ## Doesn't seem to be needed anymore
-        # __EGL_VENDOR_LIBRARY_FILENAMES = "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json";
-        NIXOS_OZONE_WL = "1";
-        WLR_NO_HARDWARE_CURSORS = "1";
         EGL_PLATFORM = "wayland";
+        ## Tells chromium-based apps to use Wayland instead of X11
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
-        # AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
+        ## Should do the same thing as ELECTRON_OZONE_PLATFORM_HINT
+        NIXOS_OZONE_WL = "1";
 
         # WLR_DRM_NO_ATOMIC = "1";
         # __VK_LAYER_NV_optimus = "NVIDIA_only";
         # NVD_BACKEND = "direct";
 
-        AQ_FORCE_LINEAR_BLIT = "1";
+        ## Hyprland: Disable hardware mouse cursor to prevent GPU issues
+        WLR_NO_HARDWARE_CURSORS = "1";
         # __GL_SYNC_TO_VBLANK = "1";
         # __GL_GSYNC_ALLOWED = "0";
         # __GL_VRR_ALLOWED = "0";
         # __GL_TRIPLE_BUFFER = "1";
       } // (if usingIntel then {
+        ## Prioritize NVidia GPU (card 1) over Intel GPU
         AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
-      } else {});
+        ## For dual-gpu setup, deal with slowness/stuttering on external monitor due to memory copy between GPUs
+        ## Doesn't seem to work.
+        AQ_FORCE_LINEAR_BLIT = "1";
+      } else {
+        ## Even with intel module not loaded, Nvidia device is still card1 instead of card0
+        AQ_DRM_DEVICES = "/dev/dri/card1";
+        # AQ_DRM_DEVICES = "/dev/dri/card0";
+        # AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
+        # AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
+      });
     };
   };
 }

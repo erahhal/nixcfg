@@ -219,6 +219,12 @@
           default = false;
           description = "Enable Intel GPU support";
         };
+
+        disableModules = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Disable Intel GPU kernel modules";
+        };
       };
 
       nvidia = {

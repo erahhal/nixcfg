@@ -18,7 +18,7 @@
 
       defaultSession = "hyprland";
       multipleSessions = false;
-      useHyprlandFlake = true;
+      useHyprlandFlake = false;
       defaultLockProgram = "hyprlock";
       autoLogin = false;
 
@@ -35,8 +35,10 @@
 
     gpu = {
       nvidia.enable = true;
-      ## If the intel GPU is disabled, you must also set the GPU to "discrete" in the BIOS
+      ## If the intel GPU is disabled, you should also set the GPU to "discrete" in the BIOS.
+      ## Otherwise the laptop display is still routed through the intel GPU, and generally doesn't work, either DPMS or rendering
       intel.enable = false;
+      intel.disableModules = false;
     };
   };
 }

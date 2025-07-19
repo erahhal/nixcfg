@@ -1,7 +1,6 @@
 { userParams, ... }:
 {
-  wayland.windowManager.hyprland = {
-    settings = {
+  wayland.windowManager.hyprland = { settings = {
       misc = {
         # vrr = 0;
       };
