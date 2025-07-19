@@ -238,8 +238,8 @@
   # boot.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
   # boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
   boot.kernelParams = [
-    ## Maybe needed for suspend to S0 (s2idle)?
-    # ''acpi_osi="Windows 2022"''
+    ## Seems to be needed for suspend to S0 (s2idle) without hanging
+    ''acpi_osi="Windows 2022"''
 
     ## Prevents dock from waking up laptop right after suspendign
     "usbcore.autosuspend=-1"
