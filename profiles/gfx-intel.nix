@@ -6,8 +6,7 @@
 {
   config = lib.mkIf config.hostParams.gpu.intel.enable {
     environment.systemPackages = with pkgs; [
-      ## broken
-      # intel-gpu-tools
+      intel-gpu-tools
       libva-utils
     ];
 

@@ -8,7 +8,7 @@ let
   portable-monitor-scale = 1.6;
   asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
-  eDP-1-scale = 2.133333;
+  eDP-1-scale = 2.0;
 in
 {
   home-manager.users.${userParams.username} = {

@@ -37,6 +37,7 @@ in
     # ./sway.nix
     ./hyprland.nix
     ./fonts.nix
+    ## @BROKEN
     ./i2c.nix
     ./sddm.nix
     ./lightdm.nix
@@ -47,7 +48,6 @@ in
     inxi
     libcamera
     bibata-cursors
-    ddcutil
 
     default-mouse-cursor
 

@@ -214,7 +214,7 @@ in
         # __VK_LAYER_NV_optimus = "NVIDIA_only";
         # NVD_BACKEND = "direct";
 
-        # AQ_FORCE_LINEAR_BLIT = "1";
+        AQ_FORCE_LINEAR_BLIT = "1";
         # __GL_SYNC_TO_VBLANK = "1";
         # __GL_GSYNC_ALLOWED = "0";
         # __GL_VRR_ALLOWED = "0";

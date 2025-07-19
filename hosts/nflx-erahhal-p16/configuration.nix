@@ -241,6 +241,7 @@
     # "msr.allow_writes=on"
     # "cpuidle.governor=teo"
     # "usbcore.autosuspend=-1"
+    ''acpi_osi="Windows 2022"''
   ];
 
   # Enable power management

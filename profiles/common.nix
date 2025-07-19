@@ -297,7 +297,8 @@
   environment.systemPackages = with pkgs; [
     appimage-run
     at-spi2-core
-    axel
+    ## @BROKEN
+    # axel
     backblaze-b2
     bashmount
     bc
@@ -365,7 +366,8 @@
     pstree
     pv
     ryzenadj
-    sambaFull # to get rid of wine ntml_auth errors
+    ## @BROKEN
+    # sambaFull # to get rid of wine ntml_auth errors
     sqlite
     sshpass
     steam-run

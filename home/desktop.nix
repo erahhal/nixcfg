@@ -353,8 +353,7 @@ in
         slurp             # Allows user to select portion of screen
         xsel              # Manipulate xwindows clipboard
         wl-clipboard      # Manipulate wayland clipboard
-        ## Currently broken
-        # wf-recorder       # Record video of screen portions in wayland
+        wf-recorder       # Record video of screen portions in wayland
         veracrypt
         wezterm
 
@@ -459,8 +458,7 @@ in
 
         # Visualization
         cava
-        ## Currently broken
-        # mandelbulber
+        mandelbulber
         qosmic
         xaos
 

@@ -18,7 +18,7 @@
 
       defaultSession = "hyprland";
       multipleSessions = false;
-      useHyprlandFlake = false;
+      useHyprlandFlake = true;
       defaultLockProgram = "hyprlock";
       autoLogin = false;
 
