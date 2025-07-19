@@ -34,8 +34,6 @@ in
         android-studio
         bitwig-studio
         blender-hip   # blender-hip is AMD hardware accelerated version of blender
-        jetbrains.datagrip
-        jetbrains.idea-ultimate
 
         ## Games
         atlauncher
