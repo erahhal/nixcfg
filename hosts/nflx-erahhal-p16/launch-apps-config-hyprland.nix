@@ -39,7 +39,7 @@ in
       bindl = [
         ## Doesn't suspend or wake up if these aren't added
         '', switch:on:[Lid Switch], exec, "${hyprlockCommand}"''
-        '', switch:off:[Lid Switch], exec, ${hyprctl} keyword monitor "eDP-1, 3840x2400"''
+        '', switch:off:[Lid Switch], exec, ${hyprctl} keyword monitor "eDP-1, 3840x2400, 0x0, 2.4"''
       ];
 
       monitor = [
@@ -49,7 +49,7 @@ in
         ## It might be enabling VRR or inconsistent frequencies
 
         # "eDP-1,disable"
-        "eDP-1,3840x2160@60,0x0,2.0"
+        "eDP-1,3840x2400@60,0x0,2.4"
         "desc:LG Electronics 16MQ70 20NKZ005285,2560x1600@60,1599x0,1.6"
         "desc:LG Electronics LG Ultra HD 0x00043EAD,3840x2160@60,0x0,1.5"
         "desc:LG Electronics L33HD334K 0x00020F5B,3840x2160@60,2560x0,1.5"

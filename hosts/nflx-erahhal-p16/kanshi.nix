@@ -8,7 +8,7 @@ let
   portable-monitor-scale = 1.6;
   asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
-  eDP-1-scale = 2.0;
+  eDP-1-scale = 2.4;
 in
 {
   home-manager.users.${userParams.username} = {
@@ -187,7 +187,7 @@ in
         }
         # {
         #   profile = {
-        #     name = "desk-portable-right";
+        #     name = "portable-right";
         #     outputs = [
         #       {
         #         criteria = "eDP-1";
@@ -219,7 +219,7 @@ in
         # }
         {
           profile = {
-            name = "desk-portable-right-hyprland";
+            name = "portable-right-hyprland";
             outputs = [
               {
                 criteria = "eDP-1";
@@ -233,7 +233,7 @@ in
                 criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
-                position = "1800,300";
+                position = "1601,150";
                 # Resolution must be integer divisible by scale
                 scale = portable-monitor-scale;
               }
@@ -253,7 +253,7 @@ in
         }
         # {
         #   profile = {
-        #     name = "desk-portable-left-hyprland";
+        #     name = "portable-left-hyprland";
         #     outputs = [
         #       {
         #         criteria = portable-monitor;
@@ -355,7 +355,7 @@ in
         }
         # {
         #   profile = {
-        #     name = "desk-portable-left";
+        #     name = "portable-left";
         #     outputs = [
         #       {
         #         criteria = "LG Electronics 16MQ70 204NZKZ005285";
