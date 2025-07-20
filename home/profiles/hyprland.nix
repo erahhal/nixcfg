@@ -12,6 +12,16 @@ let
 
     pkill Hyprland
   '';
+  reboot = pkgs.writeShellScript "kill-reboot" ''
+    ${builtins.readFile ../../scripts/kill-all-apps.sh}
+
+    systemctl reboot
+  '';
+  poweroff = pkgs.writeShellScript "kill-poweroff" ''
+    ${builtins.readFile ../../scripts/kill-all-apps.sh}
+
+    systemctl poweroff
+  '';
 
   xdg-desktop-portal-hyprland = pkgs.writeShellScript "xdg-desktop-portal-hyprland" ''
     sleep 1
@@ -571,8 +581,8 @@ in
         "$mod, Y, exec, systemctl --user restart kanshi"
         "$mod, T, exec, ${toggle-group}"
         "$mod_SHIFT, E, exec, nag-graphical 'Exit Hyprland?' '${exit-hyprland}'"
-        "$mod_SHIFT, P, exec, nag-graphical 'Power off?' 'systemctl poweroff'"
-        "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' 'systemctl reboot'"
+        "$mod_SHIFT, P, exec, nag-graphical 'Power off?' '${poweroff}'"
+        "$mod_SHIFT, R, exec, nag-graphical 'Reboot?' '${reboot}'"
         (
           if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
             "$mod_SHIFT, S, exec, nag-graphical 'Suspend?' '${swayLockCommand} suspend'"
