@@ -36,7 +36,7 @@
     networking = {
       ## @DEPRECATED: Not used anymore
       wireguardIp = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "";
         description = "Wireguard IP";
       };
@@ -44,7 +44,7 @@
 
     containers = {
       backend = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "podman";
         description = "Container backend";
       };
@@ -90,14 +90,14 @@
 
     desktop = {
       displayManager = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "sddm";
         # default = "lightdm";
         description = "Display manager";
       };
 
       sddmTheme = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "sddm-astronaut-theme";
         description = "SDDM Theme";
       };
@@ -109,7 +109,7 @@
       };
 
       defaultSession = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "hyprland";
         # default = "none";
         # default = "plasma";
@@ -131,14 +131,14 @@
       };
 
       swayTouchpadClickMethod = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "clickfinger";
         # default = "button_areas";
         description = "Sway touchpad click interaction config";
       };
 
       defaultLockProgram = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "hyprlock";
         # default = "swaylock";
         description = "Default screenlock program";
@@ -175,7 +175,7 @@
       };
 
       wallpaper = lib.mkOption {
-        type = lib.types.path;
+        type = lib.types.nullOr lib.types.path;
         default = null;
         description = "Path to wallpaper";
       };
@@ -189,7 +189,7 @@
 
     programs = {
       defaultBrowser = lib.mkOption {
-        type = lib.types.string;
+        type = lib.types.str;
         default = "firefox";
         # default = "chromium-browser";
         description = "Default web browser";
