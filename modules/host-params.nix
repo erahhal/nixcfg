@@ -156,6 +156,12 @@
         description = "Screen DPI";
       };
 
+      disableXwaylandScaling = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Disable Xwayland scaling and use Xft.dpi instead";
+      };
+
       ttyFontSize = lib.mkOption {
         type = lib.types.float;
         default = 9.0;

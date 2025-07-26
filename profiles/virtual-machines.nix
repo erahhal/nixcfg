@@ -232,11 +232,14 @@ in
     host = {
       enable = true;
       enableExtensionPack = true;
+
+      enableKvm = true;
+      ## Must be set to false if enableKvm is true
+      addNetworkInterface = false;
     };
-    # guest = {
-    #   enable = true;
-    #   x11 = true;
-    # };
+    guest = {
+      enable = true;
+    };
   };
 
   #-------------------------------------------

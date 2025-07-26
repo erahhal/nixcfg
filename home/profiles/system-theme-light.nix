@@ -4,12 +4,13 @@ xwayland_settings = ''
   Xcursor.size: ${if osConfig.hostParams.desktop.defaultSession == "none+i3" then "32" else "16"}
   # Xcursor.theme: Adwaita
   Xcursor.theme: Bibata-Modern-Classic
-  Xft.dpi: ${toString osConfig.hostParams.desktop.dpi}
   xterm*background: #efefef
   xterm*faceName: Monospace
   xterm*faceSize: 12
   xterm*foreground: black
-'';
+'' + (if osConfig.hostParams.desktop.disableXwaylandScaling then ''
+  Xft.dpi: ${toString osConfig.hostParams.desktop.dpi}
+'' else "");
 
 # tmux cannot handle colors in the F ranges, e.g. #FNFNFN.
 # They cause misalignment issues in the status bar for some unknown reason

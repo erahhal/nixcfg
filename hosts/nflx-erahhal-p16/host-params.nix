@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, userParams, ... }:
 {
   hostParams = {
     system = {
@@ -39,6 +39,10 @@
       ## Otherwise the laptop display is still routed through the intel GPU, and generally doesn't work, either DPMS or rendering
       intel.enable = false;
       intel.disableModules = false;
+    };
+
+    virtualisation = {
+      virtualbox.enable = true;
     };
   };
 }

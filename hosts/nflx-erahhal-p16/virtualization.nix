@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostParams, recursiveMerge, ... }:
+{ config, pkgs, recursiveMerge, ... }:
 {
   imports = [
     ../../profiles/virtual-machines.nix
@@ -10,7 +10,7 @@
   virtualisation = (
     let
       baseConfig = {
-        oci-containers.backend = hostParams.containerBackend;
+        oci-containers.backend = config.hostParams.containers.backend;
         containers = {
           enable = true;
         };

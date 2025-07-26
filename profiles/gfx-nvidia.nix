@@ -13,6 +13,7 @@
 #  - Intel GPU used for basic rendering, with NVIDIA used for offload/special cases
 #  x Chromium-based apps use GPU
 #  - GPU-based apps work at all
+#  ? chrome hardware-based video encoding (e.g. filters on google meet)
 
 # hybrid, modules loaded, "/dev/dri/card1:/dev/dri/card0"
 #  - Hyprland works at all with external monitor

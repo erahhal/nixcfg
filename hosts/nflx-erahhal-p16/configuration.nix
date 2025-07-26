@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, inputs, pkgs, userParams, hostParams, ... }:
+{ config, inputs, pkgs, userParams, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -35,6 +35,7 @@
     # host specific
     ../../profiles/homefree.nix
     ../../profiles/mullvad.nix
+    ../../profiles/ollama.nix
     ../../profiles/tailscale.nix
     ../../profiles/thinkpad-dock-udev-rules.nix
     ../../profiles/totp.nix

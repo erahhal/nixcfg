@@ -1,32 +1,54 @@
 { lib, ... }:
-let
-  # Need to escape bash variables so they aren't interpolated by home-manager during activation
-  gimprc = builtins.replaceStrings ["\$"] ["\\$"] (builtins.readFile ./gimp-hidpi/gimprc);
-  sessionrc = builtins.replaceStrings ["\$"] ["\\$"] (builtins.readFile ./gimp-hidpi/sessionrc);
-in
 {
   # Add high dpi theme for FIMP
-  xdg.configFile."GIMP/2.10/themes/DarkHighDPI".source = ./gimp-hidpi/themes/DarkHighDPI;
-
   home.activation.gimpSettings = lib.hm.dag.entryAfter [ "installPackages" ]
     ''
-      if [ ! -e ~/.config/GIMP/2.10/gimprc ]; then
-        mkdir -p ~/.config/GIMP/2.10
-        cat > ~/.config/GIMP/2.10/gimprc<< EOF
-${gimprc}
-EOF
-      fi
-      if grep --quiet "(theme "*")" ~/.config/GIMP/2.10/gimprc; then
-        sed -i 's/(theme ".*")/(theme "DarkHighDPI")/g' ~/.config/GIMP/2.10/gimprc
-      else
-        echo '(theme "DarkHighDPI")' >> ~/.config/GIMP/2.10/gimprc
+      CONFIG_FILE="~/.config/zoomus.conf"
+
+      mkdir -p ~/.config
+      touch ~/.config/zoomus.conf
+
+      local temp_file=$(mktemp)
+      local general_found=false
+      local scale_factor_set=false
+
+      # Read the file line by line
+      while IFS= read -r line || [[ -n "$line" ]]; do
+          # Check if we're in the [General] section
+          if [[ "$line" =~ ^\[General\]$ ]]; then
+              general_found=true
+              echo "$line" >> "$temp_file"
+          # Check if we hit another section after [General]
+          elif [[ "$line" =~ ^\[.*\]$ ]] && [[ "$general_found" == true ]]; then
+              # Add scaleFactor if we haven't set it yet
+              if [[ "$scale_factor_set" == false ]]; then
+                  echo "scaleFactor=2" >> "$temp_file"
+                  scale_factor_set=true
+              fi
+              general_found=false
+              echo "$line" >> "$temp_file"
+          # Check if this is the scaleFactor line in [General] section
+          elif [[ "$general_found" == true ]] && [[ "$line" =~ ^scaleFactor= ]]; then
+              echo "scaleFactor=2" >> "$temp_file"
+              scale_factor_set=true
+          else
+              echo "$line" >> "$temp_file"
+          fi
+      done < "$CONFIG_FILE"
+
+      # If we found [General] but never set scaleFactor, add it at the end
+      if [[ "$general_found" == true ]] && [[ "$scale_factor_set" == false ]]; then
+          echo "scaleFactor=2" >> "$temp_file"
       fi
 
-      if [ ! -e ~/.config/GIMP/2.10/sessionrc ]; then
-        cat > ~/.config/GIMP/2.10/sessionrc<< EOF
-${sessionrc}
-EOF
+      # If we never found [General] section, add it
+      if [[ "$general_found" == false ]]; then
+          echo "" >> "$temp_file"  # Add blank line for readability
+          echo "[General]" >> "$temp_file"
+          echo "scaleFactor=2" >> "$temp_file"
       fi
-      sed -i 's/(left-docks-width ".*")/(left-docks-width "346")/g' ~/.config/GIMP/2.10/sessionrc
+
+      # Replace original file with modified version
+      mv "$temp_file" "$CONFIG_FILE"
     '';
 }

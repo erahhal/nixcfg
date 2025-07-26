@@ -102,8 +102,8 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     nflx-vpn.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
     # nflx-vpn.url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
@@ -137,6 +137,13 @@
   let
     recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
     userParams = import ./user-params.nix {};
+    homeManagerConfig = {
+      ## Make sure it restarts after rebuilding system config
+      systemd.services."home-manager-${userParams.username}".serviceConfig = { RemainAfterExit = "yes"; };
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      nixpkgs.overlays = [ inputs.nur.overlays.default ];
+    };
   in {
     # lib.pkgsParameters = {
     #   overlays = [ ];
@@ -172,11 +179,7 @@
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
           inputs.nur.modules.nixos.default
           inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
+          homeManagerConfig
 
           inputs.nixvim-config.nixosModules.default
           {
@@ -218,11 +221,7 @@
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
           inputs.nur.modules.nixos.default
           inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
+          homeManagerConfig
 
           inputs.nixvim-config.nixosModules.default
           {
@@ -270,11 +269,7 @@
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
           inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
+          homeManagerConfig
 
           inputs.nixvim-config.nixosModules.default
           {
@@ -316,12 +311,7 @@
           # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel-kaby-lake
           # inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
           inputs.home-manager.nixosModules.home-manager
-          inputs.nur.modules.nixos.default
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
+          homeManagerConfig
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
@@ -350,12 +340,8 @@
           inputs.secrets.nixosModules.sicmundus
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.home-manager.nixosModules.home-manager
+          homeManagerConfig
           inputs.nur.modules.nixos.default
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
@@ -388,11 +374,7 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.secrets.nixosModules.msi-desktop
           inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
+          homeManagerConfig
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
@@ -429,11 +411,7 @@
           inputs.secrets.nixosModules.msi-linux
           inputs.jovian.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [ inputs.nur.overlays.default ];
-          }
+          homeManagerConfig
 
           inputs.nixvim-config.nixosModules.default
           {

@@ -327,7 +327,7 @@ in
       xwayland = {
         # Don't scale xwayland
         # In conjunction with Xft.dpi being set to something high, like 210
-        force_zero_scaling = true;
+        force_zero_scaling = osConfig.hostParams.desktop.disableXwaylandScaling;
       };
 
       env = [

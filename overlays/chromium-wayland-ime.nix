@@ -6,6 +6,13 @@ let
         # "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
         "--enable-wayland-ime"
         "--password-store=basic" # Don't show kwallet login at start
+        "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
+        "--ozone-platform-hint=auto"
+        "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
+        "--enable-gpu-rasterization"
+        "--enable-oop-rasterization"
+        "--ignore-gpu-blocklist"
+        "--enable-zero-copy"
       ];
     };
 
@@ -14,6 +21,13 @@ let
         # "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
         "--enable-wayland-ime"
         "--password-store=basic" # Don't show kwallet login at start
+        "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
+        "--ozone-platform-hint=auto"
+        "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
+        "--enable-gpu-rasterization"
+        "--enable-oop-rasterization"
+        "--ignore-gpu-blocklist"
+        "--enable-zero-copy"
       ];
     };
 
@@ -23,7 +37,14 @@ let
         #   --add-flags "--enable-wayland-ime" \
         #   --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
         wrapProgram $out/bin/slack \
-          --add-flags "--enable-wayland-ime"
+          --add-flags "--enable-wayland-ime" \
+          --add-flags "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder" \
+          --add-flags "--ozone-platform-hint=auto" \
+          --add-flags "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo" \
+          --add-flags "--enable-gpu-rasterization" \
+          --add-flags "--enable-oop-rasterization" \
+          --add-flags "--ignore-gpu-blocklist" \
+          --add-flags "--enable-zero-copy"
       '';
     });
 

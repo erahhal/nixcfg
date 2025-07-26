@@ -5,12 +5,13 @@ xwayland_settings = ''
   Xcursor.size: ${if osConfig.hostParams.desktop.defaultSession == "none+i3" then "32" else "16"}
   # Xcursor.theme: Adwaita
   Xcursor.theme: Bibata-Modern-Classic
-  Xft.dpi: ${toString osConfig.hostParams.desktop.dpi}
   xterm*background: black
   xterm*faceName: Monospace
   xterm*faceSize: 12
   xterm*foreground: lightgray
-'';
+'' + (if osConfig.hostParams.desktop.disableXwaylandScaling then ''
+  Xft.dpi: ${toString osConfig.hostParams.desktop.dpi}
+'' else "");
 
 # tmux-background = "#080808";
 # tmux-background = "${tmux-background}";

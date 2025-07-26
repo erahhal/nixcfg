@@ -20,7 +20,7 @@ let
     # zenity --info --text="bambu-studio under gamescope runs with the last window size it ran at. run bambu-studio-original then maximize and exit before running this."
 
     echo "gamescope -W $WIDTH -w $WIDTH -H $HEIGHT -h $HEIGHT -r 60 --expose-wayland --backend wayland -- ${pkgs.bambu-studio}/bin/bambu-studio"
-    gamescope -W $WIDTH -w $WIDTH -H $HEIGHT -h $HEIGHT -r 60 --expose-wayland --backend wayland --force-windows-fullscreen -- ${pkgs.bambu-studio}/bin/bambu-studio
+    gamescope -W $WIDTH -w $WIDTH -H $HEIGHT -h $HEIGHT -r 60 --expose-wayland --backend sdl --force-windows-fullscreen -- ${pkgs.bambu-studio}/bin/bambu-studio
   '';
 in
   pkgs.stdenv.mkDerivation {

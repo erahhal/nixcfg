@@ -59,6 +59,7 @@
         "workspace 6, class:^(org.telegram.desktop)$"
         "workspace 6, class:^(whatsapp-for-linux)$"
         "workspace 7, class:^(discord)$"
+        "workspace 7, class:^(vesktop)$"
         "workspace 7, class:^(Element)$"
         "workspace 1, silent, class:^(chromium-browser)$"
       ];
@@ -71,7 +72,8 @@
         "[workspace 6 silent] signal-desktop"
         "[workspace 6 silent] telegram-desktop"
         "[workspace 6 silent] whatsapp-for-linux"
-        "[workspace 7 silent] discord"
+        # "[workspace 7 silent] discord"
+        "[workspace 7 silent] vesktop"
         "[workspace 7 silent] element-desktop"
         "[workspace 5 silent] firefox"
       ];

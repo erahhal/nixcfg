@@ -8,7 +8,7 @@ let
   portable-monitor-scale = 1.6;
   asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
-  eDP-1-scale = 2.4;
+  eDP-1-scale = 2.1333333;
 in
 {
   home-manager.users.${userParams.username} = {
@@ -225,7 +225,7 @@ in
                 criteria = "eDP-1";
                 status = "enable";
                 mode = "3840x2400@60";
-                position = "0,67";
+                position = "0,0";
                 # Resolution must be integer divisible by scale
                 scale = eDP-1-scale;
               }
@@ -233,21 +233,22 @@ in
                 criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
-                position = "1601,150";
+                position = "1801,200";
                 # Resolution must be integer divisible by scale
                 scale = portable-monitor-scale;
               }
             ];
             exec = [
+              ## Only chrome on external monitor
               "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
               "${hyprctl} dispatch moveworkspacetomonitor 2 eDP-1"
               "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
-              "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${portable-monitor}"
-              "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${portable-monitor}"
-              "${hyprctl} dispatch moveworkspacetomonitor 6 desc:${portable-monitor}"
-              "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${portable-monitor}"
-              "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${portable-monitor}"
-              "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${portable-monitor}"
+              "${hyprctl} dispatch moveworkspacetomonitor 4 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 5 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 6 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 7 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 8 eDP-1"
+              "${hyprctl} dispatch moveworkspacetomonitor 9 eDP-1"
             ];
           };
         }

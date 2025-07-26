@@ -14,11 +14,7 @@ in
   imports = [
     ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
-  ];
-
-  environment.systemPackages = with pkgs; [
-    ##  mkWindowsApp apps together conflict in home-manager, so install globally
-    # inputs.remarkable.packages."${system}".remarkable
+    # ../overlays/zoom-us.nix
   ];
 
   environment.sessionVariables = {
@@ -92,6 +88,9 @@ in
       ## Should be handled by wayland scaling now
       ## But left in for the theming
       ./profiles/qt4-hidpi.nix
+
+      # VSCode Roo MCP configuration
+      ./profiles/vscode-roo-mcp.nix
     ];
 
     ## Until Hyprland bug https://github.com/hyprwm/Hyprland/issues/5815 is resolved
@@ -407,6 +406,7 @@ in
         sxiv # image viewer with vim bindings
         # stellarium
         telegram-desktop
+        vesktop
         vimiv-qt
         waydroid
         whatsapp-for-linux
