@@ -90,7 +90,8 @@ in
       ./profiles/qt4-hidpi.nix
 
       # VSCode Roo MCP configuration
-      ./profiles/vscode-roo-mcp.nix
+      ./profiles/vscode-roo-llm.nix
+      ./profiles/vscode-settings.nix
     ];
 
     ## Until Hyprland bug https://github.com/hyprwm/Hyprland/issues/5815 is resolved
@@ -515,7 +516,8 @@ in
       enable = true;
       # package = pkgs.unstable.vscodium;
       ## fhs package allows for arbitrary extension installation
-      package = pkgs.vscodium.fhs;
+      # package = pkgs.vscodium.fhs;
+      package = pkgs.vscode.fhs;
       # package = pkgs.unstable.vscodium-fhs;
       # extensions = with pkgs.vscode-extensions; [
       #   # dracula-theme.theme-dracula

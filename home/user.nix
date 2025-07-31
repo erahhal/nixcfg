@@ -160,6 +160,10 @@ in
         uv
         yarn
 
+        ## genai
+        litellm
+        vllm
+
         ## python
         pyright
         s-tui

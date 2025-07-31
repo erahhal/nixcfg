@@ -348,6 +348,7 @@
     memtest86plus
     minicom
     mokutil
+    msr-tools
     neofetch
     nethogs
     networkmanager

@@ -67,7 +67,8 @@ boot:
 	nixos-rebuild --sudo boot --flake .#${HOSTNAME} -L
 
 test:
-	nixos-rebuild --sudo test --flake .#${HOSTNAME} -L
+	./build/run-tests
+	# nixos-rebuild --sudo test --flake .#${HOSTNAME} -L
 
 update:
 	nix flake update

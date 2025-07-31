@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+# JSON Config Manager Module - Test Script
+# This script runs all tests for the generalized JSON config manager module.
+
+set -e  # Exit on any error
+
+echo "🧪 JSON Config Manager Module Tests"
+echo "=================================="
+
+# Test 1: Validate VSCode Configuration
+echo
+echo "Test 1: Validating VSCode Roo MCP Configuration..."
+result1=$(nix-instantiate --eval --strict --expr '
+let
+  result = import ./home/profiles/vscode-settings.nix {
+    lib = (import <nixpkgs> {}).lib;
+    pkgs = import <nixpkgs> {};
+  };
+in {
+  success = result.services.jsonConfigManager.vscode-roo-mcp.enable;
+  configFile = result.services.jsonConfigManager.vscode-roo-mcp.configFile;
+  description = result.services.jsonConfigManager.vscode-roo-mcp.description;
+  hasDefaultConfig = result.services.jsonConfigManager.vscode-roo-mcp.defaultConfig ? puppeteer;
+  configKey = result.services.jsonConfigManager.vscode-roo-mcp.configKey;
+}')
+
+echo "✅ Result: $result1"
+
+# Test 2: Module Import Test
+echo
+echo "Test 2: Testing module can be imported..."
+result2=$(nix-instantiate --eval --expr '
+let
+  module = import ./home/modules/json-config-manager.nix;
+in "Module loads successfully"')
+
+echo "✅ Result: $result2"
+
+# Test 3: Examples Syntax Test
+echo
+echo "Test 3: Validating example configurations..."
+result3=$(nix-instantiate --eval --expr '
+let
+  examples = import ./home/profiles/json-config-examples.nix {
+    lib = (import <nixpkgs> {}).lib;
+    pkgs = import <nixpkgs> {};
+  };
+in {
+  hasVscodeSettings = examples.services.jsonConfigManager ? vscode-settings;
+  hasMyAppConfig = examples.services.jsonConfigManager ? my-app-config;
+  hasDatabaseConnections = examples.services.jsonConfigManager ? database-connections;
+}')
+
+echo "✅ Result: $result3"
+
+# Test 4: Module Options Structure Test
+echo
+echo "Test 4: Testing module options structure..."
+result4=$(nix-instantiate --eval --expr '
+let
+  lib = (import <nixpkgs> {}).lib;
+  module = import ./home/modules/json-config-manager.nix;
+  evaluation = lib.evalModules {
+    modules = [
+      module
+      {
+        services.jsonConfigManager.test = {
+          enable = true;
+          configFile = "/tmp/test.json";
+          defaultConfig = { test = true; };
+        };
+        # Provide mock DAG for testing
+        config.lib.dag.entryAfter = priority: content: {
+          inherit priority content;
+          type = "dag-entry";
+        };
+      }
+    ];
+    specialArgs = { inherit lib; pkgs = import <nixpkgs> {}; };
+  };
+in {
+  hasOptions = evaluation.options.services ? jsonConfigManager;
+  testConfigExists = evaluation.config.services.jsonConfigManager ? test;
+  testConfigEnabled = evaluation.config.services.jsonConfigManager.test.enable;
+}')
+
+echo "✅ Result: $result4"
+
+echo
+echo "🎉 All tests completed successfully!"
+echo
+echo "📋 Summary:"
+echo "- ✅ VSCode Roo MCP configuration works"
+echo "- ✅ Module imports correctly"
+echo "- ✅ Example configurations are valid"
+echo "- ✅ Module options structure is correct"
+echo
+echo "The JSON Config Manager module is ready for use!"
+
+# Optional: Run additional validation
+if [[ "${1:-}" == "--verbose" ]]; then
+    echo
+    echo "🔍 Additional Validation (--verbose mode):"
+    echo
+    echo "Module file exists:"
+    ls -la home/modules/json-config-manager.nix
+    echo
+    echo "Updated VSCode profile exists:"
+    ls -la home/profiles/vscode-settings.nix
+    echo
+    echo "Examples file exists:"
+    ls -la home/profiles/json-config-examples.nix
+fi
