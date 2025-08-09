@@ -93,7 +93,7 @@ in
             # CursorTheme = "bibata-cursors";
           };
           General = {
-            GreeterEnvironment = "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
+            GreeterEnvironment = lib.mkIf (config.hostParams.desktop.sddmThemeQt6 == false) "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
           };
         };
       } // (if config.hostParams.desktop.sddmThemeQt6 then {
@@ -118,6 +118,7 @@ in
 
     # To prevent getting stuck at shutdown
     systemd.extraConfig = "DefaultTimeoutStopSec=10s";
+    # systemd.settings.Manager.DefaultTimeoutStopSec = "10s";
 
     ## Does not work to change SDDM cursor size
     # systemd.services.display-manager = {

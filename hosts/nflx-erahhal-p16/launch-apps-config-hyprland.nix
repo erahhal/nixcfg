@@ -80,6 +80,10 @@ in
         "workspace 7, class:^(discord)$"
         "workspace 7, class:^(vesktop)$"
         "workspace 7, class:^(Element)$"
+        "workspace 9, initialClass:^(@joplin/app-desktop)$"
+        "workspace 9, class:^(@joplin/app-desktop)$"
+        "workspace 9, initialTitle:^(Joplin)$"
+        "workspace 9, title:^(Joplin)$"
         "workspace 1, silent, class:^(chromium-browser)$"
       ];
 
@@ -94,6 +98,7 @@ in
         # "[workspace 6 silent] whatsapp-for-linux"
         # "[workspace 7 silent] discord"
         "[workspace 7 silent] vesktop"
+        "[workspace 9 silent] joplin"
         # "[workspace 7 silent] element-desktop"
         "[workspace 1 silent] chromium"
       ];

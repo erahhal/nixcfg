@@ -102,12 +102,12 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     nflx-vpn = {
-      url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
-      # url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
+      # url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
+      url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -172,6 +172,12 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          {
+            ## @TODO: TEMPORARY
+            nixpkgs.config.permittedInsecurePackages = [
+              "libsoup-2.74.3"
+            ];
+          }
           ./modules/host-params.nix
           ./hosts/nflx-erahhal-p16/host-params.nix
           inputs.disko.nixosModules.disko

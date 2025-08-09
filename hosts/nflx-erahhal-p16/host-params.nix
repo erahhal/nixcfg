@@ -5,6 +5,7 @@
       hostName = "nflx-erahhal-p16";
       uid = 1026;
       gid = 100;
+      timeZone = "America/Denver";
     };
 
     containers = {
@@ -19,6 +20,7 @@
       defaultSession = "hyprland";
       multipleSessions = false;
       useHyprlandFlake = false;
+      disableXwaylandScaling = true;
       defaultLockProgram = "hyprlock";
       autoLogin = false;
 
@@ -43,6 +45,7 @@
 
     virtualisation = {
       virtualbox.enable = true;
+      vmware.enable = true;
     };
   };
 }

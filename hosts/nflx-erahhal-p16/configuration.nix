@@ -37,7 +37,7 @@
     ../../profiles/mullvad.nix
     ../../profiles/ollama.nix
     ../../profiles/tailscale.nix
-    ../../profiles/thinkpad-dock-udev-rules.nix
+    # ../../profiles/thinkpad-dock-udev-rules.nix
     ../../profiles/totp.nix
     ../../profiles/udev.nix
     ../../profiles/waydroid.nix
@@ -58,6 +58,56 @@
     # Temporary
     # ../../profiles/nfs-mounts.nix
   ];
+
+  nixpkgs.config.packageOverrides = pkgs: {
+    vmware-workstation = pkgs.symlinkJoin {
+      name = "vmware-workstation-wrapped";
+      paths = [ pkgs.vmware-workstation.unwrapped or pkgs.vmware-workstation ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        # Find all executables in the VMware package
+        find $out/bin -type f -executable 2>/dev/null | while read -r exe; do
+          if [ -f "$exe" ] && [ -x "$exe" ] && [ ! -L "$exe" ]; then
+            # Move the original executable
+            mv "$exe" "$exe.unwrapped"
+
+            # Create a wrapper that sets GDK_DPI_SCALE
+            makeWrapper "$exe.unwrapped" "$exe" \
+              --set GDK_DPI_SCALE "0.75"
+          fi
+        done
+
+        # Also handle any executables in libexec or other locations
+        if [ -d "$out/libexec" ]; then
+          find "$out/libexec" -type f -executable 2>/dev/null | while read -r exe; do
+            if [ -f "$exe" ] && [ -x "$exe" ] && [ ! -L "$exe" ]; then
+              mv "$exe" "$exe.unwrapped"
+              makeWrapper "$exe.unwrapped" "$exe" \
+                --set GDK_DPI_SCALE "0.75"
+            fi
+          done
+        fi
+
+        # Handle any other potential executable locations
+        for dir in lib share; do
+          if [ -d "$out/$dir" ]; then
+            find "$out/$dir" -name "vmware*" -o -name "vmplayer*" | while read -r file; do
+              # Only process if it's a regular file, executable, and not a symlink
+              if [ -f "$file" ] && [ -x "$file" ] && [ ! -L "$file" ]; then
+                # Check if it's actually an executable (has shebang or is binary)
+                if file "$file" | grep -q -E "(executable|script)"; then
+                  mv "$file" "$file.unwrapped"
+                  makeWrapper "$file.unwrapped" "$file" \
+                    --set GDK_DPI_SCALE "0.75"
+                fi
+              fi
+            done
+          fi
+        done
+      '';
+    };
+  };
+
 
   # Needed to setup passwords
   users.users.root.openssh.authorizedKeys.keys = [
@@ -307,10 +357,10 @@
       # full charge.
       # https://linrunner.de/tlp/faq/battery.html#how-to-choose-good-battery-charge-thresholds
 
-      START_CHARGE_THRESH_BAT0 = 75;
-      STOP_CHARGE_THRESH_BAT0 = 85;
-      START_CHARGE_THRESH_BAT1 = 75;
-      STOP_CHARGE_THRESH_BAT1 = 85;
+      # START_CHARGE_THRESH_BAT0 = 75;
+      # STOP_CHARGE_THRESH_BAT0 = 85;
+      # START_CHARGE_THRESH_BAT1 = 75;
+      # STOP_CHARGE_THRESH_BAT1 = 85;
 
       ## High charge settings
 
@@ -322,10 +372,10 @@
       ## Travel settings
       ## START can't be above 99
 
-      # START_CHARGE_THRESH_BAT0=99;
-      # STOP_CHARGE_THRESH_BAT0=100;
-      # START_CHARGE_THRESH_BAT1=99;
-      # STOP_CHARGE_THRESH_BAT1=100;
+      START_CHARGE_THRESH_BAT0=99;
+      STOP_CHARGE_THRESH_BAT0=100;
+      START_CHARGE_THRESH_BAT1=99;
+      STOP_CHARGE_THRESH_BAT1=100;
     };
   };
 }
