@@ -45,7 +45,8 @@
 
     virtualisation = {
       virtualbox.enable = true;
-      vmware.enable = true;
+      ## @BROKEN
+      vmware.enable = false;
     };
   };
 }

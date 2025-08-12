@@ -89,25 +89,86 @@
     packages = with pkgs; [ jq ];
   };
 
+  home.file."roo-code-config.json".source = ./vscode/roo-code-config.netflix-anthropic.json;
+
   # Configure VSCode Roo MCP using the generalized module
   services.jsonConfigManager.vscode-settings = {
     enable = true;
 
     configFile = "$HOME/.config/Code/User/settings.json";
 
-    # Default MCP server configurations
+    # Default VSCode settings
     # These will be merged with any existing configuration, with user settings taking precedence
     defaultConfig = {
       "workbench.colorTheme" = "Tokyo (Dark)";
       "extensions.experimental.affinity" = {
         "asvetliakov.vscode-neovim" = 1;
       };
+      # Comprehensive telemetry and privacy settings
       "telemetry.editStats.enabled" = false;
       "telemetry.feedback.enabled" = false;
       "telemetry.telemetryLevel" = "off";
+      "telemetry.enableCrashReporter" = false;
+      "telemetry.enableTelemetry" = false;
+      # Disable data sharing dialogs
+      "extensions.ignoreRecommendations" = false;
+      "workbench.enableExperiments" = false;
+      "workbench.settings.enableNaturalLanguageSearch" = false;
+      # Privacy settings
+      "dotfiles.repository" = "";
+      "dotfiles.targetPath" = "";
+      "dotfiles.installCommand" = "";
+      # Disable automatic updates and checks
+      "update.mode" = "none";
+      "extensions.autoCheckUpdates" = false;
+      "extensions.autoUpdate" = false;
+      # Disable usage data collection
+      "redhat.telemetry.enabled" = false;
+      # Roo-specific privacy settings
+      "roo-cline.telemetryEnabled" = false;
+      "RooVeterinaryInc.roo-cline.telemetryEnabled" = false;
     };
 
     description = "VSCode General Configuration";
+
+    # Enable backups for safety
+    createBackups = true;
+
+    # Ensure jq is available for JSON manipulation
+    packages = with pkgs; [ jq ];
+  };
+
+  # Configure VSCode global state to disable welcome/data sharing screens
+  services.jsonConfigManager.vscode-global-state = {
+    enable = true;
+
+    configFile = "$HOME/.config/Code/User/globalStorage/storage.json";
+
+    # Global state settings to prevent welcome screens and data sharing dialogs
+    defaultConfig = {
+      "workbench.welcomePage.hiddenCategories" = [
+        "Beginner"
+        "Intermediate"
+        "Advanced"
+      ];
+      "workbench.startupEditor" = "none";
+      "workbench.tips.enabled" = false;
+      "workbench.welcome.enabled" = false;
+      # Disable extension welcome/setup dialogs
+      "extensionsAssistant.dismissed" = true;
+      "telemetryOptOut" = true;
+      "firstLaunchDate" = "1970-01-01T00:00:00.000Z";
+      "lastSessionDate" = "1970-01-01T00:00:00.000Z";
+      # Roo-specific state to prevent first-time setup dialogs
+      "RooVeterinaryInc.roo-cline.hasShownWelcome" = true;
+      "RooVeterinaryInc.roo-cline.hasAcceptedTerms" = true;
+      "RooVeterinaryInc.roo-cline.telemetryConsent" = false;
+      "rooveterinaryinc.roo-cline.hasShownWelcome" = true;
+      "rooveterinaryinc.roo-cline.hasAcceptedTerms" = true;
+      "rooveterinaryinc.roo-cline.telemetryConsent" = false;
+    };
+
+    description = "VSCode Global State Configuration";
 
     # Enable backups for safety
     createBackups = true;

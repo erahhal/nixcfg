@@ -35,7 +35,7 @@
     # host specific
     ../../profiles/homefree.nix
     ../../profiles/mullvad.nix
-    ../../profiles/ollama.nix
+    # ../../profiles/ollama.nix
     ../../profiles/tailscale.nix
     # ../../profiles/thinkpad-dock-udev-rules.nix
     ../../profiles/totp.nix

@@ -212,6 +212,7 @@ in
   imports = [
     ./swaynotificationcenter.nix
     ./network-manager-applet.nix
+    ## @TODO: quickshell is now in nixpkgs
     # ./quickshell
     ./rofi.nix
     ./hyprlock.nix

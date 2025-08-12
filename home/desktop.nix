@@ -15,6 +15,7 @@ in
     ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
     # ../overlays/zoom-us.nix
+    ../overlays/igv-scaled.nix
   ];
 
   environment.sessionVariables = {
@@ -90,7 +91,7 @@ in
       ./profiles/qt4-hidpi.nix
 
       # VSCode Roo MCP configuration
-      ./profiles/vscode-roo-llm.nix
+      # ./profiles/vscode-roo-llm.nix
       ./profiles/vscode-settings.nix
     ];
 
@@ -390,6 +391,7 @@ in
         glava
         endeavour       # replaces gnome.gnome-todo
         gnome-calculator
+        igv # Integrative Genomics Viewer
         inkscape
         joplin-desktop
         # Not yet available in stable

@@ -1,0 +1,169 @@
+{
+  "providerProfiles": {
+    "currentApiConfigName": "default",
+    "apiConfigs": {
+      "default": {
+        "enableReasoningEffort": true,
+        "apiModelId": "claude-opus-4-1-20250805",
+        "apiKey": "DUMMY",
+        "anthropicBaseUrl": "http://mgp.local.dev.netflix.net:9123/proxy/erahhaldevtools",
+        "anthropicUseAuthToken": false,
+        "apiProvider": "anthropic",
+        "id": "config_1754961635"
+      }
+    },
+    "modeApiConfigs": {
+      "architect": "config_1754961635",
+      "code": "config_1754961635",
+      "ask": "config_1754961635",
+      "debug": "config_1754961635",
+      "orchestrator": "config_1754961635",
+      "test": "config_1754961635",
+      "design-engineer": "config_1754961635",
+      "translate": "config_1754961635",
+      "issue-fixer": "config_1754961635",
+      "integration-tester": "config_1754961635",
+      "docs-extractor": "config_1754961635",
+      "pr-fixer": "config_1754961635",
+      "issue-investigator": "config_1754961635",
+      "merge-resolver": "config_1754961635",
+      "issue-writer": "config_1754961635",
+      "pr-reviewer": "config_1754961635",
+      "mode-writer": "config_1754961635"
+    }
+  },
+  "globalSettings": {
+    "lastShownAnnouncementId": "jul-29-2025-3-25-0",
+    "condensingApiConfigId": "",
+    "customCondensingPrompt": "",
+    "autoApprovalEnabled": true,
+    "alwaysAllowReadOnly": true,
+    "alwaysAllowReadOnlyOutsideWorkspace": false,
+    "alwaysAllowWrite": true,
+    "alwaysAllowWriteOutsideWorkspace": false,
+    "alwaysAllowWriteProtected": false,
+    "writeDelayMs": 1000,
+    "alwaysAllowBrowser": true,
+    "alwaysApproveResubmit": false,
+    "requestDelaySeconds": 10,
+    "alwaysAllowMcp": true,
+    "alwaysAllowModeSwitch": true,
+    "alwaysAllowSubtasks": true,
+    "alwaysAllowExecute": true,
+    "alwaysAllowFollowupQuestions": false,
+    "followupAutoApproveTimeoutMs": 60000,
+    "alwaysAllowUpdateTodoList": true,
+    "allowedCommands": [
+      "npm test",
+      "npm install",
+      "tsc",
+      "git log",
+      "git diff",
+      "git show",
+      "*"
+    ],
+    "deniedCommands": [],
+    "autoCondenseContext": true,
+    "autoCondenseContextPercent": 100,
+    "maxConcurrentFileReads": 5,
+    "includeDiagnosticMessages": true,
+    "maxDiagnosticMessages": 50,
+    "browserToolEnabled": true,
+    "browserViewportSize": "1280x800",
+    "screenshotQuality": 75,
+    "remoteBrowserEnabled": false,
+    "enableCheckpoints": true,
+    "ttsEnabled": false,
+    "ttsSpeed": 1,
+    "soundEnabled": true,
+    "soundVolume": 0.5,
+    "maxOpenTabsContext": 20,
+    "maxWorkspaceFiles": 200,
+    "showRooIgnoredFiles": true,
+    "maxReadFileLine": -1,
+    "maxImageFileSize": 5,
+    "maxTotalImageSize": 20,
+    "terminalOutputLineLimit": 500,
+    "terminalOutputCharacterLimit": 50000,
+    "terminalShellIntegrationTimeout": 5000,
+    "terminalShellIntegrationDisabled": false,
+    "terminalCommandDelay": 0,
+    "terminalPowershellCounter": false,
+    "terminalZshClearEolMark": true,
+    "terminalZshOhMy": false,
+    "terminalZshP10k": false,
+    "terminalZdotdir": false,
+    "terminalCompressProgressBar": true,
+    "experiments": {
+      "powerSteering": false,
+      "multiFileApplyDiff": false,
+      "preventFocusDisruption": false,
+      "assistantMessageParser": false
+    },
+    "codebaseIndexModels": {
+      "openai": {
+        "text-embedding-3-small": {
+          "dimension": 1536
+        },
+        "text-embedding-3-large": {
+          "dimension": 3072
+        },
+        "text-embedding-ada-002": {
+          "dimension": 1536
+        }
+      },
+      "ollama": {
+        "nomic-embed-text": {
+          "dimension": 768
+        },
+        "nomic-embed-code": {
+          "dimension": 3584
+        },
+        "mxbai-embed-large": {
+          "dimension": 1024
+        },
+        "all-minilm": {
+          "dimension": 384
+        }
+      },
+      "openai-compatible": {
+        "text-embedding-3-small": {
+          "dimension": 1536
+        },
+        "text-embedding-3-large": {
+          "dimension": 3072
+        },
+        "text-embedding-ada-002": {
+          "dimension": 1536
+        },
+        "nomic-embed-code": {
+          "dimension": 3584
+        }
+      },
+      "gemini": {
+        "text-embedding-004": {
+          "dimension": 768
+        },
+        "gemini-embedding-001": {
+          "dimension": 3072
+        }
+      },
+      "mistral": {
+        "codestral-embed-2505": {
+          "dimension": 1536
+        }
+      }
+    },
+    "language": "en",
+    "telemetrySetting": "disabled",
+    "mcpEnabled": true,
+    "mode": "code",
+    "customModes": [],
+    "customSupportPrompts": {
+      "CONDENSE": ""
+    },
+    "includeTaskHistoryInEnhance": false,
+    "profileThresholds": {},
+    "hasOpenedModeSelector": true
+  }
+}

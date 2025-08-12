@@ -117,8 +117,8 @@ in
     environment.systemPackages = with pkgs; [ sddm-astronaut ];
 
     # To prevent getting stuck at shutdown
-    systemd.extraConfig = "DefaultTimeoutStopSec=10s";
-    # systemd.settings.Manager.DefaultTimeoutStopSec = "10s";
+    # systemd.extraConfig = "DefaultTimeoutStopSec=10s";
+    systemd.settings.Manager.DefaultTimeoutStopSec = "10s";
 
     ## Does not work to change SDDM cursor size
     # systemd.services.display-manager = {

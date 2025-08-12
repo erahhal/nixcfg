@@ -140,6 +140,7 @@ in
         joplin
         pandoc
         ranger
+        samtools # DNA file processing
         spotify-player
         # unstable.youtube-dl
         trunk.yt-dlp
@@ -162,7 +163,8 @@ in
 
         ## genai
         litellm
-        vllm
+        ## @BROKEN
+        # vllm  # Commented out due to build failures after flake update
 
         ## python
         pyright
