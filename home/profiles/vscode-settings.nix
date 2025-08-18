@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ pkgs, userParams, ... }:
 
 # VSCode Roo MCP Configuration Manager
 #
@@ -68,6 +68,17 @@
           "get_plan"
         ];
       };
+      newt = {
+        command = "/etc/profiles/per-user/${userParams.username}/bin/newt";
+        args = [
+          "mcp"
+          "server"
+        ];
+        env = {
+          HOME = "/home/${userParams.username}";
+        };
+        cwd = "/home/${userParams.username}/Code";
+      };
       jetbrains = {
         command = "npx";
         args = [
@@ -108,8 +119,6 @@
       "telemetry.editStats.enabled" = false;
       "telemetry.feedback.enabled" = false;
       "telemetry.telemetryLevel" = "off";
-      "telemetry.enableCrashReporter" = false;
-      "telemetry.enableTelemetry" = false;
       # Disable data sharing dialogs
       "extensions.ignoreRecommendations" = false;
       "workbench.enableExperiments" = false;
@@ -127,6 +136,20 @@
       # Roo-specific privacy settings
       "roo-cline.telemetryEnabled" = false;
       "RooVeterinaryInc.roo-cline.telemetryEnabled" = false;
+      "terminal.integrated.profile.linux" = {
+        "bash" = {
+          "path" = "${pkgs.bash}/bin/bash";
+        };
+      };
+      "terminal.integrated.defaultProfiles.linux" = "bash";
+      "terminal.integrated.automationProfile.linux" = {
+        "path" = "${pkgs.bash}/bin/bash";
+      };
+      "terminal.integrated.env.linux" = {
+        "SHELL" = "${pkgs.bash}/bash";
+      };
+      "terminal.external.linuxExec" = "${pkgs.foot}/bin/foot";
+      "terminal.integrated.shellIntegration.history" = 100000;
     };
 
     description = "VSCode General Configuration";
@@ -137,6 +160,7 @@
     # Ensure jq is available for JSON manipulation
     packages = with pkgs; [ jq ];
   };
+
 
   # Configure VSCode global state to disable welcome/data sharing screens
   services.jsonConfigManager.vscode-global-state = {

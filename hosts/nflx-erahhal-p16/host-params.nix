@@ -5,7 +5,7 @@
       hostName = "nflx-erahhal-p16";
       uid = 1026;
       gid = 100;
-      timeZone = "America/Denver";
+      # timeZone = "America/Denver";
     };
 
     containers = {

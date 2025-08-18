@@ -9,6 +9,7 @@ let
   kvantumpreview = pkgs.writeShellScriptBin "kvantumpreview" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantumpreview $@
   '';
+  bambu-studio-provisional = pkgs.callPackage ../provisional/bambu-studio {};
 in
 {
   imports = [
@@ -91,7 +92,6 @@ in
       ./profiles/qt4-hidpi.nix
 
       # VSCode Roo MCP configuration
-      # ./profiles/vscode-roo-llm.nix
       ./profiles/vscode-settings.nix
     ];
 
@@ -285,7 +285,7 @@ in
       # ---------------------------------------------------------------------------
       # Command line
       # ---------------------------------------------------------------------------
-      MANPAGER = "vim -c ASMANPAGER -";
+      # MANPAGER = "vim -c ASMANPAGER -";
 
       # ---------------------------------------------------------------------------
       # BELOW: Desktop Environment
@@ -375,7 +375,10 @@ in
 
         ## apps
         audacity
-        bambu-studio
+        ## @BROKEN: Installs but doesn't really work
+        # bambu-studio
+        ## PR-based
+        # bambu-studio-provisional
         bitwarden
         brave
         czkawka

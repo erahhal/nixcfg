@@ -8,6 +8,8 @@ pkill slack
 pkill Slack
 pkill brave
 pkill Brave
+pkill joplin-desktop
+pkill code
 pkill spotify
 pkill Spotify
 pkill firefox

@@ -98,7 +98,7 @@ in
         # "[workspace 6 silent] whatsapp-for-linux"
         # "[workspace 7 silent] discord"
         "[workspace 7 silent] vesktop"
-        "[workspace 9 silent] joplin"
+        "[workspace 9 silent] joplin-desktop"
         # "[workspace 7 silent] element-desktop"
         "[workspace 1 silent] chromium"
       ];
