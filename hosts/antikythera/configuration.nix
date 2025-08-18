@@ -8,52 +8,83 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.05"; # Did you read the comment?
 
-  imports =
-    [
-      # Standard
-      ../../home/user.nix
-      ../../home/desktop.nix
-      ../../profiles/common.nix
-      ../../profiles/appimage.nix
-      ../../profiles/desktop.nix
-      ../../profiles/pipewire.nix
-      ../../profiles/snapcast.nix
-      ../../profiles/wireless.nix
+  imports = [
+    # Standard
+    ../../home/user.nix
+    ../../home/desktop.nix
+    ../../profiles/common.nix
+    ../../profiles/appimage.nix
+    ../../profiles/desktop.nix
+    ../../profiles/pipewire.nix
+    ../../profiles/snapcast.nix
+    ../../profiles/wireless.nix
 
-      # device specific
-      ./disk-config-btrfs.nix
-      ./hardware-configuration.nix
-      ../../profiles/android.nix
-      ../../profiles/exclusive-lan.nix
-      # ../../profiles/jovian.nix
-      ../../profiles/laptop-hardware.nix
-      # ../../profiles/steam.nix
+    # device specific
+    ./disk-config-btrfs.nix
+    ./hardware-configuration.nix
+    ../../profiles/android.nix
+    ../../profiles/exclusive-lan.nix
+    # ../../profiles/jovian.nix
+    ../../profiles/laptop-hardware.nix
+    # ../../profiles/steam.nix
 
-      # host specific
-      ../../profiles/homefree.nix
-      ../../profiles/mullvad.nix
-      ../../profiles/tailscale.nix
-      ../../profiles/thinkpad-dock-udev-rules.nix
-      ../../profiles/totp.nix
-      ../../profiles/udev.nix
-      ../../profiles/waydroid.nix
-      ../../profiles/wireguard.nix
-      ## Only needed if the docker version needs to be overridden for some reason
-      # ../../overlays/docker.nix
-      ../../overlays/bcompare-beta.nix
-      ../../overlays/chromium-wayland-ime.nix
-      ./virtualization.nix
+    # host specific
+    ../../profiles/homefree.nix
+    ../../profiles/mullvad.nix
+    ../../profiles/tailscale.nix
+    ../../profiles/thinkpad-dock-udev-rules.nix
+    ../../profiles/totp.nix
+    ../../profiles/udev.nix
+    ../../profiles/waydroid.nix
+    ../../profiles/wireguard.nix
+    ## Only needed if the docker version needs to be overridden for some reason
+    # ../../overlays/docker.nix
+    ../../overlays/bcompare-beta.nix
+    ../../overlays/chromium-wayland-ime.nix
+    ./virtualization.nix
 
-      # user specific
-      ./user.nix
+    # user specific
+    ./user.nix
 
-      # Display config
-      ./kanshi.nix
-      ./launch-apps-config-sway.nix
+    # Display config
+    ./kanshi.nix
+    ./launch-apps-config-sway.nix
 
-      ../../profiles/nfs-mounts.nix
-      # ../../profiles/smb-mounts.nix
+    ../../profiles/nfs-mounts.nix
+    # ../../profiles/smb-mounts.nix
+  ];
+
+  nixpkgs = {
+    overlays = [
+      (final: prev: {
+        zoom-us-scaled = prev.zoom-us.overrideAttrs (oldAttrs: {
+          pname = "zoom-us-scaled";
+
+          postInstall = (oldAttrs.postInstall or "") + ''
+            # Modify the desktop file to include scaling environment variables
+            substituteInPlace $out/share/applications/Zoom.desktop \
+              --replace "Exec=zoom" "Exec=env QT_AUTO_SCREEN_SCALE_FACTOR=1 QT_ENABLE_HIGHDPI_SCALING=1 QT_SCALE_FACTOR=1.5 USE_PHYSICAL_DPI=1 zoom" \
+              --replace "Name=Zoom" "Name=Zoom (Scaled)"
+          '';
+        });
+      })
+      # (final: prev: {
+      #   zoom-us-scaled = prev.zoom-us.overrideAttrs (oldAttrs: {
+      #     pname = "zoom-us-scaled";
+      #
+      #     postInstall = (oldAttrs.postInstall or "") + ''
+      #       # Modify the desktop file to include scaling environment variables
+      #       substituteInPlace $out/share/applications/Zoom.desktop \
+      #         --replace "Exec=zoom" "Exec=env QT_SCALE_FACTOR=1.5 zoom" \
+      #         --replace "Name=Zoom" "Name=Zoom (Scaled)"
+      #     '';
+      #   });
+      # })
     ];
+    # config.packageOverrides = pkgs: {
+    #   zoom-us = pkgs.zoom-us-scaled;
+    # };
+  };
 
   # Needed to setup passwords
   users.users.root.openssh.authorizedKeys.keys = [

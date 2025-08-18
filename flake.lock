@@ -1395,14 +1395,17 @@
     },
     "nflx": {
       "locked": {
-        "lastModified": 1754683162,
-        "narHash": "sha256-UqcXNYIkVY59SgI6KsZ2R4s/Gv7LbSquFC1Qopc0AMU=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1753984495,
+        "narHash": "sha256-eL/0dkpNxRAEXVlKTqyfO9IFm0zS8WHlMftcsFXbfjw=",
+        "ref": "refs/heads/master",
+        "rev": "01582a75b26f0271865f60addb823e49ad0c850e",
+        "revCount": 45,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nflx-vpn": {
@@ -1414,14 +1417,17 @@
         "openconnect-pulse-launcher-browser": "openconnect-pulse-launcher-browser"
       },
       "locked": {
-        "lastModified": 1755062244,
-        "narHash": "sha256-xsM9s6A35U9YoCYuYKImksoTqtO0V0rS4MaN2PQDs0s=",
-        "path": "/home/erahhal/Code/nixcfg-nflx-vpn",
-        "type": "path"
+        "lastModified": 1753984432,
+        "narHash": "sha256-q1GPrBQT4kKCnu0l2SVQUDjyK+Enixfl1A7NcHpk3Qc=",
+        "ref": "refs/heads/master",
+        "rev": "aee8b70f1568c73b9b3b8ddeff6dd526e9ff3a9a",
+        "revCount": 18,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx-vpn",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       }
     },
     "nix": {
@@ -2717,11 +2723,11 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1754716590,
-        "narHash": "sha256-qW8LPz4GDL33fDHLZrvR+7GAYQrPrMsZmNJZz2JFRqw=",
+        "lastModified": 1755536952,
+        "narHash": "sha256-3JPc9SMrsfr2WDLhnbO+11XpllgakQ4GUKQHDcnwEtk=",
         "ref": "refs/heads/master",
-        "rev": "53b73f5349bc3f1021c22fc7ce64e3774541849b",
-        "revCount": 26,
+        "rev": "0d14cd6323ac1c0444d4b7eb549779ecc9b092bd",
+        "revCount": 27,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

@@ -53,6 +53,7 @@
         "robotnix.cachix.org-1:+y88eX6KTvkJyernp1knbpttlaLTboVp4vq/b24BIv0="
         "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       ];
+      download-buffer-size = 524288000;
     };
     # Additional text appended to nix.conf
     extraOptions =

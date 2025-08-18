@@ -11,6 +11,7 @@
       multipleSessions = true;
       dpi = 192;
       wallpaper = ../../wallpapers/yellowstone.jpg;
+      disableXwaylandScaling = true;
     };
 
     programs = {

@@ -48,10 +48,6 @@
         "workspace 3, silent, class:^(Slack)$"
         "workspace 4, silent, title:^(Spotify)$"
         "workspace 4, silent, class:^(brave-browser)$"
-        "workspace 5, initialClass:^(@joplin/app-desktop)$"
-        "workspace 5, class:^(@joplin/app-desktop)$"
-        "workspace 5, initialTitle:^(Joplin)$"
-        "workspace 5, title:^(Joplin)$"
         # "workspace 5, silent, class:^(firefox)$"
         # "workspace 5, silent, class:^(floorp)$"
         # "workspace 5, silent, class:^(librewolf)$"
@@ -61,6 +57,10 @@
         "workspace 7, class:^(discord)$"
         "workspace 7, class:^(vesktop)$"
         "workspace 7, class:^(Element)$"
+        "workspace 9, initialClass:^(@joplin/app-desktop)$"
+        "workspace 9, class:^(@joplin/app-desktop)$"
+        "workspace 9, initialTitle:^(Joplin)$"
+        "workspace 9, title:^(Joplin)$"
         "workspace 1, silent, class:^(chromium-browser)$"
       ];
 
@@ -68,13 +68,13 @@
         "[workspace 2 silent] ${userParams.tty} tmux a -dt code"
         "[workspace 4 silent] spotify"
         "[workspace 4 silent] brave"
-        "[workspace 5 silent] joplin"
         "[workspace 6 silent] signal-desktop"
         "[workspace 6 silent] telegram-desktop"
         "[workspace 6 silent] whatsapp-for-linux"
         # "[workspace 7 silent] discord"
         "[workspace 7 silent] vesktop"
         "[workspace 7 silent] element-desktop"
+        "[workspace 9 silent] joplin-desktop"
         "[workspace 5 silent] firefox"
       ];
     };
