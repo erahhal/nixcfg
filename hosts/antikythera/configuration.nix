@@ -50,7 +50,7 @@
     ./kanshi.nix
     ./launch-apps-config-sway.nix
 
-    ../../profiles/nfs-mounts.nix
+    # ../../profiles/nfs-mounts.nix
     # ../../profiles/smb-mounts.nix
   ];
 

@@ -501,6 +501,8 @@ in
         "float, class:^(mpv)$"
         "fullscreen, initialClass:^(mpv)$"
         "fullscreen, class:^(mpv)$"
+        "fullscreen, initialClass:^(vimiv)$"
+        "fullscreen, class:^(vimiv)$"
         "idleinhibit focus, initialClass:^(mpv)$"
         "idleinhibit focus, class:^(mpv)$"
         "idleinhibit focus, class:^(zoom)$"

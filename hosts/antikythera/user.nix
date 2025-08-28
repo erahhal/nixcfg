@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    ../../profiles/syncthing.nix
+    # ../../profiles/syncthing.nix
   ];
 
   home-manager.users.${userParams.username} = {

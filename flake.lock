@@ -583,11 +583,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1751413152,
-        "narHash": "sha256-Tyw1RjYEsp5scoigs1384gIg6e0GoBVjms4aXFfRssQ=",
+        "lastModified": 1754487366,
+        "narHash": "sha256-pHYj8gUBapuUzKV/kN/tR3Zvqc7o6gdFB9XKXIp1SQ8=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "77826244401ea9de6e3bac47c2db46005e1f30b5",
+        "rev": "af66ad14b28a127c5c0f3bbb298218fc63528a18",
         "type": "github"
       },
       "original": {
@@ -1893,11 +1893,11 @@
     },
     "nixpkgs_12": {
       "locked": {
-        "lastModified": 1752077645,
-        "narHash": "sha256-HM791ZQtXV93xtCY+ZxG1REzhQenSQO020cu6rHtAPk=",
+        "lastModified": 1754393734,
+        "narHash": "sha256-fbnmAwTQkuXHKBlcL5Nq1sMAzd3GFqCOQgEQw6Hy0Ak=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "be9e214982e20b8310878ac2baa063a961c1bdf6",
+        "rev": "a683adc19ff5228af548c6539dbc3440509bfed3",
         "type": "github"
       },
       "original": {
@@ -2139,11 +2139,11 @@
         "systems": "systems_8"
       },
       "locked": {
-        "lastModified": 1752546848,
-        "narHash": "sha256-WzHqmJ1wEZoUGAedomwcVLCuNsiB9bZzZXk7K9ZDBwk=",
+        "lastModified": 1755703183,
+        "narHash": "sha256-jQFGt4B9DDtEvVhzG5pYeua+/KykbIT31tktLjJC9iE=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "1fb1bf8a73ccf207dbe967cdb7f2f4e0122c8bd5",
+        "rev": "94386cdc4cdb42e90685274066805685d53afa37",
         "type": "github"
       },
       "original": {
@@ -2157,17 +2157,14 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1752711156,
-        "narHash": "sha256-JTycnQR8c0ddEVGUmugo3tF1XJRQ8YWDFyQh7aBHMIY=",
-        "ref": "refs/heads/main",
-        "rev": "b3c13d362f193c41212e3b541f1d762fdd0efdbc",
-        "revCount": 27,
-        "type": "git",
-        "url": "https://git.homefree.host/homefree/nixvim-config"
+        "lastModified": 1755717952,
+        "narHash": "sha256-LBx/AudIARIT/BThZdfMx7ZW8J7sot3MFQw9qC/ntRc=",
+        "path": "/home/erahhal/Code/nixvim-config",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "https://git.homefree.host/homefree/nixvim-config"
+        "path": "/home/erahhal/Code/nixvim-config",
+        "type": "path"
       }
     },
     "nur": {
@@ -2200,11 +2197,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749730855,
-        "narHash": "sha256-L3x2nSlFkXkM6tQPLJP3oCBMIsRifhIDPMQQdHO5xWo=",
+        "lastModified": 1754301638,
+        "narHash": "sha256-aRgzcPDd2axHFOuMlPLuzmDptUM2JU8mUL3jfgbBeyc=",
         "owner": "NuschtOS",
         "repo": "search",
-        "rev": "8dfe5879dd009ff4742b668d9c699bc4b9761742",
+        "rev": "a60091045273484c040a91f5c229ba298f8ecc27",
         "type": "github"
       },
       "original": {
