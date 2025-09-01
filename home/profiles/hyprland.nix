@@ -279,7 +279,7 @@ in
         # Only works with new tmux panes, not existing ones
         ''tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "$HYPRLAND_INSTANCE_SIGNATURE"''
         # "${pkgs.fcitx5-with-addons}/bin/fcitx5 -d --replace"
-        "${pkgs.waybar}/bin/waybar"
+        # "${pkgs.waybar}/bin/waybar"
         # "${pkgs.hyprpaper}/bin/hyprpaper"
 
         ## 1. This is already being set by home-manager

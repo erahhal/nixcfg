@@ -51,7 +51,7 @@ in
       inputs.nix-colors.homeManagerModules.default
       ./profiles/system-theme.nix
       ./profiles/btop.nix
-      ./profiles/gitconfig.nix
+      ./profiles/git-ssh-config.nix
       # ./profiles/captive-browser.nix
       # ./profiles/logseq.nix
       # ./profiles/node-modules.nix

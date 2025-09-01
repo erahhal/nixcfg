@@ -376,7 +376,7 @@ in
         ## apps
         audacity
         ## @BROKEN: Installs but doesn't really work
-        # bambu-studio
+        bambu-studio
         ## PR-based
         # bambu-studio-provisional
         bitwarden

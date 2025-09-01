@@ -107,8 +107,7 @@ in
 
   programs.waybar = {
     enable = true;
-    # If enabled, this will load waybar separately from sway's own config, leading to two bars being loaded
-    systemd.enable = false;
+    systemd.enable = true;
     settings = {
       mainBar = {
         ## Make sure menus are on top of the bar
