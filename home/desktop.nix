@@ -381,6 +381,7 @@ in
         # bambu-studio-provisional
         bitwarden
         brave
+        calibre
         czkawka
         # digikam
         discord
@@ -727,10 +728,10 @@ in
       # J : scroll-edge down
       # K : scroll-edge up
       # L : scroll-edge right
-      b : scroll left
-      n : scroll down
-      m : scroll up
-      , : scroll right
+      n : scroll left
+      m : scroll down
+      , : scroll up
+      . : scroll right
       sl : set slideshow.delay +0.5
       sh : set slideshow.delay -0.5
       ss : slideshow
