@@ -6,10 +6,6 @@
     services.power-profiles-daemon.enable = lib.mkForce false;
 
     home-manager.users.${userParams.username} = { pkgs, ... }: {
-      imports = [
-        inputs.plasma-manager.homeManagerModules.plasma-manager
-      ];
-
       programs = {
         plasma = {
           enable = true;

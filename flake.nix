@@ -57,6 +57,11 @@
 
     flox.url = "github:flox/flox";
 
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Remarkable 2 Tablet Desktop App WINE wrapper
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
@@ -146,6 +151,13 @@
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       nixpkgs.overlays = [ inputs.nur.overlays.default ];
+      home-manager.users.${userParams.username} = {config, ...}: {
+        imports = [
+          inputs.caelestia-shell.homeManagerModules.default
+          inputs.nix-colors.homeManagerModules.default
+          inputs.plasma-manager.homeManagerModules.plasma-manager
+        ];
+      };
     };
   in {
     # lib.pkgsParameters = {

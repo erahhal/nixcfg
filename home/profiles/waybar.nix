@@ -67,7 +67,13 @@ let
 in
 {
   home.packages = with pkgs; [
+    networkmanagerapplet
+    hyprpaper
     waybar
+  ];
+  imports = [
+    ./swaynotificationcenter.nix
+    ./network-manager-applet.nix
   ];
 
   systemd.user.services.nwg-drawer = {
@@ -101,6 +107,16 @@ in
       ];
       Environment = [
         "HOME=%h"  # %h is a special variable that expands to the user's home directory
+      ];
+    };
+  };
+
+  wayland.windowManager.hyprland = {
+    settings = {
+      exec = [
+        "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
+        "systemctl --user restart swaynotificationcenter"
+        "systemctl --user restart network-manager-applet"
       ];
     };
   };

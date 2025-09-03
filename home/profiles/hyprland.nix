@@ -210,13 +210,10 @@ let
 in
 {
   imports = [
-    ./swaynotificationcenter.nix
-    ./network-manager-applet.nix
-    ## @TODO: quickshell is now in nixpkgs
-    # ./quickshell
+    ./waybar.nix
+    # ./caelestia-shell.nix
     ./rofi.nix
     ./hyprlock.nix
-    ./waybar.nix
     ./wlsunset.nix
 
     # ./sway-idle.nix
@@ -230,8 +227,6 @@ in
 
   home.packages = with pkgs; [
     zenity
-    hyprpaper
-    networkmanagerapplet
     imv
     i3status
     wl-clipboard
@@ -292,7 +287,6 @@ in
       # Refresh services and processes
       exec = [
         wallpaper-cmd
-        "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
         ## Running as a service seems to cause Dbus errors
         # "systemctl --user restart blueman-manager-applet"
         ## Crashes Hyprland when used in a multi-monitor setup
@@ -301,8 +295,6 @@ in
         # "systemctl --user restart flameshot"
         "systemctl --user restart xdg-desktop-portal-hyprland"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
-        "systemctl --user restart swaynotificationcenter"
-        "systemctl --user restart network-manager-applet"
         "systemctl --user restart wlsunset"
         # "systemctl --user restart kanshi"
         ## Don't start on load - still causes issues with lost keystrokes

@@ -48,7 +48,6 @@ in
     _module.args.userParams = userParams;
 
     imports = [
-      inputs.nix-colors.homeManagerModules.default
       ./profiles/system-theme.nix
       ./profiles/btop.nix
       ./profiles/git-ssh-config.nix
