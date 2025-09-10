@@ -10,10 +10,43 @@ in
       enable = true;
     };
 
-    environment.systemPackages = [
-      pkgs.niri
+    environment.systemPackages = with pkgs; [
+      niri
+      xwayland-satellite  # This may or may not be available depending on your channel
+      xdg-desktop-portal
+      xdg-desktop-portal-gnome
+      nautilus  # Required for GNOME portal
+      pipewire
+      gnome-keyring
     ];
 
+    xdg.portal = {
+      enable = true;
+      # config = {
+      #   #common.default = "*";
+      #   common = {
+      #     default = ["gnome" "gtk"];
+      #     "org.freedesktop.impl.portal.ScreenCast" = "gnome";
+      #     "org.freedesktop.impl.portal.RemoteDesktop" = "gnome";
+      #     "org.freedesktop.impl.portal.FileChooser" = "gtk";
+      #   };
+      # };
+      configPackages = [config.programs.niri.package];
+      xdgOpenUsePortal = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+        gnome-keyring
+      ];
+    };
+
+    systemd.user.services.xdg-desktop-portal-gnome = {
+      environment = {
+        GDK_BACKEND = "wayland";
+        WAYLAND_DISPLAY = "wayland-1";
+      };
+    };
 
     # Ignore lid switch, and let wm handle it using
     # the lid switch bindings below

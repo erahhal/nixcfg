@@ -17,7 +17,6 @@
     ## Are these needed for sway?
 
     # wlr.enable = true;
-    # gtkUsePortal = true;
   };
 
   # Automated monitor, workspace, layout config

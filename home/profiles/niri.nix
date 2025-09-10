@@ -26,6 +26,39 @@ let
     systemctl poweroff
   '';
 
+  kill-active = pkgs.writeShellScript "niri-kill-active.sh" ''
+    if [ "$(${niri} msg -j focused-window | jq -r ".app_id")" = "Steam" ]; then
+        ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
+    elif [ "$(${niri} msg -j focused-window | jq -r ".app_id")" = "foot" ]; then
+        echo "Not closing."
+    else
+        ${niri} msg action close-window
+    fi
+  '';
+
+  kill-active-force = pkgs.writeShellScript "niri-kill-active-force.sh" ''
+    ${niri} msg -j focused-window | ${pkgs.jq}/bin/jq '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9
+  '';
+
+  capture-screen = pkgs.writeShellScript "niri-capture-screen.sh" ''
+    ${pkgs.grim}/bin/grim -o $(${niri} msg -j focused-output | jq -r '.name') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+  '';
+
+  capture-selection = pkgs.writeShellScript "niri-capture-selection.sh" ''
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -d)" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+  '';
+
+  capture-window = pkgs.writeShellScript "niri-capture-window.sh" ''
+    offset_x=$(${niri} msg -j focused-window | jq -r '.layout.window_offset_in_tile[0]')
+    offset_x=$(printf "%.0f" "$offset_x")
+    offset_y=$(${niri} msg -j focused-window | jq -r '.layout.window_offset_in_tile[1]')
+    offset_y=$(printf "%.0f" "$offset_y")
+    size=$(${niri} msg -j focused-window | jq -r '.layout.window_size | join("x")')
+    offset="$offset_x,$offset_y $size"
+    ${pkgs.grim}/bin/grim -g "$offset" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
+  '';
+
+
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
   wallpaper-cmd = if (osConfig.hostParams.desktop.wallpaper != null) then pkgs.writeShellScript "niri-wallpaper" ''
@@ -190,10 +223,44 @@ in
     enable = true;
   };
 
+  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
+    [preferred]
+    default=gtk
+    org.freedesktop.impl.portal.FileChooser=gtk;
+    org.freedesktop.impl.portal.ScreenCast=gnome;
+    org.freedesktop.impl.portal.Screenshot=gnome;
+    org.freedesktop.impl.portal.RemoteDesktop=gnome;
+  '';
+
+  xdg.configFile."xdg-desktop-portal/niri-portals.conf".text = ''
+    [preferred]
+    default=gtk
+    org.freedesktop.impl.portal.FileChooser=gtk;
+    org.freedesktop.impl.portal.ScreenCast=gnome;
+    org.freedesktop.impl.portal.Screenshot=gnome;
+    org.freedesktop.impl.portal.RemoteDesktop=gnome;
+  '';
+
   xdg.configFile."niri/config.kdl".text = ''
     debug {
         honor-xdg-activation-with-invalid-serial
     }
+
+    environment {
+        GDK_BACKEND "wayland"
+        MOZ_ENABLE_WAYLAND "1"
+    }
+
+    output "eDP-1" {
+      mode "2880x1800@120"
+      scale 1.8
+    }
+
+    output "Lenovo Group Limited P40w-20 V90DFGMV" {
+      mode "5120x2150@60.000"
+      scale 1.332031
+    }
+
     // This config is in the KDL format: https://kdl.dev
     // "/-" comments out the following node.
     // Check the wiki for a full description of the configuration:
@@ -335,9 +402,9 @@ in
             // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
             // The default preset widths are 1/3, 1/2 and 2/3 of the output.
             proportion 1.0
-            proportion 0.33333
+            // proportion 0.33333
             proportion 0.5
-            proportion 0.66667
+            // proportion 0.66667
 
             // Fixed sets the width in logical pixels exactly.
             // fixed 1920
@@ -486,10 +553,13 @@ in
     spawn-at-startup "systemctl" "--user" "restart" "kanshi"
     // spawn-at-startup "${adjust-window-sizes}"
     spawn-at-startup "systemctl" "--user" "restart" "hypridle"
-    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gnome"
-    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gtk"
+    spawn-at-startup "systemctl" "--user" "stop" "xdg-desktop-portal-wlr"
+    spawn-at-startup "systemctl" "--user" "stop" "xdg-desktop-portal-hyprland"
+    // spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gnome"
+    // spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gtk"
     spawn-at-startup "systemctl" "--user" "restart" "polkit-gnome-authentication-agent-1"
     spawn-at-startup "systemctl" "--user" "restart" "wlsunset"
+    spawn-at-startup "dbus-update-activation-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP=niri" "DISPLAY"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
@@ -657,15 +727,15 @@ in
         // Use spawn to run a shell command. Do this if you need pipes, multiple commands, etc.
         // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
         // For example, this is a standard bind to toggle the screen reader (orca).
-        Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn "pkill orca || exec orca"; }
+        Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn "pkill" "orca" "||" "exec" "orca"; }
 
         // Example volume keys mappings for PipeWire & WirePlumber.
         // The allow-when-locked=true property makes them work even when the session is locked.
         // Using spawn allows to pass multiple arguments together with the command.
-        XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
-        XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-        XF86AudioMute        allow-when-locked=true { spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-        XF86AudioMicMute     allow-when-locked=true { spawn "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+        XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
+        XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
+        XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+        XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
         // Example brightness key mappings for brightnessctl.
         // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
@@ -678,7 +748,9 @@ in
         // or do a four-finger swipe up on a touchpad.
         Mod+O repeat=false { toggle-overview; }
 
-        Mod+C repeat=false { close-window; }
+        // Mod+C repeat=false { close-window; }
+        Mod+C repeat=false hotkey-overlay-title="Close focused window" { spawn "${kill-active}"; }
+        Mod+Shift+C repeat=false hotkey-overlay-title="Force Close focused window" { spawn "${kill-active-force}"; }
 
         Mod+Left  { focus-column-left; }
         Mod+Down  { focus-window-down; }
@@ -776,6 +848,10 @@ in
         Mod+Shift+WheelScrollUp        { focus-column-left; }
         Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
         Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+        Ctrl+Shift+3 hotkey-overlay-title="Catpure Active Screen" { spawn "${capture-screen}" ; }
+        Ctrl+Shift+4 hotkey-overlay-title="Catpure Selection" { spawn "${capture-selection}" ; }
+        Ctrl+Shift+5 hotkey-overlay-title="Catpure Active Window" { spawn "${capture-window}" ; }
 
         // Similarly, you can bind touchpad scroll "ticks".
         // Touchpad scrolling is continuous, so for these binds it is split into
