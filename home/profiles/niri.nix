@@ -3,6 +3,13 @@
 let
   niri = "${pkgs.niri}/bin/niri";
   rofi = ''"${pkgs.rofi-wayland}/bin/rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"'';
+  toggle-fcitx = pkgs.writeShellScript "toggle-fcitx" ''
+    if systemctl --user is-active --quiet fcitx5-daemon; then
+      systemctl --user stop fcitx5-daemon
+    else
+      systemctl --user start fcitx5-daemon
+    fi
+  '';
   exit-niri = pkgs.writeShellScript "exit-niri" ''
     ${builtins.readFile ../../scripts/kill-all-apps.sh}
 
@@ -45,7 +52,7 @@ let
   hyprlockCommand = pkgs.callPackage ../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
 
   # Create a script to toggle between inputs only on P40w-20 monitors
-  toggle-input = pkgs.writeShellScript "toggle-input" ''
+  toggle-thinkvision-input = pkgs.writeShellScript "toggle-input" ''
     # Check if P40w-20 monitor is connected
     MONITOR_CONNECTED=$(${pkgs.ddcutil}/bin/ddcutil detect | grep -i "P40w-20")
 
@@ -184,6 +191,9 @@ in
   };
 
   xdg.configFile."niri/config.kdl".text = ''
+    debug {
+        honor-xdg-activation-with-invalid-serial
+    }
     // This config is in the KDL format: https://kdl.dev
     // "/-" comments out the following node.
     // Check the wiki for a full description of the configuration:
@@ -475,6 +485,11 @@ in
     // spawn-at-startup "waybar"
     spawn-at-startup "systemctl" "--user" "restart" "kanshi"
     // spawn-at-startup "${adjust-window-sizes}"
+    spawn-at-startup "systemctl" "--user" "restart" "hypridle"
+    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gnome"
+    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gtk"
+    spawn-at-startup "systemctl" "--user" "restart" "polkit-gnome-authentication-agent-1"
+    spawn-at-startup "systemctl" "--user" "restart" "wlsunset"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
@@ -633,9 +648,11 @@ in
         Mod+Return hotkey-overlay-title="Open a Terminal: foot" { spawn "foot"; }
         // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
         Mod+P hotkey-overlay-title="Run an Application: rofi" { spawn ${rofi}; }
-        Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+        // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+        Mod+X hotkey-overlay-title="Lock the Screen: hyprlock" { spawn "${hyprlockCommand}"; }
+        Mod+E hotkey-overlay-title="Toggle fcitx5 daemon" { spawn "${toggle-fcitx}"; }
 
-        Mod+G hotkey-overlay-title="Switch ThinkVision Monitor Input" { spawn "${toggle-input}"; }
+        Mod+G hotkey-overlay-title="Switch ThinkVision Monitor Input" { spawn "${toggle-thinkvision-input}"; }
 
         // Use spawn to run a shell command. Do this if you need pipes, multiple commands, etc.
         // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
