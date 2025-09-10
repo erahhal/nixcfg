@@ -107,8 +107,8 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    # nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
+    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
+    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
 
     nflx-vpn = {
       url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
@@ -119,8 +119,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 

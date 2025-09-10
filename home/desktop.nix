@@ -563,6 +563,7 @@ in
       # hwdec=auto-safe
       # hwdec=vaapi   # Set this in case nvidia opengl is broken
       vo=gpu
+      opengl-es=yes
       profile=gpu-hq
       gpu-context=wayland
 

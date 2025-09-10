@@ -127,7 +127,14 @@ in
     settings = {
       mainBar = {
         ## Make sure menus are on top of the bar
-        layer = "bottom";
+        ## Only a problem in Hyprland
+        # layer = "bottom";
+
+        ## Prevents waybar from scrolling when switching workspaces in Niri
+        layer = "top";
+
+        ## Maybe this prevents menus from going behind waybar on Hyprland - test it
+        exclusive = true;
 
         position = "bottom";
 
@@ -139,6 +146,7 @@ in
           "wlr/taskbar"
           "hyprland/workspaces"
           "hyprland/window"
+          "niri/window"
         ] else [
           "custom/launcher"
           "sway/workspaces"
@@ -146,6 +154,8 @@ in
           "sway/window"
           "hyprland/workspaces"
           "hyprland/window"
+          "niri/workspaces"
+          "niri/window"
         ];
 
         "sway/workspaces" = {

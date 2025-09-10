@@ -123,11 +123,11 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1756806741,
-        "narHash": "sha256-eYHugSe3NezGLJQPQyC3HVZrLZ5TP+MrA/FeAZ8iN0g=",
+        "lastModified": 1756905418,
+        "narHash": "sha256-mhJaX5DIjVqMOzZcqnmm3CbIQGB57JoJmmvq8OMt69Y=",
         "owner": "caelestia-dots",
         "repo": "shell",
-        "rev": "2d7d01354a10eeeab3db8bc9c13538c50a8aa024",
+        "rev": "bcba9f6d73dcc7ec45eb6eaa0c5ad33fe7f50cf4",
         "type": "github"
       },
       "original": {
@@ -815,11 +815,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1756828958,
-        "narHash": "sha256-1A8dc15epivu6WH+1smYJW4rGaCDSuZX/6IBd/35QHs=",
+        "lastModified": 1756922338,
+        "narHash": "sha256-IvkX5bvu4xY9QSuzRROA9ZZdg5rbtpx4pu5kmSixl8U=",
         "owner": "flox",
         "repo": "flox",
-        "rev": "8d4c7e521893bc5cc99bc419d98c90082c1e062d",
+        "rev": "1389b99d61cd8401e8bcdfb56f1146df4eb0bad0",
         "type": "github"
       },
       "original": {
@@ -944,11 +944,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1756788591,
-        "narHash": "sha256-LOrOfPWpJU/ADWDyVwPv9XNuYPq5KJtmAmSzplpccmE=",
+        "lastModified": 1756903364,
+        "narHash": "sha256-vZh/YH2D7oDFek10r0TbGn3qJrqGv69sSP+oF8PFDqQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "f3d3b4592a73fb64b5423234c01985ea73976596",
+        "rev": "6159629d05a0e92bb7fb7211e74106ae1d552401",
         "type": "github"
       },
       "original": {
@@ -1441,14 +1441,17 @@
     },
     "nflx": {
       "locked": {
-        "lastModified": 1756753296,
-        "narHash": "sha256-SJSBFpeeHarmsijitm70gtLaJNWXrs8ZGFoPQ9DBHkM=",
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "lastModified": 1756753294,
+        "narHash": "sha256-TKItbDiinyWcO4LSRC2bwKd1aKoYuFSmfvfvJpVEJns=",
+        "ref": "refs/heads/master",
+        "rev": "0898525033799e44de7e15e211508c107105bde3",
+        "revCount": 47,
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixcfg-nflx",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       }
     },
     "nflx-vpn": {
@@ -1691,11 +1694,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1756750488,
-        "narHash": "sha256-e4ZAu2sjOtGpvbdS5zo+Va5FUUkAnizl4wb0/JlIL2I=",
+        "lastModified": 1756925795,
+        "narHash": "sha256-kUb5hehaikfUvoJDEc7ngiieX88TwWX/bBRX9Ar6Tac=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "47eb4856cfd01eaeaa7bb5944a0f27db8fb9b94a",
+        "rev": "ba6fab29768007e9f2657014a6e134637100c57d",
         "type": "github"
       },
       "original": {
@@ -1873,11 +1876,11 @@
     },
     "nixpkgs-trunk": {
       "locked": {
-        "lastModified": 1756833614,
-        "narHash": "sha256-+3LmJZnFVbldurdz41rD+f/aJdpeX1ea/FDJOAjQiSE=",
+        "lastModified": 1756928278,
+        "narHash": "sha256-w59vKB8BNGzktwyWEfxwxLv84X3o1yxctIhHPm0t/EM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "3223ba866228c80821bb092e5d4d271db3ede604",
+        "rev": "147f230375d8d3797abe6919a0ca25eeb5104ce8",
         "type": "github"
       },
       "original": {
@@ -1888,11 +1891,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1756542300,
-        "narHash": "sha256-tlOn88coG5fzdyqz6R93SQL5Gpq+m/DsWpekNFhqPQk=",
+        "lastModified": 1756787288,
+        "narHash": "sha256-rw/PHa1cqiePdBxhF66V7R+WAP8WekQ0mCDG4CFqT8Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d7600c775f877cd87b4f5a831c28aa94137377aa",
+        "rev": "d0fc30899600b9b3466ddb260fd83deb486c32f1",
         "type": "github"
       },
       "original": {
@@ -1920,11 +1923,11 @@
     },
     "nixpkgs_11": {
       "locked": {
-        "lastModified": 1756542300,
-        "narHash": "sha256-tlOn88coG5fzdyqz6R93SQL5Gpq+m/DsWpekNFhqPQk=",
+        "lastModified": 1756787288,
+        "narHash": "sha256-rw/PHa1cqiePdBxhF66V7R+WAP8WekQ0mCDG4CFqT8Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d7600c775f877cd87b4f5a831c28aa94137377aa",
+        "rev": "d0fc30899600b9b3466ddb260fd83deb486c32f1",
         "type": "github"
       },
       "original": {
@@ -1952,11 +1955,11 @@
     },
     "nixpkgs_13": {
       "locked": {
-        "lastModified": 1756542300,
-        "narHash": "sha256-tlOn88coG5fzdyqz6R93SQL5Gpq+m/DsWpekNFhqPQk=",
+        "lastModified": 1756787288,
+        "narHash": "sha256-rw/PHa1cqiePdBxhF66V7R+WAP8WekQ0mCDG4CFqT8Y=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d7600c775f877cd87b4f5a831c28aa94137377aa",
+        "rev": "d0fc30899600b9b3466ddb260fd83deb486c32f1",
         "type": "github"
       },
       "original": {
@@ -2200,14 +2203,17 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1756753247,
-        "narHash": "sha256-mRx+nnucOUBnrWdXRA3v+PU8oZIrTAH6qxshlzcs8Tc=",
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "lastModified": 1755718375,
+        "narHash": "sha256-J4QnOV2iDuhNv2ak7hpg+2PzTpVTAeqFxnVkbLpwm+0=",
+        "ref": "refs/heads/main",
+        "rev": "dbb4a5f19f7d056c3cff1063073d3fca5f8f88fa",
+        "revCount": 28,
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       }
     },
     "nur": {
@@ -2216,11 +2222,11 @@
         "nixpkgs": "nixpkgs_13"
       },
       "locked": {
-        "lastModified": 1756831509,
-        "narHash": "sha256-IsOjRsuuiWwJMse0ZyTT5YOAhmE+l7CBJ7l5wxZ+NIY=",
+        "lastModified": 1756928605,
+        "narHash": "sha256-MRTDR1vsWg89QnFy8ZdW+KReTnXPXxK4h2gSXuq67z8=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "931c653b4ecee6d21326626409721f742022591b",
+        "rev": "61863e1cb58c7842a7dcad2a4d56c269af5df770",
         "type": "github"
       },
       "original": {
@@ -2589,11 +2595,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1756352679,
-        "narHash": "sha256-UkKaPXTPzT7HAcBOV4NlWx2GAEJaTf0eb5OX6Q6jPqg=",
+        "lastModified": 1756831196,
+        "narHash": "sha256-ce3GbGNCYSXswHpoSKXxRDlGNcsZ30lciERrtjCz1Qo=",
         "ref": "refs/heads/master",
-        "rev": "f7597cdae2d537c5b12843599955856090dc49d5",
-        "revCount": 668,
+        "rev": "f592793873f3cab387fafdad1d08a696a0edcede",
+        "revCount": 669,
         "type": "git",
         "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
       },
@@ -2785,11 +2791,11 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1756248063,
-        "narHash": "sha256-VIg/PZ1bLnMfaEbHhPxAFKC6Gx/+lbnA5aoPiahp+Bg=",
+        "lastModified": 1756938182,
+        "narHash": "sha256-T7by8dsr9eKONEatkbPM4MsRCuRXsViR6MShSUte4AQ=",
         "ref": "refs/heads/master",
-        "rev": "bca346e7a2f11d04b126ff23b069a6ef384bf606",
-        "revCount": 28,
+        "rev": "ed05ceb0b14c00b0e03eae347e173dfab84e616f",
+        "revCount": 30,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

@@ -39,6 +39,7 @@ in
     ./fonts.nix
     ## @BROKEN
     ./i2c.nix
+    ./niri.nix
     ./sddm.nix
     ./lightdm.nix
   ];
