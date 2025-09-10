@@ -324,6 +324,7 @@ in
             // Proportion sets the width as a fraction of the output width, taking gaps into account.
             // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
             // The default preset widths are 1/3, 1/2 and 2/3 of the output.
+            proportion 1.0
             proportion 0.33333
             proportion 0.5
             proportion 0.66667
@@ -456,8 +457,11 @@ in
         struts {
             // left 64
             // right 64
-            // top 64
-            // bottom 64
+
+            // fixes focus-border visibility
+            // @TODO: probably not right approach though
+            top 2
+            bottom 3
         }
     }
 
@@ -470,12 +474,12 @@ in
     // Currently using systemd service
     // spawn-at-startup "waybar"
     spawn-at-startup "systemctl" "--user" "restart" "kanshi"
-    spawn-at-startup "${adjust-window-sizes}"
+    // spawn-at-startup "${adjust-window-sizes}"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
         // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
-        // skip-at-startup
+        skip-at-startup
     }
 
     // Uncomment this line to ask the clients to omit their client-side decorations if possible.
@@ -530,11 +534,64 @@ in
     window-rule {
         match app-id=r#"^org\.gnome\.Calculator$"# title="^Calculator$"
         open-floating true
+        default-column-width { fixed 702; }
+        default-window-height { fixed 616; }
     }
 
     window-rule {
+        match app-id="kitty$"
+        open-on-workspace "2"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="foot$"
+        open-on-workspace "2"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="Slack$"
+        open-on-workspace "2"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="spotify$"
+        open-on-workspace "4"
+        default-column-width { proportion 0.5; }
+    }
+    window-rule {
+        match app-id="brave-browser$"
+        open-on-workspace "4"
+        default-column-width { proportion 0.5; }
+    }
+    window-rule {
         match app-id="firefox$"
         open-on-workspace "5"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="signal$"
+        open-on-workspace "6"
+        default-column-width { proportion 0.5; }
+    }
+    window-rule {
+        match app-id="org.telegram.desktop$"
+        open-on-workspace "6"
+        default-column-width { proportion 0.5; }
+    }
+    window-rule {
+        match app-id="vesktop$"
+        open-on-workspace "7"
+        default-column-width { proportion 0.5; }
+    }
+    window-rule {
+        match app-id="Element$"
+        open-on-workspace "7"
+        default-column-width { proportion 0.5; }
+    }
+    window-rule {
+        match app-id="@joplin/app-desktop$"
+        open-on-workspace "9"
+        default-column-width { proportion 1.0; }
     }
 
     // Example: block out two password managers from screen capture.
@@ -611,8 +668,8 @@ in
         Mod+Up    { focus-window-up; }
         Mod+Right { focus-column-right; }
         Mod+H     { focus-column-left; }
-        Mod+J     { focus-window-down; }
-        Mod+K     { focus-window-up; }
+        // Mod+J     { focus-window-down; }
+        // Mod+K     { focus-window-up; }
         Mod+L     { focus-column-right; }
 
         Mod+Ctrl+Left  { move-column-left; }
@@ -626,8 +683,8 @@ in
 
         // Alternative commands that move across workspaces when reaching
         // the first or last window in a column.
-        // Mod+J     { focus-window-or-workspace-down; }
-        // Mod+K     { focus-window-or-workspace-up; }
+        Mod+J     { focus-window-or-workspace-down; }
+        Mod+K     { focus-window-or-workspace-up; }
         // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
         // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
@@ -829,6 +886,11 @@ in
         // Powers off the monitors. To turn them back on, do any input like
         // moving the mouse or pressing any other key.
         Mod+Shift+P { power-off-monitors; }
+
+        Mod+N hotkey-overlay-title="Toggle notification list view" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t" "-sw"; }
+        Mod+Shift+N hotkey-overlay-title="Clear notifications" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-C" "-sw"; }
+        Mod+Shift+Ctrl+N hotkey-overlay-title="Toggle notification do-not-disturb" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-d" "-sw"; }
+
     }
 
     workspace "1"
@@ -841,5 +903,17 @@ in
     workspace "8"
     workspace "9"
     workspace "0"
+
+    spawn-at-startup "foot" "tmux" "a" "-dt" "code"
+    spawn-at-startup "firefox"
+    spawn-at-startup "spotify"
+    spawn-at-startup "brave"
+    spawn-at-startup "signal-desktop"
+    spawn-at-startup "Telegram"
+    // spawn-at-startup "whatsapp-for-linux"
+    spawn-at-startup "vesktop"
+    spawn-at-startup "element-desktop"
+    spawn-at-startup "joplin-desktop"
+    spawn-at-startup "niri" "msg" "action" "focus-workspace" "5"
   '';
 }
