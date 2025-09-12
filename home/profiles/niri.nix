@@ -191,8 +191,8 @@ in
     ./hyprlock.nix
     ./wlsunset.nix
 
-    # ./sway-idle.nix
-    ./hypridle.nix
+    ./sway-idle.nix
+    # ./hypridle.nix
 
     ## These services have problems when started from systemd
     # ./blueman-manager-applet.nix
@@ -223,33 +223,15 @@ in
     enable = true;
   };
 
-  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
-    [preferred]
-    default=gtk
-    org.freedesktop.impl.portal.FileChooser=gtk;
-    org.freedesktop.impl.portal.ScreenCast=gnome;
-    org.freedesktop.impl.portal.Screenshot=gnome;
-    org.freedesktop.impl.portal.RemoteDesktop=gnome;
-  '';
-
-  xdg.configFile."xdg-desktop-portal/niri-portals.conf".text = ''
-    [preferred]
-    default=gtk
-    org.freedesktop.impl.portal.FileChooser=gtk;
-    org.freedesktop.impl.portal.ScreenCast=gnome;
-    org.freedesktop.impl.portal.Screenshot=gnome;
-    org.freedesktop.impl.portal.RemoteDesktop=gnome;
-  '';
-
   xdg.configFile."niri/config.kdl".text = ''
     debug {
         honor-xdg-activation-with-invalid-serial
     }
 
-    environment {
-        GDK_BACKEND "wayland"
-        MOZ_ENABLE_WAYLAND "1"
-    }
+    // environment {
+    //     GDK_BACKEND "wayland"
+    //     MOZ_ENABLE_WAYLAND "1"
+    // }
 
     output "eDP-1" {
       mode "2880x1800@120"
@@ -552,14 +534,22 @@ in
     // spawn-at-startup "waybar"
     spawn-at-startup "systemctl" "--user" "restart" "kanshi"
     // spawn-at-startup "${adjust-window-sizes}"
-    spawn-at-startup "systemctl" "--user" "restart" "hypridle"
+
+    // spawn-at-startup "systemctl" "--user" "stop" "sway-idle"
+    // spawn-at-startup "systemctl" "--user" "restart" "hypridle"
+
+    spawn-at-startup "systemctl" "--user" "stop" "hypridle"
+    spawn-at-startup "systemctl" "--user" "restart" "sway-idle"
+
     spawn-at-startup "systemctl" "--user" "stop" "xdg-desktop-portal-wlr"
     spawn-at-startup "systemctl" "--user" "stop" "xdg-desktop-portal-hyprland"
-    // spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gnome"
-    // spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gtk"
+    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gnome"
+    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gtk"
+    // spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-wlr"
     spawn-at-startup "systemctl" "--user" "restart" "polkit-gnome-authentication-agent-1"
     spawn-at-startup "systemctl" "--user" "restart" "wlsunset"
-    spawn-at-startup "dbus-update-activation-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP=niri" "DISPLAY"
+    spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
+    spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {

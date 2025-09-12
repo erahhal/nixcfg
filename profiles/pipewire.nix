@@ -11,6 +11,7 @@
 
   hardware.enableAllFirmware = true;
 
+  # Enable the Real-Time Kit for improved performance
   security.rtkit.enable = true;
 
   services.pipewire = {
@@ -19,6 +20,8 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
+    ## Should be default enabled
+    wireplumber.enable = true;
   };
 
   environment.systemPackages = with pkgs; [

@@ -3,6 +3,9 @@
 let
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
+  hyprlockCmd = pkgs.writeShellScript "hyprlock.sh" ''
+    pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock
+  '';
   sway-dpms-off-cmd = pkgs.writeShellScript "sway-dpms-off-cmd.sh" ''
       ${pkgs.sway}/bin/swaymsg "output * dpms off"
   '';
@@ -15,6 +18,14 @@ let
   hyprland-dpms-on-cmd = pkgs.writeShellScript "hyprland-dpms-on-cmd.sh" ''
      ${hyprctl} dispatch dpms on;
   '';
+  niri-dpms-off-cmd = pkgs.writeShellScript "niri-dpms-off-cmd.sh" ''
+    export NIRI_SOCKET=$(${pkgs.findutils}/bin/find /run/user/$(id -u) -name "niri.wayland-*.sock" 2>/dev/null | head -1)
+     ${pkgs.niri}/bin/niri msg action power-off-monitors;
+  '';
+  niri-dpms-on-cmd = pkgs.writeShellScript "niri-dpms-on-cmd.sh" ''
+    export NIRI_SOCKET=$(${pkgs.findutils}/bin/find /run/user/$(id -u) -name "niri.wayland-*.sock" 2>/dev/null | head -1)
+     ${pkgs.niri}/bin/niri msg action power-on-monitors ;
+  '';
   idlecmd = pkgs.writeShellScript "swayidle.sh" ''
     # asterisk in sway command gets interpolated without this setting
     # set -o noglob
@@ -23,18 +34,25 @@ let
 
     if ${pkgs.procps}/bin/pidof sway > /dev/null; then
       ${pkgs.swayidle}/bin/swayidle \
-      before-sleep '${swayLockCmd}' \
+      before-sleepl'${swayLockCmd}' \
       lock '${swayLockCmd}' \
-      timeout 600 '${swayLockCmd}' \
-      timeout 600 '${sway-dpms-off-cmd}' \
+      timeout 300 '${swayLockCmd}' \
+      timeout 300 '${sway-dpms-off-cmd}' \
       resume '${sway-dpms-on-cmd}'
     elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
       ${pkgs.swayidle}/bin/swayidle \
-      before-sleep '${swayLockCmd}' \
-      lock '${swayLockCmd}' \
-      timeout 600 '${swayLockCmd}' \
-      timeout 600 '${hyprland-dpms-off-cmd}' \
+      before-sleep '${hyprlockCmd}' \
+      lock '${hyprlockCmd}' \
+      timeout 300 '${hyprlockCmd}' \
+      timeout 300 '${hyprland-dpms-off-cmd}' \
       resume '${hyprland-dpms-on-cmd}'
+    elif ${pkgs.procps}/bin/pidof niri > /dev/null; then
+      ${pkgs.swayidle}/bin/swayidle \
+      before-sleep '${hyprlockCmd}' \
+      lock '${hyprlockCmd}' \
+      timeout 300 '${hyprlockCmd}' \
+      timeout 300 '${niri-dpms-off-cmd}' \
+      resume '${niri-dpms-on-cmd}'
     fi
   '';
 in
