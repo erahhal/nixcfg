@@ -135,34 +135,24 @@ let
 
   hyprland-bitwarden-resize = pkgs.writeShellScript "hyprland-bitwarden-resize" ''
     HYPRCTL=${hyprctl};
-
     handle() {
       case $1 in
         windowtitle*)
           # Extract the window ID from the line
           window_id=''${1#*>>}
-
           # Fetch the list of windows and parse it using jq to find the window by its decimal ID
           window_info=$($HYPRCTL clients -j | ${pkgs.jq}/bin/jq --arg id "0x$window_id" '.[] | select(.address == ($id))')
-
           # Extract the title from the window info
           window_title=$(echo "$window_info" | ${pkgs.jq}/bin/jq '.title')
-
           # Check if the title matches the characteristics of the Bitwarden popup window
           if [[ "$window_title" == *"Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox"* ]]; then
-
             # echo $window_id, $window_title
-            # $HYPRCTL dispatch togglefloating address:0x$window_id
-            # $HYPRCTL dispatch resizewindowpixel exact 20% 40%,address:0x$window_id
-            # $HYPRCTL dispatch movewindowpixel exact 40% 30%,address:0x$window_id
-
-            $HYPRCTL --batch "dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
-            # $HYPRCTL --batch "dispatch togglefloating address:0x$window_id ; dispatch centerwindow"
+            # Break out of tabbed group, make floating, resize and position
+            $HYPRCTL --batch "dispatch moveoutofgroup address:0x$window_id ; dispatch togglefloating address:0x$window_id ; dispatch resizewindowpixel exact 20% 40%,address:0x$window_id ; dispatch movewindowpixel exact 40% 30%,address:0x$window_id"
           fi
           ;;
       esac
     }
-
     # Kill old process
     ${pkgs.procps}/bin/ps -ef | ${pkgs.gnugrep}/bin/grep "[s]ocat" | ${pkgs.gnugrep}/bin/grep '[h]ypr' | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.findutils}/bin/xargs kill
     # Listen to the Hyprland socket for events and process each line with the handle function
@@ -314,7 +304,7 @@ in
         )
 
         ## Disabled as it doesn't work with tabbed groups
-        # hyprland-bitwarden-resize
+        hyprland-bitwarden-resize
       ];
 
       xwayland = {
@@ -472,6 +462,9 @@ in
         "float, initialTitle:^(Export Image.*)$"
         "float, title:^(KCalc)$"
         "float, class:^(org.gnome.Calculator)$"
+        ## Windows without class float automatically
+        "float, initialClass:^$"
+        "float, class:^$"
 
         # telegram media viewer
         "float, title:^(Media viewer)$"
@@ -508,6 +501,7 @@ in
         # Firefox Bitwarden popup
         # title: Extension: (Bitwarden - Free Password Manager) - Bitwarden — Mozilla Firefox
         "float, initialTitle:^(Bitwarden)$"
+        "float, title:^(Extension: .*)$"
         ## Chrome/Brave extension
         ## float is not dynamic so it matches initialTitle and not title
         ## See: https://github.com/hyprwm/Hyprland/issues/6302

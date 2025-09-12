@@ -155,7 +155,7 @@
         imports = [
           inputs.caelestia-shell.homeManagerModules.default
           inputs.nix-colors.homeManagerModules.default
-          inputs.plasma-manager.homeManagerModules.plasma-manager
+          inputs.plasma-manager.homeModules.plasma-manager
         ];
       };
     };

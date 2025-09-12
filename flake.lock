@@ -1463,11 +1463,11 @@
         "openconnect-pulse-launcher-browser": "openconnect-pulse-launcher-browser"
       },
       "locked": {
-        "lastModified": 1753984432,
-        "narHash": "sha256-q1GPrBQT4kKCnu0l2SVQUDjyK+Enixfl1A7NcHpk3Qc=",
+        "lastModified": 1757702620,
+        "narHash": "sha256-ObRbi7ejksyu+qyz7H1ukYiDqBaENO+z/HB5/4M7GsM=",
         "ref": "refs/heads/master",
-        "rev": "aee8b70f1568c73b9b3b8ddeff6dd526e9ff3a9a",
-        "revCount": 18,
+        "rev": "fcca9f0e36cb4317dba91c1c440d42d05b15019d",
+        "revCount": 19,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },
@@ -2267,11 +2267,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1747777221,
-        "narHash": "sha256-7zyFbR7qllBmMO/LTPwCWp49xJ69kNs1K6KYUz+Lp54=",
+        "lastModified": 1757702589,
+        "narHash": "sha256-BHmo/YcE6hxlMHkP8JeIYYsxMX/UOTCY9RCYgm6wab8=",
         "owner": "erahhal",
         "repo": "openconnect-pulse-launcher",
-        "rev": "581b6c5eabf5c79fbb408074425f6d7a6da7a48d",
+        "rev": "2964a371088d8dc2abf39097a4c37571ef2b0767",
         "type": "github"
       },
       "original": {
