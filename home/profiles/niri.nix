@@ -758,8 +758,8 @@ in
 
         // Alternative commands that move across workspaces when reaching
         // the first or last window in a column.
-        Mod+J     { focus-window-or-monitor-down; }
-        Mod+K     { focus-window-or-monitor-up; }
+        Mod+J     { focus-workspace-down; }
+        Mod+K     { focus-workspace-up; }
         // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
         // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
