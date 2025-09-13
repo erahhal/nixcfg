@@ -509,6 +509,10 @@ in
         }
     }
 
+    switch-events {
+        lid-close { spawn "${hyprlockCommand}" "suspend"; }
+    }
+
     // Add lines like this to spawn processes at startup.
     // Note that running niri as a session supports xdg-desktop-autostart,
     // which may be more convenient to use.

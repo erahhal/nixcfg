@@ -38,21 +38,6 @@
         // __VK_LAYER_NV_optimus = "NVIDIA_only"
     }
 
-    //  # bindl = [
-    //  #   ## Doesn't suspend or wake up if these aren't added
-    //  #   , switch:on:[Lid Switch], exec, "''${hyprlockCommand}"
-    //  #   , switch:off:[Lid Switch], exec, ''${hyprctl} keyword monitor "eDP-1, 3840x2400, 0x0, 2.4"
-    //  # ];
-
-
-    //  workspace = [
-    //    "desc:LG Electronics LG Ultra HD 0x00043EAD, 1"
-    //    "desc:LG Electronics LG Ultra HD 0x00043EAD, 4"
-    //    "desc:LG Electronics LG Ultra HD 0x00043EAD, 5"
-    //    "desc:LG Electronics LG HDR 4K 0x00020F5B, 2"
-    //    "desc:LG Electronics LG HDR 4K 0x00020F5B, 7"
-    //  ];
-
     spawn-at-startup "chromium"
     spawn-at-startup "foot" "tmux" "a" "-dt" "code"
     spawn-at-startup "slack"
