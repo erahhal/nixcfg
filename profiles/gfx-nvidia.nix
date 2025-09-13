@@ -308,7 +308,8 @@ in
 
     home-manager.users.${userParams.username} = { pkgs, ... }: {
       home.sessionVariables = {
-        __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json";
+        ## Causes Niri to fail to load
+        # __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json";
         LIBVA_DRIVER_NAME = "nvidia";
         GBM_BACKEND = "nvidia-drm";
         GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";

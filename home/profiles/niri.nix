@@ -228,21 +228,6 @@ in
         honor-xdg-activation-with-invalid-serial
     }
 
-    // environment {
-    //     GDK_BACKEND "wayland"
-    //     MOZ_ENABLE_WAYLAND "1"
-    // }
-
-    output "eDP-1" {
-      mode "2880x1800@120"
-      scale 1.8
-    }
-
-    output "Lenovo Group Limited P40w-20 V90DFGMV" {
-      mode "5120x2150@60.000"
-      scale 1.332031
-    }
-
     // This config is in the KDL format: https://kdl.dev
     // "/-" comments out the following node.
     // Check the wiki for a full description of the configuration:
@@ -550,6 +535,8 @@ in
     spawn-at-startup "systemctl" "--user" "restart" "wlsunset"
     spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
     spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
+    spawn-at-startup "systemctl" "--user" "restart" "waybar"
+    spawn-at-startup "systemctl" "--user" "restart" "swaynotificationcenter"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
@@ -614,6 +601,11 @@ in
     }
 
     window-rule {
+        match app-id="chromium-browser$"
+        open-on-workspace "1"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
         match app-id="kitty$"
         open-on-workspace "2"
         default-column-width { proportion 1.0; }
@@ -625,13 +617,13 @@ in
     }
     window-rule {
         match app-id="Slack$"
-        open-on-workspace "2"
+        open-on-workspace "3"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="spotify$"
         open-on-workspace "4"
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="brave-browser$"
@@ -646,22 +638,27 @@ in
     window-rule {
         match app-id="signal$"
         open-on-workspace "6"
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="org.telegram.desktop$"
         open-on-workspace "6"
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="discord$"
+        open-on-workspace "7"
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="vesktop$"
         open-on-workspace "7"
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="Element$"
         open-on-workspace "7"
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="@joplin/app-desktop$"
@@ -711,6 +708,7 @@ in
         // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
         Mod+X hotkey-overlay-title="Lock the Screen: hyprlock" { spawn "${hyprlockCommand}"; }
         Mod+E hotkey-overlay-title="Toggle fcitx5 daemon" { spawn "${toggle-fcitx}"; }
+        Mod+Y hotkey-overlay-title="Run Kanshi" { spawn "systemctl" "--user" "restart" "kanshi"; }
 
         Mod+G hotkey-overlay-title="Switch ThinkVision Monitor Input" { spawn "${toggle-thinkvision-input}"; }
 
@@ -986,17 +984,5 @@ in
     workspace "8"
     workspace "9"
     workspace "0"
-
-    spawn-at-startup "foot" "tmux" "a" "-dt" "code"
-    spawn-at-startup "firefox"
-    spawn-at-startup "spotify"
-    spawn-at-startup "brave"
-    spawn-at-startup "signal-desktop"
-    spawn-at-startup "Telegram"
-    // spawn-at-startup "whatsapp-for-linux"
-    spawn-at-startup "vesktop"
-    spawn-at-startup "element-desktop"
-    spawn-at-startup "joplin-desktop"
-    spawn-at-startup "niri" "msg" "action" "focus-workspace" "5"
   '';
 }

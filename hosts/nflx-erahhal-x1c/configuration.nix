@@ -53,7 +53,7 @@
 
       # Display config
       ./kanshi.nix
-      ./launch-apps-config-sway.nix
+      ./sway.nix
 
       # Temporary
       # ../../profiles/nfs-mounts.nix

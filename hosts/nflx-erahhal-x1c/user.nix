@@ -12,7 +12,7 @@ in
   home-manager.users.${userParams.username} = {
 
     imports = [
-      ./launch-apps-config-hyprland.nix
+      ./hyprland.nix
     ];
 
     home = {

@@ -219,7 +219,7 @@ in
         # }
         {
           profile = {
-            name = "portable-right-hyprland";
+            name = "portable-right";
             outputs = [
               {
                 criteria = "eDP-1";

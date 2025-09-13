@@ -48,7 +48,7 @@
 
     # Display config
     ./kanshi.nix
-    ./launch-apps-config-sway.nix
+    ./sway.nix
 
     ../../profiles/nfs-mounts.nix
     # ../../profiles/smb-mounts.nix

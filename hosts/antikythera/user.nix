@@ -16,7 +16,7 @@ in
 
     imports = [
       # ../../home/profiles/protonmail-bridge.nix
-      ./launch-apps-config-hyprland.nix
+      ./hyprland.nix
     ];
 
     home = {

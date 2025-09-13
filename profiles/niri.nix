@@ -1,18 +1,51 @@
 { config, inputs, lib, pkgs, userParams, ... }:
 let
-  hyprlockCommand = pkgs.callPackage ../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   niri-script = pkgs.writeShellScriptBin "niri" ''
     export NIRI_SOCKET=$(${pkgs.findutils}/bin/find /run/user/$(id -u) -name "niri.wayland-*.sock" 2>/dev/null | head -1)
      ${pkgs.niri}/bin/niri "$@"
   '';
+  niri-sddm = pkgs.writeShellScriptBin "niri-sddm" ''
+    # Brief delay to let SDDM release the device
+    sleep 1
+    exec niri --session
+  '';
 in
 {
   config = lib.mkIf (config.hostParams.desktop.defaultSession == "niri" || config.hostParams.desktop.multipleSessions) {
-    services.displayManager.sessionPackages = [ pkgs.niri ];
+    ## Not using as services.displayManager.sessionPackages needs to be overridden
+    # programs.niri = {
+    #   enable = true;
+    # };
 
-    programs.niri = {
-      enable = true;
+    services.displayManager.sessionPackages = [
+      (pkgs.runCommand "niri-session" {
+        passthru.providedSessions = [ "niri" ];
+      } ''
+        mkdir -p $out/share/wayland-sessions
+        cat > $out/share/wayland-sessions/niri.desktop << EOF
+        [Desktop Entry]
+        Name=Niri
+        Comment=Niri Wayland Compositor
+        Exec=${niri-sddm}/bin/niri-sddm
+        Type=Application
+      '')
+    ];
+
+    services.gnome.gnome-keyring.enable = lib.mkDefault true;
+
+    security = {
+      polkit.enable = true;
+      pam.services.swaylock = { };
     };
+
+    programs = {
+      dconf.enable = true;
+      xwayland.enable = true;
+    };
+
+    # Window manager only sessions (unlike DEs) don't handle XDG
+    # autostart files, so force them to run the service
+    services.xserver.desktopManager.runXdgAutostartIfNone = lib.mkDefault true;
 
     environment.systemPackages = with pkgs; [
       niri-script
@@ -20,17 +53,16 @@ in
       xdg-desktop-portal
       xdg-desktop-portal-gnome
       xdg-desktop-portal-gtk
-      xdg-desktop-portal-wlr
+      # xdg-desktop-portal-wlr
       nautilus  # Required for GNOME portal
       pipewire
       wireplumber
       gnome-keyring
     ];
 
-    # services.dbus.implementation = "broker";
-
     xdg.portal = {
       enable = true;
+      configPackages = [ config.programs.niri.package ];
       config = {
         #common.default = "*";
         common = {
@@ -53,13 +85,6 @@ in
       ];
     };
 
-    # systemd.user.services.xdg-desktop-portal-gnome = {
-    #   environment = {
-    #     GDK_BACKEND = "wayland";
-    #     WAYLAND_DISPLAY = "wayland-1";
-    #   };
-    # };
-
     # Ignore lid switch, and let wm handle it using
     # the lid switch bindings below
     services.logind.lidSwitch = "ignore";
@@ -75,50 +100,12 @@ in
       ## first, which will exist because hyprland.portal is there as well.
       ## Installing here adds these portals there as well.
       home.packages = with pkgs; [
-        # xdg-desktop-portal-wlr
         xdg-desktop-portal-gnome
         xdg-desktop-portal-gtk
+        # xdg-desktop-portal-wlr
         xdg-desktop-portal
         gnome-keyring
       ];
-
-      # xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
-      #   [preferred]
-      #   default=gtk
-      #   org.freedesktop.impl.portal.FileChooser=gtk;
-      #   org.freedesktop.impl.portal.ScreenCast=gnome;
-      #   org.freedesktop.impl.portal.Screenshot=gnome;
-      #   org.freedesktop.impl.portal.RemoteDesktop=gnome;
-      # '';
-      #
-      # xdg.configFile."xdg-desktop-portal/niri-portals.conf".text = ''
-      #   [preferred]
-      #   default=gtk
-      #   org.freedesktop.impl.portal.FileChooser=gtk;
-      #   org.freedesktop.impl.portal.ScreenCast=gnome;
-      #   org.freedesktop.impl.portal.Screenshot=gnome;
-      #   org.freedesktop.impl.portal.RemoteDesktop=gnome;
-      # '';
-
-      # xdg.configFile."xdg-desktop-portal/niri-portals.conf".text = ''
-      #   [preferred]
-      #   default=gtk
-      #   org.freedesktop.impl.portal.ScreenCast=gnome
-      #   org.freedesktop.impl.portal.Screenshot=gnome
-      # '';
-
-      # wayland.windowManager.hyprland = {
-      #   settings = {
-      #     bind = [
-      #       (
-      #         if config.hostParams.desktop.defaultLockProgram == "swaylock" then
-      #           '',switch:on:Lid Switch,exec,${swayLockCommand} suspend''
-      #         else
-      #           '',switch:on:Lid Switch,exec,${hyprlockCommand} suspend''
-      #       )
-      #     ];
-      #   };
-      # };
     };
   };
 }

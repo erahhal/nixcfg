@@ -31,7 +31,7 @@
       ./user.nix
 
       # display
-      ./launch-apps-config-sway.nix
+      ./sway.nix
       ./kanshi.nix
 
       ../../profiles/nfs-mounts.nix
