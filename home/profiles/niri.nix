@@ -728,7 +728,7 @@ in
         // Example brightness key mappings for brightnessctl.
         // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
         // but you need to manually put each argument in separate "" quotes.
-        XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+        XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+11%"; }
         XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
         // Open/close the Overview: a zoomed-out view of workspaces and windows.
@@ -744,10 +744,8 @@ in
         Mod+Down  { focus-window-down; }
         Mod+Up    { focus-window-up; }
         Mod+Right { focus-column-right; }
-        Mod+H     { focus-column-left; }
-        // Mod+J     { focus-window-down; }
-        // Mod+K     { focus-window-up; }
-        Mod+L     { focus-column-right; }
+        Mod+H     { focus-column-or-monitor-left; }
+        Mod+L     { focus-column-or-monitor-right; }
 
         Mod+Ctrl+Left  { move-column-left; }
         Mod+Ctrl+Down  { move-window-down; }
@@ -760,8 +758,8 @@ in
 
         // Alternative commands that move across workspaces when reaching
         // the first or last window in a column.
-        Mod+J     { focus-window-or-workspace-down; }
-        Mod+K     { focus-window-or-workspace-up; }
+        Mod+J     { focus-window-or-monitor-down; }
+        Mod+K     { focus-window-or-monitor-up; }
         // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
         // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
@@ -779,14 +777,14 @@ in
         Mod+Shift+K     { focus-monitor-up; }
         Mod+Shift+L     { focus-monitor-right; }
 
-        Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
-        Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
-        Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
-        Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
-        Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
-        Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
-        Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
-        Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+        Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
+        Mod+Shift+Ctrl+Down  { move-workspace-to-monitor-down; }
+        Mod+Shift+Ctrl+Up    { move-workspace-to-monitor-up; }
+        Mod+Shift+Ctrl+Right { move-workspace-to-monitor-right; }
+        Mod+Shift+Ctrl+H     { move-workspace-to-monitor-left; }
+        Mod+Shift+Ctrl+J     { move-workspace-to-monitor-down; }
+        Mod+Shift+Ctrl+K     { move-workspace-to-monitor-up; }
+        Mod+Shift+Ctrl+L     { move-workspace-to-monitor-right; }
 
         // Alternatively, there are commands to move just a single window:
         // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
@@ -974,15 +972,35 @@ in
 
     }
 
-    workspace "1"
-    workspace "2"
-    workspace "3"
-    workspace "4"
-    workspace "5"
-    workspace "6"
-    workspace "7"
-    workspace "8"
-    workspace "9"
-    workspace "0"
+    workspace "1" {
+      open-on-output "eDP-1"
+    }
+    workspace "2" {
+      open-on-output "eDP-1"
+    }
+    workspace "3" {
+      open-on-output "eDP-1"
+    }
+    workspace "4" {
+      open-on-output "eDP-1"
+    }
+    workspace "5" {
+      open-on-output "eDP-1"
+    }
+    workspace "6" {
+      open-on-output "eDP-1"
+    }
+    workspace "7" {
+      open-on-output "eDP-1"
+    }
+    workspace "8" {
+      open-on-output "eDP-1"
+    }
+    workspace "9" {
+      open-on-output "eDP-1"
+    }
+    workspace "0" {
+      open-on-output "eDP-1"
+    }
   '';
 }

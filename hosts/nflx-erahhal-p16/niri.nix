@@ -4,14 +4,18 @@
     output "eDP-1" {
       mode "3840x2400@60"
       scale 2.1333333
+      focus-at-startup
     }
+    // ThinkVision
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
       mode "5120x2150@60.000"
       scale 1.332031
     }
+    // Portable
     output "LG Electronics 16MQ70 20NKZ005285" {
       mode "2560x1600@60"
       scale 1.6
+      position x=1801 y=200
     }
     output "LG Electronics LG Ultra HD 0x00043EAD" {
       mode "3840x2160@60"

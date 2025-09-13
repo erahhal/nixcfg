@@ -303,6 +303,7 @@ in
             "systemctl --user restart hypridle"
         )
 
+        "systemctl --user restart waybar"
         ## Disabled as it doesn't work with tabbed groups
         hyprland-bitwarden-resize
       ];
