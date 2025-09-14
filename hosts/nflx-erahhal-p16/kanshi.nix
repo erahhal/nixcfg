@@ -238,7 +238,7 @@ in
                 scale = portable-monitor-scale;
               }
             ];
-            # exec = [
+            exec = [
             #   ## Only chrome on external monitor
             #   "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
             #   "${hyprctl} dispatch moveworkspacetomonitor 2 eDP-1"
@@ -249,7 +249,7 @@ in
             #   "${hyprctl} dispatch moveworkspacetomonitor 7 eDP-1"
             #   "${hyprctl} dispatch moveworkspacetomonitor 8 eDP-1"
             #   "${hyprctl} dispatch moveworkspacetomonitor 9 eDP-1"
-            # ];
+            ];
           };
         }
         # {

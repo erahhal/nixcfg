@@ -28,7 +28,6 @@ in
         exercism
         awscli
         postgresql
-        firefox-wayland
 
         ## Dev and tools
         android-studio

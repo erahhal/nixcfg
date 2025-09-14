@@ -17,6 +17,7 @@ in
     ../profiles/vlc-wayland.nix
     # ../overlays/zoom-us.nix
     ../overlays/igv-scaled.nix
+    ../overlays/firefox-nvidia.nix
   ];
 
   environment.sessionVariables = {
@@ -84,8 +85,6 @@ in
       ./profiles/kitty.nix
 
       ./profiles/gthumb.nix
-      ## Should be handled by wayland scaling now
-      # ./profiles/firefox.nix
 
       ## Should be handled by wayland scaling now
       ## But left in for the theming
@@ -370,7 +369,7 @@ in
         easyeffects
 
         # Browsers
-        firefox-wayland
+        firefox
         # librewolf-wayland
 
         ## apps
