@@ -507,6 +507,24 @@ in
             top 2
             bottom 3
         }
+
+        tab-indicator {
+            // off
+            // hide-when-single-tab
+            place-within-column
+            gap 0
+            width 24
+            length total-proportion=1.0
+            position "top"
+            gaps-between-tabs 0
+            corner-radius 0
+            active-color "#4488ff"
+            inactive-color "gray"
+            urgent-color "red"
+            // active-gradient from="#80c8ff" to="#bbddff" angle=45
+            // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+            // urgent-gradient from="#800" to="#a33" angle=45
+        }
     }
 
     switch-events {
@@ -518,29 +536,26 @@ in
     // which may be more convenient to use.
     // See the binds section below for more spawn examples.
 
+    spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+    spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+    spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
+
     // This line starts waybar, a commonly used bar for Wayland compositors.
     // Currently using systemd service
     // spawn-at-startup "waybar"
-    spawn-at-startup "systemctl" "--user" "restart" "kanshi"
-    // spawn-at-startup "${adjust-window-sizes}"
+    spawn-sh-at-startup "systemctl --user restart kanshi"
+    // spawn-sh-at-startup "${adjust-window-sizes}"
 
-    // spawn-at-startup "systemctl" "--user" "stop" "sway-idle"
-    // spawn-at-startup "systemctl" "--user" "restart" "hypridle"
-
-    spawn-at-startup "systemctl" "--user" "stop" "hypridle"
-    spawn-at-startup "systemctl" "--user" "restart" "sway-idle"
-
-    spawn-at-startup "systemctl" "--user" "stop" "xdg-desktop-portal-wlr"
-    spawn-at-startup "systemctl" "--user" "stop" "xdg-desktop-portal-hyprland"
-    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gnome"
-    spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-gtk"
-    // spawn-at-startup "systemctl" "--user" "restart" "xdg-desktop-portal-wlr"
-    spawn-at-startup "systemctl" "--user" "restart" "polkit-gnome-authentication-agent-1"
-    spawn-at-startup "systemctl" "--user" "restart" "wlsunset"
-    spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
-    spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
-    spawn-at-startup "systemctl" "--user" "restart" "waybar"
-    spawn-at-startup "systemctl" "--user" "restart" "swaynotificationcenter"
+    spawn-sh-at-startup "systemctl --user stop hypridle"
+    spawn-sh-at-startup "pkill hyprlock"
+    spawn-sh-at-startup "systemctl --user restart sway-idle"
+    spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-wlr"
+    spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland"
+    spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome"
+    spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk"
+    spawn-sh-at-startup "systemctl --user restart wlsunset"
+    spawn-sh-at-startup "systemctl --user restart waybar"
+    spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
