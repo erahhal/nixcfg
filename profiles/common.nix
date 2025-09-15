@@ -271,7 +271,6 @@
     ../modules/macchanger.nix
 
     # ../overlays/steam-with-nvidia-offload.nix
-    # ../overlays/blender-with-nvidia-offload.nix
 
     ## Fixes broken pam for screen lockers but requires rebuild of everything
     # ../overlays/pam-patched.nix

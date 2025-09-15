@@ -35,7 +35,7 @@ in
 
         ## apps
         cool-retro-term
-        blender
+        blender-hip
         phockup
         simple-scan
         thunderbird

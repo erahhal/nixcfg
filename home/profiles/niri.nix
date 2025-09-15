@@ -3,6 +3,8 @@
 let
   niri = "${pkgs.niri}/bin/niri";
   rofi = ''"${pkgs.rofi-wayland}/bin/rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"'';
+  ## @TODO: Move to a service
+  dynamic-float-rules = pkgs.callPackage ./niri/dynamic-float-rules.nix {};
   toggle-fcitx = pkgs.writeShellScript "toggle-fcitx" ''
     if systemctl --user is-active --quiet fcitx5-daemon; then
       systemctl --user stop fcitx5-daemon
@@ -546,6 +548,7 @@ in
     spawn-sh-at-startup "systemctl --user restart kanshi"
     // spawn-sh-at-startup "${adjust-window-sizes}"
 
+    spawn-sh-at-startup "${dynamic-float-rules}/bin/dynamic-float-rules"
     spawn-sh-at-startup "systemctl --user stop hypridle"
     spawn-sh-at-startup "pkill hyprlock"
     spawn-sh-at-startup "systemctl --user restart sway-idle"
@@ -609,6 +612,16 @@ in
         // - host Firefox (app-id is "firefox")
         // - Flatpak Firefox (app-id is "org.mozilla.firefox")
         match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+        open-floating true
+    }
+
+    window-rule {
+        match app-id=r#"firefox$"# title="^Extension.*Mozilla Firefox$"
+        open-floating true
+    }
+
+    window-rule {
+        match app-id=r#".*-nngceckbapebfimnlniiiahkandclblb-Default$"#
         open-floating true
     }
 

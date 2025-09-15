@@ -21,7 +21,7 @@ in
 
       packages = with pkgs; [
         awscli
-        blender
+        blender-hip
         chromium
 
         lutris
