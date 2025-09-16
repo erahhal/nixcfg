@@ -2,6 +2,7 @@
 
 let
   niri = "${pkgs.niri}/bin/niri";
+  jq = "${pkgs.jq}/bin/jq";
   rofi = ''"${pkgs.rofi-wayland}/bin/rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"'';
   ## @TODO: Move to a service
   dynamic-float-rules = pkgs.callPackage ./niri/dynamic-float-rules.nix {};
@@ -29,17 +30,63 @@ let
   '';
 
   kill-active = pkgs.writeShellScript "niri-kill-active.sh" ''
-    if [ "$(${niri} msg -j focused-window | jq -r ".app_id")" = "Steam" ]; then
+    if [ "$(${niri} msg -j focused-window | ${jq} -r ".app_id")" = "Steam" ]; then
         ${pkgs.xdotool}/bin/xdotool getactivewindow windowunmap
-    elif [ "$(${niri} msg -j focused-window | jq -r ".app_id")" = "foot" ]; then
+    elif [ "$(${niri} msg -j focused-window | ${jq} -r ".app_id")" = "foot" ]; then
         echo "Not closing."
     else
         ${niri} msg action close-window
     fi
   '';
 
+  toggle-tabbed = pkgs.writeShellScript "niri-toggle-tabbed" ''
+    # Get current workspace ID from focused window
+    current_workspace=$(niri msg -j focused-window | jq -r '.workspace_id // empty')
+
+    # If no focused window, get first workspace with windows
+    if [ -z "$current_workspace" ]; then
+        current_workspace=$(niri msg -j windows | jq -r '.[0].workspace_id // empty')
+    fi
+
+    # Exit if no workspace found
+    [ -z "$current_workspace" ] && exit 0
+
+    # Get all windows in current workspace
+    windows=$(niri msg -j windows | jq -r ".[] | select(.workspace_id == $current_workspace) | .id")
+
+    # Convert to array
+    window_ids=($windows)
+
+    # Exit if no windows
+    [ ''${#window_ids[@]} -eq 0 ] && exit 0
+
+    # Exit if only one window (nothing to group)
+    [ ''${#window_ids[@]} -eq 1 ] && exit 0
+
+    # Focus the first window and toggle its column's tabbed display
+    first_window="''${window_ids[0]}"
+    niri msg action focus-window --id "$first_window"
+    niri msg action toggle-column-tabbed-display
+
+    # Move all other windows to the focused column
+    for ((i=1; i<''${#window_ids[@]}; i++)); do
+        window_id="''${window_ids[i]}"
+        niri msg action focus-window --id "$window_id"
+        niri msg action consume-window-into-column
+    done
+  '';
+
+  switch-preset-column-width-all = pkgs.writeShellScript "switch-preset-column-width-all" ''
+    active_workspace=$(${niri} msg -j workspaces | ${jq} -r '.[] | select(.is_active == true) | .id')
+    # Get all windows and filter for current workspace
+    # Apply width change to each window
+    for window_id in $(${niri} msg -j windows | ${jq} -r ".[] | select(.workspace_id == $active_workspace) | .id"); do
+        ${niri} msg action switch-preset-window-width --id "$window_id"
+    done
+  '';
+
   kill-active-force = pkgs.writeShellScript "niri-kill-active-force.sh" ''
-    ${niri} msg -j focused-window | ${pkgs.jq}/bin/jq '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9
+    ${niri} msg -j focused-window | ${jq} '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9
   '';
 
   capture-screen = pkgs.writeShellScript "niri-capture-screen.sh" ''
@@ -126,21 +173,20 @@ let
   '';
 
   adjust-window-sizes = pkgs.writeShellScript "niri-adjust-window-sizes" ''
-    JQ="${pkgs.jq}/bin/jq"
     # Track previous state to avoid unnecessary resizing
     last_workspace_id=""
     last_window_count=0
 
     niri msg --json event-stream | while read -r event; do
       # Check for window open/change or close events
-      if echo "$event" | $JQ -e '.WindowOpenedOrChanged or .WindowClosed' > /dev/null 2>&1; then
+      if echo "$event" | ${jq} -e '.WindowOpenedOrChanged or .WindowClosed' > /dev/null 2>&1; then
         sleep 0.05  # Reduced delay
 
         # Get the focused workspace ID
-        focused_workspace_id=$(${niri} msg --json workspaces | $JQ -r '.[] | select(.is_focused == true) | .id')
+        focused_workspace_id=$(${niri} msg --json workspaces | ${jq} -r '.[] | select(.is_focused == true) | .id')
 
         # Count windows only on the focused workspace
-        window_count=$(${niri} msg --json windows | $JQ --argjson ws_id "$focused_workspace_id" '[.[] | select(.workspace_id == $ws_id and .is_floating == false)] | length')
+        window_count=$(${niri} msg --json windows | $${jq} --argjson ws_id "$focused_workspace_id" '[.[] | select(.workspace_id == $ws_id and .is_floating == false)] | length')
 
         # Skip if nothing changed
         if [ "$focused_workspace_id" = "$last_workspace_id" ] && [ "$window_count" -eq "$last_window_count" ]; then
@@ -156,7 +202,7 @@ let
         elif [ "$window_count" -ge 2 ]; then
           echo "Setting $window_count windows to 50%"
           # Only resize if we actually need to change something
-          current_focused_column=$(niri msg --json windows | $JQ --argjson ws_id "$focused_workspace_id" -r '[.[] | select(.workspace_id == $ws_id and .is_floating == false and .is_focused == true)][0] | .layout.pos_in_scrolling_layout[0]')
+          current_focused_column=$(niri msg --json windows | $${jq} --argjson ws_id "$focused_workspace_id" -r '[.[] | select(.workspace_id == $ws_id and .is_floating == false and .is_focused == true)][0] | .layout.pos_in_scrolling_layout[0]')
 
           # Go to first column
           ${niri} msg action focus-column-first
@@ -363,7 +409,7 @@ in
         // - "always", the focused column will always be centered.
         // - "on-overflow", focusing a column will center it if it doesn't fit
         //   together with the previously focused column.
-        center-focused-column "never"
+        center-focused-column "on-overflow"
 
         // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
         preset-column-widths {
@@ -380,7 +426,10 @@ in
         }
 
         // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
-        // preset-window-heights { }
+        preset-window-heights {
+            proportion 1.0
+            proportion 0.5
+        }
 
         // You can change the default width of the new windows.
         // default-column-width { proportion 0.5; }
@@ -633,6 +682,13 @@ in
     }
 
     window-rule {
+        match title="^(Open File|Save As|Open Folder|Open Workspace.*|Save Workspace.*|Add Folder.*|Save File|Print|Send by Email|Export Image.*)$"
+        open-floating true
+        default-column-width { fixed 1000; }
+        default-window-height { fixed 800; }
+    }
+
+    window-rule {
         match app-id="chromium-browser$"
         open-on-workspace "1"
         default-column-width { proportion 1.0; }
@@ -733,7 +789,6 @@ in
         Mod+Shift+Slash { show-hotkey-overlay; }
 
         // Suggested binds for running programs: terminal, app launcher, screen locker.
-        Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
         Mod+Return hotkey-overlay-title="Open a Terminal: foot" { spawn "foot"; }
         // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
         Mod+P hotkey-overlay-title="Run an Application: rofi" { spawn ${rofi}; }
@@ -778,12 +833,16 @@ in
         Mod+Right { focus-column-right; }
         Mod+H     { focus-column-or-monitor-left; }
         Mod+L     { focus-column-or-monitor-right; }
+        Mod+Shift+H     { move-column-left-or-to-monitor-left; }
+        Mod+Shift+J     { move-window-down-or-to-workspace-down; }
+        Mod+Shift+K     { move-window-up-or-to-workspace-up; }
+        Mod+Shift+L     { move-column-right-or-to-monitor-right; }
 
         Mod+Ctrl+Left  { move-column-left; }
         Mod+Ctrl+Down  { move-window-down; }
         Mod+Ctrl+Up    { move-window-up; }
         Mod+Ctrl+Right { move-column-right; }
-        Mod+Ctrl+H     { move-column-left; }
+        Mod+Ctrl+H     { focus-monitor-left; }
         Mod+Ctrl+J     { move-window-down; }
         Mod+Ctrl+K     { move-window-up; }
         Mod+Ctrl+L     { move-column-right; }
@@ -804,10 +863,6 @@ in
         Mod+Shift+Down  { focus-monitor-down; }
         Mod+Shift+Up    { focus-monitor-up; }
         Mod+Shift+Right { focus-monitor-right; }
-        Mod+Shift+H     { focus-monitor-left; }
-        Mod+Shift+J     { focus-monitor-down; }
-        Mod+Shift+K     { focus-monitor-up; }
-        Mod+Shift+L     { focus-monitor-right; }
 
         Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
         Mod+Shift+Ctrl+Down  { move-workspace-to-monitor-down; }
@@ -826,10 +881,6 @@ in
         // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
         // ...
 
-        Mod+Page_Down      { focus-workspace-down; }
-        Mod+Page_Up        { focus-workspace-up; }
-        Mod+U              { focus-workspace-down; }
-        Mod+I              { focus-workspace-up; }
         Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
         Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
         Mod+Ctrl+U         { move-column-to-workspace-down; }
@@ -926,10 +977,11 @@ in
         // Expel the bottom window from the focused column to the right.
         Mod+Period { expel-window-from-column; }
 
-        Mod+R { switch-preset-column-width; }
+        // Mod+R { switch-preset-column-width; }
         // Cycling through the presets in reverse order is also possible.
-        // Mod+R { switch-preset-column-width-back; }
-        Mod+Shift+R { switch-preset-window-height; }
+        Mod+R { switch-preset-column-width-back; }
+        Mod+Shift+R { spawn "${switch-preset-column-width-all}"; }
+        Mod+I { switch-preset-window-height-back; }
         Mod+Ctrl+R { reset-window-height; }
         Mod+F { maximize-column; }
         Mod+Shift+F { fullscreen-window; }
@@ -966,7 +1018,8 @@ in
         // Toggle tabbed column display mode.
         // Windows in this column will appear as vertical tabs,
         // rather than stacked on top of each other.
-        Mod+W { toggle-column-tabbed-display; }
+        // Mod+T hotkey-overlay-title="Toggle tabs" { toggle-column-tabbed-display; }
+        Mod+T hotkey-overlay-title="Toggle tabs" { spawn "${toggle-tabbed}"; }
 
         // Actions to switch layouts.
         // Note: if you uncomment these, make sure you do NOT have
