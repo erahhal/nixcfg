@@ -1,6 +1,9 @@
 { pkgs, ... }:
 
 let
+  find = "${pkgs.findutils}/bin/find";
+  head = "${pkgs.coreutils}/bin/head";
+  id = "${pkgs.coreutils}/bin/id";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
   hyprlockCmd = pkgs.writeShellScript "hyprlock.sh" ''
@@ -19,11 +22,13 @@ let
      ${hyprctl} dispatch dpms on;
   '';
   niri-dpms-off-cmd = pkgs.writeShellScript "niri-dpms-off-cmd.sh" ''
-    export NIRI_SOCKET=$(${pkgs.findutils}/bin/find /run/user/$(id -u) -name "niri.wayland-*.sock" 2>/dev/null | head -1)
+    echo "NIRI DPMS OFF"
+    export NIRI_SOCKET=$(${find} /run/user/$(${id} -u) -name "niri.wayland-*.sock" 2>/dev/null | ${head} -1)
      ${pkgs.niri}/bin/niri msg action power-off-monitors;
   '';
   niri-dpms-on-cmd = pkgs.writeShellScript "niri-dpms-on-cmd.sh" ''
-    export NIRI_SOCKET=$(${pkgs.findutils}/bin/find /run/user/$(id -u) -name "niri.wayland-*.sock" 2>/dev/null | head -1)
+    echo "NIRI DPMS ON"
+    export NIRI_SOCKET=$(${find} /run/user/$(${id} -u) -name "niri.wayland-*.sock" 2>/dev/null | ${head} -1)
      ${pkgs.niri}/bin/niri msg action power-on-monitors ;
   '';
   idlecmd = pkgs.writeShellScript "swayidle.sh" ''
@@ -52,7 +57,7 @@ let
       lock '${hyprlockCmd}' \
       timeout 300 '${hyprlockCmd}' \
       timeout 300 '${niri-dpms-off-cmd}' \
-      resume '${niri-dpms-on-cmd}'
+      after-resume '${niri-dpms-on-cmd}'
     fi
   '';
 in

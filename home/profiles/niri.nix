@@ -63,17 +63,20 @@ let
     # Exit if only one window (nothing to group)
     [ ''${#window_ids[@]} -eq 1 ] && exit 0
 
-    # Focus the first window and toggle its column's tabbed display
-    first_window="''${window_ids[0]}"
-    niri msg action focus-window --id "$first_window"
-    niri msg action toggle-column-tabbed-display
+    # Much simpler approach: just use consume-window-into-column sequentially
+    # Focus first window
+    niri msg action focus-window --id "''${window_ids[0]}"
 
-    # Move all other windows to the focused column
+    # Consume each subsequent window into the focused column
     for ((i=1; i<''${#window_ids[@]}; i++)); do
         window_id="''${window_ids[i]}"
         niri msg action focus-window --id "$window_id"
         niri msg action consume-window-into-column
     done
+
+    # Toggle the column to tabbed display
+    niri msg action focus-window --id "''${window_ids[0]}"
+    niri msg action toggle-column-tabbed-display
   '';
 
   switch-preset-column-width-all = pkgs.writeShellScript "switch-preset-column-width-all" ''
@@ -671,6 +674,12 @@ in
 
     window-rule {
         match app-id=r#".*-nngceckbapebfimnlniiiahkandclblb-Default$"#
+        open-floating true
+    }
+
+    // Float any windows without app and title (e.g. chromium notifications)
+    window-rule {
+        match app-id=r#"^$"# title="^$"
         open-floating true
     }
 

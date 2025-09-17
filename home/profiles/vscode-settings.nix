@@ -136,18 +136,19 @@
       # Roo-specific privacy settings
       "roo-cline.telemetryEnabled" = false;
       "RooVeterinaryInc.roo-cline.telemetryEnabled" = false;
-      "terminal.integrated.profile.linux" = {
-        "bash" = {
-          "path" = "${pkgs.bash}/bin/bash";
-        };
-      };
-      "terminal.integrated.defaultProfiles.linux" = "bash";
-      "terminal.integrated.automationProfile.linux" = {
-        "path" = "${pkgs.bash}/bin/bash";
-      };
-      "terminal.integrated.env.linux" = {
-        "SHELL" = "${pkgs.bash}/bash";
-      };
+      # "terminal.integrated.profile.linux" = {
+      #   "bash" = {
+      #     "path" = "${pkgs.bash}/bin/bash";
+      #   };
+      # };
+      # "terminal.integrated.defaultProfiles.linux" = "bash";
+      # "terminal.integrated.automationProfile.linux" = {
+      #   "path" = "${pkgs.bash}/bin/bash";
+      # };
+      # "terminal.integrated.env.linux" = {
+      #   "SHELL" = "${pkgs.bash}/bash";
+      # };
+      "terminal.integrated.shellIntegration.enabled" = true;
       "terminal.external.linuxExec" = "${pkgs.foot}/bin/foot";
       "terminal.integrated.shellIntegration.history" = 100000;
     };
