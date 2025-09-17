@@ -113,6 +113,11 @@ let
 
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
+  suspend-dialog = pkgs.writeShellScript "suspend-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Suspend?' '${hyprlockCommand} suspend'
+  '';
+
+
   wallpaper-cmd = if (osConfig.hostParams.desktop.wallpaper != null) then pkgs.writeShellScript "niri-wallpaper" ''
     killall hyprpaper
     killall mpvpaper
@@ -1055,6 +1060,8 @@ in
         // The quit action will show a confirmation dialog to avoid accidental exits.
         Mod+Shift+E { quit; }
         Ctrl+Alt+Delete { quit; }
+
+        Mod+Shift+S { spawn "${suspend-dialog}"; }
 
         // Powers off the monitors. To turn them back on, do any input like
         // moving the mouse or pressing any other key.
