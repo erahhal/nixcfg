@@ -1,6 +1,14 @@
 { lib, ... }:
 {
   xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
+    debug {
+        honor-xdg-activation-with-invalid-serial
+        // Only use intel
+        render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-card"
+        // Only use nvidia
+        // render-drm-device "/dev/dri/by-path/pci-0000:01:00-0.card"
+    }
+
     output "eDP-1" {
       mode "3840x2400@60"
       scale 2.1333333
@@ -28,6 +36,11 @@
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
       mode "5120x2160@74.978996"
       scale 1.333333
+    }
+
+    output "Dell Inc. DELL C3422WE F3BJT83" {
+      mode "3440x1440@59.973000"
+      scale 1.0
     }
 
     environment {

@@ -5,7 +5,7 @@ let
   # terminal = "kitty";
   # terminal = "ghostty";
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
-  rofi = "${pkgs.rofi-wayland}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
+  rofi = "${pkgs.rofi}/bin/rofi -show drun -theme ~/.config/rofi/launcher.rasi";
   launcher = rofi;
   exit-hyprland = pkgs.writeShellScript "exit-hyprland" ''
     ${builtins.readFile ../../scripts/kill-all-apps.sh}
@@ -358,7 +358,7 @@ in
 
       # touchpad gestures
       gestures = {
-        workspace_swipe = 1;
+        # workspace_swipe = 1;
         workspace_swipe_forever = 1;
       };
 

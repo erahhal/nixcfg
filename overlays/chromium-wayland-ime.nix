@@ -3,11 +3,11 @@ let
   chromiumWaylandIme = final: prev: {
     chromium = prev.chromium.override {
       commandLineArgs = [
-        # "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
+        "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
         "--enable-wayland-ime"
         "--password-store=basic" # Don't show kwallet login at start
         "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
-        "--ozone-platform-hint=auto"
+        "--ozone-platform=wayland"
         "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
         "--enable-gpu-rasterization"
         "--enable-oop-rasterization"
@@ -18,11 +18,11 @@ let
 
     brave = prev.brave.override {
       commandLineArgs = [
-        # "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
+        "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
         "--enable-wayland-ime"
         "--password-store=basic" # Don't show kwallet login at start
         "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
-        "--ozone-platform-hint=auto"
+        "--ozone-platform=wayland"
         "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
         "--enable-gpu-rasterization"
         "--enable-oop-rasterization"
@@ -33,13 +33,12 @@ let
 
     slack = prev.slack.overrideAttrs (oldAttrs: {
       postInstall = oldAttrs.postInstall or "" + ''
-        # wrapProgram $out/bin/slack \
-        #   --add-flags "--enable-wayland-ime" \
-        #   --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
         wrapProgram $out/bin/slack \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder" \
-          --add-flags "--ozone-platform-hint=auto" \
+          --add-flags "--enable-features=WebRTCPipeWireCapturer" \
+          --add-flags "--enable-features=UseOzonePlatform" \
+          --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo" \
           --add-flags "--enable-gpu-rasterization" \
           --add-flags "--enable-oop-rasterization" \

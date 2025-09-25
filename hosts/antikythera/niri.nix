@@ -1,6 +1,10 @@
 { lib, ... }:
 {
   xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
+    debug {
+        honor-xdg-activation-with-invalid-serial
+    }
+
     output "eDP-1" {
       mode "2880x1800@120"
       scale 1.8

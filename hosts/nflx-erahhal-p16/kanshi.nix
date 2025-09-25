@@ -410,6 +410,27 @@ in
         }
         {
           profile = {
+            name = "desk-netflix-dell-dual";
+            outputs = [
+              {
+                criteria = "Dell Inc. DELL C3422WE F3BJT83";
+                status = "enable";
+                mode = "3440x1440@59.973000Hz";
+                position = "0,0";
+                scale = 1.0;
+              }
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                mode = "3840x2400@60";
+                position = "831,1440";
+                scale = eDP-1-scale;
+              }
+            ];
+          };
+        }
+        {
+          profile = {
             name = "desk-netflix-viewsonic-triple";
             outputs = [
               {

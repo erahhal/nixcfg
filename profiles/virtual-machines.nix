@@ -257,10 +257,4 @@ in
   virtualisation.vmware.host = lib.mkIf config.hostParams.virtualisation.vmware.enable {
     enable = true;
   };
-
-  #-------------------------------------------
-  ## lxd
-  #-------------------------------------------
-
-  virtualisation.lxd.enable = true;
 }

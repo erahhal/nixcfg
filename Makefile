@@ -16,9 +16,9 @@ ifeq (, $(shell which nom))
 endif
 
 ## nom currently broken, covers password prompt.
-NOM := nom --json
-# NOM := cat
-LOGFORMAT := --log-format internal-json
+# NOM := nom --json
+NOM := cat
+# LOGFORMAT := --log-format internal-json
 
 switch:
 	# make clear-sddm-cache

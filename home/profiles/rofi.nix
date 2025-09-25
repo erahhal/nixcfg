@@ -1,12 +1,11 @@
 {  pkgs, ... }:
 {
   home.packages = with pkgs; [
-    rofi-wayland
+    rofi
   ];
 
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
     font = "Cascadia Code 10";
     # font = "Droid Sans Mono 14";
     terminal = "kitty";

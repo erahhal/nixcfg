@@ -3,7 +3,7 @@
 let
   niri = "${pkgs.niri}/bin/niri";
   jq = "${pkgs.jq}/bin/jq";
-  rofi = ''"${pkgs.rofi-wayland}/bin/rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"'';
+  rofi = ''"${pkgs.rofi}/bin/rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"'';
   ## @TODO: Move to a service
   dynamic-float-rules = pkgs.callPackage ./niri/dynamic-float-rules.nix {};
   toggle-fcitx = pkgs.writeShellScript "toggle-fcitx" ''
@@ -280,10 +280,6 @@ in
   };
 
   xdg.configFile."niri/config.kdl".text = ''
-    debug {
-        honor-xdg-activation-with-invalid-serial
-    }
-
     // This config is in the KDL format: https://kdl.dev
     // "/-" comments out the following node.
     // Check the wiki for a full description of the configuration:
@@ -595,6 +591,7 @@ in
     // which may be more convenient to use.
     // See the binds section below for more spawn examples.
 
+    spawn-sh-at-startup "systemctl --user restart waybar"
     spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
@@ -616,6 +613,8 @@ in
     spawn-sh-at-startup "systemctl --user restart wlsunset"
     spawn-sh-at-startup "systemctl --user restart waybar"
     spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
+    spawn-sh-at-startup "systemctl --user restart network-manager-applet"
+    spawn-sh-at-startup "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
@@ -669,6 +668,12 @@ in
         // - host Firefox (app-id is "firefox")
         // - Flatpak Firefox (app-id is "org.mozilla.firefox")
         match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+        open-floating true
+    }
+
+    window-rule {
+        // match app-id=r#"Rofi$"# title="^rofi - Audio Sink$"
+        match app-id=r#"Rofi$"#
         open-floating true
     }
 
@@ -807,11 +812,11 @@ in
         // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
         Mod+P hotkey-overlay-title="Run an Application: rofi" { spawn ${rofi}; }
         // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
-        Mod+X hotkey-overlay-title="Lock the Screen: hyprlock" { spawn "${hyprlockCommand}"; }
+        Mod+X hotkey-overlay-title="Lock the Screen: hyprlock" allow-when-locked=true { spawn "${hyprlockCommand}"; }
         Mod+E hotkey-overlay-title="Toggle fcitx5 daemon" { spawn "${toggle-fcitx}"; }
-        Mod+Y hotkey-overlay-title="Run Kanshi" { spawn "systemctl" "--user" "restart" "kanshi"; }
+        Mod+Y hotkey-overlay-title="Run Kanshi" allow-when-locked=true { spawn "systemctl" "--user" "restart" "kanshi"; }
 
-        Mod+G hotkey-overlay-title="Switch ThinkVision Monitor Input" { spawn "${toggle-thinkvision-input}"; }
+        Mod+G hotkey-overlay-title="Switch ThinkVision Monitor Input" allow-when-locked=true { spawn "${toggle-thinkvision-input}"; }
 
         // Use spawn to run a shell command. Do this if you need pipes, multiple commands, etc.
         // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
@@ -821,8 +826,8 @@ in
         // Example volume keys mappings for PipeWire & WirePlumber.
         // The allow-when-locked=true property makes them work even when the session is locked.
         // Using spawn allows to pass multiple arguments together with the command.
-        XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
-        XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
+        XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+"; }
+        XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; }
         XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
         XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
@@ -847,19 +852,15 @@ in
         Mod+Right { focus-column-right; }
         Mod+H     { focus-column-or-monitor-left; }
         Mod+L     { focus-column-or-monitor-right; }
-        Mod+Shift+H     { move-column-left-or-to-monitor-left; }
+        Mod+Ctrl+H     { move-column-left-or-to-monitor-left; }
+        Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
+        Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
+        Mod+Ctrl+L     { move-column-right-or-to-monitor-right; }
+
+        Mod+Shift+H     { focus-monitor-left; }
         Mod+Shift+J     { move-window-down-or-to-workspace-down; }
         Mod+Shift+K     { move-window-up-or-to-workspace-up; }
         Mod+Shift+L     { move-column-right-or-to-monitor-right; }
-
-        Mod+Ctrl+Left  { move-column-left; }
-        Mod+Ctrl+Down  { move-window-down; }
-        Mod+Ctrl+Up    { move-window-up; }
-        Mod+Ctrl+Right { move-column-right; }
-        Mod+Ctrl+H     { focus-monitor-left; }
-        Mod+Ctrl+J     { move-window-down; }
-        Mod+Ctrl+K     { move-window-up; }
-        Mod+Ctrl+L     { move-column-right; }
 
         // Alternative commands that move across workspaces when reaching
         // the first or last window in a column.

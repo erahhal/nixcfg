@@ -11,7 +11,7 @@
 {
   virtualisation = {
     waydroid.enable = config.hostParams.virtualisation.waydroid.enable;
-    lxd.enable = true;
+    # lxd.enable = true;
   };
 
   ## Give waydroid network access

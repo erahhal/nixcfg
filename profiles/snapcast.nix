@@ -24,21 +24,29 @@
 
   services.snapserver = {
     enable = true;
-    codec = "flac";
-    sampleFormat = "44100:16:2";
-    streams = {
-      a_main = {
-        type = "meta";
-        location = "/p_pipewire";
-      };
-      p_pipewire = {
-        type = "pipe";
-        # location = "/run/snapserver/pipewire_snapcast_pipe";
-        location = "/tmp/pipewire_snapcast_pipe";
+    openFirewall = true;
+    settings = {
+      stream = {
+        codec = "flac";
+        sampleFormat = "44100:16:2";
+        source = [
+          "meta:///p_pipewire?name=a_main"
+          "pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire"
+        ];
       };
     };
-    openFirewall = true;
   };
+
+  # environment.etc."snapserver.conf" = {
+  #   text = ''
+  #     [stream]
+  #     codec = flac
+  #     sampleFormat = 44100:16:2
+  #     source = meta:///p_pipewire?name=a_main
+  #     source = pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire
+  #   '';
+  #   mode = "0644";
+  # };
 
   ## Hacky way to get it to read /tmp/pipewire_snapcast_pipe
   systemd.services.snapserver = {

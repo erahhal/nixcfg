@@ -31,6 +31,12 @@
         default = 100;
         description = "Group ID of main user.";
       };
+
+      thinkpad-battery-charge-to-full = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Charge battery to full on thinkpads";
+      };
     };
 
     networking = {
