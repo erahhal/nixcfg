@@ -49,6 +49,8 @@ in
 
     environment.systemPackages = with pkgs; [
       niri-script
+      evremap
+      libinput
       xwayland-satellite  # This may or may not be available depending on your channel
       xdg-desktop-portal
       xdg-desktop-portal-gnome

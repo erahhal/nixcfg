@@ -341,7 +341,7 @@ in
             // natural-scroll
             // accel-speed 0.2
             // accel-profile "flat"
-            // scroll-method "on-button-down"
+            scroll-method "on-button-down"
             // scroll-button 273
             // scroll-button-lock
             // middle-emulation
@@ -353,6 +353,11 @@ in
         // Focus windows and outputs automatically when moving the mouse into them.
         // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
         // focus-follows-mouse max-scroll-amount="0%"
+    }
+
+    clipboard {
+        // Prevent trackpad middle-click from pasting inadvertantly
+        disable-primary
     }
 
     cursor {
@@ -598,7 +603,7 @@ in
     // which may be more convenient to use.
     // See the binds section below for more spawn examples.
 
-    spawn-sh-at-startup "systemctl --user restart waybar"
+    // spawn-sh-at-startup "systemctl --user restart waybar"
     spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
@@ -809,6 +814,9 @@ in
         //
         // Most actions that you can bind here can also be invoked programmatically with
         // `niri msg action do-something`.
+
+        // Prevent errant middle-click paste
+        MouseMiddle { spawn "true"; }
 
         // Mod-Shift-/, which is usually the same as Mod-?,
         // shows a list of important hotkeys.
