@@ -18,14 +18,14 @@ endif
 ## nom currently broken, covers password prompt.
 # NOM := nom --json
 NOM := cat
-# LOGFORMAT := --log-format internal-json
+# LOGFORMAT := --log-format internal-json -v
 
 switch:
 	# make clear-sddm-cache
 	make clear-mimeapps
 	make clear-gpu-cache
 	make clear-gtkrc
-	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
+	sudo true && nixos-rebuild ${LOGFORMAT} --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
 	# nixos-rebuild --sudo switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before

@@ -152,6 +152,9 @@
           config = config.nixpkgs.config;
           inherit system;
         };
+        bottles = pkgs.bottles.override {
+          removeWarningPopup = true;
+        };
       };
     };
   };
@@ -202,7 +205,7 @@
   # };
 
   # Setting to true will kill things like tmux on logout
-  services.logind.killUserProcesses = false;
+  services.logind.settings.Login.KillUserProcesses = false;
 
   # network locator e.g. scanners, printers, media devices, etc
   services.avahi.enable = true;
@@ -371,8 +374,7 @@
     pstree
     pv
     ryzenadj
-    ## @BROKEN
-    # sambaFull # to get rid of wine ntml_auth errors
+    # sambaFull
     sqlite
     sshpass
     steam-run

@@ -359,6 +359,12 @@ in
         xcursor-size 16
     }
 
+    gestures {
+        hot-corners {
+            off
+        }
+    }
+
     // You can configure outputs by their name, which you can find
     // by running `niri msg outputs` while inside a niri instance.
     // The built-in laptop monitor is usually called "eDP-1".

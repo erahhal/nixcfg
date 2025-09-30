@@ -4,10 +4,11 @@ let
   find = "${pkgs.findutils}/bin/find";
   head = "${pkgs.coreutils}/bin/head";
   id = "${pkgs.coreutils}/bin/id";
+  pidof = "${pkgs.procps}/bin/pidof";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   swayLockCmd = pkgs.callPackage ../../pkgs/sway-lock-command { };
   hyprlockCmd = pkgs.writeShellScript "hyprlock.sh" ''
-    pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock
+    ${pidof} hyprlock || ${pkgs.hyprlock}/bin/hyprlock
   '';
   sway-dpms-off-cmd = pkgs.writeShellScript "sway-dpms-off-cmd.sh" ''
       ${pkgs.sway}/bin/swaymsg "output * dpms off"
@@ -37,21 +38,21 @@ let
 
     ${pkgs.procps}/bin/pkill swayidle
 
-    if ${pkgs.procps}/bin/pidof sway > /dev/null; then
+    if ${pidof} sway > /dev/null; then
       ${pkgs.swayidle}/bin/swayidle \
       before-sleepl'${swayLockCmd}' \
       lock '${swayLockCmd}' \
       timeout 300 '${swayLockCmd}' \
       timeout 300 '${sway-dpms-off-cmd}' \
       resume '${sway-dpms-on-cmd}'
-    elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
+    elif ${pidof} Hyprland > /dev/null; then
       ${pkgs.swayidle}/bin/swayidle \
       before-sleep '${hyprlockCmd}' \
       lock '${hyprlockCmd}' \
       timeout 300 '${hyprlockCmd}' \
       timeout 300 '${hyprland-dpms-off-cmd}' \
       resume '${hyprland-dpms-on-cmd}'
-    elif ${pkgs.procps}/bin/pidof niri > /dev/null; then
+    elif ${pidof} niri > /dev/null; then
       ${pkgs.swayidle}/bin/swayidle \
       before-sleep '${hyprlockCmd}' \
       lock '${hyprlockCmd}' \

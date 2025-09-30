@@ -41,7 +41,6 @@ in
         hmcl
         lutris
         mcreator
-        minecraft
         prismlauncher
         steamtinkerlaunch
         wesnoth

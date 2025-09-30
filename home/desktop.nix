@@ -13,6 +13,7 @@ let
 in
 {
   imports = [
+    ../profiles/bambu-studio-appimage.nix
     ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
     # ../overlays/zoom-us.nix
@@ -388,6 +389,7 @@ in
         element-desktop
         evolutionWithPlugins
         feh
+        freecad
         git-sync
         gimp3-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins

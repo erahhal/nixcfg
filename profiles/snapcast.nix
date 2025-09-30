@@ -22,39 +22,55 @@
     '';
   };
 
-  services.snapserver = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      stream = {
-        codec = "flac";
-        sampleFormat = "44100:16:2";
-        source = [
-          "meta:///p_pipewire?name=a_main"
-          "pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire"
-        ];
-      };
-    };
-  };
-
-  # environment.etc."snapserver.conf" = {
-  #   text = ''
-  #     [stream]
-  #     codec = flac
-  #     sampleFormat = 44100:16:2
-  #     source = meta:///p_pipewire?name=a_main
-  #     source = pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire
-  #   '';
-  #   mode = "0644";
+  # services.snapserver = {
+  #   enable = true;
+  #   openFirewall = true;
+  #   settings = {
+  #     stream = {
+  #       codec = "flac";
+  #       sampleFormat = "44100:16:2";
+  #       source = [
+  #         "meta:///p_pipewire?name=a_main"
+  #         "pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire"
+  #       ];
+  #     };
+  #   };
   # };
+
+  environment.etc."snapserver.conf" = {
+    text = ''
+      [stream]
+      codec = flac
+      sampleFormat = 44100:16:2
+      source = meta:///p_pipewire?name=a_main
+      source = pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire
+      bind_to_address = ::
+      port = 1704
+
+      [tcp]
+
+      enabled = 1
+      bind_to_address = ::
+      port = 1705
+
+      [http]
+      bind_to_address = ::
+    '';
+    mode = "0644";
+  };
 
   ## Hacky way to get it to read /tmp/pipewire_snapcast_pipe
   systemd.services.snapserver = {
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    description = "Snapcast Server";
     serviceConfig = {
       DynamicUser = lib.mkForce false;
-      RestrictNamespacaes = lib.mkForce false;
+      RestrictNamespaces = lib.mkForce false;
       Type = lib.mkForce "simple";
-      ExecStart = lib.mkForce ''${pkgs.snapcast}/bin/snapserver --stream.stream="meta:///p_pipewire?name=a_main" --stream.stream="pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire" --stream.bind_to_address=:: --stream.port=1704 --stream.sampleformat=44100:16:2 --stream.codec=flac --tcp.enabled=1 --tcp.bind_to_address=:: --tcp.port=1705 --http.bind_to_address=::'';
+      # ExecStart = lib.mkForce ''${pkgs.snapcast}/bin/snapserver --stream.stream="meta:///p_pipewire?name=a_main" --stream.stream="pipe:///tmp/pipewire_snapcast_pipe?name=p_pipewire" --stream.bind_to_address=:: --stream.port=1704 --stream.sampleformat=44100:16:2 --stream.codec=flac --tcp.enabled=1 --tcp.bind_to_address=:: --tcp.port=1705 --http.bind_to_address=::'';
+      ExecStart = lib.mkForce ''${pkgs.snapcast}/bin/snapserver'';
+      Restart = "on-failure";
     };
   };
 
