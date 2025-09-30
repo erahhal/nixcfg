@@ -16,6 +16,9 @@ let
     profile = ''
       export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
       export GIO_MODULE_DIR="${pkgs.glib-networking}/lib/gio/modules/"
+
+      # GPU/Graphics settings (adjust based on your GPU)
+      export __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json
     '';
 
     extraPkgs = pkgs: with pkgs; [
@@ -51,19 +54,15 @@ let
       platforms = [ "x86_64-linux" ];
     };
   };
-
-  bambu-studio-appimage-wayland = pkgs.symlinkJoin {
-    name = "bambu-studio";
-    paths = [ bambu-studio-appimage ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/bambu-studio \
-        --set __EGL_VENDOR_LIBRARY_FILENAMES /run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json \
-    '';
-  };
 in
 {
   nixpkgs.config.packageOverrides = {
-    bambu-studio = bambu-studio-appimage-wayland;
+    bambu-studio = bambu-studio-appimage;
   };
+
+  networking.firewall.extraCommands = ''
+    iptables -I INPUT -m pkttype --pkt-type multicast -j ACCEPT
+    iptables -A INPUT -m pkttype --pkt-type multicast -j ACCEPT
+    iptables -I INPUT -p udp -m udp --match multiport --dports 1990,2021 -j ACCEPT
+  '';
 }

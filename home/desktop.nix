@@ -348,6 +348,7 @@ in
         gucharmap
         solaar            # for logitech unifying receiver setup
         xorg.xdpyinfo
+        xorg.xeyes
         xorg.xhost
         grim              # Arbitrary capture of portion of screen
         slurp             # Allows user to select portion of screen
