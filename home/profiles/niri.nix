@@ -315,9 +315,10 @@ in
         // All commented-out settings here are examples, not defaults.
         touchpad {
             // off
-            tap
-            // dwt
-            // dwtp
+            // tap
+            click-method "clickfinger"
+            dwt  // disable when typing
+            dwtp // disable when trackpading
             // drag false
             // drag-lock
             // natural-scroll
