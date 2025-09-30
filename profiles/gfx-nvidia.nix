@@ -330,13 +330,13 @@ home-manager.users.${userParams.username} = { pkgs, ... }: {
         # __GL_VRR_ALLOWED = "0";
         # __GL_TRIPLE_BUFFER = "1";
       } // (if usingIntel then {
-        ## Prioritize NVidia GPU (card 1) over Intel GPU
+        ## Prioritize NVidia GPU (card 1) over Intel GPU for Hyprland
         AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
         ## For dual-gpu setup, deal with slowness/stuttering on external monitor due to memory copy between GPUs
         ## Doesn't seem to work.
         AQ_FORCE_LINEAR_BLIT = "1";
 
-        ## Reverse PRIME - use intel GPU when possible
+        ## Reverse PRIME for Niri - use intel GPU when possible
         __GLX_VENDOR_LIBRARY_NAME = lib.mkForce "mesa";
         __NV_PRIME_RENDER_OFFLOAD = "1";
         __VK_LAYER_NV_optimus = "NVIDIA_only";

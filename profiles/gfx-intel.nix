@@ -8,6 +8,7 @@
     environment.systemPackages = with pkgs; [
       intel-gpu-tools
       libva-utils
+      intel-media-driver
     ];
 
     # From: https://github.com/NixOS/nixos-hardware/blob/master/common/gpu/intel/default.nix

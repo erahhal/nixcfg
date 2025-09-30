@@ -1,14 +1,21 @@
-{ lib, ... }:
+{ osConfig, lib, ... }:
+let
+  usingIntel = osConfig.hostParams.gpu.intel.enable == true;
+in
 {
-  xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
+  xdg.configFile."niri/config.kdl".text = lib.mkAfter (''
     debug {
         honor-xdg-activation-with-invalid-serial
+  ''
+  +
+  (if usingIntel then ''
         // Only use intel
         // render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-card"
         // render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-render"
         render-drm-device "/dev/dri/renderD128"
-        // Only use nvidia
-        // render-drm-device "/dev/dri/by-path/pci-0000:01:00-0.card"
+  '' else "")
+  +
+  ''
     }
 
     output "eDP-1" {
@@ -66,5 +73,5 @@
     spawn-at-startup "element-desktop"
     spawn-at-startup "joplin-desktop"
     spawn-at-startup "niri" "msg" "action" "focus-workspace" "1"
-  '';
+  '');
 }

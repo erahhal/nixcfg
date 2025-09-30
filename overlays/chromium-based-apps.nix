@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, userParams, ... }:
 let
   chromiumWaylandIme = final: prev: {
     chromium = prev.chromium.override {
@@ -96,7 +96,15 @@ let
   '';
 in
 {
+  home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
+    home.activation.chromium = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      # Get to this setting by clicking the tab strip then checking "Use system title bar and borders"
+      ${pkgs.gnused}/bin/sed -i 's/"custom_chrome_frame":true/"custom_chrome_frame":false/g' ~/.config/chromium/Default/Preferences
+    '';
+  };
+
   nixpkgs.overlays = [ chromiumWaylandIme ];
+
   environment.systemPackages = [
     (pkgs.stdenv.mkDerivation {
       name ="chrome-x11";

@@ -45,7 +45,7 @@
       ## Only needed if the docker version needs to be overridden for some reason
       # ../../overlays/docker.nix
       ../../overlays/bcompare-beta.nix
-      ../../overlays/chromium-wayland-ime.nix
+      ../../overlays/chromium-based-apps.nix
       ./virtualization.nix
 
       # user specific

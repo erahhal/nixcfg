@@ -48,7 +48,7 @@ in
 
     # Ignore lid switch, and let hyprland handle it using
     # the lid switch bindings below
-    services.logind.lidSwitch = "ignore";
+    services.logind.settings.Login.HandleLidSwitch = "ignore";
 
     # services.acpid = {
     #   enable = true;

@@ -113,10 +113,13 @@ let
 
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
+  reboot-dialog = pkgs.writeShellScript "reboot-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Reboot?' 'systemctl reboot'
+  '';
+
   suspend-dialog = pkgs.writeShellScript "suspend-dialog" ''
     ${nag-graphical}/bin/nag-graphical 'Suspend?' '${hyprlockCommand} suspend'
   '';
-
 
   wallpaper-cmd = if (osConfig.hostParams.desktop.wallpaper != null) then pkgs.writeShellScript "niri-wallpaper" ''
     killall hyprpaper
@@ -603,14 +606,13 @@ in
     // which may be more convenient to use.
     // See the binds section below for more spawn examples.
 
-    // spawn-sh-at-startup "systemctl --user restart waybar"
+    spawn-sh-at-startup "systemctl --user restart waybar"
     spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
 
     // This line starts waybar, a commonly used bar for Wayland compositors.
     // Currently using systemd service
-    // spawn-at-startup "waybar"
     spawn-sh-at-startup "systemctl --user restart kanshi"
     // spawn-sh-at-startup "${adjust-window-sizes}"
 
@@ -623,7 +625,6 @@ in
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk"
     spawn-sh-at-startup "systemctl --user restart wlsunset"
-    spawn-sh-at-startup "systemctl --user restart waybar"
     spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
     spawn-sh-at-startup "systemctl --user restart network-manager-applet"
     spawn-sh-at-startup "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
@@ -1010,7 +1011,6 @@ in
         // Mod+R { switch-preset-column-width; }
         // Cycling through the presets in reverse order is also possible.
         Mod+R { switch-preset-column-width-back; }
-        Mod+Shift+R { spawn "${switch-preset-column-width-all}"; }
         Mod+I { switch-preset-window-height-back; }
         Mod+Ctrl+R { reset-window-height; }
         Mod+F { maximize-column; }
@@ -1076,6 +1076,7 @@ in
         // The quit action will show a confirmation dialog to avoid accidental exits.
         Mod+Shift+E { quit; }
         Ctrl+Alt+Delete { quit; }
+        Mod+Shift+R { spawn "${reboot-dialog}"; }
 
         Mod+Shift+S { spawn "${suspend-dialog}"; }
 

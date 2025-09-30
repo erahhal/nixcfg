@@ -89,7 +89,7 @@ in
 
     # Ignore lid switch, and let wm handle it using
     # the lid switch bindings below
-    services.logind.lidSwitch = "ignore";
+    services.logind.settings.Login.HandleLidSwitch = "ignore";
 
     ## See: https://yalter.github.io/niri/Nvidia.html
     environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" = {

@@ -21,7 +21,7 @@
       ../../profiles/udev.nix
       ## @TODO: rename workstation-hardware.nix
       ../../profiles/laptop-hardware.nix
-      ../../overlays/chromium-wayland-ime.nix
+      ../../overlays/chromium-based-apps.nix
 
       ../../home/user.nix
       ../../home/desktop.nix
