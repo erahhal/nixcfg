@@ -9,17 +9,16 @@ let
   kvantumpreview = pkgs.writeShellScriptBin "kvantumpreview" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantumpreview $@
   '';
-  bambu-studio-provisional = pkgs.callPackage ../provisional/bambu-studio {};
 in
 {
   imports = [
-    ../profiles/bambu-studio-appimage.nix
     ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
     # ../overlays/zoom-us.nix
     ../overlays/igv-scaled.nix
     # ../overlays/firefox-nvidia.nix
     ../overlays/blender-with-nvidia-offload.nix
+    ../profiles/bambu-studio-appimage.nix
   ];
 
   environment.sessionVariables = {
@@ -81,7 +80,6 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
-      # ./profiles/bambu-studio.nix
       ./profiles/foot.nix
       ./profiles/ghostty.nix
       ./profiles/kitty.nix
@@ -376,10 +374,7 @@ in
 
         ## apps
         audacity
-        ## @BROKEN: Installs but doesn't really work
         bambu-studio
-        ## PR-based
-        # bambu-studio-provisional
         bitwarden
         brave
         calibre

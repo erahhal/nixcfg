@@ -32,10 +32,10 @@ let
 
     extraInstallCommands = ''
       # Fix the desktop file to point to the correct binary
-      install -m 444 -D ${appimageContents}/${name}.desktop $out/share/applications/${name}.desktop
+      install -m 444 -D ${appimageContents}/${name}.desktop $out/share/applications/${pname}.desktop
 
       # Replace the Exec line in the desktop file to point to our wrapped binary
-      substituteInPlace $out/share/applications/${name}.desktop \
+      substituteInPlace $out/share/applications/${pname}.desktop \
         --replace "Exec=AppRun" "Exec=$out/bin/${pname}"
 
       # Install icon
