@@ -1,16 +1,17 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
+  pname = "bambu-studio";
+  version = "02.02.02.56";
+  ubuntu_version = "24.04_PR-8184";
+  src = pkgs.fetchurl {
+    url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu-${ubuntu_version}.AppImage";
+    sha256 = "sha256-ziipEMz58lG/+uxubCd53c6BjJ9W3doJ9/Z8VJp+Za4=";
+  };
+  appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
   bambu-studio-appimage = pkgs.appimageTools.wrapType2 rec {
+    inherit pname version src;
     name = "BambuStudio";
-    pname = "bambu-studio";
-    version = "02.02.02.56";
-    ubuntu_version = "24.04_PR-8184";
-
-    src = pkgs.fetchurl {
-      url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu-${ubuntu_version}.AppImage";
-      sha256 = "sha256-ziipEMz58lG/+uxubCd53c6BjJ9W3doJ9/Z8VJp+Za4=";
-    };
 
     profile = ''
       export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
@@ -26,6 +27,29 @@ let
       gst_all_1.gst-plugins-good
       webkitgtk_4_1
     ];
+
+    buildInputs = [ pkgs.makeWrapper ];
+
+    extraInstallCommands = ''
+      # Fix the desktop file to point to the correct binary
+      install -m 444 -D ${appimageContents}/${name}.desktop $out/share/applications/${name}.desktop
+
+      # Replace the Exec line in the desktop file to point to our wrapped binary
+      substituteInPlace $out/share/applications/${name}.desktop \
+        --replace "Exec=AppRun" "Exec=$out/bin/${pname}"
+
+      # Install icon
+      install -m 444 -D ${appimageContents}/${name}.png $out/share/icons/hicolor/512x512/apps/${name}.png
+    '';
+
+    meta = {
+      description = "BambuStudio";
+      homepage = "https://bambulab.com";
+      downloadPage = "https://bambulab.com/en/download/studio";
+      license = lib.licenses.unfree;
+      sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   bambu-studio-appimage-wayland = pkgs.symlinkJoin {
