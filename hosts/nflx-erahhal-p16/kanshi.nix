@@ -81,7 +81,7 @@ in
                 status = "disable";
                 # status = "enable";
                 mode = "3840x2400@60";
-                position = "5120,1440";
+                position = "3844,1300";
                 scale = eDP-1-scale;
               }
             ];

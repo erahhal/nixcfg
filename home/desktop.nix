@@ -17,7 +17,7 @@ in
     ../profiles/vlc-wayland.nix
     # ../overlays/zoom-us.nix
     ../overlays/igv-scaled.nix
-    ../overlays/firefox-nvidia.nix
+    # ../overlays/firefox-nvidia.nix
     ../overlays/blender-with-nvidia-offload.nix
   ];
 

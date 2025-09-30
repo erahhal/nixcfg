@@ -278,7 +278,7 @@ in
         ## less power than Prime Sync since the more power efficient APU does most of the
         ## rendering, thus, allowing the NVIDIA card to sleep where possible.
 
-        # reverseSync.enable = true;
+        reverseSync.enable = true;
 
         # offload.enable = false;
         offload.enable = true;
@@ -305,8 +305,7 @@ in
     #     };
     #   };
     # };
-
-    home-manager.users.${userParams.username} = { pkgs, ... }: {
+home-manager.users.${userParams.username} = { pkgs, ... }: {
       home.sessionVariables = {
         ## Causes Niri to fail to load
         # __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json";
@@ -336,6 +335,13 @@ in
         ## For dual-gpu setup, deal with slowness/stuttering on external monitor due to memory copy between GPUs
         ## Doesn't seem to work.
         AQ_FORCE_LINEAR_BLIT = "1";
+
+        ## Reverse PRIME - use intel GPU when possible
+        __GLX_VENDOR_LIBRARY_NAME = lib.mkForce "mesa";
+        __NV_PRIME_RENDER_OFFLOAD = "1";
+        __VK_LAYER_NV_optimus = "NVIDIA_only";
+        ## End reverse PRIME
+
       } else {
         ## Even with intel module not loaded, Nvidia device is still card1 instead of card0
         AQ_DRM_DEVICES = "/dev/dri/card1";

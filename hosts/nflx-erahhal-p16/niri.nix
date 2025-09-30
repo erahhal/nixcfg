@@ -4,7 +4,9 @@
     debug {
         honor-xdg-activation-with-invalid-serial
         // Only use intel
-        render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-card"
+        // render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-card"
+        // render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-render"
+        render-drm-device "/dev/dri/renderD128"
         // Only use nvidia
         // render-drm-device "/dev/dri/by-path/pci-0000:01:00-0.card"
     }

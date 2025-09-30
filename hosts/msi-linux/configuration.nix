@@ -19,7 +19,6 @@
       # ../../profiles/steambox.nix
       ../../profiles/steam.nix
       ../../profiles/udev.nix
-      # ../../profiles/wayland-nvidia.nix
       ## @TODO: rename workstation-hardware.nix
       ../../profiles/laptop-hardware.nix
       ../../overlays/chromium-wayland-ime.nix

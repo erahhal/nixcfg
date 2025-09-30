@@ -26,7 +26,6 @@ in
       ../../profiles/appimage.nix
       ../../profiles/desktop.nix
       ../../profiles/jovian.nix
-      ../../profiles/wayland-nvidia.nix
       ../../profiles/pipewire.nix
       # ../../profiles/steam-nvidia-desktop.nix
       # ../../profiles/steam.nix
