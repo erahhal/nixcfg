@@ -25,8 +25,8 @@ switch:
 	make clear-mimeapps
 	make clear-gpu-cache
 	make clear-gtkrc
-	sudo true && nixos-rebuild ${LOGFORMAT} --sudo switch --flake .#${HOSTNAME} -L |& ${NOM}
-	# nixos-rebuild --sudo switch --flake .#${HOSTNAME} -L
+	sudo nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} -L |& ${NOM}
+	# sudo nixos-rebuild switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 	# Building defaults to dark, so switch back if it was light before
 	NEW_THEME=$$(cat ~/.system-theme) ;\
@@ -35,7 +35,7 @@ switch:
 	fi
 
 boot:
-	nixos-rebuild --sudo boot --flake .#${HOSTNAME} -L
+	sudo nixos-rebuild boot --flake .#${HOSTNAME} -L
 	
 
 remote-install:
@@ -44,13 +44,13 @@ remote-install:
 show-trace:
 	make clear-sddm-cache
 	make clear-mimeapps
-	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --show-trace --flake .#${HOSTNAME} -L |& ${NOM}
-	# nixos-rebuild --sudo switch --show-trace --flake .#${HOSTNAME} -L
+	sudo nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} -L |& ${NOM}
+	# sudo nixos-rebuild switch --show-trace --flake .#${HOSTNAME} -L
 	make update-gnupg-perms
 
 offline:
-	sudo true && nixos-rebuild ${LOGFORMAT} -v --sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L |& ${NOM} 
-	# nixos-rebuild -v --sudo switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
+	sudo nixos-rebuild ${LOGFORMAT} switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L |& ${NOM}
+	# sudo nixos-rebuild -v switch --offline --option binary-caches "" --flake .#${HOSTNAME} -L
 
 clear-gpu-cache:
 	mkdir -p ~/.config
@@ -64,11 +64,11 @@ gc:
 	nix-env --delete-generations old
 
 boot:
-	nixos-rebuild --sudo boot --flake .#${HOSTNAME} -L
+	sudo nixos-rebuild boot --flake .#${HOSTNAME} -L
 
 test:
 	./build/run-tests
-	# nixos-rebuild --sudo test --flake .#${HOSTNAME} -L
+	# sudo nixos-rebuild test --flake .#${HOSTNAME} -L
 
 update:
 	nix flake update

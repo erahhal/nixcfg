@@ -304,6 +304,12 @@ in
                 // If this section is empty, niri will fetch xkb settings
                 // from org.freedesktop.locale1. You can control these using
                 // localectl set-x11-keymap.
+
+                // Map Caps Lock to Escape
+                options "caps:escape"
+
+                // Or to disable Caps Lock entirely:
+                // options "caps:off"
             }
 
             repeat-delay 255
@@ -718,6 +724,11 @@ in
         open-floating true
         default-column-width { fixed 1000; }
         default-window-height { fixed 800; }
+    }
+
+    window-rule {
+      match app-id="mpv"
+      inhibit-idle true
     }
 
     window-rule {
