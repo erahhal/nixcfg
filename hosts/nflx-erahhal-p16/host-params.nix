@@ -33,7 +33,8 @@
     };
 
     programs = {
-      defaultBrowser = "chromium-browser";
+      # defaultBrowser = "chromium-browser";
+      defaultBrowser = "chromium-intel";
     };
 
     gpu = {

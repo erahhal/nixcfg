@@ -116,6 +116,15 @@ let
       '';
     });
 
+    ## Vesktop (and Discord) on Wayland WMs that are running nvidia as the main GPU.
+    ## This fixes it (with a minor performance hit)
+    vesktop = prev.vesktop.overrideAttrs (oldAttrs: {
+      postFixup = oldAttrs.postFixup or "" + ''
+        wrapProgram $out/bin/vesktop \
+          --add-flags "--disable-gpu-compositing"
+      '';
+    });
+
     # discord = prev.discord.overrideAttrs (oldAttrs: {
     #   buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.makeWrapper ];
     #   postInstall = oldAttrs.postInstall or "" + ''
@@ -148,5 +157,6 @@ in
 
   environment.systemPackages = [
     chromium-intel
+    (pkgs.writeShellScriptBin "chromium" "chromium-intel")
   ];
 }
