@@ -22,7 +22,6 @@ in
       packages = with pkgs; [
         awscli
         blender-hip
-        chromium
 
         lutris
         mcreator

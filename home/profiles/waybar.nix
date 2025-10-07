@@ -73,6 +73,7 @@ in
   ];
   imports = [
     ./swaynotificationcenter.nix
+    ./blueman-applet.nix
     ./network-manager-applet.nix
   ];
 
@@ -114,9 +115,9 @@ in
   wayland.windowManager.hyprland = {
     settings = {
       exec = [
-        "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
         "systemctl --user restart swaynotificationcenter"
         "systemctl --user restart network-manager-applet"
+        "systemctl --user restart blueman-applet"
       ];
     };
   };

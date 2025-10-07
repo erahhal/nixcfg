@@ -39,6 +39,50 @@ let
     fi
   '';
 
+  focus-with-overview = pkgs.writeShellScript "focus-with-overview" ''
+    # Script to handle focus commands with overview toggling and debouncing
+    # Usage: ./niri-focus-with-overview.sh <focus-command>
+
+    TIMESTAMP_FILE="/tmp/niri-focus-timestamp"
+    TIMEOUT=0.3  # seconds
+
+    FOCUS_CMD="$1"
+    [ -z "$FOCUS_CMD" ] && { echo "Usage: $0 <focus-command>"; exit 1; }
+    NO_TOGGLE="$2"
+
+    # Background function to close overview after timeout
+    close_after_timeout() {
+        local timestamp="$1"
+        sleep "$TIMEOUT"
+
+        # Only close if our timestamp is still current
+        [ -f "$TIMESTAMP_FILE" ] && [ "$(cat "$TIMESTAMP_FILE" 2>/dev/null)" = "$timestamp" ] && {
+            rm -f "$TIMESTAMP_FILE"
+            ${niri} msg action close-overview
+        }
+    }
+
+    # Generate unique timestamp
+    TIMESTAMP="$(date +%s%N)"
+
+    # If timestamp file exists, we're already in overview mode
+    if [ -f "$TIMESTAMP_FILE" ]; then
+        # Just execute focus command and update timestamp
+        ${niri} msg action "$FOCUS_CMD"
+        echo "$TIMESTAMP" > "$TIMESTAMP_FILE"
+    else
+        if [ -z "$NO_TOGGLE"]; then
+          # First invocation - open overview and execute focus
+          ${niri} msg action open-overview
+        fi
+        ${niri} msg action "$FOCUS_CMD"
+        echo "$TIMESTAMP" > "$TIMESTAMP_FILE"
+    fi
+
+    # Start timeout with our timestamp
+    close_after_timeout "$TIMESTAMP" &
+  '';
+
   toggle-tabbed = pkgs.writeShellScript "niri-toggle-tabbed" ''
     # Get current workspace ID from focused window
     current_workspace=$(niri msg -j focused-window | jq -r '.workspace_id // empty')
@@ -254,7 +298,6 @@ in
     # ./hypridle.nix
 
     ## These services have problems when started from systemd
-    # ./blueman-manager-applet.nix
     ## Doesn't work with clipboard
     # ./flameshot.nix
   ];
@@ -633,7 +676,7 @@ in
     spawn-sh-at-startup "systemctl --user restart wlsunset"
     spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
     spawn-sh-at-startup "systemctl --user restart network-manager-applet"
-    spawn-sh-at-startup "pkill blueman-applet; ${pkgs.blueman}/bin/blueman-applet"
+    spawn-sh-at-startup "systemctl --user restart blueman-applet"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
@@ -697,6 +740,11 @@ in
     }
 
     window-rule {
+        match app-id=r#".blueman-manager-wrapped$"#
+        open-floating true
+    }
+
+    window-rule {
         match app-id=r#"firefox$"# title="^Extension.*Mozilla Firefox$"
         open-floating true
     }
@@ -726,10 +774,10 @@ in
         default-window-height { fixed 800; }
     }
 
-    window-rule {
-      match app-id="mpv"
-      inhibit-idle true
-    }
+    // window-rule {
+    //   match app-id="mpv"
+    //   inhibit-idle true
+    // }
 
     window-rule {
         match app-id="chromium-browser$"
@@ -877,8 +925,8 @@ in
         Mod+Down  { focus-window-down; }
         Mod+Up    { focus-window-up; }
         Mod+Right { focus-column-right; }
-        Mod+H     { focus-column-or-monitor-left; }
-        Mod+L     { focus-column-or-monitor-right; }
+        Mod+H     { spawn "${focus-with-overview}" "focus-column-or-monitor-left" "true"; }
+        Mod+L     { spawn "${focus-with-overview}" "focus-column-or-monitor-right" "true"; }
         Mod+Ctrl+H     { move-column-left-or-to-monitor-left; }
         Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
         Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
@@ -891,8 +939,8 @@ in
 
         // Alternative commands that move across workspaces when reaching
         // the first or last window in a column.
-        Mod+J     { focus-workspace-down; }
-        Mod+K     { focus-workspace-up; }
+        Mod+J     { spawn "${focus-with-overview}" "focus-workspace-down"; }
+        Mod+K     { spawn "${focus-with-overview}" "focus-workspace-up"; }
         // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
         // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
@@ -1019,9 +1067,9 @@ in
         // Expel the bottom window from the focused column to the right.
         Mod+Period { expel-window-from-column; }
 
-        // Mod+R { switch-preset-column-width; }
+        Mod+R { switch-preset-column-width; }
         // Cycling through the presets in reverse order is also possible.
-        Mod+R { switch-preset-column-width-back; }
+        // Mod+R { switch-preset-column-width-back; }
         Mod+I { switch-preset-window-height-back; }
         Mod+Ctrl+R { reset-window-height; }
         Mod+F { maximize-column; }

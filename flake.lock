@@ -1463,11 +1463,11 @@
         "openconnect-pulse-launcher-browser": "openconnect-pulse-launcher-browser"
       },
       "locked": {
-        "lastModified": 1758579338,
-        "narHash": "sha256-mCl8puoL+iCxRSxg9Pgdqx0Xv99M+rRGoUgOl8UvKwA=",
+        "lastModified": 1759823985,
+        "narHash": "sha256-36ehK04erV7LJ6vxWT+D+t2gN5wDpG5Hr6HuuOmcL+o=",
         "ref": "refs/heads/master",
-        "rev": "bbf9bd3e0258277a5a6dec95e93b7e575d02490b",
-        "revCount": 20,
+        "rev": "f66f0d600ce1713be3ae8f4b2b640f48b2039e61",
+        "revCount": 21,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx-vpn"
       },

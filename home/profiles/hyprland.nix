@@ -209,8 +209,6 @@ in
     # ./sway-idle.nix
     ./hypridle.nix
 
-    ## These services have problems when started from systemd
-    # ./blueman-manager-applet.nix
     ## Doesn't work with clipboard
     # ./flameshot.nix
   ];
@@ -277,8 +275,6 @@ in
       # Refresh services and processes
       exec = [
         wallpaper-cmd
-        ## Running as a service seems to cause Dbus errors
-        # "systemctl --user restart blueman-manager-applet"
         ## Crashes Hyprland when used in a multi-monitor setup
         #"pkill flameshot; XDG_CURRENT_DESKTOP=sway ${pkgs.flameshot}/bin/flameshot"
         ## Running as a service doesn't wor with clipboard

@@ -1,6 +1,6 @@
 { osConfig, lib, ... }:
 let
-  usingIntel = osConfig.hostParams.gpu.intel.enable == true;
+  usingIntel = osConfig.hostParams.gpu.intel.enable;
 in
 {
   xdg.configFile."niri/config.kdl".text = lib.mkAfter (''
@@ -8,11 +8,18 @@ in
         honor-xdg-activation-with-invalid-serial
   ''
   +
+  ## @IMPORTANT NOTE: On Hybrid setup:
+  ## - Internal display is driven by intel GPU
+  ## - External display is driven by nvidia GPU
+  ## - Rendering on intel and offloading to nvidia is slow on external monitors, especially high resolution ones.
+  ## - Rendering on nvidia and offloading to intel is slow on laptop monitor, but tolerable
+  ## - SO, make sure window manager is using discrete nvidia GPU to render
+
+  ## BUUUUT it seems that Niri is faster at copying now? Using Intel and perf is not THAT bad
   (if usingIntel then ''
-        // Only use intel
-        // render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-card"
-        // render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-render"
-        render-drm-device "/dev/dri/renderD128"
+        // Use Nvidia GPU as primary
+        // See comment above
+        render-drm-device "/dev/dri/by-path/pci-0000:01:00.0-render"
   '' else "")
   +
   ''
@@ -60,7 +67,7 @@ in
         // __VK_LAYER_NV_optimus = "NVIDIA_only"
     }
 
-    spawn-at-startup "chromium"
+    spawn-at-startup "chromium-intel"
     spawn-at-startup "foot" "tmux" "a" "-dt" "code"
     spawn-at-startup "slack"
     spawn-at-startup "spotify"

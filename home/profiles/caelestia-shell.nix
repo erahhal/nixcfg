@@ -23,7 +23,10 @@ in
     #   enable = false; # if you prefer starting from your compositor
     #   target = "graphical-session.target";
     # };
-    systemd.enable = true;
+    systemd = {
+      enable = true;
+      environment = [];
+    };
     settings = {
       general = {
         apps = {
@@ -36,7 +39,6 @@ in
       };
       paths.wallpaperDir = "~/Wallpaper";
     };
-    environment = [];
     cli = {
       enable = true; # Also add caelestia-cli to path
       settings = {

@@ -6,5 +6,4 @@ rm -rf ~/.config/pulse
 rm -rf ~/.local/state/wireplumber.orig
 mv  ~/.local/state/wireplumber ~/.local/state/wireplumber.orig
 systemctl --user start pipewire pipewire-pulse wireplumber
-pkill waybar
-nohup waybar > /dev/null 2>&1 &
+systemctl --user restart waybar

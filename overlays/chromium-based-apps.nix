@@ -1,5 +1,52 @@
-{ pkgs, userParams, ... }:
+{ config, pkgs, userParams, ... }:
 let
+  usingIntel = config.hostParams.gpu.intel.enable;
+
+  chromium-intel-script = pkgs.writeShellScriptBin "chromium-intel" ''
+    # Ensure flatpak is available
+    if ! command -v flatpak &> /dev/null; then
+      echo "Error: flatpak is not installed"
+      echo "Add 'services.flatpak.enable = true;' to your configuration.nix"
+      exit 1
+    fi
+
+    # Check if Chromium flatpak is installed
+    if ! flatpak list --app | grep -q "org.chromium.Chromium"; then
+      echo "Chromium flatpak is not installed."
+      echo "Installing now..."
+      flatpak install -y flathub org.chromium.Chromium
+    fi
+
+    # Launch Chromium with Intel GPU forced
+    exec flatpak run \
+      --filesystem=~/.config/chromium:rw \
+      --env=DRI_PRIME=0 \
+      --env=__GLX_VENDOR_LIBRARY_NAME=mesa \
+      --env=LIBVA_DRIVER_NAME=iHD \
+      --device=dri \
+      org.chromium.Chromium --user-data-dir="$HOME/.config/chromium" "$@"
+  '';
+
+  chromium-intel-desktop = pkgs.makeDesktopItem {
+    name = "chromium-intel";
+    desktopName = "Chromium (Intel GPU)";
+    exec = "${chromium-intel-script}/bin/chromium-intel %U";
+    icon = "org.chromium.Chromium";
+    categories = [ "Network" "WebBrowser" ];
+    mimeTypes = [
+      "text/html"
+      "text/xml"
+      "application/xhtml+xml"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+    ];
+  };
+
+  chromium-intel = pkgs.symlinkJoin {
+    name = "chromium";
+    paths = [ chromium-intel-script chromium-intel-desktop ];
+  };
+
   chromiumWaylandIme = final: prev: {
     chromium = prev.chromium.override {
       commandLineArgs = [
@@ -8,7 +55,7 @@ let
         "--password-store=basic" # Don't show kwallet login at start
         "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
         "--ozone-platform=wayland"
-        "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
+        "--enable-features=VaapiVideoEncoder,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
         "--enable-gpu-rasterization"
         "--enable-oop-rasterization"
         "--ignore-gpu-blocklist"
@@ -88,12 +135,6 @@ let
 
     ## Telegram works out of the box
   };
-  chromium-x11-script = pkgs.writeShellScriptBin "chromium-x11-script" ''
-    ${pkgs.chromium}/bin/chromium "$@"
-  '';
-  brave-x11-script = pkgs.writeShellScriptBin "brave-x11-script" ''
-    ${pkgs.brave}/bin/brave "$@"
-  '';
 in
 {
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
@@ -106,73 +147,6 @@ in
   nixpkgs.overlays = [ chromiumWaylandIme ];
 
   environment.systemPackages = [
-    (pkgs.stdenv.mkDerivation {
-      name ="chrome-x11";
-      pname = "chrome-x11";
-
-      dontUnpack = true;
-
-      nativeBuildInputs = [
-        pkgs.makeWrapper
-      ];
-
-      installPhase = ''
-        install -Dm755 ${chromium-x11-script}/bin/chromium-x11-script $out/bin/chromium-x11
-        wrapProgram $out/bin/chromium-x11 \
-          --add-flags "--ozone-platform=x11" \
-          --add-flags "--force-device-scale-factor=1.5"
-      '';
-    })
-    (pkgs.stdenv.mkDerivation {
-      name ="brave-x11";
-      pname = "brave-x11";
-
-      dontUnpack = true;
-
-      nativeBuildInputs = [
-        pkgs.makeWrapper
-      ];
-
-      installPhase = ''
-        install -Dm755 ${brave-x11-script}/bin/brave-x11-script $out/bin/brave-x11
-        wrapProgram $out/bin/brave-x11 \
-          --add-flags "--ozone-platform=x11" \
-          --add-flags "--force-device-scale-factor=1.5"
-      '';
-    })
-    (pkgs.stdenv.mkDerivation {
-      name ="chrome-2x";
-      pname = "chrome-2x";
-
-      dontUnpack = true;
-
-      nativeBuildInputs = [
-        pkgs.makeWrapper
-      ];
-
-      installPhase = ''
-        install -Dm755 ${chromium-x11-script}/bin/chromium-x11-script $out/bin/chromium-2x
-        wrapProgram $out/bin/chromium-2x \
-          --add-flags "--ozone-platform=x11" \
-          --add-flags "--force-device-scale-factor=2.0"
-      '';
-    })
-    (pkgs.stdenv.mkDerivation {
-      name ="brave-2x";
-      pname = "brave-2x";
-
-      dontUnpack = true;
-
-      nativeBuildInputs = [
-        pkgs.makeWrapper
-      ];
-
-      installPhase = ''
-        install -Dm755 ${brave-x11-script}/bin/brave-x11-script $out/bin/brave-2x
-        wrapProgram $out/bin/brave-2x \
-          --add-flags "--ozone-platform=x11" \
-          --add-flags "--force-device-scale-factor=2x"
-      '';
-    })
+    chromium-intel
   ];
 }

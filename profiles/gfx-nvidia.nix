@@ -2,6 +2,13 @@
 
 # See: https://nixos.wiki/wiki/Nvidia
 
+## @IMPORTANT NOTE: On Hybrid setup:
+## - Internal display is driven by intel GPU
+## - External display is driven by nvidia GPU
+## - Rendering on intel and offloading to nvidia is slow on external monitors, especially high resolution ones.
+## - Rendering on nvidia and offloading to intel is slow on laptop monitor, but tolerable
+## - SO, make sure window manager is using discrete nvidia GPU to render
+
 # BIOS hybrid/discrete GPU
 # intel modules loaded/not loaded
 # AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0", AQ_DRM_DEVICES = "/dev/dri/card1", AQ_DRM_DEVICES = "/dev/dri/card0";
@@ -278,7 +285,7 @@ in
         ## less power than Prime Sync since the more power efficient APU does most of the
         ## rendering, thus, allowing the NVIDIA card to sleep where possible.
 
-        reverseSync.enable = true;
+        # reverseSync.enable = true;
 
         # offload.enable = false;
         offload.enable = true;
@@ -305,7 +312,7 @@ in
     #     };
     #   };
     # };
-home-manager.users.${userParams.username} = { pkgs, ... }: {
+    home-manager.users.${userParams.username} = { pkgs, ... }: {
       home.sessionVariables = {
         ## Causes Niri to fail to load
         # __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json";
