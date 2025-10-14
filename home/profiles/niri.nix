@@ -785,6 +785,11 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
+        match app-id="org.chromium.Chromium$"
+        open-on-workspace "1"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
         match app-id="kitty$"
         open-on-workspace "2"
         default-column-width { proportion 1.0; }
@@ -807,7 +812,7 @@ in
     window-rule {
         match app-id="brave-browser$"
         open-on-workspace "4"
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="firefox$"

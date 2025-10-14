@@ -212,6 +212,11 @@ in
       "rdblacklist=nouveau"
       "nouveau.modeset=0"
 
+      # Supposedly prevents 20-30 second handoff delay to compositor, but doesn't seem to work
+      # Causes power management to be offloaded to CPU
+      # Only works with proprietary driver (open = false)
+      "nvidia.NVreg_EnableGpuFirmware=0"
+
       ## Supposedly solves issues with corrupted desktop / videos after waking
       ## See: https://wiki.hyprland.org/Nvidia/
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
@@ -232,6 +237,16 @@ in
       "module_blacklist=nouveau,i915,xe"
     ] else [
       "module_blacklist=nouveau"
+      ## Attempt to keep intel GPU clock rate up for fast offloading
+
+      # ## may be useless or worse than useless on modern intel GPUs - just causes more power usage
+      # "i915.enable_rc6=0"
+      # ## Forces higher memory bandwidth usage
+      # "i915.enable_fbc=0"
+      # ## Significantly higher battery usage, but may help with sleep freezes
+      # "i915.enable_dc=0"
+      # ## The GuC and HuC firmware can improve GPU performance and power management for newer Intel graphics
+      # "i915.enable_guc=3"
     ]);
 
     # hardware.bumblebee.enable = false;
@@ -265,7 +280,8 @@ in
       # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
       # Only available from driver 515.43.04+
       # Do not disable this unless your GPU is unsupported or if you have a good reason to.
-      open = true;
+      # open = true;
+      open = false;
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.

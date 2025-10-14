@@ -6,7 +6,7 @@
       uid = 1026;
       gid = 100;
       # timeZone = "America/Denver";
-      thinkpad-battery-charge-to-full = true;
+      thinkpad-battery-charge-to-full = false;
     };
 
     containers = {

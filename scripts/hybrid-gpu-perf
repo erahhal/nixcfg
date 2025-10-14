@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+case "${1:-}" in
+  on)
+    echo $(cat /sys/class/drm/card1/gt/gt0/rps_max_freq_mhz) | sudo tee /sys/class/drm/card1/gt/gt0/rps_min_freq_mhz
+    echo on | sudo tee /sys/class/drm/card0/power/control
+    echo on | sudo tee /sys/class/drm/card1/power/control
+    ;;
+  off)
+    echo $(cat /sys/class/drm/card1/gt/gt0/rps_RPn_freq_mhz) | sudo tee /sys/class/drm/card1/gt/gt0/rps_min_freq_mhz
+    echo auto | sudo tee /sys/class/drm/card0/power/control
+    echo auto | sudo tee /sys/class/drm/card1/power/control
+    ;;
+  *)
+    echo "Usage: $0 {on|off}"
+    exit 1
+    ;;
+esac
+

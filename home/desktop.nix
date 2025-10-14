@@ -14,6 +14,7 @@ in
   imports = [
     ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
+    ../profiles/ubports-installer-appimage.nix
     # ../overlays/zoom-us.nix
     ../overlays/igv-scaled.nix
     # ../overlays/firefox-nvidia.nix
@@ -345,18 +346,19 @@ in
         ## system
         arandr
         lsix
+        grim              # Arbitrary capture of portion of screen
         gucharmap
+        slurp             # Allows user to select portion of screen
         solaar            # for logitech unifying receiver setup
+        ubports-installer
+        veracrypt
+        wezterm
+        wl-clipboard      # Manipulate wayland clipboard
+        wf-recorder       # Record video of screen portions in wayland
         xorg.xdpyinfo
         xorg.xeyes
         xorg.xhost
-        grim              # Arbitrary capture of portion of screen
-        slurp             # Allows user to select portion of screen
         xsel              # Manipulate xwindows clipboard
-        wl-clipboard      # Manipulate wayland clipboard
-        wf-recorder       # Record video of screen portions in wayland
-        veracrypt
-        wezterm
 
         # kvantummanager
         # kvantumpreview

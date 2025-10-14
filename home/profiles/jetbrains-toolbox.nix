@@ -1,5 +1,19 @@
 { pkgs, ... }:
+  let jetbrains-toolbox-nogpu = self: super: {
+    jetbrains-toolbox = super.jetbrains-toolbox.overrideAttrs (old: {
+      # add `makeWrapper` to existing dependencies
+      buildInputs = (old.buildInputs or []) ++ [ pkgs.makeWrapper ];
+      # wrap the binary in a script where the appropriate env var is set
+      postInstall = old.postInstall or "" + ''
+        wrapProgram "$out/bin/jetbrains-toolbox" \
+          --add-flags "--graphics-api software"
+      '';
+    });
+  };
+in
 {
+  nixpkgs.overlays = [ jetbrains-toolbox-nogpu ];
+
   home.packages = with pkgs; [
     jetbrains-toolbox
     ## These are installed by jetbrains-toolbox with a corporate license
