@@ -119,8 +119,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 
@@ -207,6 +207,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
@@ -249,6 +250,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
           inputs.nflx-vpn.nixosModules.default
           inputs.nflx.nixosModules.default
@@ -297,6 +299,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
           # inputs.nix-snapd.nixosModules.default
           # {
@@ -338,6 +341,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
         ];
         specialArgs = {
@@ -368,6 +372,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
         ];
         specialArgs = {
@@ -401,6 +406,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
         ];
         specialArgs = {
@@ -439,6 +445,7 @@
             nixvim-config.enable = true;
             nixvim-config.enable-ai = false;
             nixvim-config.enable-startify-cowsay = true;
+            nixvim-config.disable-indent-blankline = true;
           }
           # inputs.nix-snapd.nixosModules.default
           # {
