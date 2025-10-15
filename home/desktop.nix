@@ -14,7 +14,7 @@ in
   imports = [
     ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
-    ../profiles/ubports-installer-appimage.nix
+    # ../profiles/ubports-installer-appimage.nix
     # ../overlays/zoom-us.nix
     ../overlays/igv-scaled.nix
     # ../overlays/firefox-nvidia.nix
@@ -350,7 +350,7 @@ in
         gucharmap
         slurp             # Allows user to select portion of screen
         solaar            # for logitech unifying receiver setup
-        ubports-installer
+        # ubports-installer
         veracrypt
         wezterm
         wl-clipboard      # Manipulate wayland clipboard

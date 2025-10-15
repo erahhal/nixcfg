@@ -125,7 +125,8 @@
 
       defaultSession = lib.mkOption {
         type = lib.types.str;
-        default = "hyprland";
+        default = "niri";
+        # default = "hyprland";
         # default = "none";
         # default = "plasma";
         # default = "sway";

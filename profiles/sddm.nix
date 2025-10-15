@@ -84,16 +84,16 @@ in
         settings = {
           # Wayland.SessionDir = "${pkgs.hyprland}/share/wayland-sessions";
           Theme = {
-            CursorSize = 28;
+            CursorSize = 24;
 
             Current = config.hostParams.desktop.sddmTheme;
 
-            ## Does not work to change SDDM cursor theme
-            ## see profile/desktop.nix for how this is changed
+            ## Only works for Qt6 themes
+            ## see profile/desktop.nix for how this is changed for X/older themes
             CursorTheme = "bibata-cursors";
           };
           General = {
-            GreeterEnvironment = lib.mkIf (config.hostParams.desktop.sddmThemeQt6 == false) "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
+            GreeterEnvironment = lib.mkIf (config.hostParams.desktop.sddmThemeQt6 == false) "__GLX_VENDOR_LIBRARY_NAME=intel,QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
           };
         };
       } // (if config.hostParams.desktop.sddmThemeQt6 then {

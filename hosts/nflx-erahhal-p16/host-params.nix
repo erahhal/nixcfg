@@ -18,7 +18,6 @@
       # sddmTheme = "nflx";
       # sddmThemeQt6 = false;
 
-      defaultSession = "hyprland";
       multipleSessions = true;
       useHyprlandFlake = false;
       disableXwaylandScaling = true;
