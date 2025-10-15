@@ -829,9 +829,9 @@
       # Default: <none>
 
       # Battery charge level below which charging will begin.
-      START_CHARGE_THRESH_BAT0 = 75;
+      START_CHARGE_THRESH_BAT0 = 79;
       # Battery charge level above which charging will stop.
-      STOP_CHARGE_THRESH_BAT0 = 80;
+      STOP_CHARGE_THRESH_BAT0 = 81;
 
       # ## High charge
       # START_CHARGE_THRESH_BAT0 = 98;

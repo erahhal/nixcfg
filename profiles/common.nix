@@ -315,6 +315,7 @@
     cdrkit           # provides genisoimage
     cowsay
     cpufrequtils
+    cyme             # modern lsusb
     distrobox
     dmidecode
     dos2unix

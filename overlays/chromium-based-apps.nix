@@ -116,14 +116,14 @@ let
       '';
     });
 
-    ## Vesktop (and Discord) on Wayland WMs that are running nvidia as the main GPU.
-    ## This fixes it (with a minor performance hit)
-    vesktop = prev.vesktop.overrideAttrs (oldAttrs: {
+    vesktop = if usingIntel then (prev.vesktop.overrideAttrs (oldAttrs: {
+      ## Vesktop (and Discord) on Wayland WMs that are running nvidia as the main GPU.
+      ## This fixes it (with a acceptable performance hit)
       postFixup = oldAttrs.postFixup or "" + ''
         wrapProgram $out/bin/vesktop \
           --add-flags "--disable-gpu-compositing"
       '';
-    });
+    })) else prev.vesktop;
 
     # discord = prev.discord.overrideAttrs (oldAttrs: {
     #   buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.makeWrapper ];
@@ -149,7 +149,9 @@ in
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
     home.activation.chromium = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       # Get to this setting by clicking the tab strip then checking "Use system title bar and borders"
-      ${pkgs.gnused}/bin/sed -i 's/"custom_chrome_frame":true/"custom_chrome_frame":false/g' ~/.config/chromium/Default/Preferences
+      if [ -e ~/.config/chromium/Default/Preferences ]; then
+        ${pkgs.gnused}/bin/sed -i 's/"custom_chrome_frame":true/"custom_chrome_frame":false/g' ~/.config/chromium/Default/Preferences
+      fi
     '';
   };
 
