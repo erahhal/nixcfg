@@ -2,12 +2,12 @@
 
 # @TODO: remove the ones here that do nothing
 
-pkill waybar
 pkill chromium
 pkill slack
 pkill Slack
 pkill brave
 pkill Brave
+pkill joplin
 pkill joplin-desktop
 pkill code
 pkill spotify

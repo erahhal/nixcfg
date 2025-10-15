@@ -90,7 +90,7 @@ in
 
             ## Does not work to change SDDM cursor theme
             ## see profile/desktop.nix for how this is changed
-            # CursorTheme = "bibata-cursors";
+            CursorTheme = "bibata-cursors";
           };
           General = {
             GreeterEnvironment = lib.mkIf (config.hostParams.desktop.sddmThemeQt6 == false) "QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";

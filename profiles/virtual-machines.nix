@@ -73,7 +73,7 @@ in
   ];
 
   virtualisation.libvirtd = {
-    enable = true;
+    enable = config.hostParams.virtualisation.libvirtd.enable;
 
     allowedBridges = [
       "nm-bridge"

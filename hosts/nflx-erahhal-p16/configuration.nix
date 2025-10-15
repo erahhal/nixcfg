@@ -36,7 +36,7 @@
     ../../profiles/homefree.nix
     ../../profiles/mullvad.nix
     # ../../profiles/ollama.nix
-    ../../profiles/tailscale.nix
+    # ../../profiles/tailscale.nix
     # ../../profiles/thinkpad-dock-udev-rules.nix
     ../../profiles/totp.nix
     ../../profiles/udev.nix
@@ -206,6 +206,8 @@
     ## It's not necessary.
     # interfaces."wlp0s20f3".useDHCP = true;
   };
+
+  systemd.services.wpa_supplicant.enable = false;
 
   services.resolved = {
     enable = true;

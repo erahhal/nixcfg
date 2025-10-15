@@ -16,7 +16,7 @@ let
   exit-niri = pkgs.writeShellScript "exit-niri" ''
     ${builtins.readFile ../../scripts/kill-all-apps.sh}
 
-    pkill niri
+    ${niri} msg action quit --skip-confirmation
   '';
   reboot = pkgs.writeShellScript "kill-reboot" ''
     ${builtins.readFile ../../scripts/kill-all-apps.sh}
@@ -163,6 +163,10 @@ let
 
   suspend-dialog = pkgs.writeShellScript "suspend-dialog" ''
     ${nag-graphical}/bin/nag-graphical 'Suspend?' '${hyprlockCommand} suspend'
+  '';
+
+  exit-dialog = pkgs.writeShellScript "exit-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Exit Niri?' '${exit-niri}'
   '';
 
   wallpaper-cmd = if (osConfig.hostParams.desktop.wallpaper != null) then pkgs.writeShellScript "niri-wallpaper" ''
@@ -1138,7 +1142,7 @@ in
         Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
         // The quit action will show a confirmation dialog to avoid accidental exits.
-        Mod+Shift+E { quit; }
+        Mod+Shift+E { spawn "${exit-dialog}"; }
         Ctrl+Alt+Delete { quit; }
         Mod+Shift+R { spawn "${reboot-dialog}"; }
 
