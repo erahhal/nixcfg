@@ -320,6 +320,7 @@
     dmidecode
     dos2unix
     ed
+    elixir
     eternal-terminal
     exfat
     exiftool

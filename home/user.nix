@@ -148,6 +148,7 @@ in
 
         ## dev
         claude-code
+        codex
         devbox
         difftastic
         git-secrets

@@ -93,7 +93,8 @@ in
             CursorTheme = "bibata-cursors";
           };
           General = {
-            GreeterEnvironment = lib.mkIf (config.hostParams.desktop.sddmThemeQt6 == false) "__GLX_VENDOR_LIBRARY_NAME=intel,QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
+            GreeterEnvironment = lib.mkIf (config.hostParams.desktop.sddmThemeQt6 == false)
+              "WLR_DRM_DEVICES=/dev/dri/by-path/pci-0000:00:02.0-render;QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=${toString config.hostParams.desktop.dpi}";
           };
         };
       } // (if config.hostParams.desktop.sddmThemeQt6 then {

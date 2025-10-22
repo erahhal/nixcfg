@@ -8,26 +8,32 @@
     output "eDP-1" {
       mode "2880x1800@120"
       scale 1.8
+      variable-refresh-rate
     }
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
       mode "5120x2150@60.000"
       scale 1.332031
+      variable-refresh-rate
     }
     output "LG Electronics 16MQ70 20NKZ005285" {
       mode "2560x1600@60"
       scale 1.6
+      variable-refresh-rate
     }
     output "LG Electronics LG Ultra HD 0x00043EAD" {
       mode "3840x2160@60"
       scale 1.5
+      variable-refresh-rate
     }
     output "LG Electronics L33HD334K 0x00020F5B" {
       mode "3840x2160@60"
       scale 1.5
+      variable-refresh-rate
     }
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
       mode "5120x2160@74.978996"
       scale 1.333333
+      variable-refresh-rate
     }
 
     environment {

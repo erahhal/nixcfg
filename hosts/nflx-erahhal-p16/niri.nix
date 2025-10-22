@@ -29,34 +29,41 @@ in
       mode "3840x2400@60"
       scale 2.1333333
       focus-at-startup
+      variable-refresh-rate
     }
     // ThinkVision
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
       mode "5120x2150@60.000"
       scale 1.332031
+      variable-refresh-rate
     }
     // Portable
     output "LG Electronics 16MQ70 20NKZ005285" {
       mode "2560x1600@60"
       scale 1.6
       position x=1801 y=200
+      variable-refresh-rate
     }
     output "LG Electronics LG Ultra HD 0x00043EAD" {
       mode "3840x2160@60"
       scale 1.5
+      variable-refresh-rate
     }
     output "LG Electronics L33HD334K 0x00020F5B" {
       mode "3840x2160@60"
       scale 1.5
+      variable-refresh-rate
     }
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
       mode "5120x2160@74.978996"
       scale 1.333333
+      variable-refresh-rate
     }
 
     output "Dell Inc. DELL C3422WE F3BJT83" {
       mode "3440x1440@59.973000"
       scale 1.0
+      variable-refresh-rate
     }
 
     environment {

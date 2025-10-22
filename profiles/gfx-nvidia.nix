@@ -301,11 +301,11 @@ in
         ## less power than Prime Sync since the more power efficient APU does most of the
         ## rendering, thus, allowing the NVIDIA card to sleep where possible.
 
-        # reverseSync.enable = true;
+        reverseSync.enable = true;
 
-        # offload.enable = false;
-        offload.enable = true;
-        offload.enableOffloadCmd = true;
+        offload.enable = false;
+        # offload.enable = true;
+        # offload.enableOffloadCmd = true;
 
         intelBusId = "PCI:0:2:0";
         nvidiaBusId = "PCI:1:0:0";
