@@ -143,6 +143,13 @@
 
   outputs = { ... }@inputs:
   let
+    broken = import ./helpers/broken.nix {
+      lib = inputs.nixpkgs.lib;
+      pkgs = import inputs.nixpkgs {
+        system = "x86_64-linux";
+        config.allowBroken = true;
+      };
+    };
     recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
     userParams = import ./user-params.nix {};
     homeManagerConfig = {
@@ -170,6 +177,7 @@
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = {
         inherit userParams;
+        inherit broken;
         inherit recursiveMerge;
       };
     };
@@ -218,6 +226,7 @@
           inherit copyDesktopIcons;
           inherit copyDesktopItems;
           inherit mkWindowsApp;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -266,6 +275,7 @@
           inherit copyDesktopIcons;
           inherit copyDesktopItems;
           inherit mkWindowsApp;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -312,6 +322,7 @@
           inherit copyDesktopIcons;
           inherit copyDesktopItems;
           inherit mkWindowsApp;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -319,7 +330,6 @@
       upaya =
       let
         system = "x86_64-linux";
-        recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
@@ -347,6 +357,7 @@
         specialArgs = {
           inherit inputs;
           inherit system;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -354,7 +365,6 @@
       sicmundus =
       let
         system = "x86_64-linux";
-        recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
       in
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
@@ -378,6 +388,7 @@
         specialArgs = {
           inherit inputs;
           inherit system;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -412,6 +423,7 @@
         specialArgs = {
           inherit inputs;
           inherit system;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };
@@ -455,6 +467,7 @@
         specialArgs = {
           inherit inputs;
           inherit system;
+          inherit broken;
           inherit recursiveMerge;
           inherit userParams;
         };

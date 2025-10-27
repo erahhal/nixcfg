@@ -154,7 +154,7 @@ window#waybar.empty #window {
     padding: 0 10px 4px 10px;
 }
 #custom-online-monitor {
-    padding: 3px 4px 4px 4px;
+    padding: 3px 4px 4px 8px;
 }
 #idle_inhibitor,
 #custom-toggletheme {

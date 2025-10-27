@@ -164,8 +164,7 @@ in
 
         ## genai
         litellm
-        ## @BROKEN
-        # vllm  # Commented out due to build failures after flake update
+        vllm
 
         ## python
         pyright

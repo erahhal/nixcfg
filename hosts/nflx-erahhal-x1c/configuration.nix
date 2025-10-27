@@ -149,8 +149,6 @@
     # interfaces."wlp0s20f3".useDHCP = true;
   };
 
-  systemd.services.wpa_supplicant.enable = false;
-
   services.resolved = {
     enable = true;
     dnssec = "false";

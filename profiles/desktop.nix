@@ -37,7 +37,6 @@ in
     # ./sway.nix
     ./hyprland.nix
     ./fonts.nix
-    ## @BROKEN
     ./i2c.nix
     ./niri.nix
     ./sddm.nix

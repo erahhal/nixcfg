@@ -133,7 +133,7 @@
       # Allow proprietary packages.
       allowUnfree = true;
       # Allow broken packages.
-      allowBroken = true;
+      allowBroken = false;
       packageOverrides = pkgs: {
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;
@@ -303,8 +303,7 @@
   environment.systemPackages = with pkgs; [
     appimage-run
     at-spi2-core
-    ## @BROKEN
-    # axel
+    axel
     backblaze-b2
     bashmount
     bc
@@ -340,6 +339,7 @@
     htop
     hwinfo
     iftop
+    imagemagick
     inetutils
     iotop
     iperf3

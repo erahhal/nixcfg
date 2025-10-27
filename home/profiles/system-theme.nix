@@ -8,20 +8,22 @@ let
     HOME=/home/${userParams.username}
     SYSTEM_THEME=$(cat $HOME/.system-theme)
     if [ "$SYSTEM_THEME" == "light-mode" ]; then
+      echo "In light-mode, switching to dark"
       GENERATION=$(home-manager generations | head -2 | tail -1 | rg -o '/[^ ]*')
     else
+      echo "In dark-mode, switching to light"
       GENERATION=$(home-manager generations | head -1 | rg -o '/[^ ]*')/specialisation/light-mode
     fi
     "$GENERATION"/activate
 
+    echo "a"
     if pidof sway > /dev/null; then
-      pkill waybar
+      echo "b"
       tmux source-file $HOME/.tmux.conf
       systemctl --user restart swaynotificationcenter
       swaymsg reload
     elif ${pkgs.procps}/bin/pidof Hyprland > /dev/null; then
-      echo ">> killing waybar"
-      pkill waybar
+      echo "c"
       echo ">> reloading tmux"
       tmux source-file $HOME/.tmux.conf
       echo ">> restarting SwayNC"
@@ -30,8 +32,15 @@ let
       ${pkgs.hyprland}/bin/hyprctl reload
       sleep 1
       echo ">> launching waybar"
-      ## This only seems to launch if logging at trace level and running in foreground
-      waybar -l trace
+      systemctl --user restart waybar
+    elif ${pkgs.procps}/bin/pidof niri > /dev/null; then
+      echo "d"
+      echo ">> reloading tmux"
+      tmux source-file $HOME/.tmux.conf
+      echo ">> restarting SwayNC"
+      systemctl --user restart swaynotificationcenter
+      echo ">> launching waybar"
+      systemctl --user restart waybar
     fi
   '';
   runtime-paths = lib.makeBinPath [

@@ -1,4 +1,4 @@
-{ config, pkgs, userParams, ... }:
+{ broken, config, pkgs, userParams, ... }:
 
 let
   bcompare-beta = pkgs.libsForQt5.callPackage ../pkgs/bcompare-beta {};
@@ -404,14 +404,14 @@ in
         libreoffice
         logseq
         mpv
-        unstable.rpi-imager
+        (broken rpi-imager)
         shotwell
         signal-desktop-bin
         slack
         spotify
         subsurface
         sxiv # image viewer with vim bindings
-        # stellarium
+        (broken stellarium)
         telegram-desktop
         vesktop
         vimiv-qt

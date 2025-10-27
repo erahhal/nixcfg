@@ -192,8 +192,6 @@
     # interfaces."wlp0s20f3".useDHCP = true;
   };
 
-  systemd.services.wpa_supplicant.enable = false;
-
   services.resolved = {
     enable = true;
     dnssec = "false";
@@ -291,6 +289,10 @@
     # "usbcore.use_both_schemes=y"
     "usbcore.autosuspend=-1"
   ];
+
+  boot.extraModprobeConfig = ''
+    options cfg80211 ieee80211_regdom=US
+  '';
 
   ## Make sure CPU runs at max performance
   systemd.services.ryzenadj = {
