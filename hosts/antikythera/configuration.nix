@@ -291,7 +291,7 @@
   ];
 
   boot.extraModprobeConfig = ''
-    options cfg80211 ieee80211_regdom=US
+    options cfg80211 ieee80211_regdom=00
   '';
 
   ## Make sure CPU runs at max performance

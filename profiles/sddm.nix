@@ -84,7 +84,7 @@ in
         settings = {
           # Wayland.SessionDir = "${pkgs.hyprland}/share/wayland-sessions";
           Theme = {
-            CursorSize = 24;
+            CursorSize = 16;
 
             Current = config.hostParams.desktop.sddmTheme;
 

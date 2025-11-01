@@ -49,7 +49,7 @@ in
         prismlauncher
         atlauncher
         minecraft
-        glfw-wayland-minecraft
+        glfw3-minecraft
         hmcl
         wesnoth
 

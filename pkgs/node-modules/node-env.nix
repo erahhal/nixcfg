@@ -3,8 +3,8 @@
 {lib, stdenv, nodejs, python2, pkgs, libtool, runCommand, writeTextFile}:
 
 let
-  # Workaround to cope with utillinux in Nixpkgs 20.09 and util-linux in Nixpkgs master
-  utillinux = if pkgs ? utillinux then pkgs.utillinux else pkgs.util-linux;
+  # Workaround to cope with util-linux in Nixpkgs 20.09 and util-linux in Nixpkgs master
+  util-linux = if pkgs ? util-linux then pkgs.util-linux else pkgs.util-linux;
 
   python = if nodejs ? python then nodejs.python else python2;
 
@@ -399,7 +399,7 @@ let
     stdenv.mkDerivation ({
       name = "node_${name}-${version}";
       buildInputs = [ tarWrapper python nodejs ]
-        ++ lib.optional (stdenv.isLinux) utillinux
+        ++ lib.optional (stdenv.isLinux) util-linux
         ++ lib.optional (stdenv.isDarwin) libtool
         ++ buildInputs;
 
@@ -473,7 +473,7 @@ let
         name = "node-dependencies-${name}-${version}";
 
         buildInputs = [ tarWrapper python nodejs ]
-          ++ lib.optional (stdenv.isLinux) utillinux
+          ++ lib.optional (stdenv.isLinux) util-linux
           ++ lib.optional (stdenv.isDarwin) libtool
           ++ buildInputs;
 
@@ -540,7 +540,7 @@ let
     stdenv.mkDerivation {
       name = "node-shell-${name}-${version}";
 
-      buildInputs = [ python nodejs ] ++ lib.optional (stdenv.isLinux) utillinux ++ buildInputs;
+      buildInputs = [ python nodejs ] ++ lib.optional (stdenv.isLinux) util-linux ++ buildInputs;
       buildCommand = ''
         mkdir -p $out/bin
         cat > $out/bin/shell <<EOF

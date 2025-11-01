@@ -133,7 +133,7 @@
       # Allow proprietary packages.
       allowUnfree = true;
       # Allow broken packages.
-      allowBroken = false;
+      allowBroken = true;
       packageOverrides = pkgs: {
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;
@@ -390,7 +390,7 @@
     udisks
     unrar
     usbutils
-    utillinux
+    util-linux
     vim
     vulnix
     wireguard-tools

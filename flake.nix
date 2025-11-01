@@ -307,9 +307,10 @@
           inputs.nixvim-config.nixosModules.default
           {
             nixvim-config.enable = true;
-            nixvim-config.enable-ai = false;
+            nixvim-config.enable-ai = true;
             nixvim-config.enable-startify-cowsay = true;
             nixvim-config.disable-indent-blankline = true;
+            nixvim-config.disable-notifications = true;
           }
           # inputs.nix-snapd.nixosModules.default
           # {

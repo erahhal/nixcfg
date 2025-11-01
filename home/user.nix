@@ -576,12 +576,14 @@ in
 
     programs.git = {
       enable = true;
-      userName = userParams.fullName;
-      aliases = {
-        undo = "reset HEAD~1 --mixed";
-        date = "for-each-ref --sort=committerdate refs/heads/";
-      };
-      extraConfig = {
+      settings = {
+        user = {
+          name = userParams.fullName;
+        };
+        aliases = {
+          undo = "reset HEAD~1 --mixed";
+          date = "for-each-ref --sort=committerdate refs/heads/";
+        };
         checkout = {
           defaultRemote = "origin";
         };

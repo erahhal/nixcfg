@@ -57,8 +57,8 @@ in
   #     # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
   #     enabled = "fcitx5";
   #     fcitx5.addons = with pkgs; [
-  #       fcitx5-configtool
-  #       fcitx5-chinese-addons
+  #       qt6Packages.fcitx5-configtool
+  #       qt6Packages.fcitx5-chinese-addons
   #       fcitx5-gtk
   #       fcitx5-nord
   #       fcitx5-rime
@@ -109,8 +109,8 @@ in
         type = "fcitx5";
         enable = true;
         fcitx5.addons = with pkgs; [
-          fcitx5-configtool
-          fcitx5-chinese-addons
+          qt6Packages.fcitx5-configtool
+          qt6Packages.fcitx5-chinese-addons
           fcitx5-gtk
           fcitx5-nord
           fcitx5-rime
@@ -378,7 +378,7 @@ in
         ## apps
         audacity
         bambu-studio
-        bitwarden
+        bitwarden-desktop
         brave
         calibre
         czkawka
@@ -416,7 +416,7 @@ in
         vesktop
         vimiv-qt
         waydroid
-        whatsapp-for-linux
+        wasistlos
         xournalpp
         zoom-us
 

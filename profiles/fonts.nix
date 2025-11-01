@@ -9,7 +9,7 @@
     powerline-fonts
     gelasio
     iosevka
-    noto-fonts noto-fonts-cjk-sans noto-fonts-emoji
+    noto-fonts noto-fonts-cjk-sans noto-fonts-color-emoji
     source-code-pro
     ttf_bitstream_vera
     terminus_font_ttf

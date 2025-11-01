@@ -44,7 +44,7 @@ in
   ];
 
   environment.systemPackages = with pkgs; [
-    glxinfo
+    mesa-demos
     inxi
     libcamera
     bibata-cursors

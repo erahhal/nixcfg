@@ -37,7 +37,7 @@ in
 
         ## Games
         atlauncher
-        glfw-wayland-minecraft
+        glfw3-minecraft
         hmcl
         lutris
         mcreator
