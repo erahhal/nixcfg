@@ -360,7 +360,7 @@ in
     runc
 
     # Proton for Steam
-    protonup
+    protonup-ng
   ];
 }
 

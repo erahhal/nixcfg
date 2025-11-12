@@ -132,7 +132,7 @@ in
       enable32Bit = true;
       extraPackages = with pkgs; [
         nvidia-vaapi-driver
-        vaapiVdpau           # VDPAU backend for VA-API
+        libva-vdpau-driver           # VDPAU backend for VA-API
         libvdpau-va-gl       # VDPAU driver with VA-API/OpenGL backend
         vulkan-loader
         vulkan-validation-layers
@@ -142,7 +142,7 @@ in
       ];
       extraPackages32 = with pkgs.pkgsi686Linux; [
         nvidia-vaapi-driver
-        vaapiVdpau
+        libva-vdpau-driver
         libvdpau-va-gl
         libva
         libva-utils
@@ -156,7 +156,7 @@ in
       #     ln -s ${package}/lib/gbm/nvidia-drm_gbm.so $out/lib/gbm/nvidia_gbm.so
       #   '')
       #   libvdpau-va-gl
-      #   vaapiVdpau
+      #   libva-vdpau-driver
       #   libva
       #   vulkan-loader
       #   vulkan-validation-layers
@@ -164,7 +164,7 @@ in
       # ];
       # extraPackages32 = with pkgs; [
       #   libvdpau-va-gl
-      #   vaapiVdpau
+      #   libva-vdpau-driver
       #   libva
       #   vulkan-loader
       #   vulkan-validation-layers

@@ -36,7 +36,7 @@
           #libvdpau-va-gl
 
           # intel-media-driver
-          # vaapiVdpau
+          # libva-vdpau-driver
           libvdpau-va-gl
 
           ## should this be used?

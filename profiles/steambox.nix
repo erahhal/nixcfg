@@ -83,7 +83,7 @@ in
     gamemode
     gamescope
     mangohud
-    protonup
+    protonup-ng
     steam-tui
     steamcmd
     steam-gs

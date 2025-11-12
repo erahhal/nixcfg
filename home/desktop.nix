@@ -384,7 +384,7 @@ in
         czkawka
         # digikam
         discord
-        element-desktop
+        (broken element-desktop)
         evolutionWithPlugins
         feh
         freecad
@@ -411,7 +411,7 @@ in
         spotify
         subsurface
         sxiv # image viewer with vim bindings
-        (broken stellarium)
+        stellarium
         telegram-desktop
         vesktop
         vimiv-qt
