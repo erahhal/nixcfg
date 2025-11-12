@@ -1441,11 +1441,11 @@
     },
     "nflx": {
       "locked": {
-        "lastModified": 1756753294,
-        "narHash": "sha256-TKItbDiinyWcO4LSRC2bwKd1aKoYuFSmfvfvJpVEJns=",
+        "lastModified": 1762452743,
+        "narHash": "sha256-0dfN1HWVa9HKBpn8rJKo0KdZ2nsTFjeloDJM5zn7YQA=",
         "ref": "refs/heads/master",
-        "rev": "0898525033799e44de7e15e211508c107105bde3",
-        "revCount": 47,
+        "rev": "45606565cac046cee7a67721570e85d58c54ec9d",
+        "revCount": 48,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-nflx"
       },

@@ -417,19 +417,23 @@ in
 
         "custom/notification" = {
           tooltip = false;
-          format = "{icon} {}";
+          format = "<span size='14pt'>{icon}</span>";
           format-icons = {
             notification = "<span foreground='red'><sup></sup></span>";
+            # notification = "";
             none = "";
             dnd-notification = "<span foreground='red'><sup></sup></span>";
+            # dnd-notification = "";
             dnd-none = "";
             inhibited-notification = "<span foreground='red'><sup></sup></span>";
+            # inhibited-notification = "";
             inhibited-none = "";
             dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>";
+            # dnd-inhibited-notification = "";
             dnd-inhibited-none = "";
           };
           return-type = "json";
-          exec-if = "which ${pkgs.swaynotificationcenter}/binswaync-client";
+          exec-if = "which ${pkgs.swaynotificationcenter}/bin/swaync-client";
           exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
           # interval = 2;
           on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";

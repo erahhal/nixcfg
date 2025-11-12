@@ -164,10 +164,10 @@ window#waybar.empty #window {
     padding: 1px 10px 0 10px;
 }
 #custom-notification {
-    padding: 2px 10px 2px 10px;
+    padding: 0px 10px 2px 4px;
 }
 #tray {
-    padding: 2px 10px 3px 10px;
+    padding: 2px 2px 3px 10px;
 }
 #tray menu {
   margin-bottom: 32px;
