@@ -204,7 +204,8 @@ in
     # ./caelestia-shell.nix
     ./rofi.nix
     ./hyprlock.nix
-    ./wlsunset.nix
+    ./gammastep.nix
+    # ./wlsunset.nix
 
     # ./sway-idle.nix
     ./hypridle.nix
@@ -281,7 +282,8 @@ in
         # "systemctl --user restart flameshot"
         "systemctl --user restart xdg-desktop-portal-hyprland"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
-        "systemctl --user restart wlsunset"
+        # "systemctl --user restart wlsunset"
+        "systemctl --user restart gammastep"
         # "systemctl --user restart kanshi"
         ## Don't start on load - still causes issues with lost keystrokes
         # "systemctl --user restart fcitx5-daemon"

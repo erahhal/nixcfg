@@ -5,7 +5,8 @@
     # @TODO: Should use from inputs, not pkgs
     hyprctl = "${pkgs.hyprland}/bin/hyprctl";
     loginctl = "${pkgs.systemd}/bin/loginctl";
-    restartWlsunset = "systemctl --user restart wlsunset.service";
+    # restartColorTemp = "systemctl --user restart wlsunset.service";
+    restartColorTemp = "systemctl --user restart gammastep.service";
   in {
     enable = true;
     settings = {
@@ -19,7 +20,7 @@
         # before_sleep_cmd = "kill $(pidof hyprlock); ${loginctl} lock-session && ${hyprctl} dispatch dpms off";
 
         before_sleep_cmd = "${loginctl} lock-session && ${hyprctl} dispatch dpms off";
-        after_sleep_cmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session && ${restartWlsunset}";
+        after_sleep_cmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session && ${restartColorTemp}";
         ignore_dbus_inhibit = false;
       };
 

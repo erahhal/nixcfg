@@ -113,6 +113,9 @@ in
         speedtest-cli
         stress
         stress-ng
+
+        ## color temperature
+        gammastep
         wlsunset
 
         ## terminal tools

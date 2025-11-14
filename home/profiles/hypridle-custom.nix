@@ -5,10 +5,11 @@ let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   loginctl = "${pkgs.systemd}/bin/loginctl";
   # @TODO: Is this even needed?
-  restartWlsunset = "systemctl --user restart wlsunset.service";
+  # restartColorTemp = "systemctl --user restart wlsunset.service";
+  restartColorTemp = "systemctl --user restart gammastep.service";
   config = ''
     general {
-      after_sleep_cmd=${hyprctl} dispatch dpms on && ${pkgs.systemd}/bin/loginctl lock-session && ${restartWlsunset}
+      after_sleep_cmd=${hyprctl} dispatch dpms on && ${pkgs.systemd}/bin/loginctl lock-session && ${restartColorTemp}
       before_sleep_cmd=${loginctl} lock-session && ${hyprctl} dispatch dpms off
       ignore_dbus_inhibit=false
       lock_cmd=pidof hyprlock || ${hyprlock}
@@ -20,7 +21,7 @@ let
     }
 
     listener {
-      on-resume=${hyprctl} dispatch dpms on && ${restartWlsunset}
+      on-resume=${hyprctl} dispatch dpms on && ${restartColorTemp}
       on-timeout=${hyprctl} dispatch dpms off
       timeout=360
     }

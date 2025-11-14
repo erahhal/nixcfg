@@ -296,7 +296,8 @@ in
     # ./caelestia-shell.nix
     ./rofi.nix
     ./hyprlock.nix
-    ./wlsunset.nix
+    ./gammastep.nix
+    # ./wlsunset.nix
 
     ./sway-idle.nix
     # ./hypridle.nix
@@ -677,7 +678,7 @@ in
     spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk"
-    spawn-sh-at-startup "systemctl --user restart wlsunset"
+    spawn-sh-at-startup "systemctl --user restart gammastep"
     spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
     spawn-sh-at-startup "systemctl --user restart network-manager-applet"
     spawn-sh-at-startup "systemctl --user restart blueman-applet"
