@@ -162,6 +162,11 @@ in
     # system:           /run/current-system/sw/share/applications
     # home-manager:     /etc/profiles/per-user/erahhal/share/applications
     # manual overrides: ~/.local/share/applications
+    # Flatpack: /var/lib/flatpak/exports/share/applications
+    # Flatpack local: ~/.local/share/flatpak/exports/share/applications
+    # Nix profile: ~/.nix-profile/share/applications
+    # Nix profile: /nix/profile/share/applications
+    # Local state: ~/.local/state/nix/profile/share/applications
     # echo $XDG_DATA_DIRS to see full list
 
     xdg.enable = true;
