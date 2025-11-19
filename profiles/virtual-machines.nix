@@ -110,28 +110,28 @@ in
 
   # Start bridge for HomeFree
   ## See: https://www.spad.uk/posts/really-simple-network-bridging-with-qemu/
-  systemd.services = {
-    create-hfbr0 = {
-      description = "Create second libvirt bridge - hfbr0";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-
-      serviceConfig.Type = "oneshot";
-      serviceConfig.Restart = "on-failure";
-      script =  ''
-        ETHTOOL=${pkgs.ethtool}/bin/ethtool
-        IP=${pkgs.iproute2}/bin/ip
-        GREP=${pkgs.gnugrep}/bin/grep
-        if $ETHTOOL hfbr0 | $GREP -q "Link detected"; then
-          echo "hfbr0 already up."
-        else
-          $IP link add hfbr0 type bridge
-          # $IP addr add 192.168.123.1/24 dev hfbr0
-          $IP link set hfbr0 up
-        fi
-      '';
-    };
-  };
+  # systemd.services = {
+  #   create-hfbr0 = {
+  #     description = "Create second libvirt bridge - hfbr0";
+  #     after = [ "network.target" ];
+  #     wantedBy = [ "multi-user.target" ];
+  #
+  #     serviceConfig.Type = "oneshot";
+  #     serviceConfig.Restart = "on-failure";
+  #     script =  ''
+  #       ETHTOOL=${pkgs.ethtool}/bin/ethtool
+  #       IP=${pkgs.iproute2}/bin/ip
+  #       GREP=${pkgs.gnugrep}/bin/grep
+  #       if $ETHTOOL hfbr0 | $GREP -q "Link detected"; then
+  #         echo "hfbr0 already up."
+  #       else
+  #         $IP link add hfbr0 type bridge
+  #         # $IP addr add 192.168.123.1/24 dev hfbr0
+  #         $IP link set hfbr0 up
+  #       fi
+  #     '';
+  #   };
+  # };
 
   # See: https://www.reddit.com/r/NixOS/comments/knjxsb/adding_virtual_machines_to_physical_network/
   # networking = {

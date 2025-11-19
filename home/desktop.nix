@@ -165,83 +165,78 @@ in
     # echo $XDG_DATA_DIRS to see full list
 
     xdg.enable = true;
-    xdg.mimeApps = {
+    xdg.mimeApps =
+      let mimeTypes = {
+        "inode/directory"                                                               = [ "org.gnome.Nautilus.desktop" ];
+
+        "x-scheme-handler/http"                                                         = [ defaultBrowserApp ];
+        "x-scheme-handler/https"                                                        = [ defaultBrowserApp ];
+        "x-scheme-handler/about"                                                        = [ defaultBrowserApp ];
+        "x-scheme-handler/unknown"                                                      = [ defaultBrowserApp ];
+        "x-scheme-handler/chrome"                                                       = [ defaultBrowserApp ];
+        "text/html"                                                                     = [ defaultBrowserApp ];
+        "application/x-extension-htm"                                                   = [ defaultBrowserApp ];
+        "application/x-extension-html"                                                  = [ defaultBrowserApp ];
+        "application/x-extension-shtml"                                                 = [ defaultBrowserApp ];
+        "application/xhtml+xml"                                                         = [ defaultBrowserApp ];
+        "application/x-extension-xhtml"                                                 = [ defaultBrowserApp ];
+        "application/x-extension-xht"                                                   = [ defaultBrowserApp ];
+        "application/x-www-browser"                                                     = [ defaultBrowserApp ];
+        "application/pdf"                                                               = [ defaultBrowserApp ];
+        "x-www-browser"                                                                 = [ defaultBrowserApp ];
+        "x-scheme-handler/webcal"                                                       = [ defaultBrowserApp ];
+
+        "image/png"                                                                     = [ "vimiv.desktop" ];
+        "image/jpg"                                                                     = [ "vimiv.desktop" ];
+        "image/jpeg"                                                                    = [ "vimiv.desktop" ];
+        "image/tiff"                                                                    = [ "vimiv.desktop" ];
+        "image/webp"                                                                    = [ "vimiv.desktop" ];
+        "image/gif"                                                                     = [ "vimiv.desktop" ];
+
+        "video/x-flv"                                                                   = [ "mpv.desktop" ];
+        "video/mp4"                                                                     = [ "mpv.desktop" ];
+        "application/x-mpegURL"                                                         = [ "mpv.desktop" ];
+        "video/MP2T"                                                                    = [ "mpv.desktop" ];
+        "video/3gpp"                                                                    = [ "mpv.desktop" ];
+        "video/quicktime"                                                               = [ "mpv.desktop" ];
+        "video/webm"                                                                    = [ "mpv.desktop" ];
+        "video/x-msvideo"                                                               = [ "mpv.desktop" ];
+        "video/x-ms-wmv"                                                                = [ "mpv.desktop" ];
+
+        "application/x-bittorrent"                                                      = [ "transmission-gtk.desktop" ];
+        "x-scheme-handler/magnet"                                                       = [ "transmission-gtk.desktop" ];
+
+        "application/msword" = [ "writer.desktop" ];
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"       = [ "writer.desktop" ];
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.template"       = [ "writer.desktop" ];
+        "application/vnd.ms-word.document.macroEnabled.12"                              = [ "writer.desktop" ];
+        "application/vnd.ms-word.template.macroEnabled.12"                              = [ "writer.desktop" ];
+
+        "application/vnd.ms-excel" = [ "calc.desktop" ];
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"             = [ "calc.desktop" ];
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.template"          = [ "calc.desktop" ];
+        "application/vnd.ms-excel.sheet.macroEnabled.12"                                = [ "calc.desktop" ];
+        "application/vnd.ms-excel.template.macroEnabled.12"                             = [ "calc.desktop" ];
+        "application/vnd.ms-excel.addin.macroEnabled.12"                                = [ "calc.desktop" ];
+        "application/vnd.ms-excel.sheet.binary.macroEnabled.12"                         = [ "calc.desktop" ];
+
+        "application/vnd.ms-powerpoint"                                                 = [ "impress.desktop" ];
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"     = [ "impress.desktop" ];
+        "application/vnd.openxmlformats-officedocument.presentationml.template"         = [ "impress.desktop" ];
+        "application/vnd.openxmlformats-officedocument.presentationml.slideshow"        = [ "impress.desktop" ];
+        "application/vnd.ms-powerpoint.addin.macroEnabled.12"                           = [ "impress.desktop" ];
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12"                    = [ "impress.desktop" ];
+        "application/vnd.ms-powerpoint.template.macroEnabled.12"                        = [ "impress.desktop" ];
+        "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"                       = [ "impress.desktop" ];
+
+        "application/vnd.ms-access"                                                     = [ "base.desktop" ];
+      };
+    in
+    {
       enable = true;
       # Make sure VSCode doesn't take over file mimetype
-      associations.added = {
-        "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
-        "x-scheme-handler/http" = [ defaultBrowserApp ];
-        "x-scheme-handler/https" = [ defaultBrowserApp ];
-        "x-scheme-handler/about" = [ defaultBrowserApp ];
-        "x-scheme-handler/unknown" = [ defaultBrowserApp ];
-        "x-scheme-handler/chrome" = [ defaultBrowserApp ];
-        "text/html" = [ defaultBrowserApp ];
-        "application/x-extension-htm" = [ defaultBrowserApp ];
-        "application/x-extension-html" = [ defaultBrowserApp ];
-        "application/x-extension-shtml" = [ defaultBrowserApp ];
-        "application/xhtml+xml" = [ defaultBrowserApp ];
-        "application/x-extension-xhtml" = [ defaultBrowserApp ];
-        "application/x-extension-xht" = [ defaultBrowserApp ];
-        "application/x-www-browser" = [ defaultBrowserApp ];
-        "application/pdf" = [ defaultBrowserApp ];
-        "x-www-browser" = [ defaultBrowserApp ];
-        "x-scheme-handler/webcal" = [ defaultBrowserApp ];
-        "image/png" =  [ "vimiv.desktop" ];
-        "image/jpg" =  [ "vimiv.desktop" ];
-        "image/jpeg" = [ "vimiv.desktop" ];
-        "image/tiff" = [ "vimiv.desktop" ];
-        "image/webp" = [ "vimiv.desktop" ];
-        "image/gif" =  [ "vimiv.desktop" ];
-        "video/x-flv" = [ "mpv.desktop" ];
-        "video/mp4" = [ "mpv.desktop" ];
-        "application/x-mpegURL" = [ "mpv.desktop" ];
-        "video/MP2T" = [ "mpv.desktop" ];
-        "video/3gpp" = [ "mpv.desktop" ];
-        "video/quicktime" = [ "mpv.desktop" ];
-        "video/webm" = [ "mpv.desktop" ];
-        "video/x-msvideo" = [ "mpv.desktop" ];
-        "video/x-ms-wmv" = [ "mpv.desktop" ];
-        "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
-        "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
-      };
-      defaultApplications = {
-        "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
-        "x-scheme-handler/http" = [ defaultBrowserApp ];
-        "x-scheme-handler/https" = [ defaultBrowserApp ];
-        "x-scheme-handler/about" = [ defaultBrowserApp ];
-        "x-scheme-handler/unknown" = [ defaultBrowserApp ];
-        "x-scheme-handler/chrome" = [ defaultBrowserApp ];
-        "text/html" = [ defaultBrowserApp ];
-        "application/x-extension-htm" = [ defaultBrowserApp ];
-        "application/x-extension-html" = [ defaultBrowserApp ];
-        "application/x-extension-shtml" = [ defaultBrowserApp ];
-        "application/xhtml+xml" = [ defaultBrowserApp ];
-        "application/x-extension-xhtml" = [ defaultBrowserApp ];
-        "application/x-extension-xht" = [ defaultBrowserApp ];
-        "application/x-www-browser" = [ defaultBrowserApp ];
-        "application/pdf" = [ defaultBrowserApp ];
-        "x-www-browser" = [ defaultBrowserApp ];
-        "x-scheme-handler/webcal" = [ defaultBrowserApp ];
-        "image/png" =  [ "vimiv.desktop" ];
-        "image/jpg" =  [ "vimiv.desktop" ];
-        "image/jpeg" = [ "vimiv.desktop" ];
-        "image/tiff" = [ "vimiv.desktop" ];
-        "image/webp" = [ "vimiv.desktop" ];
-        "image/gif" =  [ "vimiv.desktop" ];
-        "video/x-flv" = [ "mpv.desktop" ];
-        "video/mp4" = [ "mpv.desktop" ];
-        "application/x-mpegURL" = [ "mpv.desktop" ];
-        "video/MP2T" = [ "mpv.desktop" ];
-        "video/3gpp" = [ "mpv.desktop" ];
-        "video/quicktime" = [ "mpv.desktop" ];
-        "view/webm" = [ "mpv.desktop" ];
-        "video/x-msvideo" = [ "mpv.desktop" ];
-        "video/x-ms-wmv" = [ "mpv.desktop" ];
-        "x-scheme-handler/zoommtg" = [ "Zoom.desktop" ];
-        "application/x-zoom" = [ "Zoom.desktop" ];
-        "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
-        "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
-      };
+      associations.added = mimeTypes;
+      defaultApplications = mimeTypes;
     };
 
     # @TODO: For some reason ~/.config/mimeapps.list is ignored by the following commands:

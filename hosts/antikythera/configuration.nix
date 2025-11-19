@@ -172,7 +172,8 @@
     networkmanager = {
       enable = true;
       wifi = {
-        # backend = "iwd";
+        # Use iwd backend for better roaming behavior
+        backend = "iwd";
         ## Disabling powersave fixes stability issue with wifi
         powersave = false;
         scanRandMacAddress = false;
@@ -184,8 +185,28 @@
       # ];
     };
     wireless = {
-      # Disable wpa_supplicant
+      # Disable wpa_supplicant (using iwd instead)
       enable = false;
+      iwd = {
+        enable = true;
+        settings = {
+          General = {
+            # Enable network configuration through iwd
+            EnableNetworkConfiguration = false;
+            # Aggressive roaming thresholds
+            RoamThreshold = -70;
+            RoamThreshold5G = -76;
+          };
+          Scan = {
+            # Enable periodic scanning for better AP discovery
+            DisablePeriodicScan = false;
+          };
+          Settings = {
+            # Auto-connect to known networks
+            AutoConnect = true;
+          };
+        };
+      };
     };
     ## Don't include this line - it will add an additional default route.
     ## It's not necessary.
@@ -204,6 +225,7 @@
 
   ## Sound support
   hardware.enableAllFirmware = true;
+  hardware.wirelessRegulatoryDatabase = true;
 
   # Enable fingerprint reading daemon.
   services.fprintd.enable = true;
@@ -288,10 +310,14 @@
 
     # "usbcore.use_both_schemes=y"
     "usbcore.autosuspend=-1"
+
+    # Force wireless regulatory domain to US
+    "cfg80211.ieee80211_regdom=US"
   ];
 
   boot.extraModprobeConfig = ''
-    options cfg80211 ieee80211_regdom=00
+    options cfg80211 ieee80211_regdom=US
+    options ath11k_pci regdomain=US
   '';
 
   ## Make sure CPU runs at max performance
@@ -304,6 +330,19 @@
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = "${pkgs.ryzenadj}/bin/ryzenadj --stapm-limit=54000 --fast-limit=65000 --slow-limit=54000 --tctl-temp=95 --vrm-current=150000 --vrmmax-current=150000";
+    };
+  };
+
+  ## Force wireless regulatory domain to US at boot
+  systemd.services.force-wireless-regdom = {
+    description = "Force wireless regulatory domain to US";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-pre.target" ];
+    before = [ "NetworkManager.service" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.iw}/bin/iw reg set US";
     };
   };
 

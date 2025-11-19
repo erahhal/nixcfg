@@ -301,6 +301,14 @@
   };
 
   environment.systemPackages = with pkgs; [
+    (pkgs.python3.withPackages (python-pkgs: [
+      python-pkgs.lxml
+      python-pkgs.requests
+      python-pkgs.pip
+      python-pkgs.virtualenv
+      python-pkgs.yt-dlp
+      python-pkgs.curl-cffi
+    ]))
     appimage-run
     at-spi2-core
     axel
@@ -309,6 +317,7 @@
     bc
     bfg-repo-cleaner
     bind
+    bridge-utils
     cabextract
     ccze             # readable system log parser
     cdrkit           # provides genisoimage
@@ -398,6 +407,7 @@
     wget
     xorriso
     xz
+    yt-dlp
     zip
     zsh
     inputs.nix-inspect.packages.${system}.default
