@@ -211,13 +211,13 @@ in
         "application/x-bittorrent"                                                      = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet"                                                       = [ "transmission-gtk.desktop" ];
 
-        "application/msword" = [ "writer.desktop" ];
+        "application/msword"                                                            = [ "writer.desktop" ];
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"       = [ "writer.desktop" ];
         "application/vnd.openxmlformats-officedocument.wordprocessingml.template"       = [ "writer.desktop" ];
         "application/vnd.ms-word.document.macroEnabled.12"                              = [ "writer.desktop" ];
         "application/vnd.ms-word.template.macroEnabled.12"                              = [ "writer.desktop" ];
 
-        "application/vnd.ms-excel" = [ "calc.desktop" ];
+        "application/vnd.ms-excel"                                                      = [ "calc.desktop" ];
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"             = [ "calc.desktop" ];
         "application/vnd.openxmlformats-officedocument.spreadsheetml.template"          = [ "calc.desktop" ];
         "application/vnd.ms-excel.sheet.macroEnabled.12"                                = [ "calc.desktop" ];
