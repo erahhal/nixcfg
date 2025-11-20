@@ -5,6 +5,9 @@
 
     services.power-profiles-daemon.enable = lib.mkForce false;
 
+    ## Screen reader gets enabled by default
+    services.orca.enable = false;
+
     home-manager.users.${userParams.username} = { pkgs, ... }: {
       programs = {
         plasma = {
