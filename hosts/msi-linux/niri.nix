@@ -35,12 +35,12 @@
       scale 1.333333
       variable-refresh-rate
     }
-    output = "LG Electronics LG TV SSCR2 0x01010101" {
+    output "LG Electronics LG TV SSCR2 0x01010101" {
       mode "3840x2160"
       scale 2.666667
       variable-refresh-rate
     }
-    output = "Yamaha Corporation - RX-A2A" {
+    output "Yamaha Corporation - RX-A2A" {
       mode "3840x2160"
       scale 2.666667
       variable-refresh-rate
