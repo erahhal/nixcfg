@@ -141,11 +141,11 @@ in
         libva-utils
       ];
       extraPackages32 = with pkgs.pkgsi686Linux; [
-        nvidia-vaapi-driver
-        libva-vdpau-driver
-        libvdpau-va-gl
-        libva
-        libva-utils
+        # nvidia-vaapi-driver # doesn't support i686 builds
+        # libva-vdpau-driver
+        # libvdpau-va-gl
+        # libva
+        # libva-utils
       ];
       # extraPackages = with pkgs; [
       #   # creates missing nvidia_gbm.so file

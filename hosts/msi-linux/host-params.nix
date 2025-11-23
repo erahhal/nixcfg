@@ -12,9 +12,16 @@
     desktop = {
       multipleSessions = true;
       ttyFontSize = 9.5;
+      dpi = 192;
       autoLogin = true;
       wallpaper = ../../wallpapers/hawaii-dylan-theo.jpg;
       waybarSimple = true;
+    };
+
+    programs = {
+      steam = {
+        enableGamescope = true;
+      };
     };
 
     gpu = {

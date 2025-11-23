@@ -63,9 +63,6 @@ gc:
 	nix-store --gc
 	nix-env --delete-generations old
 
-boot:
-	sudo nixos-rebuild boot --flake .#${HOSTNAME} -L
-
 test:
 	./build/run-tests
 	# sudo nixos-rebuild test --flake .#${HOSTNAME} -L

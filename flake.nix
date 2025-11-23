@@ -449,7 +449,7 @@
           ./hosts/msi-linux/configuration.nix
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.secrets.nixosModules.msi-linux
-          inputs.jovian.nixosModules.default
+          # inputs.jovian.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
 

@@ -477,7 +477,7 @@ in
         ## Wine
         ## wine-staging (version with experimental features)
         ## winetricks and other programs depending on wine need to use the same wine version
-        bottles
+        (broken bottles) # Has issues with i686 dependencies (mangohud)
         wineWowPackages.stagingFull
         winetricks
         # wineWowPackages.stable

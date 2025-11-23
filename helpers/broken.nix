@@ -1,3 +1,3 @@
 { lib, pkgs, ... }:
 
-package: pkgs.runCommandLocal package.pname { meta.broken = true; } (lib.warn "Package ${package.pname} is currently broken" "mkdir -p $out")
+package: pkgs.runCommandLocal (package.pname or package.name) { meta.broken = true; } (lib.warn "Package ${package.pname or package.name} is currently broken" "mkdir -p $out")

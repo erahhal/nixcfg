@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ broken, pkgs, ... }:
 {
   # network locator
   services.avahi.enable = true;
@@ -9,8 +9,9 @@
 
   services.printing.drivers = [
     pkgs.brlaser
-    pkgs.brgenml1lpr
-    pkgs.brgenml1cupswrapper
+    # Brother drivers don't support i686 builds
+    (broken pkgs.brgenml1lpr)
+    (broken pkgs.brgenml1cupswrapper)
   ];
 
   hardware.printers = {

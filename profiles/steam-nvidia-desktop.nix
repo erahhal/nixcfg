@@ -1,4 +1,4 @@
-{ pkgs, userParams, ... }:
+{ broken, pkgs, userParams, ... }:
 
 let
   steam-nvidia = pkgs.writeShellScriptBin "steam-nvidia" ''
@@ -36,7 +36,7 @@ in
 
     home.packages = with pkgs; [
       gamescope
-      mangohud
+      (broken mangohud) # Has issues with i686 builds
       protonup-ng
     ];
   };

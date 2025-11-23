@@ -1,4 +1,4 @@
-{ pkgs, lib, userParams, ... }:
+{ broken, pkgs, lib, userParams, ... }:
 let
   steam-gamescope-runtime-paths = lib.makeBinPath [
     pkgs.steam
@@ -82,7 +82,7 @@ in
   environment.systemPackages = with pkgs; [
     gamemode
     gamescope
-    mangohud
+    (broken mangohud) # Has issues with i686 builds
     protonup-ng
     steam-tui
     steamcmd

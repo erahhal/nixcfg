@@ -2,8 +2,8 @@
 let
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   tv = "LG Electronics LG TV SSCR2 0x01010101";
+  yamaha = "Yamaha Corporation - RX-A2A";
   index = "Valve Corporation Index HMD 0x92B574CE";
-  yamama = "Yamaha Corporation RX-A2A";
 in
 {
   home-manager.users.${userParams.username} = {
@@ -17,6 +17,23 @@ in
             outputs = [
               {
                 criteria = tv;
+                status = "enable";
+                mode = "3840x2160";
+                position = "0,0";
+                scale = 2.666667;
+              }
+            ];
+            exec = [
+              "${hyprctl} dispatch dpms on | true"
+            ];
+          };
+        }
+        {
+          profile = {
+            name = "tv";
+            outputs = [
+              {
+                criteria = yamaha;
                 status = "enable";
                 mode = "3840x2160";
                 position = "0,0";
