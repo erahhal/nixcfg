@@ -5,7 +5,7 @@
     imports = [
       ./hyprland.nix
       ./niri.nix
-      ../../home/profiles/music-production.nix
+      ../../home/profiles/clonehero.nix
     ];
 
     home = {

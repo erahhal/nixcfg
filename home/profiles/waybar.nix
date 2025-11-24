@@ -74,6 +74,7 @@ in
   imports = [
     ./swaynotificationcenter.nix
     ./blueman-applet.nix
+    ./qpwgraph.nix
     ./network-manager-applet.nix
   ];
 
@@ -118,6 +119,7 @@ in
         "systemctl --user restart swaynotificationcenter"
         "systemctl --user restart network-manager-applet"
         "systemctl --user restart blueman-applet"
+        "systemctl --user restart qpwgraph"
       ];
     };
   };

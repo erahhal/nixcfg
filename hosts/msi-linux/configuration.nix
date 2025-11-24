@@ -15,6 +15,7 @@
       ../../profiles/desktop.nix
       # ../../profiles/jovian.nix
       ../../profiles/mullvad.nix
+      ../../profiles/openrgb.nix
       ../../profiles/pipewire.nix
       # ../../profiles/steambox.nix
       ../../profiles/steam.nix
@@ -119,6 +120,15 @@
     # };
   };
 
+  ## Settings that supposedly prevent HDMI audio dropouts during gaming
+  boot.kernelParams = [
+    "preempt=full"    # Gaming
+    "nohz_full=all"   # Reduce latency for realtime apps
+    "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
+  ];
+
+
+
   # --------------------------------------------------------------------------------------
   # Hardware specific
   # --------------------------------------------------------------------------------------
@@ -129,17 +139,8 @@
   # OpenRGB
   # -------
 
-  services.udev.packages = [ pkgs.openrgb ];
   boot.kernelModules = [ "i2c-dev" "snd-hda-intel" ];
 
   hardware.i2c.enable = true;
-
-  services.hardware.openrgb = {
-    enable = true;
-    server.port = 6742;
-    motherboard = "intel";
-  };
-
-  environment.systemPackages = with pkgs; [ openrgb-with-all-plugins ];
 }
 
