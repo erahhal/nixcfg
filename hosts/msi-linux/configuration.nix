@@ -130,7 +130,8 @@
   # -------
 
   services.udev.packages = [ pkgs.openrgb ];
-  boot.kernelModules = [ "i2c-dev" ];
+  boot.kernelModules = [ "i2c-dev" "snd-hda-intel" ];
+
   hardware.i2c.enable = true;
 
   services.hardware.openrgb = {
