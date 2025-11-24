@@ -165,6 +165,10 @@ let
     ${nag-graphical}/bin/nag-graphical 'Suspend?' '${hyprlockCommand} suspend'
   '';
 
+  power-off-dialog = pkgs.writeShellScript "suspend-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Power off?' 'systemctl poweroff'
+  '';
+
   exit-dialog = pkgs.writeShellScript "exit-dialog" ''
     ${nag-graphical}/bin/nag-graphical 'Exit Niri?' '${exit-niri}'
   '';
@@ -1151,7 +1155,8 @@ in
 
         // Powers off the monitors. To turn them back on, do any input like
         // moving the mouse or pressing any other key.
-        Mod+Shift+P { power-off-monitors; }
+        // Mod+Shift+P { power-off-monitors; }
+        Mod+Shift+P { spawn "${power-off-dialog}"; }
 
         Mod+N hotkey-overlay-title="Toggle notification list view" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t" "-sw"; }
         Mod+Shift+N hotkey-overlay-title="Clear notifications" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-C" "-sw"; }
