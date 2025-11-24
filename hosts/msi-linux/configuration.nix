@@ -19,6 +19,7 @@
       ../../profiles/pipewire.nix
       # ../../profiles/steambox.nix
       ../../profiles/steam.nix
+      ./steam-fix.nix
       ../../profiles/udev.nix
       ## @TODO: rename workstation-hardware.nix
       ../../profiles/laptop-hardware.nix

@@ -78,6 +78,7 @@ in
     ./network-manager-applet.nix
   ];
 
+
   systemd.user.services.nwg-drawer = {
     Unit = {
       Description = "Start the nwg-drawer resident service";
