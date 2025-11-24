@@ -107,7 +107,6 @@ EOF
 # Show rofi menu
 selected_sink_name=$(echo "$output" | rofi \
     -dmenu \
-    -dpi 1 \
     -i \
     -markup-rows \
     -no-custom \
