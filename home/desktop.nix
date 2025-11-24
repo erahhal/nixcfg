@@ -167,6 +167,7 @@ in
     # Nix profile: ~/.nix-profile/share/applications
     # Nix profile: /nix/profile/share/applications
     # Local state: ~/.local/state/nix/profile/share/applications
+
     # echo $XDG_DATA_DIRS to see full list
 
     xdg.enable = true;
