@@ -23,6 +23,11 @@ let
             $NMCLI radio wifi off
         else
             $NMCLI radio wifi on
+            # Wait for WiFi hardware to initialize after enabling radio
+            sleep 2
+            # Trigger connection to known networks (iwd with AutoConnect should handle this)
+            # This additional trigger ensures connection happens even if iwd doesn't immediately connect
+            $NMCLI device wifi rescan || true
         fi
     }
 

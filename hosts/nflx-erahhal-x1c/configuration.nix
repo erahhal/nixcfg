@@ -130,7 +130,8 @@
       #     the kernel modules and params below fixed an intermittent
       #     hard freeze when on battery.
       wifi = {
-        # backend = "iwd";
+        # Use iwd backend for better roaming behavior and auto-connect
+        backend = "iwd";
         powersave = false;
         scanRandMacAddress = false;
       };
@@ -141,8 +142,21 @@
       # ];
     };
     wireless = {
-      # Disable wpa_supplicant
+      # Disable wpa_supplicant (using iwd instead)
       enable = false;
+      iwd = {
+        enable = true;
+        settings = {
+          General = {
+            # Enable network configuration through iwd
+            EnableNetworkConfiguration = false;
+          };
+          Settings = {
+            # Auto-connect to known networks
+            AutoConnect = true;
+          };
+        };
+      };
     };
     ## Don't include this line - it will add an additional default route.
     ## It's not necessary.

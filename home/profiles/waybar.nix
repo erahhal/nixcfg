@@ -6,7 +6,6 @@ let
 
     pkill Hyprland
   '';
-  toggle-drawer = "pkill -10 nwg-drawer";
 
   wireplumber-selector-runtime-paths = lib.makeBinPath [
     pkgs.coreutils
@@ -33,8 +32,9 @@ let
     '';
   };
 
-  # launch = ''${pkgs.nwg-menu}/bin/nwg-menu -wm hyprland -d -term foot -cmd-lock "${hyprlockCommand}" -cmd-logout "${exit-hyprland}" -cmd-restart "systemctl reboot" -cmd-shutdown "systemctl -i poweroff"'';
-  launch = ''${pkgs.nwg-drawer}/bin/nwg-drawer -open'';
+  toggle-drawer = "${pkgs.procps}/bin/pkill -10 nwg-drawer";
+  # launch-drawer = ''${pkgs.nwg-menu}/bin/nwg-menu -wm hyprland -d -term foot -cmd-lock "${hyprlockCommand}" -cmd-logout "${exit-hyprland}" -cmd-restart "systemctl reboot" -cmd-shutdown "systemctl -i poweroff"'';
+  launch-drawer- = ''${pkgs.nwg-drawer}/bin/nwg-drawer -open'';
   logout = "${pkgs.nwg-bar}/bin/nwg-bar";
   check-online-script = pkgs.writeShellScriptBin "check-online-script" ''
     ## Mullvad statuses

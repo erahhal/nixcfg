@@ -146,8 +146,9 @@ in
     networkmanager = {
       enable = true;
       wifi = {
-        # backend = "iwd";
-        # powersave = false;
+        # Use iwd backend for better roaming behavior and auto-connect
+        backend = "iwd";
+        powersave = false;
         scanRandMacAddress = false;
       };
       # If not set to unmanaged, NetworkManager-wait-online.service will fail
@@ -157,7 +158,21 @@ in
       ];
     };
     wireless = {
+      # Disable wpa_supplicant (using iwd instead)
       enable = false;
+      iwd = {
+        enable = true;
+        settings = {
+          General = {
+            # Enable network configuration through iwd
+            EnableNetworkConfiguration = false;
+          };
+          Settings = {
+            # Auto-connect to known networks
+            AutoConnect = true;
+          };
+        };
+      };
     };
 
     ## Wireguard
