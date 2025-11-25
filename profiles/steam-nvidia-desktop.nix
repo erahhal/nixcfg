@@ -36,7 +36,7 @@ in
 
     home.packages = with pkgs; [
       gamescope
-      (broken mangohud) # Has issues with i686 builds
+      mangohud # Has issues with i686 builds
       protonup-ng
     ];
   };

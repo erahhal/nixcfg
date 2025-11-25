@@ -385,7 +385,7 @@ in
         czkawka
         # digikam
         discord
-        (broken element-desktop)
+        element-desktop
         evolutionWithPlugins
         feh
         freecad
@@ -405,7 +405,7 @@ in
         libreoffice
         logseq
         mpv
-        (broken rpi-imager)
+        rpi-imager
         shotwell
         signal-desktop-bin
         slack
@@ -478,7 +478,7 @@ in
         ## Wine
         ## wine-staging (version with experimental features)
         ## winetricks and other programs depending on wine need to use the same wine version
-        (broken bottles) # Has issues with i686 dependencies (mangohud)
+        bottles # Has issues with i686 dependencies (mangohud)
         wineWowPackages.stagingFull
         winetricks
         # wineWowPackages.stable

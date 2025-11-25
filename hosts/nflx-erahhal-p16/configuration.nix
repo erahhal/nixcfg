@@ -294,6 +294,11 @@
 
     ## Prevents dock from waking up laptop right after suspendign
     "usbcore.autosuspend=-1"
+
+    ## Settings that supposedly increase gaming perf and prevent HDMI audio dropouts during gaming
+    "preempt=full"    # Realitime latency
+    "nohz_full=all"   # Reduce latency for realtime apps
+    "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
   ];
 
   # Enable power management

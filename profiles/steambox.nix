@@ -82,7 +82,7 @@ in
   environment.systemPackages = with pkgs; [
     gamemode
     gamescope
-    (broken mangohud) # Has issues with i686 builds
+    mangohud # Has issues with i686 builds
     protonup-ng
     steam-tui
     steamcmd
