@@ -119,11 +119,14 @@ let
   usingIntel = config.hostParams.gpu.intel.enable == true;
   disableIntelModules = config.hostParams.gpu.intel.enable == false && config.hostParams.gpu.intel.disableModules == true;
   truecrack-cuda = pkgs.callPackage ../pkgs/truecrack-cuda { };
+  # package = config.boot.kernelPackages.nvidiaPackages.beta;
   # package = config.boot.kernelPackages.nvidiaPackages.stable;
   package = config.boot.kernelPackages.nvidiaPackages.latest;
 in
 {
   config = lib.mkIf config.hostParams.gpu.nvidia.enable {
+    services.lact.enable = true;
+
     nixpkgs.config.allowUnfree = true;
     nixpkgs.config.nvidia.acceptLicense = true;
 
@@ -196,6 +199,7 @@ in
       # primus
       # truecrack-cuda
       # unstable.cudaPackages_12_3.cudatoolkit
+      lact
       libglvnd
       libdrm
       mesa
@@ -252,8 +256,6 @@ in
     # hardware.bumblebee.enable = false;
 
     hardware.nvidia = {
-      # package = config.boot.kernelPackages.nvidiaPackages.beta;
-      # package = config.boot.kernelPackages.nvidiaPackages.latest;
       package = package;
 
       # nvidiaPersistenced = true;
@@ -281,7 +283,7 @@ in
       # Only available from driver 515.43.04+
       # Do not disable this unless your GPU is unsupported or if you have a good reason to.
       # open = true;
-      open = false;
+      open = true;
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.
