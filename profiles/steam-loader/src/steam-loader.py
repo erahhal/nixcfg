@@ -48,11 +48,34 @@ class SteamLoaderApp(Adw.Application):
 
     def launch_and_monitor_steam(self):
         """Launch Steam and wait for its window to appear."""
+        # Wait for Niri to be fully ready (outputs configured)
+        max_niri_wait = 30
+        niri_start = time.time()
+        while time.time() - niri_start < max_niri_wait:
+            try:
+                result = subprocess.run(
+                    ['niri', 'msg', 'outputs'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                # Check that we have at least one output configured
+                if result.returncode == 0 and result.stdout.strip():
+                    print("Niri outputs ready")
+                    break
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                pass
+            time.sleep(0.5)
+
+        # Additional small delay to ensure everything is settled
+        time.sleep(2)
+
         # Launch Steam Big Picture
         # Clear LD_PRELOAD so it doesn't interfere with Steam
         steam_env = os.environ.copy()
         steam_env.pop('LD_PRELOAD', None)
 
+        print("Launching Steam...")
         subprocess.Popen(
             ['steam', '-bigpicture'],
             stdout=subprocess.DEVNULL,
@@ -76,6 +99,19 @@ class SteamLoaderApp(Adw.Application):
                 output_lower = result.stdout.lower()
                 if 'steam' in output_lower and ('big picture' in output_lower or 'gamepadui' in output_lower):
                     self.steam_ready = True
+
+                    # Give Steam a moment to fully render, then force fullscreen
+                    # time.sleep(0.5)
+                    # try:
+                    #     subprocess.run(
+                    #         ['niri', 'msg', 'action', 'fullscreen-window'],
+                    #         capture_output=True,
+                    #         timeout=5
+                    #     )
+                    #     print("Sent fullscreen action to Steam")
+                    # except Exception as e:
+                    #     print(f"Failed to fullscreen Steam: {e}")
+                    #
                     GLib.idle_add(self.quit)
                     return
             except (subprocess.TimeoutExpired, FileNotFoundError):

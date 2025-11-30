@@ -863,30 +863,31 @@ in
     window-rule {
         match app-id="steam$"
         open-on-workspace "10"
+        default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="steam$"
         open-fullscreen true
         open-focused true
     }
-    window-rule {
-        match title="^Loading Steam$"
-        open-on-workspace "10"
-    }
-    window-rule {
-        match title="^Loading Steam$"
-        open-fullscreen true
-        open-focused true
-    }
-    window-rule {
-        match app-id="com.local.steam-loader$"
-        open-on-workspace "10"
-    }
-    window-rule {
-        match app-id="com.local.steam-loader$"
-        open-fullscreen true
-        open-focused true
-    }
+    // window-rule {
+    //     match title="^Loading Steam$"
+    //     open-on-workspace "10"
+    // }
+    // window-rule {
+    //     match title="^Loading Steam$"
+    //     open-fullscreen true
+    //     open-focused true
+    // }
+    // window-rule {
+    //     match app-id="com.local.steam-loader$"
+    //     open-on-workspace "10"
+    // }
+    // window-rule {
+    //     match app-id="com.local.steam-loader$"
+    //     open-fullscreen true
+    //     open-focused true
+    // }
     window-rule {
         // This matches any app-id that starts with "steam_app_"
         match app-id=r#"^steam_app_.*$"#
