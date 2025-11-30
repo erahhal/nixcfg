@@ -125,6 +125,7 @@
 
       defaultSession = lib.mkOption {
         type = lib.types.str;
+        # default = null;
         default = "niri";
         # default = "hyprland";
         # default = "none";

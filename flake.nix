@@ -62,6 +62,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    steam-loader = {
+      url = "path:./profiles/steam-loader";
+    };
+
     # Remarkable 2 Tablet Desktop App WINE wrapper
     # See the following about why relative paths can cause build issues:
     #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
@@ -163,6 +167,7 @@
           inputs.caelestia-shell.homeManagerModules.default
           inputs.nix-colors.homeManagerModules.default
           inputs.plasma-manager.homeModules.plasma-manager
+          inputs.steam-loader.homeManagerModules.default
         ];
       };
     };
@@ -460,10 +465,20 @@
             nixvim-config.enable-startify-cowsay = true;
             nixvim-config.disable-indent-blankline = true;
           }
+          inputs.steam-loader.nixosModules.default
+          {
+            programs.steam-loader.enable = true;
+          }
           # inputs.nix-snapd.nixosModules.default
           # {
           #   services.snap.enable = true;
           # }
+          {
+
+            nixpkgs.overlays = [
+              # inputs.jovian.overlays.default
+            ];
+          }
         ];
         specialArgs = {
           inherit inputs;

@@ -10,6 +10,10 @@
     };
 
     desktop = {
+      displayManager = "sddm";
+      # displayManager = "jovian";
+      # defaultSession = "gamescope-wayland";
+      defaultSession = "niri";
       multipleSessions = true;
       ttyFontSize = 9.5;
       dpi = 192;

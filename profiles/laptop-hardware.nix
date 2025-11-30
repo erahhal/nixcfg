@@ -19,11 +19,12 @@
     keyMap = "us";
     earlySetup = true;
     # font = "${pkgs.terminus_font}/share/consolefonts/ter-132b.psf.gz";
-    # font = "ter-powerline-v24b";
-    # packages = [
-    #   pkgs.terminus_font
-    #   pkgs.powerline-fonts
-    # ];
+    font = "ter-powerline-v32b";
+    # font = "latarcyrheb-sun32";
+    packages = [
+      pkgs.terminus_font
+      pkgs.powerline-fonts
+    ];
 
     colors = [
       "000000" #"1f1f1F"

@@ -62,16 +62,18 @@
     //    "desc:LG Electronics LG HDR 4K 0x00020F5B, 7"
     //  ];
 
-    spawn-at-startup "foot" "tmux" "a" "-dt" "code"
-    spawn-at-startup "spotify"
-    spawn-at-startup "brave"
-    spawn-at-startup "firefox"
+    // spawn-at-startup "foot" "tmux" "a" "-dt" "code"
+    // spawn-at-startup "spotify"
+    // spawn-at-startup "brave"
+    // spawn-at-startup "firefox"
     // spawn-at-startup "signal-desktop"
     // spawn-at-startup "Telegram"
     // spawn-at-startup "whatsapp-for-linux"
     // spawn-at-startup "vesktop"
     // spawn-at-startup "element-desktop"
-    spawn-at-startup "joplin-desktop"
-    spawn-at-startup "niri" "msg" "action" "focus-workspace" "5"
+    // spawn-at-startup "joplin-desktop"
+    spawn-at-startup "niri" "msg" "action" "focus-workspace" "10"
+    spawn-at-startup "steam-loader"
+    spawn-at-startup "niri" "msg" "action" "focus-workspace" "10"
   '';
 }

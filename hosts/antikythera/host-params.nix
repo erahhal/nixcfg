@@ -9,6 +9,7 @@
 
     desktop = {
       multipleSessions = true;
+      defaultSession = "niri";
       dpi = 192;
       wallpaper = ../../wallpapers/yellowstone.jpg;
       disableXwaylandScaling = true;

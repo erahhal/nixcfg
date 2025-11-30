@@ -19,6 +19,7 @@
       # sddmThemeQt6 = false;
 
       multipleSessions = true;
+      defaultSession = "niri";
       useHyprlandFlake = false;
       disableXwaylandScaling = true;
       defaultLockProgram = "hyprlock";

@@ -71,6 +71,7 @@
     systemd-boot = {
       enable = true;
       configurationLimit = 4;
+      consoleMode = "max";
 
       windows = {
         "windows" =
@@ -126,6 +127,8 @@
     "preempt=full"    # Realitime latency
     "nohz_full=all"   # Reduce latency for realtime apps
     "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
+    # "video=3840x2160@60"
+    # "video=efifb"
   ];
 
   # --------------------------------------------------------------------------------------
@@ -138,8 +141,25 @@
   # OpenRGB
   # -------
 
-  boot.kernelModules = [ "i2c-dev" "snd-hda-intel" ];
+  boot.kernelModules = [ "i2c-dev" "snd-hda-intel" "kvm-intel" ];
 
   hardware.i2c.enable = true;
+
+  ## Experimental
+
+  nix.settings.extra-platforms = [ "i686-linux" ];
+  nix.settings.sandbox = true;
+  boot.binfmt.emulatedSystems = [ "i686-linux" ];
+  # boot.kernel.sysctl."abi.vsyscall32" = 1;
+
+  systemd.services.fix-console-fb = {
+    description = "Set frambuffer resolution";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "getty@tty1.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.fbset}/bin/fbset -g 3840 2160 3840 2160 32";
+    };
+  };
 }
 

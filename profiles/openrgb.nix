@@ -24,7 +24,7 @@
       Service = {
         Restart = "always";
         RestartSec = 2;
-        ExecStart = "${pkgs.openrgb-with-all-plugins}/bin/openrgb";
+        ExecStart = "${pkgs.openrgb-with-all-plugins}/bin/openrgb --startminimized";
         PassEnvironment = [
           "HOME"
           "XDG_DATA_HOME"

@@ -332,6 +332,7 @@
     eternal-terminal
     exfat
     exiftool
+    fbset
     ffmpeg
     file
     fio
