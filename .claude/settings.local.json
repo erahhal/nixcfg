@@ -3,7 +3,25 @@
     "allow": [
       "Bash(make:*)",
       "Bash(home-manager switch:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(mount:*)",
+      "Bash(systemctl status:*)",
+      "Bash(journalctl:*)",
+      "Bash(systemctl list-units:*)",
+      "Bash(ping:*)",
+      "Bash(showmount:*)",
+      "Bash(sudo mount:*)",
+      "Bash(systemctl:*)",
+      "Bash(nixos-version:*)",
+      "Bash(rpcinfo:*)",
+      "Bash(dmesg:*)",
+      "Bash(readlink:*)",
+      "Bash(nix-instantiate:*)",
+      "Bash(/dev/null)",
+      "Bash(cat:*)",
+      "Bash(sudo nixos-rebuild switch:*)",
+      "Bash(lsmod:*)",
+      "Bash(nix-store:*)"
     ],
     "deny": [],
     "ask": []
