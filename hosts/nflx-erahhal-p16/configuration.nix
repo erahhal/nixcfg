@@ -27,7 +27,7 @@
     ./disk-config-btrfs.nix
     ./hardware-configuration.nix
     ../../profiles/android.nix
-    ../../profiles/exclusive-lan.nix
+    #../../profiles/exclusive-lan.nix
     # ../../profiles/jovian.nix
     ../../profiles/laptop-hardware.nix
     ../../profiles/steam.nix
@@ -180,7 +180,7 @@
 
   networking = {
     hostName = "nflx-erahhal-p16";
-    useNetworkd = true;
+    useNetworkd = false;
     networkmanager = {
       enable = true;
       # Wifi power settings - do not remove

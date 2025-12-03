@@ -57,7 +57,7 @@ in
     gamescopeSession.enable = true;
   };
 
-  phardware.steam-hardware.enable = true;
+  hardware.steam-hardware.enable = true;
 
   # programs.gamescope = {
   #   enable = true;

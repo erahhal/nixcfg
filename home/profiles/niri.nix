@@ -790,10 +790,15 @@ in
     //   inhibit-idle true
     // }
 
+    // window-rule {
+    //     match app-id="chromium-browser$"
+    //     open-on-workspace "1"
+    //     default-column-width { proportion 1.0; }
+    // }
     window-rule {
         match app-id="chromium-browser$"
-        open-on-workspace "1"
-        default-column-width { proportion 1.0; }
+        match title="^Ivanti Connect Secure.*$"
+        open-floating true
     }
     window-rule {
         match app-id="org.chromium.Chromium$"

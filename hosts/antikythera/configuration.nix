@@ -23,7 +23,7 @@
     ./disk-config-btrfs.nix
     ./hardware-configuration.nix
     ../../profiles/android.nix
-    ../../profiles/exclusive-lan.nix
+    # ../../profiles/exclusive-lan.nix
     # ../../profiles/jovian.nix
     ../../profiles/laptop-hardware.nix
     # ../../profiles/steam.nix
@@ -168,7 +168,7 @@
 
   networking = {
     hostName = config.hostParams.system.hostName;
-    useNetworkd = true;
+    useNetworkd = false;
     networkmanager = {
       enable = true;
       wifi = {

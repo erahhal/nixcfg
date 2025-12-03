@@ -20,11 +20,19 @@ let
     # Launch Chromium with Intel GPU forced
     exec flatpak run \
       --filesystem=~/.config/chromium:rw \
+      --filesystem=xdg-run/pipewire-0:ro \
+      --socket=wayland \
+      --socket=pulseaudio \
+      --share=ipc \
+      --device=dri \
       --env=DRI_PRIME=0 \
       --env=__GLX_VENDOR_LIBRARY_NAME=mesa \
       --env=LIBVA_DRIVER_NAME=iHD \
-      --device=dri \
-      org.chromium.Chromium --user-data-dir="$HOME/.config/chromium" "$@"
+      org.chromium.Chromium \
+        --user-data-dir="$HOME/.config/chromium" \
+        --enable-features=WebRTCPipeWireCapturer \
+        --ozone-platform=wayland \
+        "$@"
   '';
 
   chromium-intel-desktop = pkgs.makeDesktopItem {
@@ -160,5 +168,6 @@ in
   environment.systemPackages = [
     chromium-intel
     (pkgs.writeShellScriptBin "chromium" "chromium-intel")
+    (pkgs.writeShellScriptBin "chromium-native" "${pkgs.chromium}/bin/chromium")
   ];
 }

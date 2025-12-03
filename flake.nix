@@ -111,14 +111,8 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx.url = "git+ssh://git@github.com/erahhal/nixcfg-nflx";
-    # nflx.url = "path:/home/erahhal/Code/nixcfg-nflx";
-
-    nflx-vpn = {
-      url = "git+ssh://git@github.com/erahhal/nixcfg-nflx-vpn";
-      # url = "path:/home/erahhal/Code/nixcfg-nflx-vpn";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nflx-nixcfg.url = "git+ssh://git@github.netflix.net/corp/nflx-nixcfg";
+    # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
@@ -222,57 +216,16 @@
             nixvim-config.enable-startify-cowsay = true;
             nixvim-config.disable-indent-blankline = true;
           }
-          inputs.nflx-vpn.nixosModules.default
-          inputs.nflx.nixosModules.default
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit system;
-          inherit copyDesktopIcons;
-          inherit copyDesktopItems;
-          inherit mkWindowsApp;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
-      };
-      nflx-erahhal-x1c =
-      let
-        system = "x86_64-linux";
-        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
-        modules = [
-          ./modules/host-params.nix
-          ./hosts/nflx-erahhal-x1c/host-params.nix
-          inputs.disko.nixosModules.disko
-          inputs.lanzaboote.nixosModules.lanzaboote
-          ./hosts/nflx-erahhal-x1c/configuration.nix
-          inputs.secrets.nixosModules.nflx-erahhal-x1c
-          # inputs.jovian.nixosModules.default
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-11th-gen
-          inputs.nur.modules.nixos.default
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
-
-          inputs.nixvim-config.nixosModules.default
+          inputs.nflx-nixcfg.nixosModules.default
           {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = true;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
+            nflx = {
+              username = "erahhal";
+              genai = {
+                project-id = "erahhaldevtools";
+              };
+              vpn.pulse.url = "https://lax001.pcs.flxvpn.net/emp-split";
+            };
           }
-          inputs.nflx-vpn.nixosModules.default
-          inputs.nflx.nixosModules.default
-
-          # inputs.nix-snapd.nixosModules.default
-          # {
-          #   services.snap.enable = true;
-          # }
         ];
         specialArgs = {
           inherit inputs;
