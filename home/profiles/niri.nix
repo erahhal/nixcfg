@@ -296,8 +296,9 @@ let
 in
 {
   imports = [
-    ./waybar.nix
+    # ./waybar.nix
     # ./caelestia-shell.nix
+    ./dms-shell.nix
     ./rofi.nix
     ./hyprlock.nix
     ./gammastep.nix
@@ -530,7 +531,7 @@ in
         // You can change how the focus ring looks.
         focus-ring {
             // Uncomment this line to disable the focus ring.
-            // off
+            off
 
             // How many logical pixels the ring extends out from the windows.
             width 2
@@ -724,6 +725,11 @@ in
     // Window rules let you adjust behavior for individual windows.
     // Find more information on the wiki:
     // https://yalter.github.io/niri/Configuration:-Window-Rules
+
+    window-rule {
+      match is-active=false
+      opacity 0.4
+    }
 
     // Work around WezTerm's initial configure bug
     // by setting an empty default-column-width.

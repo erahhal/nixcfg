@@ -62,6 +62,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dms-shell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     steam-loader = {
       url = "path:./profiles/steam-loader";
     };
@@ -111,8 +116,8 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx-nixcfg.url = "git+ssh://git@github.netflix.net/corp/nflx-nixcfg";
-    # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
+    # nflx-nixcfg.url = "git+ssh://git@github.com/Netflix/nflx-nixcfg";
+    nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
@@ -159,6 +164,7 @@
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
           inputs.caelestia-shell.homeManagerModules.default
+          inputs.dms-shell.homeModules.dankMaterialShell.default
           inputs.nix-colors.homeManagerModules.default
           inputs.plasma-manager.homeModules.plasma-manager
           inputs.steam-loader.homeManagerModules.default

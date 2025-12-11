@@ -583,7 +583,7 @@ in
         user = {
           name = userParams.fullName;
         };
-        aliases = {
+        alias = {
           undo = "reset HEAD~1 --mixed";
           date = "for-each-ref --sort=committerdate refs/heads/";
         };

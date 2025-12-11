@@ -283,7 +283,8 @@ in
       # Only available from driver 515.43.04+
       # Do not disable this unless your GPU is unsupported or if you have a good reason to.
       # open = true;
-      open = true;
+      ## open currently broken
+      open = false;
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.

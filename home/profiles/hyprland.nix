@@ -200,7 +200,7 @@ let
 in
 {
   imports = [
-    ./waybar.nix
+    # ./waybar.nix
     # ./caelestia-shell.nix
     ./rofi.nix
     ./hyprlock.nix

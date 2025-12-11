@@ -124,9 +124,11 @@ set display     =lastline  " Show as much as possible of the last line.
 
 set list                   " Show non-printable characters.
 if has('multi_byte') && &encoding ==# 'utf-8'
-  let &listchars = 'tab:▸ ,extends:❯,precedes:❮,nbsp:±'
+  " let &listchars = 'tab:▸ ,extends:❯,precedes:❮,nbsp:±'
+  let &listchars = 'tab:▸ ,extends:❯,precedes:❮'
 else
-  let &listchars = 'tab:> ,extends:>,precedes:<,nbsp:.'
+  " let &listchars = 'tab:> ,extends:>,precedes:<,nbsp:.'
+  let &listchars = 'tab:> ,extends:>,precedes:<'
 endif
 
 

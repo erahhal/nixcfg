@@ -69,7 +69,7 @@ in
     ./network-manager-applet.nix
     ./rofi.nix
     ./sway-idle.nix
-    ./waybar.nix
+    # ./waybar.nix
     ./wlsunset.nix
     ## Wayland Brightness/Volume overlay bar
     ## Doesn't work, system service keeps restarting
