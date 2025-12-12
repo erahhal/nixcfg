@@ -59,7 +59,8 @@
       "Bash(dms ipc --help:*)",
       "Bash(dms --help:*)",
       "Bash(/bin/cp -f /tmp/dms-settings.json ~/.config/DankMaterialShell/settings.json)",
-      "Bash(~/.config/DankMaterialShell/settings.json)"
+      "Bash(~/.config/DankMaterialShell/settings.json)",
+      "Bash(dms restart --help:*)"
     ],
     "deny": [],
     "ask": []
