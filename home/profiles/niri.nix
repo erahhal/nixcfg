@@ -684,6 +684,7 @@ in
     spawn-sh-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
     spawn-sh-at-startup "systemctl --user restart waybar"
+    // spawn-sh-at-startup "${wallpaper-cmd}"
 
     // This line starts waybar, a commonly used bar for Wayland compositors.
     // Currently using systemd service

@@ -1,4 +1,9 @@
-{ inputs, pkgs, config, lib, ... }:
+{ pkgs, config, lib, osConfig, ... }:
+let
+  wallpaperPath = if osConfig.hostParams.desktop.wallpaper != null
+    then toString osConfig.hostParams.desktop.wallpaper
+    else null;
+in
 {
   home.file."Wallpaper".source = ../../wallpapers;
 
@@ -43,6 +48,26 @@
       else
         # No settings.json exists, just copy default-settings.json
         cat "$DEFAULT_SETTINGS" > "$SETTINGS"
+      fi
+    fi
+  '';
+
+  # Sync default-session.json to session.json on activation
+  home.activation.dmsSessionSync = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    DMS_STATE_DIR="${config.xdg.stateHome}/DankMaterialShell"
+    DEFAULT_SESSION="$DMS_STATE_DIR/default-session.json"
+    SESSION="$DMS_STATE_DIR/session.json"
+
+    if [ -f "$DEFAULT_SESSION" ]; then
+      mkdir -p "$DMS_STATE_DIR"
+      if [ -f "$SESSION" ]; then
+        # Deep merge: existing session values take precedence, but defaults fill in missing keys
+        ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$SESSION" "$DEFAULT_SESSION" > "$SESSION.tmp"
+        cat "$SESSION.tmp" > "$SESSION"
+        rm "$SESSION.tmp"
+      else
+        # No session.json exists, just copy default-session.json
+        cat "$DEFAULT_SESSION" > "$SESSION"
       fi
     fi
   '';
@@ -103,6 +128,8 @@
 
         ## Layout
         position = 1;  # 0=top, 1=bottom, 2=left, 3=right
+        spacing = 3;
+        bottomGap = 1;
       }];
 
       ## Displays
@@ -110,9 +137,7 @@
       showOnLastDisplay = true;
 
       ## Layout
-      spacing = 3;
       innerPadding = 4;
-      bottomGap = 1;
       popupGapsAuto = true;
       popupGapsManual = 4;
 
@@ -213,6 +238,11 @@
           }
         '';
       };
+    };
+
+    # Default session (wallpaper path, etc.)
+    default.session = lib.mkIf (wallpaperPath != null) {
+      wallpaperPath = wallpaperPath;
     };
   };
 }

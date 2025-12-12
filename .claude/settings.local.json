@@ -81,7 +81,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:yalter.github.io)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(nix flake metadata:*)"
     ],
     "deny": [],
     "ask": []
