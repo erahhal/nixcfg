@@ -60,7 +60,19 @@
       "Bash(dms --help:*)",
       "Bash(/bin/cp -f /tmp/dms-settings.json ~/.config/DankMaterialShell/settings.json)",
       "Bash(~/.config/DankMaterialShell/settings.json)",
-      "Bash(dms restart --help:*)"
+      "Bash(dms restart --help:*)",
+      "Bash(nix-locate:*)",
+      "Bash(nix-env:*)",
+      "Bash(nix search:*)",
+      "Bash(nix eval:*)",
+      "Bash(locate:*)",
+      "Bash(gdbus call:*)",
+      "Bash(xdotool search:*)",
+      "Bash(dbus-send:*)",
+      "Bash(xargs:*)",
+      "Bash(grep:*)",
+      "Bash(qs:*)",
+      "Bash(home-manager generations:*)"
     ],
     "deny": [],
     "ask": []

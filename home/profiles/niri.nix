@@ -13,6 +13,18 @@ let
       systemctl --user start fcitx5-daemon
     fi
   '';
+  clear-notifications = pkgs.writeShellScript "clear-notifications" ''
+    # Close all notifications by iterating through possible IDs
+    # freedesktop.org CloseNotification silently ignores non-existent IDs
+    for i in $(seq 1 1000); do
+      ${pkgs.glib}/bin/gdbus call --session \
+        --dest org.freedesktop.Notifications \
+        --object-path /org/freedesktop/Notifications \
+        --method org.freedesktop.Notifications.CloseNotification "$i" \
+        2>/dev/null &
+    done
+    wait
+  '';
   exit-niri = pkgs.writeShellScript "exit-niri" ''
     ${builtins.readFile ../../scripts/kill-all-apps.sh}
 
@@ -635,8 +647,9 @@ in
 
             // fixes focus-border visibility
             // @TODO: probably not right approach though
-            top 2
-            bottom 3
+
+            // top 2
+            // bottom 2
         }
 
         tab-indicator {
@@ -1206,7 +1219,7 @@ in
         Mod+Shift+P { spawn "${power-off-dialog}"; }
 
         Mod+N hotkey-overlay-title="Toggle notification list view" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t" "-sw"; }
-        Mod+Shift+N hotkey-overlay-title="Clear notifications" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-C" "-sw"; }
+        Mod+Shift+N hotkey-overlay-title="Clear notifications" { spawn "${clear-notifications}"; }
         Mod+Shift+Ctrl+N hotkey-overlay-title="Toggle notification do-not-disturb" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-d" "-sw"; }
 
     }
