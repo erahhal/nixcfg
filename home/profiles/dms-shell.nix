@@ -123,6 +123,7 @@ in
           "controlCenterButton"
           "weather"
           "clock"
+          "idleInhibitor"
           "notificationButton"
         ];
 

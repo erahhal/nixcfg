@@ -116,9 +116,7 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    # nflx-nixcfg.url = "github:Netflix/nflx-nixcfg";
-    # nflx-nixcfg.url = "git+ssh://git@github.com/Netflix/nflx-nixcfg";
-    # nflx-nixcfg.url = "git+ssh://git@github.netflix.net/corp/nflx-nixcfg";
+    nflx-nixcfg.url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
     # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
