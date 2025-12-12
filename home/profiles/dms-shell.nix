@@ -98,6 +98,7 @@ in
     enableDynamicTheming = true;
     enableAudioWavelength = true;
     enableCalendarEvents = true;
+
     # Default settings (only applied if settings.json doesn't exist)
     default.settings = {
       configVersion = 2;
@@ -115,12 +116,12 @@ in
         centerWidgets = [];
         rightWidgets = [
           "music"
+          "controlCenterButton"
           "systemTray"
           "clipboard"
           "cpuUsage"
           "memUsage"
           "battery"
-          "controlCenterButton"
           "weather"
           "clock"
           "idleInhibitor"
@@ -143,6 +144,7 @@ in
       popupGapsManual = 4;
 
       ## Style
+      matugenTemplateFirefox = false; # disables creating firefox.css file on manual config change. What are the ramifications?
       transparency = 1;
       widgetTransparency = 1;
       squareCorners = false;
@@ -180,6 +182,8 @@ in
       ## Animation
       customAnimationDuration = 100;
 
+      ### Widgets
+
       ## Clock
       use24HourClock = false;
 
@@ -189,6 +193,50 @@ in
       weatherLocation = "Los Angeles, CA";
       weatherCoordinates = "34.1509, 118.4487";
       useFahrenheit = true;
+
+      ## Control Center
+      controlCenterShowNetworkIcon = true;
+      controlCenterShowBluetoothIcon = true;
+      controlCenterShowAudioIcon = true;
+      controlCenterShowVpnIcon = true;
+      controlCenterShowBrightnessIcon = true;
+      controlCenterShowMicIcon = true;
+      controlCenterShowBatteryIcon = false;
+      controlCenterShowPrinterIcon = false;
+      controlCenterWidgets = [
+        {
+          id = "volumeSlider";
+          enabled = true;
+        }
+        {
+          id = "audioOutput";
+          enabled = true;
+        }
+        {
+          id = "audioInput";
+          enabled = true;
+        }
+        {
+          id = "brightnessSlider";
+          enabled = true;
+        }
+        {
+          id = "wifi";
+          enabled = true;
+        }
+        {
+          id = "bluetooth";
+          enabled = true;
+        }
+        {
+          id = "nightMode";
+          enabled = true;
+        }
+        {
+          id = "darkMode";
+          enabled = true;
+        }
+      ];
 
       ## Theme
       currentThemeName = "custom";

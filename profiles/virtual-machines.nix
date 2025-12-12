@@ -233,9 +233,9 @@ in
       ## Must be set to false if enableKvm is true
       addNetworkInterface = false;
     };
-    guest = {
-      enable = true;
-    };
+    # Note: Don't enable guest additions on the host - they're meant for VMs running NixOS
+    # It causes nixos-rebuild switch to hang
+    # guest.enable should only be true when NixOS is running inside a VirtualBox VM
   };
 
   #-------------------------------------------
