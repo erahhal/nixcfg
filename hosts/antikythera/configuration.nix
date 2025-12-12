@@ -26,7 +26,7 @@
     # ../../profiles/exclusive-lan.nix
     # ../../profiles/jovian.nix
     ../../profiles/laptop-hardware.nix
-    # ../../profiles/steam.nix
+    ../../profiles/steam.nix
 
     # host specific
     ../../profiles/homefree.nix

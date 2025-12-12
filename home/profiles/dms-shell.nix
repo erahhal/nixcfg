@@ -101,66 +101,70 @@
           "notificationButton"
         ];
 
-        ## Displays
-        screenPreferences = ["all"];
-        showOnLastDisplay = true;
-
         ## Layout
         position = 1;  # 0=top, 1=bottom, 2=left, 3=right
-        spacing = 3;
-        innerPadding = 4;
-        bottomGap = 1;
-        popupGapsAuto = true;
-        popupGapsManual = 4;
-
-        ## Style
-        transparency = 1;
-        widgetTransparency = 1;
-        squareCorners = false;
-        noBackground = false;
-        gothCornersEnabled = false;
-        gothCornerRadiusOverride = false;
-        gothCornerRadiusValue = 12;
-        borderEnabled = false;
-        borderColor = "surfaceText";
-        borderOpacity = 1;
-        borderThickness = 1;
-        fontScale = 1;
-
-        ## Behavior
-        visible = true;
-        autoHide = false;
-        autoHideDelay = 250;
-        openOnOverview = false;
-
-        # On Screen Display
-        osdPowerProfileEnabled = true;
-
-        ## Workspaces
-        showWorkspaceIndex = true;
-        showWorkspacePadding = true;
-        showWorkspaceApps = true;
-        showOccupiedWorkspacesOnly = true;
-
-        ## Dock
-        showDock = true;
-        dockAutoHide = true;
-        dockGroupByApp = false;
-        dockOpenOnOverview = true;
-
-        ## Animation
-        customAnimationDuration = 100;
-
-        ## Clock
-        use24HourClock = false;
-
-        ## Weather
-        weatherEnabled = true;
-        useAutoLocation = true;
-        weatherLocation = "Los Angeles, CA";
-        weatherCoordinates = "34.1509, 118.4487";
-        useFahrenheit = true;
       }];
+
+      ## Displays
+      screenPreferences = ["all"];
+      showOnLastDisplay = true;
+
+      ## Layout
+      spacing = 3;
+      innerPadding = 4;
+      bottomGap = 1;
+      popupGapsAuto = true;
+      popupGapsManual = 4;
+
+      ## Style
+      transparency = 1;
+      widgetTransparency = 1;
+      squareCorners = false;
+      noBackground = false;
+      gothCornersEnabled = false;
+      gothCornerRadiusOverride = false;
+      gothCornerRadiusValue = 12;
+      borderEnabled = false;
+      borderColor = "surfaceText";
+      borderOpacity = 1;
+      borderThickness = 1;
+      fontScale = 1;
+
+      ## Behavior
+      visible = true;
+      autoHide = false;
+      autoHideDelay = 250;
+      openOnOverview = false;
+
+      # On Screen Display
+      osdPowerProfileEnabled = true;
+
+      ## Workspaces
+      showWorkspaceIndex = true;
+      showWorkspacePadding = true;
+      showWorkspaceApps = true;
+      showOccupiedWorkspacesOnly = true;
+
+      ## Dock
+      showDock = false;
+      dockAutoHide = true;
+      dockGroupByApp = false;
+      dockOpenOnOverview = true;
+
+      ## Animation
+      customAnimationDuration = 100;
+
+      ## Clock
+      use24HourClock = false;
+
+      ## Weather
+      weatherEnabled = true;
+      useAutoLocation = true;
+      weatherLocation = "Los Angeles, CA";
+      weatherCoordinates = "34.1509, 118.4487";
+      useFahrenheit = true;
+
+      ## Theme
       currentThemeName = "custom";
       customThemeFile = pkgs.writeTextFile {
         name = "theme_tokyonight.json";

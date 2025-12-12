@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
+resolvectl flush-caches
 sudo systemd-resolve --flush-caches
 sudo systemctl restart nscd.service

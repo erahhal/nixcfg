@@ -1,4 +1,15 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, userParams, ... }:
+let
+  # Reference the existing tailscale config
+  tsCfg = config.services.tailscale;
+
+  # Build the tsup script from existing config
+  tsupScript = pkgs.writeShellScriptBin "tsup" ''
+    exec ${pkgs.tailscale}/bin/tailscale up \
+      ${lib.concatStringsSep " \\\n      " tsCfg.extraUpFlags} \
+      "$@"
+  '';
+in
 {
   services.tailscale = {
     enable = true;
@@ -9,10 +20,19 @@
     };
     extraUpFlags = [
       "--accept-routes"
-      "--netfilter-mode=nodivert"
+      ## @TODO: Add this as an option for corporate laptop
+      # "--netfilter-mode=nodivert"
       "--login-server=https://vpn.homefree.host"
+      "--operator=${userParams.username}"
+    ];
+    # Disable logs/telemetry to Tailscale
+    extraDaemonFlags = [
+      "--no-logs-no-support"
     ];
   };
+
+  # Add tsup to system packages
+  environment.systemPackages = [ tsupScript ];
 
   # Prevent Tailscale from routing local 10.0.0.0/24 traffic
   # This ensures NFS mounts to the local Synology NAS work correctly
