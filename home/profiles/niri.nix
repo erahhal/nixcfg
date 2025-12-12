@@ -700,9 +700,10 @@ in
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk"
     spawn-sh-at-startup "systemctl --user restart gammastep"
-    spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
-    spawn-sh-at-startup "systemctl --user restart network-manager-applet"
-    spawn-sh-at-startup "systemctl --user restart blueman-applet"
+    // @TODO: Move these to waybar setup
+    // spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
+    // spawn-sh-at-startup "systemctl --user restart network-manager-applet"
+    // spawn-sh-at-startup "systemctl --user restart blueman-applet"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
