@@ -20,6 +20,8 @@ let
     hash = "sha256-tXqDRVp1VhyD1WylW83mO4aYFmVg/NV6Z/toHmb5Tn8=";
   };
 
+  nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
+
   # Default plugin settings - merged into plugin_settings.json on activation
   defaultPluginSettings = {
     commandRunner = {
@@ -36,6 +38,23 @@ let
     dms ipc call lock lock
     sleep 0.5
     systemctl suspend
+  '';
+
+  # Confirmation dialogs for power actions
+  reboot-dialog = pkgs.writeShellScript "dms-reboot-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Reboot?' 'systemctl reboot'
+  '';
+
+  suspend-dialog = pkgs.writeShellScript "dms-suspend-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Suspend?' '${dms-suspend}'
+  '';
+
+  power-off-dialog = pkgs.writeShellScript "dms-power-off-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Power off?' 'systemctl poweroff'
+  '';
+
+  exit-dialog = pkgs.writeShellScript "dms-exit-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Exit Niri?' 'niri msg action quit'
   '';
 
   # Helper function to create JSON sync activation scripts
@@ -121,11 +140,11 @@ in
       // Lock - use DMS lock instead of hyprlock
       Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
 
-      // Power actions
-      Mod+Shift+E hotkey-overlay-title="Exit Niri" { spawn "niri" "msg" "action" "quit"; }
-      Mod+Shift+R hotkey-overlay-title="Reboot" { spawn "systemctl" "reboot"; }
-      Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "${dms-suspend}"; }
-      Mod+Shift+P hotkey-overlay-title="Power Off" { spawn "systemctl" "poweroff"; }
+      // Power actions - with confirmation dialogs
+      Mod+Shift+E hotkey-overlay-title="Exit Niri" { spawn "${exit-dialog}"; }
+      Mod+Shift+R hotkey-overlay-title="Reboot" { spawn "${reboot-dialog}"; }
+      Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "${suspend-dialog}"; }
+      Mod+Shift+P hotkey-overlay-title="Power Off" { spawn "${power-off-dialog}"; }
 
       // Ctrl+Alt+Delete - quit niri (shows confirmation)
       Ctrl+Alt+Delete { quit; }
