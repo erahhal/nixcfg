@@ -31,6 +31,13 @@ let
     };
   };
 
+  # Script to lock screen then suspend (simulates DMS lockBeforeSuspend)
+  dms-suspend = pkgs.writeShellScript "dms-suspend" ''
+    dms ipc call lock lock
+    sleep 0.5
+    systemctl suspend
+  '';
+
   # Helper function to create JSON sync activation scripts
   # Merges default file into target file, preserving user-added keys
   mkJsonSyncScript = { dir, defaultFile, targetFile, name }:
@@ -106,10 +113,10 @@ in
       // Lock - use DMS lock instead of hyprlock
       Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
 
-      // Power actions - use systemctl directly (DMS handles lock-before-suspend)
+      // Power actions
       Mod+Shift+E hotkey-overlay-title="Exit Niri" { spawn "niri" "msg" "action" "quit"; }
       Mod+Shift+R hotkey-overlay-title="Reboot" { spawn "systemctl" "reboot"; }
-      Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "systemctl" "suspend"; }
+      Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "${dms-suspend}"; }
       Mod+Shift+P hotkey-overlay-title="Power Off" { spawn "systemctl" "poweroff"; }
 
       // Ctrl+Alt+Delete - quit niri (shows confirmation)
@@ -117,8 +124,8 @@ in
     }
 
     switch-events {
-      // Lid close - use systemctl suspend (DMS lockBeforeSuspend handles locking)
-      lid-close { spawn "systemctl" "suspend"; }
+      // Lid close - lock then suspend
+      lid-close { spawn "${dms-suspend}"; }
     }
   '';
 
