@@ -98,9 +98,27 @@ in
   # Niri keybinding overrides for DMS
   xdg.configFile."niri/dms.kdl".text = ''
     binds {
+      // DMS Application Launcher and Notification Center
       // Temporarily disabled as it doesn't run arbitray executables
       Mod+P hotkey-overlay-title="DMS Application Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
       Mod+N hotkey-overlay-title="DMS Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+
+      // Lock - use DMS lock instead of hyprlock
+      Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
+
+      // Power actions - use systemctl directly (DMS handles lock-before-suspend)
+      Mod+Shift+E hotkey-overlay-title="Exit Niri" { spawn "niri" "msg" "action" "quit"; }
+      Mod+Shift+R hotkey-overlay-title="Reboot" { spawn "systemctl" "reboot"; }
+      Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "systemctl" "suspend"; }
+      Mod+Shift+P hotkey-overlay-title="Power Off" { spawn "systemctl" "poweroff"; }
+
+      // Ctrl+Alt+Delete - quit niri (shows confirmation)
+      Ctrl+Alt+Delete { quit; }
+    }
+
+    switch-events {
+      // Lid close - use systemctl suspend (DMS lockBeforeSuspend handles locking)
+      lid-close { spawn "systemctl" "suspend"; }
     }
   '';
 
