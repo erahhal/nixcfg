@@ -110,6 +110,14 @@ in
       Mod+P hotkey-overlay-title="DMS Application Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
       Mod+N hotkey-overlay-title="DMS Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
 
+      // Color picker - use DMS color picker (auto-copy hex to clipboard)
+      Mod+A hotkey-overlay-title="DMS Color Picker" { spawn "dms" "color" "pick" "--hex" "-a"; }
+
+      // Screenshots - use DMS screenshot (opens in editor for annotation)
+      Ctrl+Shift+3 hotkey-overlay-title="Capture Screen" { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
+      Ctrl+Shift+4 hotkey-overlay-title="Capture Selection" { spawn "dms" "ipc" "call" "niri" "screenshot"; }
+      Ctrl+Shift+5 hotkey-overlay-title="Capture Window" { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
+
       // Lock - use DMS lock instead of hyprlock
       Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
 
