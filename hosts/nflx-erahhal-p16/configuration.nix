@@ -306,12 +306,14 @@
     ## Seems to be needed for suspend to S0 (s2idle) without hanging
     ''acpi_osi="Windows 2022"''
 
-    ## Prevents dock from waking up laptop right after suspendign
+    # Prevent spurious wakeups from a firmware bug where the EC or SMU generates spurious "heartbeat" interrupts during sleep
+    "acpi.ec_no_wakeup=1"
+
+    # Prevents dock from waking up laptop right after suspend
     "usbcore.autosuspend=-1"
 
     ## Settings that supposedly increase gaming perf and prevent HDMI audio dropouts during gaming
     "preempt=full"    # Realitime latency
-    "nohz_full=all"   # Reduce latency for realtime apps
     "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
   ];
 

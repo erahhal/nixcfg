@@ -295,34 +295,28 @@
   # boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
   boot.kernelParams = [
     "mem_sleep_default=s2idle"
+
+    # Prevent spurious wakeups from a firmware bug where the EC or SMU generates spurious "heartbeat" interrupts during sleep
     "acpi.ec_no_wakeup=1"
 
     ## Fixes input lag issue in Hyprland
     ## @TODO: Remove after fixed in kernel
     # "amdgpu.dcdebugmask=0x610"
-    "amdgpu.dcdebugmask=0x10"
+    # "amdgpu.dcdebugmask=0x10"
 
     "amd_pstate=active"
-    "processor=ignore_ppc=1"
-
-    # "msr.allow_writes=on"
-    # "cpuidle.governor=teo"
-
-    # "usbcore.use_both_schemes=y"
-    "usbcore.autosuspend=-1"
 
     # Force wireless regulatory domain to US
     "cfg80211.ieee80211_regdom=US"
 
-    ## Settings that supposedly increase gaming perf and prevent HDMI audio dropouts during gaming
-    "preempt=full"    # Realitime latency
-    "nohz_full=all"   # Reduce latency for realtime apps
-    "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
+    ## Settings for low-latency gaming/audio
+    "preempt=full"    # Realtime latency
+    "threadirqs"      # Forces interrupt handlers to run in threaded context
+    ## not appropriate for AMD cpu
   ];
 
   boot.extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
-    options ath11k_pci regdomain=US
   '';
 
   ## Make sure CPU runs at max performance
@@ -348,6 +342,18 @@
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.iw}/bin/iw reg set US";
+    };
+  };
+
+  ## Fix WiFi not working after suspend - known ath11k issue on kernel 6.17+
+  ## https://bbs.archlinux.org/viewtopic.php?id=310363
+  systemd.services.ath11k-resume-fix = {
+    description = "Reload ath11k_pci after resume";
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 2 && ${pkgs.kmod}/bin/modprobe -r ath11k_pci && sleep 1 && ${pkgs.kmod}/bin/modprobe ath11k_pci && sleep 3 && ${pkgs.systemd}/bin/systemctl restart NetworkManager'";
     };
   };
 

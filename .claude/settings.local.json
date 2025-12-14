@@ -97,7 +97,9 @@
       "Bash(# Look at the DMS module from the flake to understand plugin settings handling nix flake show github:AvengeMedia/DankMaterialShell)",
       "Bash(# Check the CommandRunner plugin to understand its config format ls -la ~/.config/DankMaterialShell/plugins/CommandRunner/ cat ~/.config/DankMaterialShell/plugins/CommandRunner/main.qml)",
       "Bash(loginctl list-sessions:*)",
-      "Bash(loginctl session-status:*)"
+      "Bash(loginctl session-status:*)",
+      "WebFetch(domain:wiki.archlinux.org)",
+      "WebFetch(domain:bbs.archlinux.org)"
     ],
     "deny": [],
     "ask": []

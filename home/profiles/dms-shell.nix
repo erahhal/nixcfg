@@ -182,7 +182,6 @@ in
 
     # Feature toggles (all default to true)
     enableSystemMonitoring = true;
-    enableClipboard = true;
     enableVPN = true;
     enableDynamicTheming = true;
     enableAudioWavelength = true;
@@ -204,17 +203,70 @@ in
         ];
         centerWidgets = [];
         rightWidgets = [
-          "music"
-          "controlCenterButton"
-          "systemTray"
-          "clipboard"
-          "cpuUsage"
-          "memUsage"
-          "battery"
-          "weather"
-          "clock"
-          "idleInhibitor"
-          "notificationButton"
+          {
+            id = "music";
+            enabled = true;
+          }
+          {
+            id = "controlCenterButton";
+            enabled = true;
+            showAudioIcon = true;
+            showBatteryIcon = false;
+            showBluetoothIcon = false;
+            showBrightnessIcon = false;
+            showMicIcons = true;
+            showNetworkIcon = false;
+            showPrinterIcon = false;
+            showVpnIcon = false;
+          }
+          {
+            id = "systemTray";
+            enabled = true;
+          }
+          {
+            id = "clipboard";
+            enabled = true;
+          }
+          {
+            id = "cpuUsage";
+            enabled = true;
+          }
+          {
+            id = "memUsage";
+            enabled = true;
+          }
+          {
+            id = "battery";
+            enabled = true;
+          }
+          {
+            id = "weather";
+            enabled = true;
+          }
+          {
+            id = "controlCenterButton";
+            enabled = true;
+            showAudioIcon = false;
+            showBatteryIcon = false;
+            showBluetoothIcon = true;
+            showBrightnessIcon = true;
+            showMicIcon = false;
+            showNetworkIcon = true;
+            showPrinterIcon = false;
+            showVpnIcon = true;
+          }
+          {
+            id = "clock";
+            enabled = true;
+          }
+          {
+            id = "idleInhibitor";
+            enabled = true;
+          }
+          {
+            id = "notificationButton";
+            enabled = true;
+          }
         ];
 
         ## Layout
@@ -294,50 +346,6 @@ in
 
       ## Night Mode
       nightModeEnabled = true;
-
-      ## Control Center
-      controlCenterShowNetworkIcon = true;
-      controlCenterShowBluetoothIcon = true;
-      controlCenterShowAudioIcon = true;
-      controlCenterShowVpnIcon = true;
-      controlCenterShowBrightnessIcon = true;
-      controlCenterShowMicIcon = true;
-      controlCenterShowBatteryIcon = false;
-      controlCenterShowPrinterIcon = false;
-      controlCenterWidgets = [
-        {
-          id = "volumeSlider";
-          enabled = true;
-        }
-        {
-          id = "audioOutput";
-          enabled = true;
-        }
-        {
-          id = "audioInput";
-          enabled = true;
-        }
-        {
-          id = "brightnessSlider";
-          enabled = true;
-        }
-        {
-          id = "wifi";
-          enabled = true;
-        }
-        {
-          id = "bluetooth";
-          enabled = true;
-        }
-        {
-          id = "nightMode";
-          enabled = true;
-        }
-        {
-          id = "darkMode";
-          enabled = true;
-        }
-      ];
 
       ## Theme
       currentThemeName = "custom";
