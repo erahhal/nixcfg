@@ -11,7 +11,7 @@
       multipleSessions = true;
       defaultSession = "niri";
       dpi = 192;
-      wallpaper = ../../wallpapers/yellowstone.jpg;
+      wallpaper = ../../wallpapers/huashan-temple.jpg;
       disableXwaylandScaling = true;
     };
 

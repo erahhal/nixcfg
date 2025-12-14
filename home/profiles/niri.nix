@@ -311,12 +311,12 @@ in
     # ./waybar.nix
     # ./caelestia-shell.nix
     ./dms-shell.nix
-    ./rofi.nix
-    ./hyprlock.nix
-    ./gammastep.nix
+    # ./rofi.nix
+    # ./hyprlock.nix
+    # ./gammastep.nix
     # ./wlsunset.nix
 
-    ./sway-idle.nix
+    # ./sway-idle.nix
     # ./hypridle.nix
 
     ## These services have problems when started from systemd
@@ -683,7 +683,7 @@ in
     spawn-sh-at-startup "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
     spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
-    spawn-sh-at-startup "systemctl --user restart waybar"
+    // spawn-sh-at-startup "systemctl --user restart waybar"
     // spawn-sh-at-startup "${wallpaper-cmd}"
 
     // This line starts waybar, a commonly used bar for Wayland compositors.
@@ -692,14 +692,14 @@ in
     // spawn-sh-at-startup "${adjust-window-sizes}"
 
     spawn-sh-at-startup "${dynamic-float-rules}/bin/dynamic-float-rules"
-    spawn-sh-at-startup "systemctl --user stop hypridle"
-    spawn-sh-at-startup "pkill hyprlock"
-    spawn-sh-at-startup "systemctl --user restart sway-idle"
+    // spawn-sh-at-startup "systemctl --user stop hypridle"
+    // spawn-sh-at-startup "pkill hyprlock"
+    // spawn-sh-at-startup "systemctl --user restart sway-idle"
     spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-wlr"
     spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk"
-    spawn-sh-at-startup "systemctl --user restart gammastep"
+    // spawn-sh-at-startup "systemctl --user restart gammastep"
     // @TODO: Move these to waybar setup
     // spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
     // spawn-sh-at-startup "systemctl --user restart network-manager-applet"

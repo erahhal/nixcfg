@@ -1,8 +1,58 @@
+## @TODOS
+## - If there is no settings.json, dms needs to be restarted twice to pick up the settings, as it creates it during the startup process.
+## - Get settings sync working - it doesn't always work
+## - Figure out how to have multiple control centers with different configs
+## - Figure out how to get automatic night mode working to replace gammastep
+## - What's going on with the session below, and how does it different from config/settings?
+##   - Appears to be for wallpaper, not sure why it's separate from config
+## - Figure out how to get launcher to run arbitrary executables - seems to only run .desktop files
+
 { pkgs, config, lib, osConfig, ... }:
 let
   wallpaperPath = if osConfig.hostParams.desktop.wallpaper != null
     then toString osConfig.hostParams.desktop.wallpaper
     else null;
+
+  dms-command-runner = pkgs.fetchFromGitHub {
+    owner = "devnullvoid";
+    repo = "dms-command-runner";
+    rev = "d89a09413e2fc041089b595a06c0fb316b12e17a";
+    hash = "sha256-tXqDRVp1VhyD1WylW83mO4aYFmVg/NV6Z/toHmb5Tn8=";
+  };
+
+  # Default plugin settings - merged into plugin_settings.json on activation
+  defaultPluginSettings = {
+    commandRunner = {
+      enabled = true;
+      noTrigger = true;
+      trigger = ">";
+      terminal = "foot";
+      execFlag = "-e";
+    };
+  };
+
+  # Helper function to create JSON sync activation scripts
+  # Merges default file into target file, preserving user-added keys
+  mkJsonSyncScript = { dir, defaultFile, targetFile, name }:
+    lib.hm.dag.entryAfter ["linkGeneration"] ''
+      DIR="${dir}"
+      DEFAULT="$DIR/${defaultFile}"
+      TARGET="$DIR/${targetFile}"
+
+      if [ -f "$DEFAULT" ]; then
+        mkdir -p "$DIR"
+        if [ -f "$TARGET" ]; then
+          if ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$TARGET" "$DEFAULT" > "$TARGET.tmp" 2>/dev/null; then
+            mv "$TARGET.tmp" "$TARGET"
+          else
+            rm -f "$TARGET.tmp"
+            echo "Warning: Failed to merge DMS ${name}, keeping existing ${targetFile}"
+          fi
+        else
+          cp "$DEFAULT" "$TARGET"
+        fi
+      fi
+    '';
 in
 {
   home.file."Wallpaper".source = ../../wallpapers;
@@ -12,69 +62,43 @@ in
     Environment = [
       "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
     ];
-    # Inherit environment for icon theme discovery
+    # Inherit environment for icon theme discovery and loginctl integration
     PassEnvironment = [
       "QT_QPA_PLATFORMTHEME"
       "XDG_DATA_DIRS"
       "XCURSOR_SIZE"
       "XCURSOR_THEME"
+      # Required for loginctl lock integration
+      "XDG_SESSION_ID"
     ];
   };
 
-  # Sync default-settings.json to settings.json on activation
-  home.activation.dmsSettingsSync = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    DMS_CONFIG_DIR="${config.xdg.configHome}/DankMaterialShell"
-    DEFAULT_SETTINGS="$DMS_CONFIG_DIR/default-settings.json"
-    SETTINGS="$DMS_CONFIG_DIR/settings.json"
+  # Sync DMS JSON config files on activation
+  home.activation.dmsSettingsSync = mkJsonSyncScript {
+    dir = "${config.xdg.configHome}/DankMaterialShell";
+    defaultFile = "default-settings.json";
+    targetFile = "settings.json";
+    name = "settings";
+  };
 
-    if [ -f "$DEFAULT_SETTINGS" ]; then
-      mkdir -p "$DMS_CONFIG_DIR"
-      if [ -f "$SETTINGS" ]; then
-        # Deep merge with special handling for barConfigs array (merge by id)
-        ${pkgs.jq}/bin/jq -s '
-          # Function to merge barConfigs arrays by id
-          def merge_bar_configs(existing; defaults):
-            [existing[], defaults[]]
-            | group_by(.id)
-            | map(reduce .[] as $item ({}; . * $item));
+  home.activation.dmsSessionSync = mkJsonSyncScript {
+    dir = "${config.xdg.stateHome}/DankMaterialShell";
+    defaultFile = "default-session.json";
+    targetFile = "session.json";
+    name = "session";
+  };
 
-          # Merge top-level, with special handling for barConfigs
-          .[0] * .[1] * {
-            barConfigs: merge_bar_configs(.[0].barConfigs // []; .[1].barConfigs // [])
-          }
-        ' "$SETTINGS" "$DEFAULT_SETTINGS" > "$SETTINGS.tmp"
-        cat "$SETTINGS.tmp" > "$SETTINGS"
-        rm "$SETTINGS.tmp"
-      else
-        # No settings.json exists, just copy default-settings.json
-        cat "$DEFAULT_SETTINGS" > "$SETTINGS"
-      fi
-    fi
-  '';
-
-  # Sync default-session.json to session.json on activation
-  home.activation.dmsSessionSync = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    DMS_STATE_DIR="${config.xdg.stateHome}/DankMaterialShell"
-    DEFAULT_SESSION="$DMS_STATE_DIR/default-session.json"
-    SESSION="$DMS_STATE_DIR/session.json"
-
-    if [ -f "$DEFAULT_SESSION" ]; then
-      mkdir -p "$DMS_STATE_DIR"
-      if [ -f "$SESSION" ]; then
-        # Deep merge: existing session values take precedence, but defaults fill in missing keys
-        ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$SESSION" "$DEFAULT_SESSION" > "$SESSION.tmp"
-        cat "$SESSION.tmp" > "$SESSION"
-        rm "$SESSION.tmp"
-      else
-        # No session.json exists, just copy default-session.json
-        cat "$DEFAULT_SESSION" > "$SESSION"
-      fi
-    fi
-  '';
+  home.activation.dmsPluginSettingsSync = mkJsonSyncScript {
+    dir = "${config.xdg.configHome}/DankMaterialShell";
+    defaultFile = "default-plugin_settings.json";
+    targetFile = "plugin_settings.json";
+    name = "plugin settings";
+  };
 
   # Niri keybinding overrides for DMS
   xdg.configFile."niri/dms.kdl".text = ''
     binds {
+      // Temporarily disabled as it doesn't run arbitray executables
       Mod+P hotkey-overlay-title="DMS Application Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
       Mod+N hotkey-overlay-title="DMS Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
     }
@@ -85,12 +109,25 @@ in
     include "dms.kdl"
   '';
 
+  # Default plugin settings file - merged into plugin_settings.json on activation
+  xdg.configFile."DankMaterialShell/default-plugin_settings.json".text =
+    builtins.toJSON defaultPluginSettings;
+
   programs.dankMaterialShell = {
     enable = true;
     systemd = {
       enable = true;
       restartIfChanged = true;
     };
+
+    # Plugins (settings are in defaultPluginSettings, synced via activation script)
+    plugins = {
+      CommandRunner = {
+        enable = true;
+        src = dms-command-runner;
+      };
+    };
+
     # Feature toggles (all default to true)
     enableSystemMonitoring = true;
     enableClipboard = true;
@@ -181,6 +218,12 @@ in
 
       ## Animation
       customAnimationDuration = 100;
+
+      ## Power/Lock screen
+      acMonitorTimeout = 300;
+      acLockTimeout = 300;
+      lockBeforeSuspend = true;
+      loginctlLockIntegration = true;
 
       ### Widgets
 

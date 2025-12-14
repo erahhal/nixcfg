@@ -83,7 +83,21 @@
       "WebFetch(domain:yalter.github.io)",
       "WebSearch",
       "Bash(nix flake metadata:*)",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "Bash(# Search for how the dankMaterialShell module creates default-settings.json grep -r \"\"default-settings\"\" /home/erahhal/Code/nixcfg --include=\"\"*.nix\"\")",
+      "Bash(# Let''s look at the DMS module itself to understand how default.settings is converted to a file nix flake metadata /home/erahhal/Code/nixcfg --json)",
+      "Bash(# Check flake inputs to find the actual repo and then look at it nix flake metadata /home/erahhal/Code/nixcfg --json)",
+      "Bash(# Check how home-manager activation scripts work - they may use $run which is different # Look at the actual generated activation script grep -A30 \"\"dmsSettingsSync\"\" /nix/store/*-home-manager-generation/activate)",
+      "Bash(# Check the full activation order grep -E \"\"(entryAfter|linkGeneration|writeBoundary)\"\" /nix/store/3m16pfbk0hkc8p5nvfvihdjyqyrvpm6w-home-manager-generation/activate)",
+      "Bash(# Let me see the full activation script order - what comes before dmsSettingsSync cat /nix/store/3m16pfbk0hkc8p5nvfvihdjyqyrvpm6w-home-manager-generation/activate)",
+      "Bash(# Check what linkGeneration does and when it runs relative to writeBoundary grep -B5 -A50 \"\"linkGeneration\"\" /nix/store/3m16pfbk0hkc8p5nvfvihdjyqyrvpm6w-home-manager-generation/activate)",
+      "Bash(nix flake show:*)",
+      "Bash(nix-prefetch-github:*)",
+      "Bash(ls:*)",
+      "Bash(# Look at the DMS module from the flake to understand plugin settings handling nix flake show github:AvengeMedia/DankMaterialShell)",
+      "Bash(# Check the CommandRunner plugin to understand its config format ls -la ~/.config/DankMaterialShell/plugins/CommandRunner/ cat ~/.config/DankMaterialShell/plugins/CommandRunner/main.qml)",
+      "Bash(loginctl list-sessions:*)",
+      "Bash(loginctl session-status:*)"
     ],
     "deny": [],
     "ask": []
