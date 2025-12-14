@@ -204,11 +204,11 @@ in
     # ./caelestia-shell.nix
     ./rofi.nix
     ./hyprlock.nix
-    ./gammastep.nix
+    # ./gammastep.nix
     # ./wlsunset.nix
 
     # ./sway-idle.nix
-    ./hypridle.nix
+    # ./hypridle.nix
 
     ## Doesn't work with clipboard
     # ./flameshot.nix
@@ -283,25 +283,25 @@ in
         "systemctl --user restart xdg-desktop-portal-hyprland"
         "systemctl --user restart polkit-gnome-authentication-agent-1"
         # "systemctl --user restart wlsunset"
-        "systemctl --user restart gammastep"
+        # "systemctl --user restart gammastep"
         # "systemctl --user restart kanshi"
         ## Don't start on load - still causes issues with lost keystrokes
         # "systemctl --user restart fcitx5-daemon"
         ## hyprlock currently broken
-        (
-          if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
-            "systemctl --user stop hypridle"
-          else
-            "systemctl --user stop sway-idle"
-        )
-        (
-          if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
-            "systemctl --user restart sway-idle"
-          else
-            "systemctl --user restart hypridle"
-        )
-
-        "systemctl --user restart waybar"
+        # (
+        #   if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
+        #     "systemctl --user stop hypridle"
+        #   else
+        #     "systemctl --user stop sway-idle"
+        # )
+        # (
+        #   if osConfig.hostParams.desktop.defaultLockProgram == "swaylock" then
+        #     "systemctl --user restart sway-idle"
+        #   else
+        #     "systemctl --user restart hypridle"
+        # )
+        #
+        # "systemctl --user restart waybar"
         ## Disabled as it doesn't work with tabbed groups
         hyprland-bitwarden-resize
       ];

@@ -42,7 +42,7 @@ let
       if [ -f "$DEFAULT" ]; then
         mkdir -p "$DIR"
         if [ -f "$TARGET" ]; then
-          if ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$TARGET" "$DEFAULT" > "$TARGET.tmp" 2>/dev/null; then
+          if ${pkgs.jq}/bin/jq -S -s '.[0] * .[1]' "$TARGET" "$DEFAULT" > "$TARGET.tmp" 2>/dev/null; then
             mv "$TARGET.tmp" "$TARGET"
           else
             rm -f "$TARGET.tmp"
@@ -223,7 +223,10 @@ in
       acMonitorTimeout = 300;
       acLockTimeout = 300;
       lockBeforeSuspend = true;
+      lockScreenShowPowerActions = true;
       loginctlLockIntegration = true;
+      fadeToLockEnabled = true;
+      fadeToLockGracePeriod = 5;
 
       ### Widgets
 
@@ -236,6 +239,9 @@ in
       weatherLocation = "Los Angeles, CA";
       weatherCoordinates = "34.1509, 118.4487";
       useFahrenheit = true;
+
+      ## Night Mode
+      nightModeEnabled = true;
 
       ## Control Center
       controlCenterShowNetworkIcon = true;
