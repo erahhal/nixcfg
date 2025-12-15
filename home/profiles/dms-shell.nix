@@ -304,6 +304,7 @@ in
       autoHide = false;
       autoHideDelay = 250;
       openOnOverview = false;
+      workspaceScrolling = false; # don't switch workspaces with scrollwheel
 
       # On Screen Display
       osdPowerProfileEnabled = true;
