@@ -17,7 +17,7 @@
       ../../profiles/mullvad.nix
       ../../profiles/openrgb.nix
       ../../profiles/pipewire.nix
-      # ../../profiles/steambox.nix
+      ../../profiles/steambox.nix
       ../../profiles/steam.nix
       ./steam-fix.nix
       ../../profiles/udev.nix

@@ -1,6 +1,8 @@
-{ pkgs, config, ... }:
+{ pkgs, config, osConfig, lib, ... }:
 
 let
+  startupApps = osConfig.hostParams.programs.startupApps;
+
   # Script that waits for DMS tray and then launches all startup apps
   startup-apps-script = pkgs.writeShellScript "startup-apps" ''
     check_tray() {
@@ -34,45 +36,37 @@ let
     done
 
     # Launch all apps (use PATH to get same versions as manual launch)
-    chromium-intel &
-    foot tmux a -dt code &
-    slack &
-    spotify &
-    brave &
-    firefox &
-    signal-desktop &
-    Telegram &
-    vesktop &
-    element-desktop &
-    joplin-desktop &
+    ${lib.concatMapStringsSep "\n    " (app: "${app} &") startupApps}
 
     echo "All startup apps launched"
   '';
 in
 {
-  systemd.user.services.startup-apps = {
-    Unit = {
-      Description = "Launch startup applications";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" "dms.service" ];
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "oneshot";
-      RemainAfterExit = false;
-      KillMode = "none";
-      ExecStart = "${startup-apps-script}";
-      PassEnvironment = [
-        "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
-        "XDG_RUNTIME_DIR" "DISPLAY" "WAYLAND_DISPLAY"
-        "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
-      ];
-      Environment = [
-        "HOME=%h"
-        "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
-      ];
+  config = lib.mkIf (startupApps != []) {
+    systemd.user.services.startup-apps = {
+      Unit = {
+        Description = "Launch startup applications";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" "dms.service" ];
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = false;
+        KillMode = "none";
+        ExecStart = "${startup-apps-script}";
+        PassEnvironment = [
+          "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
+          "XDG_RUNTIME_DIR" "DISPLAY" "WAYLAND_DISPLAY"
+          "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
+        ];
+        Environment = [
+          "HOME=%h"
+          "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
+        ];
+      };
     };
   };
 }

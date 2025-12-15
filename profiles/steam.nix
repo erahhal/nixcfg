@@ -2,8 +2,11 @@
 let
   steam-gamescope-runtime-paths = lib.makeBinPath [
     pkgs.hyprland
+    pkgs.niri
     pkgs.jq
     pkgs.gamescope
+    pkgs.gnugrep
+    pkgs.coreutils
   ];
 
   ## Starting fullscreen seems to lock mouse movement within bounds
@@ -50,38 +53,40 @@ let
   };
 in
 {
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    gamescopeSession.enable = true;
-  };
+  config = lib.mkIf (config.hostParams.programs.steam.bootToSteam == false) {
+    programs.steam = {
+      enable = true;
+      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      gamescopeSession.enable = true;
+    };
 
-  hardware.steam-hardware.enable = true;
+    hardware.steam-hardware.enable = true;
 
-  # programs.gamescope = {
-  #   enable = true;
-  #   # make sure gamescope runs at full performance
-  #   capSysNice = true;
-  # };
+    # programs.gamescope = {
+    #   enable = true;
+    #   # make sure gamescope runs at full performance
+    #   capSysNice = true;
+    # };
 
-  environment.systemPackages = with pkgs; [
-    gamemode
-    gamescope
-    # mangohud # Has issues with i686 builds
-    protonup-ng
-    steam-tui
-    steamcmd
-    steam-gs
-  ];
+    environment.systemPackages = with pkgs; [
+      gamemode
+      gamescope
+      # mangohud # Has issues with i686 builds
+      protonup-ng
+      steam-tui
+      steamcmd
+      steam-gs
+    ];
 
-  home-manager.users.${userParams.username} = lib.mkIf config.hostParams.programs.steam.enableGamescope {
-    xdg.desktopEntries.steam-gamescope = {
-      name = "SteamGs";
-      exec = "steam-gs";
-      terminal = false;
-      type = "Application";
-      icon = "steam";
+    home-manager.users.${userParams.username} = lib.mkIf config.hostParams.programs.steam.gamescope.enable {
+      xdg.desktopEntries.steam-gamescope = {
+        name = "SteamGs";
+        exec = "steam-gs";
+        terminal = false;
+        type = "Application";
+        icon = "steam";
+      };
     };
   };
 }

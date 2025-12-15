@@ -74,7 +74,9 @@ in
         // __VK_LAYER_NV_optimus = "NVIDIA_only"
     }
 
-    // Apps moved to systemd services (startup-apps.nix)
+    // Most apps launched via systemd service (startup-apps.nix)
+    // foot launched here because systemd user services cannot use setuid binaries like sudo
+    spawn-at-startup "foot" "tmux" "a" "-dt" "code"
     spawn-at-startup "niri" "msg" "action" "focus-workspace" "1"
   '');
 }

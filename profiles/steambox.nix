@@ -1,91 +1,32 @@
-{ broken, pkgs, lib, userParams, ... }:
+{ config, lib, pkgs, userParams, ... }:
 let
-  steam-gamescope-runtime-paths = lib.makeBinPath [
-    pkgs.steam
-    pkgs.gamescope
-  ];
-
-  steam-gamescope-script = pkgs.writeShellScriptBin "steam-gamescope-script" ''
-    set -xeuo pipefail
-
-    export LIBSEAT_BACKEND=logind
-
-    gamescopeArgs=(
-        --adaptive-sync # VRR support
-        --hdr-enabled
-        --mangoapp # performance overlay
-        --rt
-        --steam
-    )
-    steamArgs=(
-        -pipewire-dmabuf
-        -tenfoot
-    )
-    mangoConfig=(
-        cpu_temp
-        gpu_temp
-        ram
-        vram
-    )
-    mangoVars=(
-        MANGOHUD=1
-        MANGOHUD_CONFIG="$(IFS=,; echo "''${mangoConfig[*]}")"
-    )
-
-    export "''${mangoVars[@]}"
-    exec gamescope "''${gamescopeArgs[@]}" -- steam "''${steamArgs[@]}"
-  '';
-  steam-gs = pkgs.stdenv.mkDerivation {
-    name = "steam-gs";
-
-    dontUnpack = true;
-
-    nativeBuildInputs = [
-      pkgs.makeWrapper
-    ];
-
-    installPhase = ''
-      install -Dm755 ${steam-gamescope-script}/bin/steam-gamescope-script $out/bin/steam-gs
-
-      wrapProgram $out/bin/steam-gs \
-        --suffix PATH : ${steam-gamescope-runtime-paths}
-    '';
-  };
+  width = config.hostParams.programs.steam.gamescope.width;
+  height = config.hostParams.programs.steam.gamescope.height;
 in
 {
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.enable = true;
+  config = lib.mkIf config.hostParams.programs.steam.bootToSteam {
+    # Clean Quiet Boot
+    boot.kernelParams = [ "quiet" "splash" "console=/dev/null" ];
+    boot.plymouth.enable = true;
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    gamescopeSession.enable = true;
-  };
+    programs.gamescope = {
+      enable = true;
+      capSysNice = true;
+    };
+    programs.steam.gamescopeSession.enable = true; # Integrates with programs.steam
 
-  programs.gamescope = {
-    enable = true;
-    capSysNice = true;
-    env = {
-      __NV_PRIME_RENDER_OFFLOAD = "1";
-      __VK_LAYER_NV_optimus = "NVIDIA_only";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    # Gamescope Auto Boot from TTY (example)
+    services.xserver.enable = false; # Assuming no other Xserver needed
+    services.getty.autologinUser = userParams.username;
+
+    services.greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.gamescope}/bin/gamescope -W ${toString width} -H ${toString height} -f -e --xwayland-count 2 --hdr-enabled --hdr-itm-enabled -- steam -pipewire-dmabuf -gamepadui -steamdeck -steamos3 > /dev/null 2>&1";
+          user = userParams.username;
+        };
+      };
     };
   };
-
-  hardware.xone.enable = true;
-  services.getty.autologinUser = userParams.username;
-  environment.loginShellInit = ''
-    [[ "$(tty)" = "/dev/tty1" ]] && ${steam-gs}
-  '';
-
-  environment.systemPackages = with pkgs; [
-    gamemode
-    gamescope
-    mangohud # Has issues with i686 builds
-    protonup-ng
-    steam-tui
-    steamcmd
-    steam-gs
-  ];
 }

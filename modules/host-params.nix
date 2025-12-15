@@ -219,11 +219,37 @@
       };
 
       steam = {
-        enableGamescope = lib.mkOption {
+        bootToSteam = lib.mkOption {
           type = lib.types.bool;
           default = false;
-          description = "Enable Steam Gamescope";
+          description = "Boot directly to Steambox-like experience";
         };
+
+        gamescope = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Enable Steam Gamescope";
+          };
+
+          width = lib.mkOption {
+            type = lib.types.int;
+            default = 1920;
+            description = "Gamescope width";
+          };
+
+          height = lib.mkOption {
+            type = lib.types.int;
+            default = 1080;
+            description = "Gamescope height";
+          };
+        };
+      };
+
+      startupApps = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "Applications to launch at startup via the startup-apps systemd service";
       };
     };
 

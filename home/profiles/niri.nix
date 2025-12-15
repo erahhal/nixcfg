@@ -905,39 +905,19 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
-        match app-id="steam$"
-        open-on-workspace "10"
+        match app-id="steam" title="Steam Big Picture Mode"
+        // open-fullscreen true
+        open-maximized true
+        open-focused true
+        open-on-workspace "0"
         default-column-width { proportion 1.0; }
     }
-    window-rule {
-        match app-id="steam$"
-        open-fullscreen true
-        open-focused true
-    }
     // window-rule {
-    //     match title="^Loading Steam$"
-    //     open-on-workspace "10"
-    // }
-    // window-rule {
-    //     match title="^Loading Steam$"
+    //     // This matches any app-id that starts with "steam_app_"
+    //     match app-id=r#"^steam_app_.*$"#
     //     open-fullscreen true
     //     open-focused true
     // }
-    // window-rule {
-    //     match app-id="com.local.steam-loader$"
-    //     open-on-workspace "10"
-    // }
-    // window-rule {
-    //     match app-id="com.local.steam-loader$"
-    //     open-fullscreen true
-    //     open-focused true
-    // }
-    window-rule {
-        // This matches any app-id that starts with "steam_app_"
-        match app-id=r#"^steam_app_.*$"#
-        open-fullscreen true
-        open-focused true
-    }
 
     // Example: block out two password managers from screen capture.
     // (This example rule is commented out with a "/-" in front.)

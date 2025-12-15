@@ -11,7 +11,6 @@ in
     imports = [
       ./hyprland.nix
       ./niri.nix
-      ./startup-apps.nix
       ## Needed to create .desktop entry which is currently broken
       ## Also used to register mime types
       ../../home/profiles/jetbrains-toolbox.nix

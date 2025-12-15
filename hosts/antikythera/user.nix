@@ -18,7 +18,6 @@ in
       # ../../home/profiles/protonmail-bridge.nix
       ./hyprland.nix
       ./niri.nix
-      ./startup-apps.nix
     ];
 
     home = {

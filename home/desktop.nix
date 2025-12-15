@@ -93,6 +93,9 @@ in
 
       # VSCode Roo MCP configuration
       ./profiles/vscode-settings.nix
+
+      # Startup applications service
+      ./modules/startup-apps.nix
     ];
 
     ## Until Hyprland bug https://github.com/hyprwm/Hyprland/issues/5815 is resolved

@@ -17,8 +17,24 @@
 
     programs = {
       steam = {
-        enableGamescope = true;
+        gamescope = {
+          enable = true;
+          width = 1920;
+          height = 1080;
+        };
       };
+      # foot is launched directly from niri spawn-at-startup (see niri.nix)
+      # because systemd user services cannot use setuid binaries like sudo
+      startupApps = [
+        "spotify"
+        "brave"
+        "firefox"
+        "signal-desktop"
+        "Telegram"
+        "vesktop"
+        "element-desktop"
+        "joplin-desktop"
+      ];
     };
 
     gpu = {

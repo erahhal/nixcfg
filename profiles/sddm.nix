@@ -26,7 +26,7 @@ let
   # };
 in
 {
-  config = lib.mkIf (config.hostParams.desktop.displayManager == "sddm") {
+  config = lib.mkIf (config.hostParams.desktop.displayManager == "sddm" && config.hostParams.programs.steam.bootToSteam == false) {
 
     #---------------------------------------------------------------------------
     # Using Xorg
