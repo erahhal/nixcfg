@@ -5,6 +5,7 @@
     imports = [
       ./hyprland.nix
       ./niri.nix
+      ./startup-apps.nix
       ../../home/profiles/clonehero.nix
     ];
 

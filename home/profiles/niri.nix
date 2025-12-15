@@ -680,8 +680,10 @@ in
     // which may be more convenient to use.
     // See the binds section below for more spawn examples.
 
-    spawn-sh-at-startup "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
-    spawn-sh-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+    // Import all session environment variables to systemd user session
+    // These run synchronously to ensure env is set before services start
+    spawn-sh-at-startup "systemctl --user import-environment"
+    spawn-sh-at-startup "dbus-update-activation-environment --systemd --all"
     //// DMS has this
     // spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
     // spawn-sh-at-startup "systemctl --user restart waybar"
@@ -689,17 +691,17 @@ in
 
     // This line starts waybar, a commonly used bar for Wayland compositors.
     // Currently using systemd service
-    spawn-sh-at-startup "systemctl --user restart kanshi"
+    spawn-sh-at-startup "systemctl --user restart kanshi &"
     // spawn-sh-at-startup "${adjust-window-sizes}"
 
-    spawn-sh-at-startup "${dynamic-float-rules}/bin/dynamic-float-rules"
+    spawn-sh-at-startup "${dynamic-float-rules}/bin/dynamic-float-rules &"
     // spawn-sh-at-startup "systemctl --user stop hypridle"
     // spawn-sh-at-startup "pkill hyprlock"
     // spawn-sh-at-startup "systemctl --user restart sway-idle"
-    spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-wlr"
-    spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland"
-    spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome"
-    spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk"
+    spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-wlr &"
+    spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland &"
+    spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome &"
+    spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk &"
     // spawn-sh-at-startup "systemctl --user restart gammastep"
     // @TODO: Move these to waybar setup
     // spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
@@ -744,7 +746,7 @@ in
 
     window-rule {
       match is-active=false
-      opacity 0.4
+      opacity 0.6
     }
 
     // Work around WezTerm's initial configure bug
@@ -848,6 +850,11 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
+        match app-id="Spotify$"
+        open-on-workspace "4"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
         match app-id="brave-browser$"
         open-on-workspace "4"
         default-column-width { proportion 1.0; }
@@ -859,6 +866,11 @@ in
     }
     window-rule {
         match app-id="signal$"
+        open-on-workspace "6"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="Signal$"
         open-on-workspace "6"
         default-column-width { proportion 1.0; }
     }
@@ -884,6 +896,11 @@ in
     }
     window-rule {
         match app-id="@joplin/app-desktop$"
+        open-on-workspace "9"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="Joplin$"
         open-on-workspace "9"
         default-column-width { proportion 1.0; }
     }
