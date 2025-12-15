@@ -59,26 +59,73 @@ let
 
   # Helper function to create JSON sync activation scripts
   # Merges default file into target file, preserving user-added keys
-  mkJsonSyncScript = { dir, defaultFile, targetFile, name }:
-    lib.hm.dag.entryAfter ["linkGeneration"] ''
-      DIR="${dir}"
-      DEFAULT="$DIR/${defaultFile}"
-      TARGET="$DIR/${targetFile}"
+  mkJsonSyncScript = { dir, defaultFile, targetFile, name }: lib.hm.dag.entryAfter ["linkGeneration"] ''
+    DIR="${dir}"
+    DEFAULT="$DIR/${defaultFile}"
+    TARGET="$DIR/${targetFile}"
 
-      if [ -f "$DEFAULT" ]; then
-        mkdir -p "$DIR"
-        if [ -f "$TARGET" ]; then
-          if ${pkgs.jq}/bin/jq -S -s '.[0] * .[1]' "$TARGET" "$DEFAULT" > "$TARGET.tmp" 2>/dev/null; then
-            mv "$TARGET.tmp" "$TARGET"
-          else
-            rm -f "$TARGET.tmp"
-            echo "Warning: Failed to merge DMS ${name}, keeping existing ${targetFile}"
-          fi
+    if [ -f "$DEFAULT" ]; then
+      mkdir -p "$DIR"
+      if [ -f "$TARGET" ]; then
+        if ${pkgs.jq}/bin/jq -S -s '.[0] * .[1]' "$TARGET" "$DEFAULT" > "$TARGET.tmp" 2>/dev/null; then
+          mv "$TARGET.tmp" "$TARGET"
         else
-          cp "$DEFAULT" "$TARGET"
+          rm -f "$TARGET.tmp"
+          echo "Warning: Failed to merge DMS ${name}, keeping existing ${targetFile}"
         fi
+      else
+        cp "$DEFAULT" "$TARGET"
       fi
+    fi
+  '';
+
+  theme-tokyonight = pkgs.writeTextFile {
+    name = "theme_tokyonight.json";
+    text = ''
+      {
+        "dark": {
+          "name": "Tokyo Night night",
+          "primary": "#7aa2f7",
+          "primaryText": "#16161e",
+          "primaryContainer": "#7dcfff",
+          "secondary": "#bb9af7",
+          "surface": "#1a1b26",
+          "surfaceText": "#73daca",
+          "surfaceVariant": "#2f3549",
+          "surfaceVariantText": "#cbccd1",
+          "surfaceTint": "#7aa2f7",
+          "background": "#16161e",
+          "backgroundText": "#d5d6db",
+          "outline": "#787c99",
+          "surfaceContainer": "#2f3549",
+          "surfaceContainerHigh": "#444b6a",
+          "error": "#f7768e",
+          "warning": "#ff9e64",
+          "info": "#7dcfff"
+      },
+        "light": {
+          "name": "Tokyo Night day",
+          "primary": "#2e7de9",
+          "primaryText": "#d0d5e3",
+          "primaryContainer": "#007197",
+          "secondary": "#9854f1",
+          "surface": "#e1e2e7",
+          "surfaceText": "#387068",
+          "surfaceVariant": "#c4c8da",
+          "surfaceVariantText": "#1a1b26",
+          "surfaceTint": "#2e7de9",
+          "background": "#cbccd1",
+          "backgroundText": "#1a1b26",
+          "outline": "#4c505e",
+          "surfaceContainer": "#dfe0e5",
+          "surfaceContainerHigh": "#9699a3",
+          "error": "#f52a65",
+          "warning": "#b15c00",
+          "info": "#007197"
+        }
+      }
     '';
+  };
 in
 {
   home.file."Wallpaper".source = ../../wallpapers;
@@ -273,6 +320,9 @@ in
         position = 1;  # 0=top, 1=bottom, 2=left, 3=right
         spacing = 3;
         bottomGap = 1;
+
+        ## Behavior
+        scrollYBehavior = "none";
       }];
 
       ## Displays
@@ -304,7 +354,6 @@ in
       autoHide = false;
       autoHideDelay = 250;
       openOnOverview = false;
-      workspaceScrolling = false; # don't switch workspaces with scrollwheel
 
       # On Screen Display
       osdPowerProfileEnabled = true;
@@ -349,54 +398,8 @@ in
       nightModeEnabled = true;
 
       ## Theme
-      currentThemeName = "custom";
-      customThemeFile = pkgs.writeTextFile {
-        name = "theme_tokyonight.json";
-        text = ''
-          {
-            "dark": {
-              "name": "Tokyo Night night",
-              "primary": "#7aa2f7",
-              "primaryText": "#16161e",
-              "primaryContainer": "#7dcfff",
-              "secondary": "#bb9af7",
-              "surface": "#1a1b26",
-              "surfaceText": "#73daca",
-              "surfaceVariant": "#2f3549",
-              "surfaceVariantText": "#cbccd1",
-              "surfaceTint": "#7aa2f7",
-              "background": "#16161e",
-              "backgroundText": "#d5d6db",
-              "outline": "#787c99",
-              "surfaceContainer": "#2f3549",
-              "surfaceContainerHigh": "#444b6a",
-              "error": "#f7768e",
-              "warning": "#ff9e64",
-              "info": "#7dcfff"
-          },
-            "light": {
-              "name": "Tokyo Night day",
-              "primary": "#2e7de9",
-              "primaryText": "#d0d5e3",
-              "primaryContainer": "#007197",
-              "secondary": "#9854f1",
-              "surface": "#e1e2e7",
-              "surfaceText": "#387068",
-              "surfaceVariant": "#c4c8da",
-              "surfaceVariantText": "#1a1b26",
-              "surfaceTint": "#2e7de9",
-              "background": "#cbccd1",
-              "backgroundText": "#1a1b26",
-              "outline": "#4c505e",
-              "surfaceContainer": "#dfe0e5",
-              "surfaceContainerHigh": "#9699a3",
-              "error": "#f52a65",
-              "warning": "#b15c00",
-              "info": "#007197"
-            }
-          }
-        '';
-      };
+      # currentThemeName = "custom";
+      # customThemeFile = theme-tokyonight;
     };
 
     # Default session (wallpaper path, etc.)
