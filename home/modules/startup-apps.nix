@@ -48,13 +48,16 @@ in
         Description = "Launch startup applications";
         PartOf = [ "graphical-session.target" ];
         After = [ "graphical-session.target" "dms.service" ];
+        # Don't restart even if the service definition changes (store path changes on each rebuild)
+        X-RestartIfChanged = "false";
       };
       Install = {
         WantedBy = [ "graphical-session.target" ];
       };
       Service = {
         Type = "oneshot";
-        RemainAfterExit = false;
+        # Keep service "active" after completion so sd-switch doesn't restart it on rebuild
+        RemainAfterExit = true;
         KillMode = "none";
         ExecStart = "${startup-apps-script}";
         PassEnvironment = [

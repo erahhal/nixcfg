@@ -111,7 +111,9 @@
       "Bash(git -C /home/erahhal/Code/nixcfg add hosts/antikythera/startup-apps.nix hosts/nflx-erahhal-p16/startup-apps.nix hosts/msi-linux/startup-apps.nix)",
       "Bash(qdbus:*)",
       "Bash(git -C /home/erahhal/Code/nixcfg add home/modules/startup-apps.nix)",
-      "Bash(git -C /home/erahhal/Code/nixcfg status)"
+      "Bash(git -C /home/erahhal/Code/nixcfg status)",
+      "WebFetch(domain:git.sr.ht)",
+      "WebFetch(domain:sr.ht)"
     ],
     "deny": [],
     "ask": []
