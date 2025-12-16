@@ -64,6 +64,15 @@ in
           "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
           "XDG_RUNTIME_DIR" "DISPLAY" "WAYLAND_DISPLAY"
           "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
+          # Electron/Chromium Wayland native support (critical for dynamic scaling)
+          "ELECTRON_OZONE_PLATFORM_HINT" "NIXOS_OZONE_WL"
+          # Qt Wayland support
+          "QT_QPA_PLATFORM" "QT_QPA_PLATFORMTHEME" "QT_PLUGIN_PATH"
+          "QT_IM_MODULE" "QT_STYLE_OVERRIDE" "QML2_IMPORT_PATH"
+          # GTK support
+          "GTK_IM_MODULE" "GTK_PATH" "GDK_PIXBUF_MODULE_FILE"
+          # Compositor socket for scale change notifications
+          "NIRI_SOCKET"
         ];
         Environment = [
           "HOME=%h"

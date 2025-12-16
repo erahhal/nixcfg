@@ -329,11 +329,11 @@
   ## https://bbs.archlinux.org/viewtopic.php?id=310363
   systemd.services.ath11k-fix = {
     description = "Reload ath11k_pci after resume or boot";
-    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "NetworkManager.service" ];
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "NetworkManager.service" "iwd.service" ];
     wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 2 && ${pkgs.kmod}/bin/modprobe -r ath11k_pci && sleep 1 && ${pkgs.kmod}/bin/modprobe ath11k_pci && sleep 3 && ${pkgs.systemd}/bin/systemctl restart NetworkManager'";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 8 && ${pkgs.kmod}/bin/modprobe -r ath11k_pci && sleep 1 && ${pkgs.kmod}/bin/modprobe ath11k_pci && sleep 3 && ${pkgs.systemd}/bin/systemctl restart NetworkManager'";
     };
   };
 

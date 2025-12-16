@@ -36,11 +36,9 @@
       variable-refresh-rate
     }
 
-
     environment {
       STEAM_FORCE_DESKTOPUI_SCALING "2.0"
     }
-
 
     //  workspace = [
     //    "desc:LG Electronics LG Ultra HD 0x00043EAD, 1"
