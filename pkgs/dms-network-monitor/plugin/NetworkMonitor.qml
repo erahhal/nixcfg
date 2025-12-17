@@ -20,6 +20,7 @@ PluginComponent {
     readonly property bool enabled: pluginData.enabled ?? true
     readonly property int checkInterval: pluginData.checkInterval ?? 30
     readonly property string checkMethod: pluginData.checkMethod ?? "http"
+    readonly property string vpnCheckMethod: pluginData.vpnCheckMethod ?? "http"
     readonly property string normalEndpoint: pluginData.normalEndpoint ?? "https://github.com"
     readonly property string vpnEndpoint: pluginData.vpnEndpoint ?? ""
     readonly property var vpnInterfaces: pluginData.vpnInterfaces ?? ["tailscale0", "wg0", "tun0"]
@@ -36,6 +37,7 @@ PluginComponent {
         onExited: (exitCode, exitStatus) => {
             // VPN check complete, now check connectivity
             root.hasVpn = exitCode === 0
+            connectivityCheck.command = root.buildConnectivityCommand()
             connectivityCheck.running = true
         }
     }
@@ -43,7 +45,6 @@ PluginComponent {
     // Connectivity check process
     Process {
         id: connectivityCheck
-        command: root.buildConnectivityCommand()
         onExited: (exitCode, exitStatus) => {
             root.isOnline = (exitCode === 0)
             root.isChecking = false
@@ -73,9 +74,10 @@ PluginComponent {
     // Build connectivity check command based on settings
     function buildConnectivityCommand() {
         var endpoint = (hasVpn && vpnEndpoint) ? vpnEndpoint : normalEndpoint
+        var method = (hasVpn && vpnEndpoint) ? vpnCheckMethod : checkMethod
         lastCheckEndpoint = endpoint
 
-        if (checkMethod === "ping") {
+        if (method === "ping") {
             // Extract hostname from URL for ping
             var host = endpoint.replace(/^https?:\/\//, "").split("/")[0]
             return ["ping", "-c", "1", "-W", "2", host]
@@ -106,20 +108,11 @@ PluginComponent {
         Row {
             spacing: Theme.spacingXS
 
-            // Network status icon
+            // Network status icon - single icon showing connectivity and VPN status
             DankIcon {
-                name: root.isOnline ? "wifi" : "wifi_off"
+                name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
                 size: root.iconSize
                 color: root.isOnline ? Theme.surfaceText : Theme.error
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            // VPN indicator (only show when VPN is connected)
-            DankIcon {
-                visible: root.hasVpn
-                name: "vpn_lock"
-                size: root.iconSize
-                color: Theme.primary
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
@@ -130,18 +123,11 @@ PluginComponent {
         Column {
             spacing: Theme.spacingXS
 
+            // Network status icon - single icon showing connectivity and VPN status
             DankIcon {
-                name: root.isOnline ? "wifi" : "wifi_off"
+                name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
                 size: root.iconSize
                 color: root.isOnline ? Theme.surfaceText : Theme.error
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            DankIcon {
-                visible: root.hasVpn
-                name: "vpn_lock"
-                size: root.iconSize
-                color: Theme.primary
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
@@ -157,9 +143,9 @@ PluginComponent {
                 spacing: Theme.spacingM
 
                 DankIcon {
-                    name: root.isOnline ? "wifi" : "wifi_off"
+                    name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
                     size: 48
-                    color: root.isOnline ? Theme.primary : Theme.error
+                    color: root.isOnline ? Theme.surfaceText : Theme.error
                 }
 
                 Column {

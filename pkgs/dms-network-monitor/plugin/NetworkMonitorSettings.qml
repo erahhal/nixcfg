@@ -1,20 +1,38 @@
 import QtQuick
+import QtQuick.Controls
 import qs.Common
 import qs.Widgets
-import qs.Modules.Plugins
 
-PluginSettings {
+FocusScope {
     id: root
 
-    pluginId: "networkMonitor"
+    property var pluginService: null
+
+    implicitHeight: settingsColumn.implicitHeight
+    height: implicitHeight
+
+    function saveSettings(key, value) {
+        if (pluginService) {
+            pluginService.savePluginData("networkMonitor", key, value)
+        }
+    }
+
+    function loadSettings(key, defaultValue) {
+        if (pluginService) {
+            return pluginService.loadPluginData("networkMonitor", key, defaultValue)
+        }
+        return defaultValue
+    }
 
     Column {
-        width: parent.width
-        spacing: Theme.spacingM
+        id: settingsColumn
+        anchors.fill: parent
+        anchors.margins: 16
+        spacing: 16
 
         // Header
         StyledText {
-            text: "Network Monitor"
+            text: "Network Monitor Settings"
             font.pixelSize: Theme.fontSizeLarge
             font.weight: Font.Bold
             color: Theme.surfaceText
@@ -25,224 +43,362 @@ PluginSettings {
             font.pixelSize: Theme.fontSizeMedium
             color: Theme.surfaceVariantText
             wrapMode: Text.WordWrap
-            width: parent.width
+            width: parent.width - 32
         }
 
         StyledRect {
-            width: parent.width
+            width: parent.width - 32
             height: 1
             color: Theme.outlineVariant
         }
 
         // Enable toggle
-        ToggleSetting {
-            settingKey: "enabled"
-            label: "Enable Network Monitoring"
-            description: "Periodically check network connectivity and display status"
-            defaultValue: true
+        Row {
+            spacing: 12
+            width: parent.width - 32
+
+            CheckBox {
+                id: enabledToggle
+                text: "Enable Network Monitoring"
+                checked: loadSettings("enabled", true)
+
+                contentItem: StyledText {
+                    text: enabledToggle.text
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.surfaceText
+                    leftPadding: enabledToggle.indicator.width + 8
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                indicator: StyledRect {
+                    implicitWidth: 20
+                    implicitHeight: 20
+                    radius: Theme.cornerRadiusSmall
+                    border.color: enabledToggle.checked ? Theme.primary : Theme.outline
+                    border.width: 2
+                    color: enabledToggle.checked ? Theme.primary : "transparent"
+
+                    StyledRect {
+                        width: 12
+                        height: 12
+                        anchors.centerIn: parent
+                        radius: 2
+                        color: Theme.onPrimary
+                        visible: enabledToggle.checked
+                    }
+                }
+
+                onCheckedChanged: {
+                    saveSettings("enabled", checked)
+                }
+            }
         }
 
         StyledRect {
-            width: parent.width
+            width: parent.width - 32
             height: 1
             color: Theme.outlineVariant
         }
 
         // Check interval
-        SliderSetting {
-            settingKey: "checkInterval"
-            label: "Check Interval"
-            description: "How often to check connectivity (in seconds)"
-            minimum: 5
-            maximum: 300
-            defaultValue: 30
-            unit: "s"
-        }
-
-        StyledRect {
-            width: parent.width
-            height: 1
-            color: Theme.outlineVariant
-        }
-
-        // Check method selection
-        SelectionSetting {
-            settingKey: "checkMethod"
-            label: "Check Method"
-            description: "Method used to verify connectivity"
-            options: [
-                { value: "http", label: "HTTP Request (wget)" },
-                { value: "ping", label: "Ping (ICMP)" }
-            ]
-            defaultValue: "http"
-        }
-
-        StyledRect {
-            width: parent.width
-            height: 1
-            color: Theme.outlineVariant
-        }
-
-        // Endpoints section
-        StyledText {
-            text: "Endpoints"
-            font.pixelSize: Theme.fontSizeLarge
-            font.weight: Font.Medium
-            color: Theme.surfaceText
-        }
-
-        StringSetting {
-            settingKey: "normalEndpoint"
-            label: "Default Endpoint"
-            description: "URL or host to check when not on VPN"
-            placeholder: "https://github.com"
-            defaultValue: "https://github.com"
-        }
-
-        StringSetting {
-            settingKey: "vpnEndpoint"
-            label: "VPN Endpoint (optional)"
-            description: "URL or host to check when VPN is detected. Leave empty to use default endpoint."
-            placeholder: "https://internal.example.com"
-            defaultValue: ""
-        }
-
-        StyledRect {
-            width: parent.width
-            height: 1
-            color: Theme.outlineVariant
-        }
-
-        // VPN interfaces section
-        StyledText {
-            text: "VPN Detection"
-            font.pixelSize: Theme.fontSizeLarge
-            font.weight: Font.Medium
-            color: Theme.surfaceText
-        }
-
-        StringSetting {
-            id: vpnInterfacesSetting
-            settingKey: "vpnInterfacesString"
-            label: "VPN Interfaces"
-            description: "Comma-separated list of network interface names that indicate VPN is connected"
-            placeholder: "tailscale0, wg0, tun0"
-            defaultValue: "tailscale0,wg0,tun0"
-
-            // Convert string to array when saving
-            onValueChanged: {
-                if (value) {
-                    var interfaces = value.split(",").map(function(s) { return s.trim() }).filter(function(s) { return s !== "" })
-                    root.saveValue("vpnInterfaces", interfaces)
-                }
-            }
-        }
-
-        StyledRect {
-            width: parent.width
-            height: 1
-            color: Theme.outlineVariant
-        }
-
-        // Info section
         Column {
-            width: parent.width
-            spacing: Theme.spacingS
+            spacing: 8
+            width: parent.width - 32
 
             StyledText {
-                text: "Common VPN Interfaces:"
+                text: "Check Interval: " + intervalSlider.value + "s"
                 font.pixelSize: Theme.fontSizeMedium
                 font.weight: Font.Medium
                 color: Theme.surfaceText
             }
 
-            Column {
-                spacing: Theme.spacingXS
-                leftPadding: Theme.spacingM
+            StyledText {
+                text: "How often to check connectivity"
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+            }
 
-                StyledText {
-                    text: "tailscale0 - Tailscale VPN"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    font.family: "monospace"
-                }
+            Slider {
+                id: intervalSlider
+                width: parent.width
+                from: 5
+                to: 300
+                stepSize: 5
+                value: loadSettings("checkInterval", 30)
 
-                StyledText {
-                    text: "wg0 - WireGuard"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    font.family: "monospace"
-                }
-
-                StyledText {
-                    text: "tun0 - OpenConnect/OpenVPN"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    font.family: "monospace"
+                onValueChanged: {
+                    saveSettings("checkInterval", value)
                 }
             }
         }
 
         StyledRect {
-            width: parent.width
+            width: parent.width - 32
             height: 1
             color: Theme.outlineVariant
         }
 
-        // Usage info
+        // Default Endpoint Section
         Column {
-            width: parent.width
-            spacing: Theme.spacingS
+            spacing: 12
+            width: parent.width - 32
 
             StyledText {
-                text: "How It Works:"
-                font.pixelSize: Theme.fontSizeMedium
+                text: "Default Endpoint"
+                font.pixelSize: Theme.fontSizeLarge
                 font.weight: Font.Medium
                 color: Theme.surfaceText
             }
 
             Column {
-                spacing: Theme.spacingXS
-                leftPadding: Theme.spacingM
+                spacing: 4
+                width: parent.width
 
                 StyledText {
-                    text: "1. Checks for VPN interface presence in /sys/class/net"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    wrapMode: Text.WordWrap
-                    width: parent.parent.width - Theme.spacingM
+                    text: "URL/Host"
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.surfaceText
                 }
 
-                StyledText {
-                    text: "2. Uses VPN endpoint if VPN detected and configured"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    wrapMode: Text.WordWrap
-                    width: parent.parent.width - Theme.spacingM
+                DankTextField {
+                    id: normalEndpointField
+                    width: parent.width
+                    height: 40
+                    text: loadSettings("normalEndpoint", "https://github.com")
+                    placeholderText: "https://github.com"
+                    backgroundColor: Theme.surfaceContainer
+                    textColor: Theme.surfaceText
+
+                    onTextEdited: {
+                        saveSettings("normalEndpoint", text)
+                    }
                 }
+            }
+
+            Column {
+                spacing: 4
+                width: parent.width
 
                 StyledText {
-                    text: "3. Tests connectivity via HTTP request or ping"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    wrapMode: Text.WordWrap
-                    width: parent.parent.width - Theme.spacingM
+                    text: "Check Method"
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.surfaceText
                 }
 
-                StyledText {
-                    text: "4. Updates icon: online/offline with VPN indicator"
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceVariantText
-                    wrapMode: Text.WordWrap
-                    width: parent.parent.width - Theme.spacingM
+                Row {
+                    spacing: 16
+
+                    RadioButton {
+                        id: httpRadio
+                        text: "HTTP Request"
+                        checked: loadSettings("checkMethod", "http") === "http"
+                        onCheckedChanged: {
+                            if (checked) saveSettings("checkMethod", "http")
+                        }
+
+                        contentItem: StyledText {
+                            text: httpRadio.text
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                            leftPadding: httpRadio.indicator.width + 8
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+
+                    RadioButton {
+                        id: pingRadio
+                        text: "Ping"
+                        checked: loadSettings("checkMethod", "http") === "ping"
+                        onCheckedChanged: {
+                            if (checked) saveSettings("checkMethod", "ping")
+                        }
+
+                        contentItem: StyledText {
+                            text: pingRadio.text
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                            leftPadding: pingRadio.indicator.width + 8
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
                 }
+            }
+        }
+
+        StyledRect {
+            width: parent.width - 32
+            height: 1
+            color: Theme.outlineVariant
+        }
+
+        // VPN Endpoint Section
+        Column {
+            spacing: 12
+            width: parent.width - 32
+
+            StyledText {
+                text: "VPN Endpoint (optional)"
+                font.pixelSize: Theme.fontSizeLarge
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
+
+            StyledText {
+                text: "Used when VPN is detected. Leave empty to use default endpoint."
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+                wrapMode: Text.WordWrap
+                width: parent.width
+            }
+
+            Column {
+                spacing: 4
+                width: parent.width
+
+                StyledText {
+                    text: "URL/Host"
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.surfaceText
+                }
+
+                DankTextField {
+                    id: vpnEndpointField
+                    width: parent.width
+                    height: 40
+                    text: loadSettings("vpnEndpoint", "")
+                    placeholderText: "https://internal.example.com"
+                    backgroundColor: Theme.surfaceContainer
+                    textColor: Theme.surfaceText
+
+                    onTextEdited: {
+                        saveSettings("vpnEndpoint", text)
+                    }
+                }
+            }
+
+            Column {
+                spacing: 4
+                width: parent.width
+
+                StyledText {
+                    text: "Check Method"
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.surfaceText
+                }
+
+                Row {
+                    spacing: 16
+
+                    RadioButton {
+                        id: vpnHttpRadio
+                        text: "HTTP Request"
+                        checked: loadSettings("vpnCheckMethod", "http") === "http"
+                        onCheckedChanged: {
+                            if (checked) saveSettings("vpnCheckMethod", "http")
+                        }
+
+                        contentItem: StyledText {
+                            text: vpnHttpRadio.text
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                            leftPadding: vpnHttpRadio.indicator.width + 8
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+
+                    RadioButton {
+                        id: vpnPingRadio
+                        text: "Ping"
+                        checked: loadSettings("vpnCheckMethod", "http") === "ping"
+                        onCheckedChanged: {
+                            if (checked) saveSettings("vpnCheckMethod", "ping")
+                        }
+
+                        contentItem: StyledText {
+                            text: vpnPingRadio.text
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                            leftPadding: vpnPingRadio.indicator.width + 8
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
+            }
+        }
+
+        StyledRect {
+            width: parent.width - 32
+            height: 1
+            color: Theme.outlineVariant
+        }
+
+        // VPN Interfaces
+        Column {
+            spacing: 8
+            width: parent.width - 32
+
+            StyledText {
+                text: "VPN Interfaces"
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
+
+            StyledText {
+                text: "Comma-separated list (e.g., tailscale0, wg0, tun0)"
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+            }
+
+            DankTextField {
+                id: vpnInterfacesField
+                width: parent.width
+                height: 40
+                text: {
+                    var interfaces = loadSettings("vpnInterfaces", ["tailscale0", "wg0", "tun0"])
+                    return Array.isArray(interfaces) ? interfaces.join(", ") : interfaces
+                }
+                placeholderText: "tailscale0, wg0, tun0"
+                backgroundColor: Theme.surfaceContainer
+                textColor: Theme.surfaceText
+
+                onTextEdited: {
+                    var interfaces = text.split(",").map(function(s) { return s.trim() }).filter(function(s) { return s !== "" })
+                    saveSettings("vpnInterfaces", interfaces)
+                }
+            }
+        }
+
+        StyledRect {
+            width: parent.width - 32
+            height: 1
+            color: Theme.outlineVariant
+        }
+
+        // Info
+        Column {
+            spacing: 4
+            width: parent.width - 32
+
+            StyledText {
+                text: "Common VPN interfaces:"
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+            }
+
+            StyledText {
+                text: "tailscale0 (Tailscale), wg0 (WireGuard), tun0 (OpenConnect/OpenVPN)"
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+                wrapMode: Text.WordWrap
+                width: parent.width
             }
         }
 
         // Bottom padding
         Item {
             width: 1
-            height: Theme.spacingL
+            height: 16
         }
     }
 }

@@ -35,10 +35,11 @@ let
     };
     networkMonitor = {
       enabled = true;
-      checkInterval = 30;
+      checkInterval = 5;
       checkMethod = "http";
       normalEndpoint = "https://github.com";
-      vpnEndpoint = "";
+      vpnCheckMethod = "http";
+      vpnEndpoint = "https://data.netflix.net";
       vpnInterfaces = ["tailscale0" "wg0" "tun0"];
     };
   };

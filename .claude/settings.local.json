@@ -114,7 +114,8 @@
       "Bash(git -C /home/erahhal/Code/nixcfg status)",
       "WebFetch(domain:git.sr.ht)",
       "WebFetch(domain:sr.ht)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(wget:*)"
     ],
     "deny": [],
     "ask": []
