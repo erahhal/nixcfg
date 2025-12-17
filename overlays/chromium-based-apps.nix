@@ -106,16 +106,19 @@ let
       postInstall = oldAttrs.postInstall or "" + ''
         wrapProgram $out/bin/signal-desktop \
           --add-flags "--enable-wayland-ime" \
+          --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
       '';
     });
 
-    # element-desktop = prev.element-desktop.overrideAttrs (oldAttrs: {
-    #   postFixup = oldAttrs.postFixup or "" + ''
-    #     wrapProgram $out/bin/element-desktop \
-    #       --add-flags "--enable-features=WaylandLinuxDrmSyncobj"
-    #   '';
-    # });
+    element-desktop = prev.element-desktop.overrideAttrs (oldAttrs: {
+      postFixup = oldAttrs.postFixup or "" + ''
+        wrapProgram $out/bin/element-desktop \
+          --add-flags "--enable-wayland-ime" \
+          --add-flags "--ozone-platform=wayland" \
+          --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
+      '';
+    });
 
     spotify = prev.spotify.overrideAttrs (oldAttrs: {
       postInstall = oldAttrs.postInstall or "" + ''
@@ -124,14 +127,15 @@ let
       '';
     });
 
-    vesktop = if usingIntel then (prev.vesktop.overrideAttrs (oldAttrs: {
-      ## Vesktop (and Discord) on Wayland WMs that are running nvidia as the main GPU.
-      ## This fixes it (with a acceptable performance hit)
+    vesktop = prev.vesktop.overrideAttrs (oldAttrs: {
       postFixup = oldAttrs.postFixup or "" + ''
         wrapProgram $out/bin/vesktop \
-          --add-flags "--disable-gpu-compositing"
+          --add-flags "--enable-wayland-ime" \
+          --add-flags "--ozone-platform=wayland" \
+          --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer" \
+          ${if usingIntel then ''--add-flags "--disable-gpu-compositing"'' else ""}
       '';
-    })) else prev.vesktop;
+    });
 
     # discord = prev.discord.overrideAttrs (oldAttrs: {
     #   buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.makeWrapper ];

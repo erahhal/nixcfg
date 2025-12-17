@@ -540,10 +540,25 @@ in
         // Alternatively, you can override it with a window rule called
         // `draw-border-with-background`.
 
+        // Struts shrink the area occupied by windows, similarly to layer-shell panels.
+        // You can think of them as a kind of outer gaps. They are set in logical pixels.
+        // Left and right struts will cause the next window to the side to always be visible.
+        // Top and bottom struts will simply add outer gaps in addition to the area occupied by
+        // layer-shell panels and regular gaps.
+        struts {
+            // left 64
+            // right 64
+
+            // fixes focus-border visibility
+            // @TODO: probably not right approach though
+            top 2
+            bottom 2
+        }
+
         // You can change how the focus ring looks.
         focus-ring {
             // Uncomment this line to disable the focus ring.
-            off
+            on
 
             // How many logical pixels the ring extends out from the windows.
             width 2
@@ -554,7 +569,8 @@ in
             // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
 
             // Color of the ring on the active monitor.
-            active-color "#7fc8ff"
+            // active-color "#7fc8ff"
+            active-color "#00AFFF"
 
             // Color of the ring on inactive monitors.
             //
@@ -634,22 +650,6 @@ in
 
             // You can also change the shadow color and opacity.
             color "#0007"
-        }
-
-        // Struts shrink the area occupied by windows, similarly to layer-shell panels.
-        // You can think of them as a kind of outer gaps. They are set in logical pixels.
-        // Left and right struts will cause the next window to the side to always be visible.
-        // Top and bottom struts will simply add outer gaps in addition to the area occupied by
-        // layer-shell panels and regular gaps.
-        struts {
-            // left 64
-            // right 64
-
-            // fixes focus-border visibility
-            // @TODO: probably not right approach though
-
-            // top 2
-            // bottom 2
         }
 
         tab-indicator {
@@ -744,10 +744,10 @@ in
     // Find more information on the wiki:
     // https://yalter.github.io/niri/Configuration:-Window-Rules
 
-    window-rule {
-      match is-active=false
-      opacity 0.6
-    }
+    // window-rule {
+    //   match is-active=false
+    //   opacity 0.85
+    // }
 
     // Work around WezTerm's initial configure bug
     // by setting an empty default-column-width.
@@ -771,6 +771,11 @@ in
     window-rule {
         // match app-id=r#"Rofi$"# title="^rofi - Audio Sink$"
         match app-id=r#"Rofi$"#
+        open-floating true
+    }
+
+    window-rule {
+        match app-id=r#"XEyes$"#
         open-floating true
     }
 
