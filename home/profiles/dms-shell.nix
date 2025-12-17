@@ -36,10 +36,10 @@ let
     networkMonitor = {
       enabled = true;
       checkInterval = 5;
-      checkMethod = "http";
-      normalEndpoint = "https://github.com";
-      vpnCheckMethod = "http";
-      vpnEndpoint = "https://data.netflix.net";
+      checkMethod = osConfig.hostParams.networking.networkMonitor.checkMethod;
+      normalEndpoint = osConfig.hostParams.networking.networkMonitor.normalEndpoint;
+      vpnCheckMethod = osConfig.hostParams.networking.networkMonitor.vpnCheckMethod;
+      vpnEndpoint = osConfig.hostParams.networking.networkMonitor.vpnEndpoint;
       vpnInterfaces = ["tailscale0" "wg0" "tun0"];
     };
   };

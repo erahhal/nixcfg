@@ -330,6 +330,7 @@
   systemd.services.ath11k-fix = {
     description = "Reload ath11k_pci after resume or boot";
     after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "NetworkManager.service" "iwd.service" ];
+    before = [ "display-manager.service" ];
     wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";

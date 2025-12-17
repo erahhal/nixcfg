@@ -46,6 +46,31 @@
         default = "";
         description = "Wireguard IP";
       };
+
+      networkMonitor = {
+        checkMethod = lib.mkOption {
+          type = lib.types.enum [
+            "http"
+            "ping"
+          ];
+          default = "http";
+        };
+        normalEndpoint = lib.mkOption {
+          type = lib.types.str;
+          default = "https://github.com";
+        };
+        vpnCheckMethod = lib.mkOption {
+          type = lib.types.enum [
+            "http"
+            "ping"
+          ];
+          default = "http";
+        };
+        vpnEndpoint = lib.mkOption {
+          type = lib.types.str;
+          default = "";
+        };
+      };
     };
 
     containers = {

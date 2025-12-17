@@ -9,6 +9,12 @@
       thinkpad-battery-charge-to-full = false;
     };
 
+    networking = {
+      networkMonitor = {
+        vpnEndpoint = "https://data.netflix.net"
+      };
+    };
+
     containers = {
       backend = "docker";
     };
