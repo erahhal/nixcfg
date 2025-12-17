@@ -15,6 +15,8 @@ PluginComponent {
     property string statusText: "Checking..."
     property string lastCheckEndpoint: ""
     property bool isChecking: false
+    property string currentIp: "..."
+    property string vpnInterfaceName: ""
 
     // Settings from pluginData
     readonly property bool enabled: pluginData.enabled ?? true
@@ -31,7 +33,9 @@ PluginComponent {
         command: ["sh", "-c", root.buildVpnCheckCommand()]
         stdout: SplitParser {
             onRead: data => {
-                root.hasVpn = data.trim() !== ""
+                var iface = data.trim()
+                root.hasVpn = iface !== ""
+                root.vpnInterfaceName = iface
             }
         }
         onExited: (exitCode, exitStatus) => {
@@ -49,6 +53,27 @@ PluginComponent {
             root.isOnline = (exitCode === 0)
             root.isChecking = false
             root.updateStatusText()
+            // Fetch IP after connectivity check
+            ipFetchProcess.running = true
+        }
+    }
+
+    // IP address fetch process
+    Process {
+        id: ipFetchProcess
+        command: ["sh", "-c", "ip route get 1.1.1.1 2>/dev/null | grep -oP 'src \\K[0-9.]+'"]
+        stdout: SplitParser {
+            onRead: data => {
+                var ip = data.trim()
+                if (ip !== "") {
+                    root.currentIp = ip
+                }
+            }
+        }
+        onExited: (exitCode, exitStatus) => {
+            if (exitCode !== 0 || root.currentIp === "...") {
+                root.currentIp = "N/A"
+            }
         }
     }
 
@@ -135,101 +160,212 @@ PluginComponent {
 
     // Popout content with more details
     popoutContent: Component {
-        Column {
-            spacing: Theme.spacingM
-            padding: Theme.spacingM
+        PopoutComponent {
+            id: popoutColumn
+            headerText: "Network Monitor"
+            detailsText: root.statusText
+            showCloseButton: true
 
-            Row {
+            Column {
+                width: parent.width
                 spacing: Theme.spacingM
 
-                DankIcon {
-                    name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
-                    size: 48
-                    color: root.isOnline ? Theme.surfaceText : Theme.error
-                }
+                // Status row with icon
+                Row {
+                    spacing: Theme.spacingM
+                    width: parent.width
 
-                Column {
-                    spacing: Theme.spacingXS
-
-                    StyledText {
-                        text: root.statusText
-                        font.pixelSize: Theme.fontSizeLarge
-                        font.weight: Font.Bold
-                        color: Theme.surfaceText
+                    DankIcon {
+                        name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
+                        size: 32
+                        color: root.isOnline ? Theme.surfaceText : Theme.error
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    StyledText {
-                        text: "Endpoint: " + root.lastCheckEndpoint
-                        font.pixelSize: Theme.fontSizeSmall
+                    Column {
+                        spacing: Theme.spacingXS
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        StyledText {
+                            text: root.isOnline ? "Internet Connected" : "No Internet Connection"
+                            font.pixelSize: Theme.fontSizeMedium
+                            font.weight: Font.Medium
+                            color: root.isOnline ? Theme.surfaceText : Theme.error
+                        }
+                    }
+                }
+
+                // Divider
+                StyledRect {
+                    width: parent.width
+                    height: 1
+                    color: Theme.outlineVariant
+                }
+
+                // IP Address
+                Row {
+                    spacing: Theme.spacingS
+                    width: parent.width
+
+                    DankIcon {
+                        name: "lan"
+                        size: 20
                         color: Theme.surfaceVariantText
+                        anchors.verticalCenter: parent.verticalCenter
                     }
+
+                    Column {
+                        spacing: 2
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        StyledText {
+                            text: "IP Address"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                        }
+
+                        StyledText {
+                            text: root.currentIp
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                        }
+                    }
+                }
+
+                // VPN Status
+                Row {
+                    spacing: Theme.spacingS
+                    width: parent.width
+
+                    DankIcon {
+                        name: root.hasVpn ? "vpn_lock" : "vpn_lock"
+                        size: 20
+                        color: root.hasVpn ? Theme.primary : Theme.surfaceVariantText
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Column {
+                        spacing: 2
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        StyledText {
+                            text: "VPN Status"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                        }
+
+                        StyledText {
+                            text: root.hasVpn ? ("Connected" + (root.vpnInterfaceName ? " (" + root.vpnInterfaceName + ")" : "")) : "Not Connected"
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: root.hasVpn ? Theme.primary : Theme.surfaceText
+                        }
+                    }
+                }
+
+                // Endpoint being checked
+                Row {
+                    spacing: Theme.spacingS
+                    width: parent.width
+
+                    DankIcon {
+                        name: "link"
+                        size: 20
+                        color: Theme.surfaceVariantText
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Column {
+                        spacing: 2
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: parent.width - 32
+
+                        StyledText {
+                            text: "Checking Endpoint"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                        }
+
+                        StyledText {
+                            text: root.lastCheckEndpoint || "Not set"
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                            elide: Text.ElideMiddle
+                            width: parent.width
+                        }
+                    }
+                }
+
+                // Check method and interval
+                Row {
+                    spacing: Theme.spacingS
+                    width: parent.width
+
+                    DankIcon {
+                        name: "schedule"
+                        size: 20
+                        color: Theme.surfaceVariantText
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Column {
+                        spacing: 2
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        StyledText {
+                            text: "Check Method"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                        }
+
+                        StyledText {
+                            text: ((root.hasVpn && root.vpnEndpoint) ? root.vpnCheckMethod : root.checkMethod).toUpperCase() + " every " + root.checkInterval + "s"
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: Theme.surfaceText
+                        }
+                    }
+                }
+
+                // Divider
+                StyledRect {
+                    width: parent.width
+                    height: 1
+                    color: Theme.outlineVariant
+                }
+
+                // Refresh button
+                StyledRect {
+                    width: parent.width
+                    height: 36
+                    radius: Theme.cornerRadius
+                    color: refreshMouseArea.containsMouse ? Theme.primaryHover : Theme.primary
 
                     StyledText {
-                        text: "Method: " + (root.checkMethod === "ping" ? "Ping" : "HTTP")
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.surfaceVariantText
+                        anchors.centerIn: parent
+                        text: root.isChecking ? "Checking..." : "Check Now"
+                        color: Theme.onPrimary
+                        font.pixelSize: Theme.fontSizeMedium
+                        font.weight: Font.Medium
                     }
 
-                    StyledText {
-                        text: "Interval: " + root.checkInterval + "s"
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.surfaceVariantText
+                    MouseArea {
+                        id: refreshMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        enabled: !root.isChecking
+                        onClicked: root.performCheck()
                     }
-                }
-            }
-
-            // VPN status section
-            Row {
-                spacing: Theme.spacingS
-                visible: root.hasVpn
-
-                DankIcon {
-                    name: "vpn_lock"
-                    size: 24
-                    color: Theme.primary
-                }
-
-                StyledText {
-                    text: "VPN Connected"
-                    font.pixelSize: Theme.fontSizeMedium
-                    color: Theme.primary
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            // Refresh button
-            StyledRect {
-                width: parent.width - Theme.spacingM * 2
-                height: 40
-                radius: Theme.cornerRadius
-                color: refreshMouseArea.containsMouse ? Theme.primaryHover : Theme.primary
-
-                StyledText {
-                    anchors.centerIn: parent
-                    text: root.isChecking ? "Checking..." : "Check Now"
-                    color: Theme.onPrimary
-                    font.pixelSize: Theme.fontSizeMedium
-                    font.weight: Font.Medium
-                }
-
-                MouseArea {
-                    id: refreshMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    enabled: !root.isChecking
-                    onClicked: root.performCheck()
                 }
             }
         }
     }
 
-    popoutWidth: 300
-    popoutHeight: 200
+    popoutWidth: 320
+    popoutHeight: 380
 
-    // Click action - trigger immediate check
-    pillClickAction: function() {
-        performCheck()
+    // Right-click action - open plugin settings
+    pillRightClickAction: function() {
+        PopoutService.openSettingsWithTab("plugins")
     }
 
     Component.onCompleted: {

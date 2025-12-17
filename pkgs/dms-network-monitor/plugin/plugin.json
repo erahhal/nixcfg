@@ -3,6 +3,7 @@
   "name": "Network Monitor",
   "description": "Monitor network connectivity with VPN-aware endpoint switching",
   "version": "1.0.0",
+  "author": "erahhal",
   "type": "widget",
   "component": "./NetworkMonitor.qml",
   "settings": "./NetworkMonitorSettings.qml",
