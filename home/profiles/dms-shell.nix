@@ -20,6 +20,8 @@ let
     hash = "sha256-tXqDRVp1VhyD1WylW83mO4aYFmVg/NV6Z/toHmb5Tn8=";
   };
 
+  dms-network-monitor = pkgs.callPackage ../../pkgs/dms-network-monitor {};
+
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
   # Default plugin settings - merged into plugin_settings.json on activation
@@ -30,6 +32,14 @@ let
       trigger = ">";
       terminal = "foot";
       execFlag = "-e";
+    };
+    networkMonitor = {
+      enabled = true;
+      checkInterval = 30;
+      checkMethod = "http";
+      normalEndpoint = "https://github.com";
+      vpnEndpoint = "";
+      vpnInterfaces = ["tailscale0" "wg0" "tun0"];
     };
   };
 
@@ -225,6 +235,10 @@ in
         enable = true;
         src = dms-command-runner;
       };
+      NetworkMonitor = {
+        enable = true;
+        src = dms-network-monitor;
+      };
     };
 
     # Feature toggles (all default to true)
@@ -301,6 +315,10 @@ in
             showNetworkIcon = true;
             showPrinterIcon = false;
             showVpnIcon = true;
+          }
+          {
+            id = "networkMonitor";
+            enabled = true;
           }
           {
             id = "clock";

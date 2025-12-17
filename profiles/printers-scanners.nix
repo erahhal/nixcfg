@@ -9,9 +9,8 @@
 
   services.printing.drivers = [
     pkgs.brlaser
-    # Brother drivers don't support i686 builds
-    (broken pkgs.brgenml1lpr)
-    (broken pkgs.brgenml1cupswrapper)
+    pkgs.brgenml1lpr
+    pkgs.brgenml1cupswrapper
   ];
 
   hardware.printers = {

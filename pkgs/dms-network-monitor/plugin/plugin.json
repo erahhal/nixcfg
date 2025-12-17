@@ -1,0 +1,13 @@
+{
+  "id": "networkMonitor",
+  "name": "Network Monitor",
+  "description": "Monitor network connectivity with VPN-aware endpoint switching",
+  "version": "1.0.0",
+  "type": "widget",
+  "component": "./NetworkMonitor.qml",
+  "settings": "./NetworkMonitorSettings.qml",
+  "permissions": [
+    "settings_read",
+    "settings_write"
+  ]
+}

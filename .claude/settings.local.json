@@ -113,7 +113,8 @@
       "Bash(git -C /home/erahhal/Code/nixcfg add home/modules/startup-apps.nix)",
       "Bash(git -C /home/erahhal/Code/nixcfg status)",
       "WebFetch(domain:git.sr.ht)",
-      "WebFetch(domain:sr.ht)"
+      "WebFetch(domain:sr.ht)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
