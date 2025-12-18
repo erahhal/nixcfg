@@ -154,6 +154,7 @@ in
         codex
         devbox
         difftastic
+        gemini-cli
         git-secrets
         go
         cargo

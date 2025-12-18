@@ -11,7 +11,7 @@
 
     networking = {
       networkMonitor = {
-        vpnEndpoint = "https://data.netflix.net"
+        vpnEndpoint = "https://data.netflix.net";
       };
     };
 

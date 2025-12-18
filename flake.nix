@@ -63,7 +63,8 @@
     };
 
     dms-shell = {
-      url = "github:AvengeMedia/DankMaterialShell/d37ddd1d41f7078b1bfb836079af67ac5f51ad50";
+      # url = "github:AvengeMedia/DankMaterialShell/d37ddd1d41f7078b1bfb836079af67ac5f51ad50";
+      url = "github:AvengeMedia/DankMaterialShell/83b81be82520617a0e3022ee8a01c32d0cbc5df9";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -116,7 +117,11 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx-nixcfg.url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
+    nflx-nixcfg = {
+      type = "git";
+      url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
+      ref = "nm-integration";
+    };
     # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
@@ -229,7 +234,10 @@
               genai = {
                 project-id = "erahhaldevtools";
               };
-              vpn.pulse.url = "https://lax001.pcs.flxvpn.net/emp-split";
+              vpn.pulse = {
+                url = "https://lax001.pcs.flxvpn.net/emp-split";
+                # enable-recovery = false;
+              };
             };
           }
         ];
