@@ -236,7 +236,7 @@
               };
               vpn.pulse = {
                 url = "https://lax001.pcs.flxvpn.net/emp-split";
-                # enable-recovery = false;
+                enable-dtls = true;
               };
             };
           }
