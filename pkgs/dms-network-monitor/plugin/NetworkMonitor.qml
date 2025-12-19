@@ -92,8 +92,32 @@ PluginComponent {
         if (!vpnInterfaces || vpnInterfaces.length === 0) {
             return "false"
         }
-        var interfaces = vpnInterfaces.join("|")
-        return "ls /sys/class/net 2>/dev/null | grep -E '^(" + interfaces + ")$'"
+
+        // Build command that checks Tailscale status first, then falls back to interface check
+        var script = ""
+
+        // Check Tailscale if tailscale0 is in the interface list
+        if (vpnInterfaces.indexOf("tailscale0") !== -1) {
+            // Use tailscale status for connection check, then find actual interface name (tailscale0, tailscale0Link, etc.)
+            // Use grep -m 1 instead of head -1 to preserve exit code
+            script += "if tailscale status >/dev/null 2>&1; then for f in /sys/class/net/*; do basename \"$f\"; done | grep -E -m 1 '^tailscale0'; exit 0; fi; "
+        }
+
+        // For other interfaces, check if they exist in /sys/class/net (prefix match)
+        var otherInterfaces = vpnInterfaces.filter(function(iface) {
+            return iface !== "tailscale0"
+        })
+
+        if (otherInterfaces.length > 0) {
+            // Use prefix matching: wg0 matches wg0, wg0-mullvad, wg0-mullvadLink, etc.
+            // Use grep -m 1 instead of head -1 to preserve exit code
+            var interfaces = otherInterfaces.join("|")
+            script += "for f in /sys/class/net/*; do basename \"$f\"; done | grep -E -m 1 '^(" + interfaces + ")'"
+        } else if (script === "") {
+            return "false"
+        }
+
+        return script
     }
 
     // Build connectivity check command based on settings

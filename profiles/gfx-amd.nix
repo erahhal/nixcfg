@@ -34,8 +34,12 @@
     boot.blacklistedKernelModules = [ "radeon" "fglrx" ];
 
     # dc=0 causes hanges at module load
+    # Commented out experimental options that may cause DMUB interrupt storms under load:
+    # - vm_fragment_size=9: Non-standard VM fragmentation
+    # - aspm=0: Disables PCIe ASPM (conflicts with TLP)
+    # - ppfeaturemask=0xffffffff: Enables ALL power features (risky)
     boot.extraModprobeConfig = ''
-      options amdgpu si_support=1 cik_support=1 vm_fragment_size=9 audio=0 aspm=0 ppfeaturemask=0xffffffff
+      options amdgpu si_support=1 cik_support=1 audio=0
     '';
   };
 }

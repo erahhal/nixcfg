@@ -124,17 +124,16 @@
   # Device specific
   # --------------------------------------------------------------------------------------
 
-  ## Disable swap
-  swapDevices = lib.mkForce [ ];
-
-  ## Enable zramswap (must disable swap above)
-  ## Supposedly helps with out of memory errors during compilation of big projects
+  ## Enable zram compressed swap (uses ~25% of RAM for ~2x effective swap capacity)
   zramSwap = {
-    ## Currently no swap partition configured
-    ## @TODO: Can zramswap be used with an encrypted LUKS partition?
-    enable = false;
-    writebackDevice = "/dev/nvme0n1p2";
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 25;  # 16GB compressed swap from 64GB RAM
   };
+
+  ## Enable file-based swap as overflow (64GB swapfile defined in disk-config-btrfs.nix)
+  ## Removed: swapDevices = lib.mkForce [ ];
+  ## The swapfile will be enabled automatically from disk-config if properly mounted
 
   time.timeZone = config.hostParams.system.timeZone;
 
@@ -280,6 +279,18 @@
 
   services.syslogd.enable = true;
 
+  ## Early OOM killer - notify when memory is low (does not kill processes per user preference)
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 5;     # Notify at 5% free memory
+    freeSwapThreshold = 10;   # Notify at 10% free swap
+    enableNotifications = true;
+    extraArgs = [
+      "--prefer" "^(firefox|chromium|chrome)$"  # Prefer killing browsers if killing is enabled later
+      "-n"  # Notify only, don't kill (dry-run mode)
+    ];
+  };
+
   # Despite the generic name, this is Lenovo specific
   ## Doesn't currently work with x1c CPU
   services.throttled.enable = false;
@@ -308,8 +319,8 @@
 
     ## Settings for low-latency gaming/audio
     "preempt=full"    # Realtime latency
-    "threadirqs"      # Forces interrupt handlers to run in threaded context
-    ## not appropriate for AMD cpu
+    ## threadirqs removed - causes interrupt starvation under 100% CPU load, leading to hard freeze
+    # "threadirqs"      # Forces interrupt handlers to run in threaded context
   ];
 
   ## Make sure CPU runs at max performance

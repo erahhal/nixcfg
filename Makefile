@@ -35,7 +35,7 @@ switch:
 	fi
 
 boot:
-	sudo nixos-rebuild boot --flake .#${HOSTNAME} -L
+	sudo -E nixos-rebuild boot --flake .#${HOSTNAME} -L
 	
 
 remote-install:

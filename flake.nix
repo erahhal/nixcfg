@@ -169,7 +169,7 @@
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
           inputs.caelestia-shell.homeManagerModules.default
-          inputs.dms-shell.homeModules.dankMaterialShell.default
+          inputs.dms-shell.homeModules.dank-material-shell
           inputs.nix-colors.homeManagerModules.default
           inputs.plasma-manager.homeModules.plasma-manager
           inputs.steam-loader.homeManagerModules.default

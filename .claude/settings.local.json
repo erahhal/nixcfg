@@ -130,7 +130,19 @@
       "WebFetch(domain:wiki.archlinux.org)",
       "WebFetch(domain:wiki.nixos.org)",
       "WebFetch(domain:yalter.github.io)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git show:*)",
+      "Bash(exit 0)",
+      "Bash(fi)",
+      "Bash(# Test each part separately echo \"\"=== Tailscale status ===\"\" tailscale status 2>&1 echo \"\"tailscale exit: $?\"\" echo \"\"=== grep for wg0|tun0 ===\"\" ls /sys/class/net)",
+      "Bash(fi ls /sys/class/net)",
+      "Bash(__NEW_LINE__ echo \"\")",
+      "Bash(# Check if head -1 affects exit code echo \"\"=== Without head ===\"\" ls /sys/class/net)",
+      "Bash(# Test grep -m 1 (returns first match, preserves exit code) echo \"\"=== grep -m 1 with no match ===\"\" ls /sys/class/net)",
+      "Bash(# Check ls -1 output (one per line, names only) echo \"\"=== ls -1 /sys/class/net ===\"\" ls -1 /sys/class/net echo \"\"\"\" echo \"\"=== grep -m 1 with ls -1 ===\"\" ls -1 /sys/class/net)",
+      "Bash(# Test grep -o -m 1 (output only matched portion, first match only) echo \"\"=== grep -o -m 1 ===\"\" ls /sys/class/net)",
+      "Bash(for f in /sys/class/net/*)",
+      "Bash(do basename \"$f\")"
     ],
     "deny": [],
     "ask": []
