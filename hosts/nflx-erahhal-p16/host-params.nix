@@ -24,6 +24,8 @@
       # sddmTheme = "nflx";
       # sddmThemeQt6 = false;
 
+      displayManager = "dms";
+
       multipleSessions = true;
       defaultSession = "niri";
       useHyprlandFlake = false;

@@ -39,6 +39,7 @@ in
     ./fonts.nix
     ./i2c.nix
     ./niri.nix
+    ./dms-shell.nix
     ./sddm.nix
     ./lightdm.nix
   ];

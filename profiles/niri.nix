@@ -39,6 +39,7 @@ in
     };
 
     programs = {
+      niri.enable = true;
       dconf.enable = true;
       xwayland.enable = true;
     };

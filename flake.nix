@@ -117,12 +117,12 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    nflx-nixcfg = {
-      type = "git";
-      url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
-      ref = "nm-integration";
-    };
-    # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
+    # nflx-nixcfg = {
+    #   type = "git";
+    #   url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
+    #   ref = "nm-integration";
+    # };
+    nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
@@ -217,6 +217,7 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
           inputs.nur.modules.nixos.default
+          inputs.dms-shell.nixosModules.dank-material-shell
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
 
@@ -237,6 +238,7 @@
               vpn.pulse = {
                 url = "https://lax001.pcs.flxvpn.net/emp-split";
                 enable-dtls = true;
+                enable-nm-applet-service = true;
               };
             };
           }
@@ -273,6 +275,7 @@
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
+          inputs.dms-shell.nixosModules.dank-material-shell
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
 
@@ -421,6 +424,7 @@
           ./hosts/msi-linux/configuration.nix
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.secrets.nixosModules.msi-linux
+          inputs.dms-shell.nixosModules.dank-material-shell
           # inputs.jovian.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig

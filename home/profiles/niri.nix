@@ -311,7 +311,7 @@ in
     # ./waybar.nix
     # ./caelestia-shell.nix
     ./dms-shell.nix
-    ./network-manager-applet.nix
+    # ./network-manager-applet.nix
     # ./rofi.nix
     # ./hyprlock.nix
     # ./gammastep.nix
@@ -706,7 +706,7 @@ in
     // spawn-sh-at-startup "systemctl --user restart gammastep"
     // @TODO: Move these to waybar setup
     // spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"
-    spawn-sh-at-startup "systemctl --user restart network-manager-applet"
+    // spawn-sh-at-startup "systemctl --user restart network-manager-applet"
     // spawn-sh-at-startup "systemctl --user restart blueman-applet"
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"

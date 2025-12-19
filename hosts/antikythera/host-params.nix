@@ -8,6 +8,7 @@
     };
 
     desktop = {
+      displayManager = "dms";
       multipleSessions = true;
       defaultSession = "niri";
       dpi = 192;
