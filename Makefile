@@ -34,6 +34,9 @@ switch:
 		systemctl --user restart toggle-theme ;\
 	fi
 
+nflx-local:
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
+
 boot:
 	sudo -E nixos-rebuild boot --flake .#${HOSTNAME} -L
 	

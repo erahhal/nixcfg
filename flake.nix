@@ -238,6 +238,7 @@
               vpn.pulse = {
                 url = "https://lax001.pcs.flxvpn.net/emp-split";
                 enable-nm-applet-service = true;
+                # enable-dtls = false;
               };
             };
           }

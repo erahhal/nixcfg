@@ -159,6 +159,8 @@ in
   systemd.user.services.dms.Service = {
     Environment = [
       "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
+      # Prevent DMS crash dialog
+      "QS_NO_CRASH_GUI=1"
     ];
     # Inherit environment for icon theme discovery and loginctl integration
     PassEnvironment = [

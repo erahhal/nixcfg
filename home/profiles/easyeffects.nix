@@ -1,6 +1,9 @@
 { pkgs, ...}:
 
 {
+  imports = [
+    ./easyeffects-presets.nix
+  ];
   systemd.user.services."easyeffects" = {
     Unit = {
       Description = "EasyEffects Audio Filter";

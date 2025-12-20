@@ -144,7 +144,8 @@
       "Bash(for f in /sys/class/net/*)",
       "Bash(do basename \"$f\")",
       "Bash(nix-prefetch-git:*)",
-      "Bash(nix-prefetch-url:*)"
+      "Bash(nix-prefetch-url:*)",
+      "Bash(nix hash to-sri:*)"
     ],
     "deny": [],
     "ask": []

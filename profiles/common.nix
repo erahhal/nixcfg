@@ -370,6 +370,7 @@
     neofetch
     nethogs
     networkmanager
+    nh
     nix
     nix-output-monitor
     nix-prefetch-github
