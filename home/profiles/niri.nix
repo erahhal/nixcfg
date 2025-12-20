@@ -781,6 +781,11 @@ in
     }
 
     window-rule {
+        match app-id="com.github.wwmm.easyeffects"
+        open-floating true
+    }
+
+    window-rule {
         match app-id=r#"XEyes$"#
         open-floating true
     }
