@@ -142,7 +142,9 @@
       "Bash(# Check ls -1 output (one per line, names only) echo \"\"=== ls -1 /sys/class/net ===\"\" ls -1 /sys/class/net echo \"\"\"\" echo \"\"=== grep -m 1 with ls -1 ===\"\" ls -1 /sys/class/net)",
       "Bash(# Test grep -o -m 1 (output only matched portion, first match only) echo \"\"=== grep -o -m 1 ===\"\" ls /sys/class/net)",
       "Bash(for f in /sys/class/net/*)",
-      "Bash(do basename \"$f\")"
+      "Bash(do basename \"$f\")",
+      "Bash(nix-prefetch-git:*)",
+      "Bash(nix-prefetch-url:*)"
     ],
     "deny": [],
     "ask": []

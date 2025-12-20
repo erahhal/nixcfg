@@ -20,6 +20,13 @@ let
     hash = "sha256-tXqDRVp1VhyD1WylW83mO4aYFmVg/NV6Z/toHmb5Tn8=";
   };
 
+  dms-easyeffects = pkgs.fetchFromGitHub {
+    owner = "jonkristian";
+    repo = "dms-easyeffects";
+    rev = "f50fdb7a110ddb90b7625bc143884fd773c3d5c7";
+    hash = "sha256-q0Xp4RzHd0HgtUZEM4hIES6SDyN8R4lPgQe5aeLMh4c=";
+  };
+
   dms-network-monitor = pkgs.callPackage ../../pkgs/dms-network-monitor {};
 
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
@@ -41,6 +48,9 @@ let
       vpnCheckMethod = osConfig.hostParams.networking.networkMonitor.vpnCheckMethod;
       vpnEndpoint = osConfig.hostParams.networking.networkMonitor.vpnEndpoint;
       vpnInterfaces = ["tailscale0" "wg0" "tun0"];
+    };
+    easyEffects = {
+      enabled = true;
     };
   };
 
@@ -139,6 +149,10 @@ let
   };
 in
 {
+  imports = [
+    ./easyeffects.nix
+  ];
+
   home.file."Wallpaper".source = ../../wallpapers;
 
   # Add PATH and Qt theme to dms systemd service
@@ -240,6 +254,10 @@ in
         enable = true;
         src = dms-network-monitor;
       };
+      EasyEffects = {
+        enable = true;
+        src = dms-easyeffects;
+      };
     };
 
     # Feature toggles (all default to true)
@@ -267,6 +285,10 @@ in
         rightWidgets = [
           {
             id = "music";
+            enabled = true;
+          }
+          {
+            id = "easyEffects";
             enabled = true;
           }
           {

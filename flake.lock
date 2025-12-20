@@ -1585,14 +1585,18 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1766121233,
-        "narHash": "sha256-fcWqIEeMmtQHhrS9ZYnyqQbnBcdFoWJY8wQqA6u9yP0=",
-        "path": "/home/erahhal/Code/nflx-nixcfg",
-        "type": "path"
+        "lastModified": 1766170250,
+        "narHash": "sha256-allvH9sP8uJBabrj/Z+CA5FSsRueMju+gFVaja+4wn4=",
+        "ref": "nm-integration",
+        "rev": "47cabe27daee5fc5010c5b6f4cecb14d22feac0e",
+        "revCount": 33,
+        "type": "git",
+        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
       "original": {
-        "path": "/home/erahhal/Code/nflx-nixcfg",
-        "type": "path"
+        "ref": "nm-integration",
+        "type": "git",
+        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       }
     },
     "nix": {

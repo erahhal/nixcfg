@@ -117,12 +117,12 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
 
-    # nflx-nixcfg = {
-    #   type = "git";
-    #   url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
-    #   ref = "nm-integration";
-    # };
-    nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
+    nflx-nixcfg = {
+      type = "git";
+      url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
+      ref = "nm-integration";
+    };
+    # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
