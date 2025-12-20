@@ -317,6 +317,27 @@
     "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
   ];
 
+  # Disable wakeup sources that cause spurious wakes with Thunderbolt dock
+  systemd.services.disable-wakeup-sources = {
+    description = "Disable Thunderbolt/USB wakeup sources";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # Disable Thunderbolt PCIe root port wakeup (RP09)
+      echo disabled > /sys/devices/pci0000:00/0000:00:1d.0/power/wakeup || true
+
+      # Disable USB XHCI controller wakeup
+      echo disabled > /sys/devices/pci0000:00/0000:00:14.0/power/wakeup || true
+
+      # Disable ACPI wakeup for XHCI and RP09 (toggle if enabled)
+      grep -q "XHCI.*enabled" /proc/acpi/wakeup && echo XHCI > /proc/acpi/wakeup || true
+      grep -q "RP09.*enabled" /proc/acpi/wakeup && echo RP09 > /proc/acpi/wakeup || true
+    '';
+  };
+
   # Enable power management
   powerManagement = {
     enable = true;

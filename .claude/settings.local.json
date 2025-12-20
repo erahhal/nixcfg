@@ -145,7 +145,16 @@
       "Bash(do basename \"$f\")",
       "Bash(nix-prefetch-git:*)",
       "Bash(nix-prefetch-url:*)",
-      "Bash(nix hash to-sri:*)"
+      "Bash(nix hash to-sri:*)",
+      "Bash(bash -c:*)",
+      "Bash(nix hash convert:*)",
+      "Bash(for dev in /sys/bus/usb/devices/*/power/wakeup)",
+      "Bash(lsusb:*)",
+      "Bash(for dev in /sys/devices/pci0000:00/*/power/wakeup)",
+      "Bash(sudo cat:*)",
+      "Bash(sort:*)",
+      "Bash(sudo dmesg:*)",
+      "Bash(for dev in /sys/bus/usb/devices/usb*/power/wakeup)"
     ],
     "deny": [],
     "ask": []
