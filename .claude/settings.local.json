@@ -154,7 +154,9 @@
       "Bash(sudo cat:*)",
       "Bash(sort:*)",
       "Bash(sudo dmesg:*)",
-      "Bash(for dev in /sys/bus/usb/devices/usb*/power/wakeup)"
+      "Bash(for dev in /sys/bus/usb/devices/usb*/power/wakeup)",
+      "Bash(xdg-mime query default:*)",
+      "Bash(gio mime:*)"
     ],
     "deny": [],
     "ask": []

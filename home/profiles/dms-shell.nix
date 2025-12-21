@@ -363,6 +363,8 @@ in
         position = 1;  # 0=top, 1=bottom, 2=left, 3=right
         spacing = 3;
         bottomGap = 1;
+        innerPadding = 8;  # Sets the bar size, strangely
+        maximizeDetection = false;  # Don't remove gaps if the window is maxximized
 
         ## Behavior
         scrollYBehavior = "none";
@@ -391,6 +393,9 @@ in
       borderOpacity = 1;
       borderThickness = 1;
       fontScale = 1;
+
+      ## Icons
+      dockIconsize = 24;
 
       ## Behavior
       visible = true;

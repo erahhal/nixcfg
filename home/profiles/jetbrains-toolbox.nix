@@ -26,7 +26,7 @@ in
     [Desktop Entry]
     Type=Application
     Name=JetBrains Toolbox
-    Exec=${pkgs.jetbrains-toolbox}/bin/jetbrains-toolbox
+    Exec=${pkgs.jetbrains-toolbox}/bin/jetbrains-toolbox %u
     Icon=jetbrains-toolbox
     StartupNotify=false
     Terminal=false
