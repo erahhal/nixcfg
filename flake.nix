@@ -120,8 +120,13 @@
     nflx-nixcfg = {
       type = "git";
       url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
-      ref = "nm-integration";
+      ref = "main";
     };
+    # nflx-nixcfg = {
+    #   type = "git";
+    #   url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
+    #   ref = "nm-integration";
+    # };
     # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
@@ -232,6 +237,7 @@
           {
             nflx = {
               username = "erahhal";
+              # workspace-id = "erahhaldev";
               genai = {
                 project-id = "erahhaldevtools";
               };
