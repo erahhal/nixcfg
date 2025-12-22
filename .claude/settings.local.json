@@ -156,7 +156,10 @@
       "Bash(sudo dmesg:*)",
       "Bash(for dev in /sys/bus/usb/devices/usb*/power/wakeup)",
       "Bash(xdg-mime query default:*)",
-      "Bash(gio mime:*)"
+      "Bash(gio mime:*)",
+      "Bash(sudo find:*)",
+      "Bash(getent passwd:*)",
+      "Bash(git -C /home/erahhal/Code/nixcfg diff HEAD)"
     ],
     "deny": [],
     "ask": []
