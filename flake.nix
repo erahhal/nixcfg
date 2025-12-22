@@ -237,7 +237,7 @@
           {
             nflx = {
               username = "erahhal";
-              # workspace-id = "erahhaldev";
+              development.java.enable = true;
               genai = {
                 project-id = "erahhaldevtools";
               };
