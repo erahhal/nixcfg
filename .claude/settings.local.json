@@ -159,7 +159,22 @@
       "Bash(gio mime:*)",
       "Bash(sudo find:*)",
       "Bash(getent passwd:*)",
-      "Bash(git -C /home/erahhal/Code/nixcfg diff HEAD)"
+      "Bash(git -C /home/erahhal/Code/nixcfg diff HEAD)",
+      "Bash(sudo ls:*)",
+      "Bash(sudo stat:*)",
+      "Bash(getent group:*)",
+      "Bash(sudo -u dms-greeter ls:*)",
+      "Bash(sudo chown:*)",
+      "Bash(sudo lsattr:*)",
+      "Bash(sudo rm:*)",
+      "Bash(sudo mkdir:*)",
+      "Bash(sudo chmod:*)",
+      "Bash(findmnt:*)",
+      "Bash(sudo systemd-tmpfiles:*)",
+      "Bash(sudo btrfs subvolume list:*)",
+      "Bash(/usr/bin/ls:*)",
+      "Bash(/run/current-system/sw/bin/ls:*)",
+      "Bash(systemd-tmpfiles:*)"
     ],
     "deny": [],
     "ask": []

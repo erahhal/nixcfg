@@ -355,6 +355,10 @@ in
         # __GL_GSYNC_ALLOWED = "0";
         # __GL_VRR_ALLOWED = "0";
         # __GL_TRIPLE_BUFFER = "1";
+
+        ## Get rid of stuttering at the start of Niri animations?
+        __GL_SHADER_DISK_CACHE = "1";
+        __GL_SHADER_DISK_CACHE_PATH = "/home/${userParams.username}/.cache/nvidia-shader-cache";
       } // (if usingIntel then {
         ## Prioritize NVidia GPU (card 1) over Intel GPU for Hyprland
         AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";

@@ -7,6 +7,11 @@ let
   niri-sddm = pkgs.writeShellScriptBin "niri-sddm" ''
     # Brief delay to let SDDM release the device
     sleep 1
+    export __GL_SHADER_DISK_CACHE=1
+    cache_root=''${XDG_CACHE_HOME:-$HOME/.cache}
+    cache_dir="$cache_root/nvidia-shader-cache"
+    mkdir -p "$cache_dir"
+    export __GL_SHADER_DISK_CACHE_PATH="$cache_dir"
     exec niri --session
   '';
 in

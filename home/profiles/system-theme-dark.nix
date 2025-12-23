@@ -380,12 +380,16 @@ in
     # theme.name = "Adapta";
     # theme.package = pkgs.adapta-gtk-theme;
 
-    iconTheme.package = pkgs.adwaita-icon-theme;
-    iconTheme.name = "Adwaita";
+    # Use Papirus-Dark - has comprehensive coverage for tray icons (nm-signal-75-secure, etc.)
+    # that Adwaita and breeze-dark lack. Required for DMS system tray icons to render properly.
+    iconTheme.package = pkgs.papirus-icon-theme;
+    iconTheme.name = "Papirus-Dark";
+    # iconTheme.package = pkgs.adwaita-icon-theme;
+    # iconTheme.name = "Adwaita";
+    # iconTheme.package = pkgs.kdePackages.breeze-icons;
+    # iconTheme.name = "breeze-dark";
     # iconTheme.package = pkgs.pop-icon-theme;
     # iconTheme.name = "Pop";
-    # iconTheme.name = "Papirus-Dark";
-    # iconTheme.package = pkgs.papirus-icon-theme;
 
     gtk2.extraConfig =
       if osConfig.hostParams.desktop.defaultSession == "none+i3" then ''
@@ -433,12 +437,29 @@ in
 
   qt = {
     enable = true;
-    platformTheme.name = "adwaita";
+    # Use qt6ct platform theme - reads icon theme from ~/.config/qt6ct/qt6ct.conf
+    # Note: "adwaita" has no Qt6 platform theme plugin (only a style plugin)
+    platformTheme.name = "qtct";
     style = {
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;
     };
   };
+
+  # Manage qt5ct/qt6ct configs to prevent KDE from polluting them
+  # Use Papirus-Dark for icons - has nm-signal-75-secure and other tray icons
+  xdg.configFile."qt5ct/qt5ct.conf".text = ''
+    [Appearance]
+    icon_theme=Papirus-Dark
+    style=adwaita-dark
+  '';
+  # Qt6: Use Breeze style (adwaita-dark only exists for Qt5)
+  xdg.configFile."qt6ct/qt6ct.conf".text = ''
+    [Appearance]
+    icon_theme=Papirus-Dark
+    style=Breeze
+    color_scheme_path=${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors
+  '';
 
   ## Use Kvantum theme
   # qt = {

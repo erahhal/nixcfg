@@ -362,6 +362,17 @@ in
     "Kvantum/kvantum.kvconfig" = lib.mkForce {
       text = "[General]\ntheme=Arc";
     };
+    # Manage qt5ct/qt6ct configs to prevent KDE from polluting them with wrong icon themes
+    "qt5ct/qt5ct.conf".text = ''
+      [Appearance]
+      icon_theme=Adwaita
+      style=kvantum
+    '';
+    "qt6ct/qt6ct.conf".text = ''
+      [Appearance]
+      icon_theme=Adwaita
+      style=kvantum
+    '';
   };
 
   ## mkAfter makes sure this is at the end of the file,

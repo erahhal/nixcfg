@@ -61,21 +61,8 @@ let
     systemctl suspend
   '';
 
-  # Confirmation dialogs for power actions
-  reboot-dialog = pkgs.writeShellScript "dms-reboot-dialog" ''
-    ${nag-graphical}/bin/nag-graphical 'Reboot?' 'systemctl reboot'
-  '';
-
   suspend-dialog = pkgs.writeShellScript "dms-suspend-dialog" ''
     ${nag-graphical}/bin/nag-graphical 'Suspend?' '${dms-suspend}'
-  '';
-
-  power-off-dialog = pkgs.writeShellScript "dms-power-off-dialog" ''
-    ${nag-graphical}/bin/nag-graphical 'Power off?' 'systemctl poweroff'
-  '';
-
-  exit-dialog = pkgs.writeShellScript "dms-exit-dialog" ''
-    ${nag-graphical}/bin/nag-graphical 'Exit Niri?' 'niri msg action quit'
   '';
 
   # Helper function to create JSON sync activation scripts
@@ -161,10 +148,12 @@ in
       "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
       # Prevent DMS crash dialog
       "QS_NO_CRASH_GUI=1"
+      # Use qt6ct platform theme for icon discovery
+      # Set directly here instead of PassEnvironment to avoid stale systemd env issues
+      "QT_QPA_PLATFORMTHEME=qt6ct"
     ];
     # Inherit environment for icon theme discovery and loginctl integration
     PassEnvironment = [
-      "QT_QPA_PLATFORMTHEME"
       "XDG_DATA_DIRS"
       "XCURSOR_SIZE"
       "XCURSOR_THEME"
@@ -215,10 +204,7 @@ in
       Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
 
       // Power actions - with confirmation dialogs
-      Mod+Shift+E hotkey-overlay-title="Exit Niri" { spawn "${exit-dialog}"; }
-      Mod+Shift+R hotkey-overlay-title="Reboot" { spawn "${reboot-dialog}"; }
       Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "${suspend-dialog}"; }
-      Mod+Shift+P hotkey-overlay-title="Power Off" { spawn "${power-off-dialog}"; }
 
       // Ctrl+Alt+Delete - quit niri (shows confirmation)
       Ctrl+Alt+Delete { quit; }
@@ -239,7 +225,7 @@ in
   xdg.configFile."DankMaterialShell/default-plugin_settings.json".text =
     builtins.toJSON defaultPluginSettings;
 
-  programs.dankMaterialShell = {
+  programs.dank-material-shell = {
     enable = true;
     systemd = {
       enable = true;
