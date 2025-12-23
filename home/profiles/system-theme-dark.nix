@@ -382,14 +382,33 @@ in
 
     # Use Papirus-Dark - has comprehensive coverage for tray icons (nm-signal-75-secure, etc.)
     # that Adwaita and breeze-dark lack. Required for DMS system tray icons to render properly.
-    iconTheme.package = pkgs.papirus-icon-theme;
-    iconTheme.name = "Papirus-Dark";
+
+    ## Don't have Telegram icon
+    # iconTheme.package = pkgs.fluent-icon-theme;
+    # iconTheme.name = "Fluent-dark";
+    # iconTheme.package = pkgs.colloid-icon-theme;
+    # iconTheme.name = "Colloid-Dark";
+    # iconTheme.package = pkgs.numix-icon-theme-circle;
+    # iconTheme.name = "Numix-Circle";
+    # iconTheme.package = pkgs.nordzy-icon-theme;
+    # iconTheme.name = "Nordzy-dark";
+    # iconTheme.package = pkgs.kora-icon-theme;
+    # iconTheme.name = "kora";
     # iconTheme.package = pkgs.adwaita-icon-theme;
-    # iconTheme.name = "Adwaita";
-    # iconTheme.package = pkgs.kdePackages.breeze-icons;
-    # iconTheme.name = "breeze-dark";
+    # iconTheme.name = "Adwaita-dark";
     # iconTheme.package = pkgs.pop-icon-theme;
-    # iconTheme.name = "Pop";
+    # iconTheme.name = "Pop-dark";
+
+    ## Works with QuickShell, and has Telegram Icon
+
+    iconTheme.package = pkgs.kdePackages.breeze-icons;
+    iconTheme.name = "breeze-dark";
+    # iconTheme.package = pkgs.papirus-icon-theme;
+    # iconTheme.name = "Papirus-Dark";
+    # iconTheme.package = pkgs.dracula-icon-theme;
+    # iconTheme.name = "Dracula";
+    # iconTheme.package = pkgs.flat-remix-icon-theme;
+    # iconTheme.name = "Flat-Remix-Blue-Dark";
 
     gtk2.extraConfig =
       if osConfig.hostParams.desktop.defaultSession == "none+i3" then ''
@@ -450,13 +469,13 @@ in
   # Use Papirus-Dark for icons - has nm-signal-75-secure and other tray icons
   xdg.configFile."qt5ct/qt5ct.conf".text = ''
     [Appearance]
-    icon_theme=Papirus-Dark
+    icon_theme=breeze-dark
     style=adwaita-dark
   '';
   # Qt6: Use Breeze style (adwaita-dark only exists for Qt5)
   xdg.configFile."qt6ct/qt6ct.conf".text = ''
     [Appearance]
-    icon_theme=Papirus-Dark
+    icon_theme=breeze-dark
     style=Breeze
     color_scheme_path=${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors
   '';

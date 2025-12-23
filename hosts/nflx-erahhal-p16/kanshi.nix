@@ -29,6 +29,7 @@ in
               }
             ];
             exec = [
+              ''${pkgs.xorg.xrdb}/bin/xrdb -merge <<< "Xft.dpi: 283"''
               "${hyprctl} dispatch dpms on"
             ];
           };
@@ -86,6 +87,7 @@ in
               }
             ];
             exec = [
+              ''${pkgs.xorg.xrdb}/bin/xrdb -merge <<< "Xft.dpi: 140"''
               "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${home-monitor-left-hyprland}"
               "${hyprctl} dispatch moveworkspacetomonitor 2 desc:${home-monitor-right-hyprland}"
               "${hyprctl} dispatch moveworkspacetomonitor 3 desc:${home-monitor-right-hyprland}"
