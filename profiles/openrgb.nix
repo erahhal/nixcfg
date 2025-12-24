@@ -1,4 +1,7 @@
 { pkgs, userParams, ... }:
+let
+  profilePath = ./openrgb/Aquamarine.orp;
+in
 {
   services.udev.packages = [ pkgs.openrgb ];
 
@@ -12,10 +15,24 @@
     motherboard = "intel";
   };
 
+  # Deploy profile to /var/lib/OpenRGB/
+  systemd.tmpfiles.rules = [
+    "L+ /var/lib/OpenRGB/Aquamarine.orp - - - - ${profilePath}"
+  ];
+
+  # Override the system service to load the profile at boot
+  systemd.services.openrgb.serviceConfig.ExecStart = let
+    cfg = {
+      package = pkgs.openrgb;
+      server.port = 6742;
+    };
+  in pkgs.lib.mkForce "${cfg.package}/bin/openrgb --server --server-port ${toString cfg.server.port} --profile Aquamarine";
+
+  # User service for the tray applet
   home-manager.users.${userParams.username} = {
     systemd.user.services."openrgb" = {
       Unit = {
-        Description = "Start the openrgb applet";
+        Description = "OpenRGB tray applet";
         PartOf = [ "graphical-session.target" ];
       };
       Install = {
@@ -31,8 +48,8 @@
           "XDG_CONFIG_HOME"
           "XDG_CACHE_HOME"
           "XDG_RUNTIME_DIR"
-          "DISPLAY"  # If needed for GUI applications
-          "WAYLAND_DISPLAY"  # If using Wayland
+          "DISPLAY"
+          "WAYLAND_DISPLAY"
         ];
         # You can also set them explicitly if needed
         Environment = [

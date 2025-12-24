@@ -190,7 +190,12 @@
       "Bash(tr:*)",
       "Bash(# Kill and restart telegram, then check registration pkill Telegram sleep 2 # Start telegram in background \\(using the user''s preferred way\\) nohup telegram-desktop &>/dev/null & sleep 3 journalctl --user -u dms --since \"\"5 sec ago\"\")",
       "Bash(# Find the telegram binary which Telegram || find ~/.nix-profile/bin /run/current-system/sw/bin /etc/profiles/per-user/*/bin -name \"\"*[Tt]elegram*\"\")",
-      "Bash(# Check actual Colloid theme names find /nix/store -maxdepth 1 -name \"\"*colloid*icon*\"\" -type d)"
+      "Bash(# Check actual Colloid theme names find /nix/store -maxdepth 1 -name \"\"*colloid*icon*\"\" -type d)",
+      "Bash(steam --help:*)",
+      "Bash(unshare:*)",
+      "Bash(do grep -r \"requires user namespaces\" \"$d\")",
+      "Bash(/bin/rm:*)",
+      "Bash(command rm -f ~/.local/share/Steam/ubuntu12_32/steam-runtime/usr/libexec/steam-runtime-tools-0/srt-bwrap)"
     ],
     "deny": [],
     "ask": []

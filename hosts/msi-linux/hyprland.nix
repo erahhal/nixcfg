@@ -50,7 +50,6 @@
       ];
 
       exec-once = [
-        "openrgb --gui --startminimized -m direct -c 00FF66"
         "[workspace 2 silent] ${userParams.tty} tmux a -dt code"
         "[workspace 4 silent] spotify"
         "[workspace 4 silent] brave"
