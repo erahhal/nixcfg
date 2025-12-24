@@ -2,42 +2,20 @@
 ## installation, ownership is sometimes incorrect. This
 ## script fixes permissions on startup.
 { pkgs, userParams, ... }:
-let
-  # Create a wrapper script that fixes Steam permissions
-  steamFixScript = pkgs.writeShellScript "fix-steam-permissions" ''
-    ${pkgs.coreutils}/bin/mkdir -p /home/${userParams.username}/.local/share/Steam/steamapps
-    ${pkgs.coreutils}/bin/chown -R ${userParams.username}:users /home/${userParams.username}/.local/share/Steam/steamapps
-  '';
-in
 {
-  # Add sudo rule for passwordless execution of the fix script
-  security.sudo.extraRules = [
-    {
-      users = [ userParams.username ];
-      commands = [
-        {
-          command = "${steamFixScript}";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
-
-  # Create systemd user service to fix Steam permissions at boot
-  home-manager.users.${userParams.username} = {
-    systemd.user.services.steam-fix-permissions = {
-      Unit = {
-        Description = "Fix Steam directory permissions";
-        After = [ "network.target" ];
-      };
-      Service = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.sudo}/bin/sudo ${steamFixScript}";
-      };
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
+  systemd.services.steam-fix-permissions = {
+    description = "Fix Steam directory permissions";
+    after = [ "local-fs.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "fix-steam-permissions" ''
+        STEAM_DIR="/home/${userParams.username}/.local/share/Steam"
+        if [ -d "$STEAM_DIR" ]; then
+          ${pkgs.coreutils}/bin/chown -R ${userParams.username}:users "$STEAM_DIR"
+        fi
+      '';
     };
   };
 }
