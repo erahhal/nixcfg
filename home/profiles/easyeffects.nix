@@ -8,6 +8,7 @@
     Unit = {
       Description = "EasyEffects Audio Filter";
       PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" "dms.service" ];
     };
     Install = {
       WantedBy = [ "graphical-session.target" ];
