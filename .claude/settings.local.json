@@ -195,7 +195,10 @@
       "Bash(unshare:*)",
       "Bash(do grep -r \"requires user namespaces\" \"$d\")",
       "Bash(/bin/rm:*)",
-      "Bash(command rm -f ~/.local/share/Steam/ubuntu12_32/steam-runtime/usr/libexec/steam-runtime-tools-0/srt-bwrap)"
+      "Bash(command rm -f ~/.local/share/Steam/ubuntu12_32/steam-runtime/usr/libexec/steam-runtime-tools-0/srt-bwrap)",
+      "Bash(sudo journalctl:*)",
+      "Bash(sudo -u dms-greeter printenv:*)",
+      "Bash(xxd:*)"
     ],
     "deny": [],
     "ask": []

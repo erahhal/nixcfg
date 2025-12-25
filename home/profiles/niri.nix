@@ -170,7 +170,7 @@ let
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
   reboot-dialog = pkgs.writeShellScript "reboot-dialog" ''
-    ${nag-graphical}/bin/nag-graphical 'Reboot?' 'systemctl reboot'
+    ${nag-graphical}/bin/nag-graphical 'Reboot?' '${reboot}'
   '';
 
   suspend-dialog = pkgs.writeShellScript "suspend-dialog" ''
@@ -178,7 +178,7 @@ let
   '';
 
   power-off-dialog = pkgs.writeShellScript "suspend-dialog" ''
-    ${nag-graphical}/bin/nag-graphical 'Power off?' 'systemctl poweroff'
+    ${nag-graphical}/bin/nag-graphical 'Power off?' '${poweroff}'
   '';
 
   exit-dialog = pkgs.writeShellScript "exit-dialog" ''
@@ -711,7 +711,7 @@ in
 
     // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup: // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
     hotkey-overlay {
-        // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
+        // disable the "Important Hotkeys" pop-up at startup.
         skip-at-startup
     }
 

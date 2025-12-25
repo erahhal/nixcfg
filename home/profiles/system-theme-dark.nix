@@ -463,6 +463,8 @@ in
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;
     };
+    qt5ctSettings.Appearance.icon_theme = "breeze-dark";
+    qt6ctSettings.Appearance.icon_theme = "breeze-dark";
   };
 
   # Manage qt5ct/qt6ct configs to prevent KDE from polluting them

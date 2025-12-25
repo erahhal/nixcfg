@@ -53,6 +53,7 @@
 
     # Display config
     ./kanshi.nix
+    ./niri.nix
     ./sway.nix
 
     # Temporary

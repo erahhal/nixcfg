@@ -17,7 +17,6 @@ in
     imports = [
       # ../../home/profiles/protonmail-bridge.nix
       ./hyprland.nix
-      ./niri.nix
     ];
 
     home = {

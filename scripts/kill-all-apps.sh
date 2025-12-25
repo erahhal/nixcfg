@@ -3,6 +3,7 @@
 # @TODO: remove the ones here that do nothing
 
 pkill chromium
+pkill chrome
 pkill slack
 pkill Slack
 pkill brave
@@ -21,6 +22,8 @@ pkill telegram-desktop
 pkill Telegram
 pkill Discord
 pkill discord
+pkill vesktop
+pkill app.asar
 pkill element
 pkill element-desktop
 pkill Element

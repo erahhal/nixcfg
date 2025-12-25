@@ -10,7 +10,6 @@ in
   home-manager.users.${userParams.username} = {
     imports = [
       ./hyprland.nix
-      ./niri.nix
       ## Needed to create .desktop entry which is currently broken
       ## Also used to register mime types
       ../../home/profiles/jetbrains-toolbox.nix

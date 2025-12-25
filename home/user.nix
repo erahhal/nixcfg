@@ -27,6 +27,7 @@ in
       "sudo"
       "video"
       "wheel"
+      "dms-greeter"
     ];
     uid = config.hostParams.system.uid;
     shell = if userParams.shell == "zsh" then pkgs.zsh else pkgs.bash;

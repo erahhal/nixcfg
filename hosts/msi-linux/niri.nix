@@ -11,7 +11,7 @@
       variable-refresh-rate
     }
     output "Lenovo Group Limited P40w-20 V90DFGMV" {
-      mode "5120x2150@60.000"
+      mode "5120x2160@60.000"
       scale 1.332031
       variable-refresh-rate
     }
