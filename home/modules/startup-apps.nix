@@ -2,38 +2,12 @@
 
 let
   startupApps = osConfig.hostParams.programs.startupApps;
+  wait-for-tray = (import ./wait-for-tray.nix) pkgs;
 
   # Script that waits for DMS tray and then launches all startup apps
   startup-apps-script = pkgs.writeShellScript "startup-apps" ''
-    check_tray() {
-      ${pkgs.dbus}/bin/dbus-send --session \
-        --dest=org.kde.StatusNotifierWatcher \
-        --type=method_call --print-reply \
-        /StatusNotifierWatcher \
-        org.freedesktop.DBus.Properties.Get \
-        string:org.kde.StatusNotifierWatcher \
-        string:IsStatusNotifierHostRegistered 2>/dev/null | \
-        grep -q "boolean true"
-    }
-
-    # Wait up to 60 seconds for StatusNotifierWatcher to be ready
-    echo "Waiting for StatusNotifierWatcher..."
-    for i in $(seq 1 60); do
-      if check_tray; then
-        echo "StatusNotifierWatcher found, waiting for stability..."
-        sleep 3
-        if check_tray; then
-          echo "StatusNotifierWatcher is ready and stable"
-          break
-        fi
-        echo "StatusNotifierWatcher became unavailable, continuing to wait..."
-      fi
-      sleep 1
-      if [ "$i" -eq 60 ]; then
-        echo "Timeout waiting for StatusNotifierWatcher" >&2
-        exit 1
-      fi
-    done
+    # Wait for tray to be ready
+    ${wait-for-tray}
 
     # Launch all apps (use PATH to get same versions as manual launch)
     ${lib.concatMapStringsSep "\n    " (app: "${app} &") startupApps}

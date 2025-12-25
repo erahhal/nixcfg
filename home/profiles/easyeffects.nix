@@ -1,5 +1,8 @@
 { pkgs, ...}:
 
+let
+  wait-for-tray = (import ../modules/wait-for-tray.nix) pkgs;
+in
 {
   imports = [
     ./easyeffects-presets.nix
@@ -16,6 +19,7 @@
     Service = {
       Restart = "always";
       RestartSec = 2;
+      ExecStartPre = "${wait-for-tray}";
       ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
       PassEnvironment = [
         "HOME"
