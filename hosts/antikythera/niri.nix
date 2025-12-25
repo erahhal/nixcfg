@@ -8,7 +8,7 @@
       output "eDP-1" {
         mode "2880x1800@120"
         scale 1.8
-        position x=0 y=0
+        position x=0 y=800
         variable-refresh-rate
       }
 
@@ -16,7 +16,7 @@
       output "Lenovo Group Limited P40w-20 V90DFGMV" {
         mode "5120x2160@60.000"
         scale 1.332031
-        position x=1600 y=800
+        position x=1600 y=0
         variable-refresh-rate
         focus-at-startup
       }
