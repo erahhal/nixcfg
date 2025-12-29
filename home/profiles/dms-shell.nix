@@ -146,8 +146,6 @@ in
   systemd.user.services.dms.Service = {
     Environment = [
       "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
-      # Prevent DMS crash dialog
-      "QS_NO_CRASH_GUI=1"
       # Use qt6ct platform theme for icon discovery
       # Set directly here instead of PassEnvironment to avoid stale systemd env issues
       "QT_QPA_PLATFORMTHEME=qt6ct"

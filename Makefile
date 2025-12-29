@@ -37,6 +37,9 @@ switch:
 nflx-local:
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 
+nixvim-local:
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
+
 boot:
 	sudo -E nixos-rebuild boot --flake .#${HOSTNAME} -L
 	

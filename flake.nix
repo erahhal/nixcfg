@@ -64,7 +64,8 @@
 
     dms-shell = {
       # url = "github:AvengeMedia/DankMaterialShell/d37ddd1d41f7078b1bfb836079af67ac5f51ad50";
-      url = "github:AvengeMedia/DankMaterialShell/83b81be82520617a0e3022ee8a01c32d0cbc5df9";
+      # url = "github:AvengeMedia/DankMaterialShell/83b81be82520617a0e3022ee8a01c32d0cbc5df9";
+      url = "github:AvengeMedia/DankMaterialShell/c281bf3b533af502de379caa0037b171b74eb508";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -142,11 +143,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    quickshell = {
-      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -170,7 +166,9 @@
       systemd.services."home-manager-${userParams.username}".serviceConfig = { RemainAfterExit = "yes"; };
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      nixpkgs.overlays = [ inputs.nur.overlays.default ];
+      nixpkgs.overlays = [
+        inputs.nur.overlays.default
+      ];
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
           inputs.caelestia-shell.homeManagerModules.default

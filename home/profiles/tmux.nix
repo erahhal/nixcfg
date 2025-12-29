@@ -115,12 +115,14 @@ let
     # bind -T copy-mode-vi C-j send-keys -X copy-pipe-and-cancel "${xclip} -i -f -selection primary | ${xclip} -i -selection clipboard"
 
     # smart pane switching with awareness of vim splits
-    bind -n C-h run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-h) || tmux select-pane -L"
-    bind -n C-j run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-j) || tmux select-pane -D"
-    bind -n C-k run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-k) || tmux select-pane -U"
-    bind -n C-l run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys C-l) || tmux select-pane -R"
+    # - Local vim: vim-tmux-navigator handles edge fallthrough
+    # - Remote vim (SSH/et): title contains edge markers (~L, ~R, ~T, ~B) - fallthrough if at edge
+    bind -n C-h run-shell 'cmd="$(tmux display-message -p "#{pane_current_command}")"; title="$(tmux display-message -p "#{pane_title}")"; if echo "$cmd" | grep -iqE "(vim|nvim)"; then tmux send-keys C-h; elif echo "$title" | grep -iqE "(vim|nvim)"; then if echo "$title" | grep -q "~L"; then tmux select-pane -L; else tmux send-keys C-h; fi; else tmux select-pane -L; fi'
+    bind -n C-j run-shell 'cmd="$(tmux display-message -p "#{pane_current_command}")"; title="$(tmux display-message -p "#{pane_title}")"; if echo "$cmd" | grep -iqE "(vim|nvim)"; then tmux send-keys C-j; elif echo "$title" | grep -iqE "(vim|nvim)"; then if echo "$title" | grep -q "~B"; then tmux select-pane -D; else tmux send-keys C-j; fi; else tmux select-pane -D; fi'
+    bind -n C-k run-shell 'cmd="$(tmux display-message -p "#{pane_current_command}")"; title="$(tmux display-message -p "#{pane_title}")"; if echo "$cmd" | grep -iqE "(vim|nvim)"; then tmux send-keys C-k; elif echo "$title" | grep -iqE "(vim|nvim)"; then if echo "$title" | grep -q "~T"; then tmux select-pane -U; else tmux send-keys C-k; fi; else tmux select-pane -U; fi'
+    bind -n C-l run-shell 'cmd="$(tmux display-message -p "#{pane_current_command}")"; title="$(tmux display-message -p "#{pane_title}")"; if echo "$cmd" | grep -iqE "(vim|nvim)"; then tmux send-keys C-l; elif echo "$title" | grep -iqE "(vim|nvim)"; then if echo "$title" | grep -q "~R"; then tmux select-pane -R; else tmux send-keys C-l; fi; else tmux select-pane -R; fi'
     # C-\ switches to last pane
-    bind -n 'C-\' run "(tmux display-message -p '#{pane_current_command}' | grep -iq 'vim' && tmux send-keys 'C-\\') || tmux select-pane -l"
+    bind -n 'C-\' run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(vim|nvim)' && tmux send-keys 'C-\\') || (tmux display-message -p '#{pane_title}' | grep -iqE '(vim|nvim)' && tmux send-keys 'C-\\') || tmux select-pane -l"
  '';
 
   tmuxConf = tmuxConfLocalThemed + tmuxConfEllis + theme-status;

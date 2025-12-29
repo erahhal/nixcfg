@@ -198,7 +198,17 @@
       "Bash(command rm -f ~/.local/share/Steam/ubuntu12_32/steam-runtime/usr/libexec/steam-runtime-tools-0/srt-bwrap)",
       "Bash(sudo journalctl:*)",
       "Bash(sudo -u dms-greeter printenv:*)",
-      "Bash(xxd:*)"
+      "Bash(xxd:*)",
+      "WebFetch(domain:git.outfoxxed.me)",
+      "Bash(iw dev:*)",
+      "Bash(nmcli device:*)",
+      "Bash(nmcli connection show:*)",
+      "Bash(for dev in /org/freedesktop/NetworkManager/Devices/{1,2,3,5,7,8,9})",
+      "Bash(do)",
+      "Bash(nc:*)",
+      "Bash(timeout 5 bash -c 'echo \"\"{\\\\\"\"id\\\\\"\": 1, \\\\\"\"method\\\\\"\": \\\\\"\"subscribe\\\\\"\", \\\\\"\"params\\\\\"\": {\\\\\"\"services\\\\\"\": [\\\\\"\"network\\\\\"\"]}}\"\" | nc -U /run/user/1026/danklinux-1139865.sock')",
+      "Bash(socket=\"/run/user/1026/danklinux-1583911.sock\")",
+      "Bash(timeout 5 bash -c \"echo ''{\"\"id\"\": 1, \"\"method\"\": \"\"subscribe\"\", \"\"params\"\": {\"\"services\"\": [\"\"network\"\"]}}'' | nc -U $socket\")"
     ],
     "deny": [],
     "ask": []

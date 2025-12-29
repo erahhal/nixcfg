@@ -51,7 +51,7 @@
     ./sway.nix
     ./niri.nix
 
-    ../../profiles/nfs-mounts.nix
+    # ../../profiles/nfs-mounts.nix
     # ../../profiles/smb-mounts.nix
   ];
 
@@ -337,18 +337,18 @@
     };
   };
 
-  ## Fix WiFi not working after suspend or boot - known ath11k issue on kernel 6.17+
+  ## Fix WiFi not working after suspend - known ath11k issue on kernel 6.17+
   ## https://bbs.archlinux.org/viewtopic.php?id=310363
-  systemd.services.ath11k-fix = {
-    description = "Reload ath11k_pci after resume or boot";
-    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "NetworkManager.service" "iwd.service" ];
-    before = [ "display-manager.service" ];
-    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 8 && ${pkgs.kmod}/bin/modprobe -r ath11k_pci && sleep 1 && ${pkgs.kmod}/bin/modprobe ath11k_pci && sleep 3 && ${pkgs.systemd}/bin/systemctl restart NetworkManager'";
-    };
-  };
+  ## Using powerManagement.resumeCommands instead of a systemd service
+  ## to ensure it only runs once on resume, not repeatedly
+  powerManagement.resumeCommands = ''
+    # Give system time to stabilize after resume
+    sleep 2
+    # Reload ath11k driver to fix WiFi
+    ${pkgs.kmod}/bin/modprobe -r ath11k_pci || true
+    sleep 1
+    ${pkgs.kmod}/bin/modprobe ath11k_pci
+  '';
 
   # Enable power management
   powerManagement = {
@@ -685,7 +685,7 @@
       # Default: off (AC), on (BAT)
 
       WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
+      WIFI_PWR_ON_BAT = "off";  # Disabled to prevent ath11k driver instability
 
       # Disable Wake-on-LAN: Y/N.
       # Default: Y
