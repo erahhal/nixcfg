@@ -187,7 +187,7 @@
             \ apvlv %f,
 
     " Audio
-    filetype {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus},
+    filetype {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus,*.m3u,*.m3u8,*.cue},
             \<audio/*>
            \ {Play using VLC}
            \ vlc %c,

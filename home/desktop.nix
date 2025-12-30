@@ -224,6 +224,9 @@ in
         "audio/mp4"                                                                     = [ "vlc.desktop" ];
         "audio/x-m4a"                                                                   = [ "vlc.desktop" ];
         "audio/x-ms-wma"                                                                = [ "vlc.desktop" ];
+        "audio/x-mpegurl"                                                               = [ "vlc.desktop" ];
+        "audio/mpegurl"                                                                 = [ "vlc.desktop" ];
+        "application/x-cue"                                                             = [ "vlc.desktop" ];
 
         "application/x-bittorrent"                                                      = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet"                                                       = [ "transmission-gtk.desktop" ];
