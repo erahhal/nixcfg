@@ -59,6 +59,7 @@ in
       # ./profiles/syncthing.nix
       ./profiles/vifm.nix
       # ./profiles/weechat.nix
+      ./profiles/whipper.nix
       ./profiles/zellij.nix
     ];
 

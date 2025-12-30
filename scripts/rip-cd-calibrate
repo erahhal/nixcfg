@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+read -p "Have you inserted a well-known CD? (y/n): " answer
+
+case "$answer" in
+    [Yy]|[Yy][Ee][Ss])
+        echo "Proceeding..."
+        whipper drive analyze
+        whipper offset find
+        ;;
+    *)
+        echo "Aborted."
+        exit 1
+        ;;
+esac
+

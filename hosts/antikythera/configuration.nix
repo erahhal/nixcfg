@@ -51,7 +51,7 @@
     ./sway.nix
     ./niri.nix
 
-    # ../../profiles/nfs-mounts.nix
+    ../../profiles/nfs-mounts.nix
     # ../../profiles/smb-mounts.nix
   ];
 

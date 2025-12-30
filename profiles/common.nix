@@ -404,6 +404,7 @@
     util-linux
     vim
     vulnix
+    whipper
     wireguard-tools
     wirelesstools
     wget

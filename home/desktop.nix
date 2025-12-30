@@ -212,6 +212,19 @@ in
         "video/x-msvideo"                                                               = [ "mpv.desktop" ];
         "video/x-ms-wmv"                                                                = [ "mpv.desktop" ];
 
+        "audio/flac"                                                                    = [ "vlc.desktop" ];
+        "audio/mpeg"                                                                    = [ "vlc.desktop" ];
+        "audio/mp3"                                                                     = [ "vlc.desktop" ];
+        "audio/x-wav"                                                                   = [ "vlc.desktop" ];
+        "audio/wav"                                                                     = [ "vlc.desktop" ];
+        "audio/ogg"                                                                     = [ "vlc.desktop" ];
+        "audio/x-vorbis+ogg"                                                            = [ "vlc.desktop" ];
+        "audio/aac"                                                                     = [ "vlc.desktop" ];
+        "audio/x-aac"                                                                   = [ "vlc.desktop" ];
+        "audio/mp4"                                                                     = [ "vlc.desktop" ];
+        "audio/x-m4a"                                                                   = [ "vlc.desktop" ];
+        "audio/x-ms-wma"                                                                = [ "vlc.desktop" ];
+
         "application/x-bittorrent"                                                      = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet"                                                       = [ "transmission-gtk.desktop" ];
 

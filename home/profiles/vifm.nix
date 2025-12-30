@@ -189,6 +189,8 @@
     " Audio
     filetype {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus},
             \<audio/*>
+           \ {Play using VLC}
+           \ vlc %c,
            \ {Play using ffplay}
            \ ffplay -nodisp -autoexit %c,
            \ {Play using MPlayer}
