@@ -1,3 +1,170 @@
 #!/usr/bin/env bash
 
-whipper cd rip --output-directory ~/Music/Rips --cover-art complete --unknown
+SKIP_WHIPPER=false
+ALBUM_DIR=""
+NO_COVER_ART=false
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --skip-whipper|-s)
+            SKIP_WHIPPER=true
+            shift
+            ;;
+        --album-dir|-a)
+            ALBUM_DIR="$2"
+            shift 2
+            ;;
+        --no-cover-art|-n)
+            NO_COVER_ART=true
+            shift
+            ;;
+        --help|-h)
+            echo "Usage: rip-cd [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  -s, --skip-whipper     Skip whipper step (for recovery only)"
+            echo "  -a, --album-dir DIR    Specify album directory"
+            echo "  -n, --no-cover-art     Skip cover art fetching"
+            echo "  -h, --help             Show this help"
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+# Run whipper (unless skipped)
+if [[ "$SKIP_WHIPPER" == "false" ]]; then
+    COVER_ART_OPT="--cover-art complete"
+    if [[ "$NO_COVER_ART" == "true" ]]; then
+        COVER_ART_OPT=""
+    fi
+
+    whipper -e never cd rip --output-directory ~/Music/Rips $COVER_ART_OPT --unknown --keep-going "$@"
+    WHIPPER_EXIT=$?
+
+    if [[ $WHIPPER_EXIT -ne 0 ]]; then
+        echo ""
+        echo "WARNING: whipper exited with code $WHIPPER_EXIT"
+        echo "If cover art fetch failed, try re-running with: rip-cd --no-cover-art"
+        echo ""
+    fi
+fi
+
+# Find the album directory
+if [[ -z "$ALBUM_DIR" ]]; then
+    ALBUM_DIR=$(find ~/Music/Rips -mindepth 2 -maxdepth 2 -type d -printf '%T@ %p\n' | sort -n | tail -1 | cut -d' ' -f2-)
+fi
+
+if [[ -z "$ALBUM_DIR" ]]; then
+    echo "Could not find album directory"
+    exit 1
+fi
+
+echo "Album directory: $ALBUM_DIR"
+
+# Find TOC and CUE files
+TOC_FILE=$(find "$ALBUM_DIR" -name "*.toc" | head -1)
+CUE_FILE=$(find "$ALBUM_DIR" -name "*.cue" | head -1)
+
+if [[ -z "$TOC_FILE" ]] || [[ -z "$CUE_FILE" ]]; then
+    echo "Could not find TOC or CUE file in: $ALBUM_DIR"
+    echo ""
+    echo "This usually means whipper failed before completing the rip."
+    echo "Try one of the following:"
+    echo "  1. Re-run with: rip-cd --no-cover-art"
+    echo "  2. Delete the album directory and try again"
+    exit 1
+fi
+
+# Count expected tracks from TOC
+EXPECTED_TRACKS=$(grep -c "// Track" "$TOC_FILE")
+
+# Get list of present track numbers from .flac files
+PRESENT_TRACKS=$(ls "$ALBUM_DIR"/*.flac 2>/dev/null | sed 's/.*\/\([0-9]\+\)\..*/\1/' | sed 's/^0*//')
+
+# Track recovered files for CUE update
+RECOVERED_BASENAMES=()
+
+# Find missing tracks
+MISSING_COUNT=0
+for i in $(seq 1 $EXPECTED_TRACKS); do
+    if ! echo "$PRESENT_TRACKS" | grep -q "^${i}$"; then
+        echo "Track $i is missing, attempting recovery..."
+        MISSING_COUNT=$((MISSING_COUNT + 1))
+
+        # Get expected filename from CUE (format: FILE "NN. Artist - Track.flac" WAVE)
+        PADDED=$(printf "%02d" $i)
+        BASENAME=$(grep "^FILE \"${PADDED}\." "$CUE_FILE" | sed 's/FILE "\(.*\)\.flac" WAVE/\1/')
+
+        if [[ -z "$BASENAME" ]]; then
+            # Fallback to generic name if not in CUE
+            BASENAME="${PADDED}. Unknown Artist - Unknown Track $i"
+        fi
+
+        # Rip with cdparanoia
+        cdparanoia -v "$i" "$ALBUM_DIR/${BASENAME}-corrupt.wav"
+
+        # Convert to FLAC (use nix-shell to ensure flac is available)
+        FLAC_FILE="$ALBUM_DIR/${BASENAME}-corrupt.flac"
+        nix-shell -p flac --run "flac \"$ALBUM_DIR/${BASENAME}-corrupt.wav\""
+
+        # Remove intermediate WAV
+        rm -f "$ALBUM_DIR/${BASENAME}-corrupt.wav"
+
+        # Update M3U file with the recovered track
+        if [[ -f "$FLAC_FILE" ]]; then
+            RECOVERED_BASENAMES+=("$BASENAME")
+
+            M3U_FILE=$(find "$ALBUM_DIR" -name "*.m3u" | head -1)
+            if [[ -n "$M3U_FILE" ]]; then
+                # Get duration in seconds from FLAC metadata
+                SAMPLES=$(nix-shell -p flac --run "metaflac --show-total-samples \"$FLAC_FILE\"")
+                SAMPLE_RATE=$(nix-shell -p flac --run "metaflac --show-sample-rate \"$FLAC_FILE\"")
+                DURATION=$((SAMPLES / SAMPLE_RATE))
+
+                FLAC_FILENAME="${BASENAME}-corrupt.flac"
+
+                # Append entry to M3U
+                echo "#EXTINF:${DURATION},${FLAC_FILENAME}" >> "$M3U_FILE"
+                echo "${FLAC_FILENAME}" >> "$M3U_FILE"
+
+                echo "Added ${FLAC_FILENAME} to M3U"
+            fi
+        fi
+
+        echo "Recovered track $i as ${BASENAME}-corrupt.flac"
+    fi
+done
+
+if [[ $MISSING_COUNT -eq 0 ]]; then
+    echo "All tracks present, no recovery needed."
+else
+    echo "Recovered $MISSING_COUNT track(s)."
+
+    # Re-sort M3U file by track number
+    M3U_FILE=$(find "$ALBUM_DIR" -name "*.m3u" | head -1)
+    if [[ -n "$M3U_FILE" ]]; then
+        echo "Sorting M3U file..."
+        # Keep header, combine pairs, sort by track number extracted from filename, split back
+        head -1 "$M3U_FILE" > "$M3U_FILE.tmp"
+        tail -n +2 "$M3U_FILE" | paste - - | sort -t$'\t' -k2,2 -V | tr '\t' '\n' >> "$M3U_FILE.tmp"
+        mv "$M3U_FILE.tmp" "$M3U_FILE"
+        echo "M3U file sorted."
+    fi
+
+    # Update CUE file with new filenames for recovered tracks
+    if [[ ${#RECOVERED_BASENAMES[@]} -gt 0 ]]; then
+        echo "Updating CUE file..."
+        for BASENAME in "${RECOVERED_BASENAMES[@]}"; do
+            # Replace "BASENAME.flac" with "BASENAME-corrupt.flac" in CUE file
+            sed -i "s|FILE \"${BASENAME}.flac\" WAVE|FILE \"${BASENAME}-corrupt.flac\" WAVE|g" "$CUE_FILE"
+            echo "Updated CUE: ${BASENAME}.flac -> ${BASENAME}-corrupt.flac"
+        done
+        echo "CUE file updated."
+    fi
+fi
+
+echo "Done."

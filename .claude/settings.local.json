@@ -208,7 +208,12 @@
       "Bash(nc:*)",
       "Bash(timeout 5 bash -c 'echo \"\"{\\\\\"\"id\\\\\"\": 1, \\\\\"\"method\\\\\"\": \\\\\"\"subscribe\\\\\"\", \\\\\"\"params\\\\\"\": {\\\\\"\"services\\\\\"\": [\\\\\"\"network\\\\\"\"]}}\"\" | nc -U /run/user/1026/danklinux-1139865.sock')",
       "Bash(socket=\"/run/user/1026/danklinux-1583911.sock\")",
-      "Bash(timeout 5 bash -c \"echo ''{\"\"id\"\": 1, \"\"method\"\": \"\"subscribe\"\", \"\"params\"\": {\"\"services\"\": [\"\"network\"\"]}}'' | nc -U $socket\")"
+      "Bash(timeout 5 bash -c \"echo ''{\"\"id\"\": 1, \"\"method\"\": \"\"subscribe\"\", \"\"params\"\": {\"\"services\"\": [\"\"network\"\"]}}'' | nc -U $socket\")",
+      "WebFetch(domain:docs.xiph.org)",
+      "WebFetch(domain:man.archlinux.org)",
+      "WebFetch(domain:wiki.hydrogenaudio.org)",
+      "Bash(whipper cd rip:*)",
+      "Bash(whipper:*)"
     ],
     "deny": [],
     "ask": []

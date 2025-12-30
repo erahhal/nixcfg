@@ -404,7 +404,6 @@
     util-linux
     vim
     vulnix
-    whipper
     wireguard-tools
     wirelesstools
     wget
@@ -414,5 +413,11 @@
     zip
     zsh
     inputs.nix-inspect.packages.${system}.default
+
+    # cd/dvd ripping/recovery
+    cdparanoia
+    ddrescue
+    flac
+    whipper
   ];
 }
