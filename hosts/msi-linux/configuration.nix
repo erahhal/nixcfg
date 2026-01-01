@@ -21,6 +21,7 @@
       ../../profiles/steam.nix
       ./steam-fix.nix
       ../../profiles/udev.nix
+      ../../profiles/keyboard-debounce.nix
       ## @TODO: rename workstation-hardware.nix
       ../../profiles/laptop-hardware.nix
       ../../overlays/chromium-based-apps.nix

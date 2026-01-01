@@ -215,7 +215,8 @@
       "Bash(whipper cd rip:*)",
       "Bash(whipper:*)",
       "Bash(projectm-sdl:*)",
-      "Bash(projectMSDL:*)"
+      "Bash(projectMSDL:*)",
+      "Bash(nix-build:*)"
     ],
     "deny": [],
     "ask": []
