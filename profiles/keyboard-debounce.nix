@@ -13,6 +13,9 @@ let
   '';
 in
 {
+  # -------------------------------------------------------------------------
+  # Software debounce for wireless keyboards (Linux only)
+  # -------------------------------------------------------------------------
   services.interception-tools = {
     enable = true;
     plugins = [ debouncer-udevmon ];
@@ -26,4 +29,14 @@ in
   };
 
   environment.etc."debouncer.toml".source = debouncerConfig;
+
+  # -------------------------------------------------------------------------
+  # VIA keyboard configurator (for firmware-level debounce on QMK keyboards)
+  # -------------------------------------------------------------------------
+  # VIA allows adjusting keyboard firmware settings like debounce directly
+  # on the keyboard, which works across all operating systems (Linux/Windows)
+  environment.systemPackages = [ pkgs.via ];
+
+  # Required for VIA to detect the keyboard without root
+  services.udev.packages = [ pkgs.via ];
 }
