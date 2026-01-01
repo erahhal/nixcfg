@@ -81,6 +81,7 @@ in
     imports = [
       # Terminals
       ./profiles/alacritty.nix
+      ./profiles/audio-visualizers.nix
       ./profiles/foot.nix
       ./profiles/ghostty.nix
       ./profiles/kitty.nix

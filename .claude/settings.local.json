@@ -213,7 +213,9 @@
       "WebFetch(domain:man.archlinux.org)",
       "WebFetch(domain:wiki.hydrogenaudio.org)",
       "Bash(whipper cd rip:*)",
-      "Bash(whipper:*)"
+      "Bash(whipper:*)",
+      "Bash(projectm-sdl:*)",
+      "Bash(projectMSDL:*)"
     ],
     "deny": [],
     "ask": []
