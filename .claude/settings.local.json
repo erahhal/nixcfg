@@ -216,7 +216,9 @@
       "Bash(whipper:*)",
       "Bash(projectm-sdl:*)",
       "Bash(projectMSDL:*)",
-      "Bash(nix-build:*)"
+      "Bash(nix-build:*)",
+      "Bash($pkgs.projectm-sdl-cpp/bin/projectMSDL --help)",
+      "Bash(/nix/store/9jz587fawaw8ykl64fr6qm4gssq20qxd-projectm-sdl-cpp-0-unstable-2025-10-17/bin/projectMSDL:*)"
     ],
     "deny": [],
     "ask": []

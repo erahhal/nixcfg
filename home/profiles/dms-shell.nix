@@ -1,12 +1,3 @@
-## @TODOS
-## - If there is no settings.json, dms needs to be restarted twice to pick up the settings, as it creates it during the startup process.
-## - Get settings sync working - it doesn't always work
-## - Figure out how to have multiple control centers with different configs
-## - Figure out how to get automatic night mode working to replace gammastep
-## - What's going on with the session below, and how does it different from config/settings?
-##   - Appears to be for wallpaper, not sure why it's separate from config
-## - Figure out how to get launcher to run arbitrary executables - seems to only run .desktop files
-
 { pkgs, config, lib, osConfig, ... }:
 let
   wallpaperPath = if osConfig.hostParams.desktop.wallpaper != null

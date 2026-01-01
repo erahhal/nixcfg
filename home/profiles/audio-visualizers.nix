@@ -19,12 +19,50 @@ let
     hash = "sha256-0PNCmaC+C5g2nFv4Oy7LtBfLj1NkyfhDBWSM17ilbpE=";
   };
 
-  # Wrapper script for projectM with presets configured
+  # Wrapper script for projectM with presets configured and automatic audio capture
   projectm-wrapper = pkgs.writeShellScriptBin "projectm" ''
-    exec ${pkgs.projectm-sdl-cpp}/bin/projectMSDL \
+    # Get the default audio output sink
+    DEFAULT_SINK=$(${pkgs.pulseaudio}/bin/pactl get-default-sink 2>/dev/null)
+
+    if [ -z "$DEFAULT_SINK" ]; then
+      echo "Warning: Could not detect default audio sink, using default capture device"
+      exec ${pkgs.projectm-sdl-cpp}/bin/projectMSDL \
+        --presetPath="$HOME/.local/share/projectM/presets" \
+        --texturePath="$HOME/.local/share/projectM/textures" \
+        --shuffleEnabled=1 \
+        --enableSplash=0 \
+        "$@"
+    fi
+
+    # Create a pw-loopback to capture audio from the default sink's monitor
+    # This creates a virtual capture device that projectMSDL can use
+    ${pkgs.pipewire}/bin/pw-loopback \
+      --capture-props="media.class=Audio/Sink node.name=projectm-capture node.description=projectM-Audio-Capture" \
+      --playback-props="media.class=Audio/Source node.name=projectm-source node.description=projectM-Audio-Source" \
+      &
+    LOOPBACK_PID=$!
+
+    # Ensure loopback is cleaned up on exit
+    cleanup() {
+      kill $LOOPBACK_PID 2>/dev/null
+      wait $LOOPBACK_PID 2>/dev/null
+    }
+    trap cleanup EXIT INT TERM
+
+    # Wait for loopback to initialize
+    sleep 0.5
+
+    # Link the default sink monitor to our loopback sink
+    ${pkgs.pipewire}/bin/pw-link "$DEFAULT_SINK:monitor_FL" "projectm-capture:playback_FL" 2>/dev/null
+    ${pkgs.pipewire}/bin/pw-link "$DEFAULT_SINK:monitor_FR" "projectm-capture:playback_FR" 2>/dev/null
+
+    # Run projectMSDL with the loopback source as the audio device
+    ${pkgs.projectm-sdl-cpp}/bin/projectMSDL \
       --presetPath="$HOME/.local/share/projectM/presets" \
       --texturePath="$HOME/.local/share/projectM/textures" \
       --shuffleEnabled=1 \
+      --enableSplash=0 \
+      --audioDevice="projectM-Audio-Source" \
       "$@"
   '';
 in

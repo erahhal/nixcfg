@@ -825,6 +825,11 @@ in
         default-window-height { fixed 800; }
     }
 
+    window-rule {
+        match app-id=r#"^projectM.*$"#
+        open-fullscreen true
+    }
+
     // window-rule {
     //   match app-id="mpv"
     //   inhibit-idle true
