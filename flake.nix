@@ -2,6 +2,8 @@
   description = "NixOS configuration with flakes";
 
   inputs = {
+    debug-mode.url = "github:boolean-option/false";
+
     # Use stable for main
     # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -63,9 +65,8 @@
     };
 
     dms-shell = {
-      # url = "github:AvengeMedia/DankMaterialShell/d37ddd1d41f7078b1bfb836079af67ac5f51ad50";
-      # url = "github:AvengeMedia/DankMaterialShell/83b81be82520617a0e3022ee8a01c32d0cbc5df9";
-      url = "github:AvengeMedia/DankMaterialShell/c281bf3b533af502de379caa0037b171b74eb508";
+      # url = "github:AvengeMedia/DankMaterialShell/c281bf3b533af502de379caa0037b171b74eb508";
+      url = "github:AvengeMedia/DankMaterialShell/621710bd86d9c7c523f65d2522a99e822adae84a";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -150,8 +151,9 @@
     };
   };
 
-  outputs = { ... }@inputs:
+  outputs = { debug-mode, ... }@inputs:
   let
+    debugMode = debug-mode.value;
     broken = import ./helpers/broken.nix {
       lib = inputs.nixpkgs.lib;
       pkgs = import inputs.nixpkgs {
@@ -189,6 +191,7 @@
     # };
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = {
+        inherit debugMode;
         inherit userParams;
         inherit broken;
         inherit recursiveMerge;
@@ -248,6 +251,7 @@
           }
         ];
         specialArgs = {
+          inherit debugMode;
           inherit inputs;
           inherit system;
           inherit copyDesktopIcons;
@@ -297,6 +301,7 @@
           # }
         ];
         specialArgs = {
+          inherit debugMode;
           inherit inputs;
           inherit system;
           inherit copyDesktopIcons;
@@ -335,6 +340,7 @@
           }
         ];
         specialArgs = {
+          inherit debugMode;
           inherit inputs;
           inherit system;
           inherit broken;
@@ -366,6 +372,7 @@
           }
         ];
         specialArgs = {
+          inherit debugMode;
           inherit inputs;
           inherit system;
           inherit broken;
@@ -401,6 +408,7 @@
           }
         ];
         specialArgs = {
+          inherit debugMode;
           inherit inputs;
           inherit system;
           inherit broken;
@@ -456,6 +464,7 @@
           }
         ];
         specialArgs = {
+          inherit debugMode;
           inherit inputs;
           inherit system;
           inherit broken;

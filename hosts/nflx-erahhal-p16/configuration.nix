@@ -190,7 +190,7 @@
       #     hard freeze when on battery.
       wifi = {
         # Use iwd backend for better roaming behavior and auto-connect
-        # backend = "iwd";
+        backend = "iwd";
         powersave = false;
         scanRandMacAddress = false;
       };

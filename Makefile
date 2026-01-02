@@ -34,6 +34,10 @@ switch:
 		systemctl --user restart toggle-theme ;\
 	fi
 
+debug:
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true -L |& ${NOM}
+
+
 nflx-local:
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 

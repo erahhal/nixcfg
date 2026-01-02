@@ -84,6 +84,11 @@ let
 
   # Wrapper script for projectM (uses persistent loopback from systemd service)
   projectm-wrapper = pkgs.writeShellScriptBin "projectm" ''
+    # Use native Wayland if available (avoids XWayland issues on hybrid GPU systems)
+    if [ -n "$WAYLAND_DISPLAY" ]; then
+      export SDL_VIDEODRIVER=wayland
+    fi
+
     # Get the default audio output sink and link to persistent loopback
     DEFAULT_SINK=$(${pkgs.pulseaudio}/bin/pactl get-default-sink 2>/dev/null)
 

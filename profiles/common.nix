@@ -1,8 +1,13 @@
-{ config, lib, pkgs, inputs, system, userParams, ...}:
+{ config, debugMode, pkgs, inputs, system, userParams, ...}:
 # let
 #   backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
 # in
 {
+  # --------------------------------------------------------------------------------------
+  # Debug setup
+  # --------------------------------------------------------------------------------------
+
+  security.sudo.wheelNeedsPassword = if debugMode then false else true;
 
   # --------------------------------------------------------------------------------------
   # Base Nix config

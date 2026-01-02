@@ -209,20 +209,7 @@
       "Bash(timeout 5 bash -c 'echo \"\"{\\\\\"\"id\\\\\"\": 1, \\\\\"\"method\\\\\"\": \\\\\"\"subscribe\\\\\"\", \\\\\"\"params\\\\\"\": {\\\\\"\"services\\\\\"\": [\\\\\"\"network\\\\\"\"]}}\"\" | nc -U /run/user/1026/danklinux-1139865.sock')",
       "Bash(socket=\"/run/user/1026/danklinux-1583911.sock\")",
       "Bash(timeout 5 bash -c \"echo ''{\"\"id\"\": 1, \"\"method\"\": \"\"subscribe\"\", \"\"params\"\": {\"\"services\"\": [\"\"network\"\"]}}'' | nc -U $socket\")",
-      "WebFetch(domain:docs.xiph.org)",
-      "WebFetch(domain:man.archlinux.org)",
-      "WebFetch(domain:wiki.hydrogenaudio.org)",
-      "Bash(whipper cd rip:*)",
-      "Bash(whipper:*)",
-      "Bash(projectm-sdl:*)",
-      "Bash(projectMSDL:*)",
-      "Bash(nix-build:*)",
-      "Bash($pkgs.projectm-sdl-cpp/bin/projectMSDL --help)",
-      "Bash(/nix/store/9jz587fawaw8ykl64fr6qm4gssq20qxd-projectm-sdl-cpp-0-unstable-2025-10-17/bin/projectMSDL:*)",
-      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline --all)",
-      "Bash(git -C /home/erahhal/Code/nixcfg log -p --all -S \"focusedWindow\")",
-      "Bash(/nix/store/vbv15nsngif0b38k9wzwkzqcq5v9ay4l-sd-switch-0.6.2/bin/sd-switch:*)",
-      "Bash(projectm --help:*)"
+      "Bash(nix show-derivation:*)"
     ],
     "deny": [],
     "ask": []

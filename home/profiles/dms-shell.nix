@@ -4,11 +4,14 @@ let
     then toString osConfig.hostParams.desktop.wallpaper
     else null;
 
+  # Using bbedward's fork with PR #3 fix for high CPU usage
+  # (switches from Item to QtObject to fix "graphical object not placed in scene" warnings)
+  # TODO: Switch back to devnullvoid/dms-command-runner after PR #3 is merged
   dms-command-runner = pkgs.fetchFromGitHub {
-    owner = "devnullvoid";
+    owner = "bbedward";
     repo = "dms-command-runner";
-    rev = "d89a09413e2fc041089b595a06c0fb316b12e17a";
-    hash = "sha256-tXqDRVp1VhyD1WylW83mO4aYFmVg/NV6Z/toHmb5Tn8=";
+    rev = "8cbdae103d6304ad98fd4c579e82fad527ff3ebf";
+    hash = "sha256-DWSWdP/gw6tp87u/0tkk4hL1oBtLWsVN6nbqLe4ClxM=";
   };
 
   dms-easyeffects = pkgs.fetchFromGitHub {
@@ -223,6 +226,7 @@ in
 
     # Plugins (settings are in defaultPluginSettings, synced via activation script)
     plugins = {
+      # Using bbedward's fork with PR #3 fix for graphics scene warnings
       CommandRunner = {
         enable = true;
         src = dms-command-runner;
