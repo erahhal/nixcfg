@@ -38,6 +38,7 @@
 
       ../../profiles/nfs-mounts.nix
       # ../../profiles/smb-mounts.nix
+      ../../profiles/kdeconnect.nix
     ];
 
   # Needed to setup passwords

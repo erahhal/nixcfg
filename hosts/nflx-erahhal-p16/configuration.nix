@@ -58,6 +58,8 @@
 
     # Temporary
     # ../../profiles/nfs-mounts.nix
+
+    ../../profiles/kdeconnect.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {

@@ -97,6 +97,9 @@ in
 
       # Startup applications service
       ./modules/startup-apps.nix
+
+      # KDE Connect
+      ./profiles/kdeconnect.nix
     ];
 
     ## Until Hyprland bug https://github.com/hyprwm/Hyprland/issues/5815 is resolved
@@ -231,6 +234,8 @@ in
 
         "application/x-bittorrent"                                                      = [ "transmission-gtk.desktop" ];
         "x-scheme-handler/magnet"                                                       = [ "transmission-gtk.desktop" ];
+
+        "x-scheme-handler/kdeconnect"                                                   = [ "org.kde.dolphin.desktop" ];
 
         "application/msword"                                                            = [ "writer.desktop" ];
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"       = [ "writer.desktop" ];

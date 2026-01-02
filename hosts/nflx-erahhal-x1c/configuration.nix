@@ -57,6 +57,8 @@
 
       # Temporary
       # ../../profiles/nfs-mounts.nix
+
+      ../../profiles/kdeconnect.nix
     ];
 
 
