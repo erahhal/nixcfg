@@ -256,7 +256,12 @@ in
         leftWidgets = [
           "launcherButton"
           "workspaceSwitcher"
-          "focusedWindow"
+          {
+            id = "focusedWindow";
+            enabled = true;
+            ## Don't show app name, just title
+            focusedWindowCompactMode = true;
+          }
         ];
         centerWidgets = [];
         rightWidgets = [

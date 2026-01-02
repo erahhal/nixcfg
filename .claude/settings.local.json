@@ -218,7 +218,11 @@
       "Bash(projectMSDL:*)",
       "Bash(nix-build:*)",
       "Bash($pkgs.projectm-sdl-cpp/bin/projectMSDL --help)",
-      "Bash(/nix/store/9jz587fawaw8ykl64fr6qm4gssq20qxd-projectm-sdl-cpp-0-unstable-2025-10-17/bin/projectMSDL:*)"
+      "Bash(/nix/store/9jz587fawaw8ykl64fr6qm4gssq20qxd-projectm-sdl-cpp-0-unstable-2025-10-17/bin/projectMSDL:*)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline --all)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log -p --all -S \"focusedWindow\")",
+      "Bash(/nix/store/vbv15nsngif0b38k9wzwkzqcq5v9ay4l-sd-switch-0.6.2/bin/sd-switch:*)",
+      "Bash(projectm --help:*)"
     ],
     "deny": [],
     "ask": []
