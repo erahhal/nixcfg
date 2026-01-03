@@ -107,9 +107,9 @@ for i in $(seq 1 $EXPECTED_TRACKS); do
         # Rip with cdparanoia
         cdparanoia -v "$i" "$ALBUM_DIR/${BASENAME}-corrupt.wav"
 
-        # Convert to FLAC (use nix-shell to ensure flac is available)
+        # Convert to FLAC
         FLAC_FILE="$ALBUM_DIR/${BASENAME}-corrupt.flac"
-        nix-shell -p flac --run "flac \"$ALBUM_DIR/${BASENAME}-corrupt.wav\""
+        flac "$ALBUM_DIR/${BASENAME}-corrupt.wav"
 
         # Remove intermediate WAV
         rm -f "$ALBUM_DIR/${BASENAME}-corrupt.wav"
@@ -135,12 +135,12 @@ for i in $(seq 1 $EXPECTED_TRACKS); do
 
             # If we have a reference file, copy album-level tags
             if [[ -n "$REF_FLAC" ]] && [[ -f "$REF_FLAC" ]]; then
-                ALBUM=$(nix-shell -p flac --run "metaflac --show-tag=ALBUM \"$REF_FLAC\"" 2>/dev/null | sed 's/ALBUM=//')
-                ALBUM_ARTIST=$(nix-shell -p flac --run "metaflac --show-tag=album_artist \"$REF_FLAC\"" 2>/dev/null | sed 's/album_artist=//')
-                DATE=$(nix-shell -p flac --run "metaflac --show-tag=DATE \"$REF_FLAC\"" 2>/dev/null | sed 's/DATE=//')
-                TRACKTOTAL=$(nix-shell -p flac --run "metaflac --show-tag=TRACKTOTAL \"$REF_FLAC\"" 2>/dev/null | sed 's/TRACKTOTAL=//')
-                DISCTOTAL=$(nix-shell -p flac --run "metaflac --show-tag=DISCTOTAL \"$REF_FLAC\"" 2>/dev/null | sed 's/DISCTOTAL=//')
-                DISC=$(nix-shell -p flac --run "metaflac --show-tag=disc \"$REF_FLAC\"" 2>/dev/null | sed 's/disc=//')
+                ALBUM=$(metaflac --show-tag=ALBUM "$REF_FLAC" 2>/dev/null | sed 's/ALBUM=//')
+                ALBUM_ARTIST=$(metaflac --show-tag=album_artist "$REF_FLAC" 2>/dev/null | sed 's/album_artist=//')
+                DATE=$(metaflac --show-tag=DATE "$REF_FLAC" 2>/dev/null | sed 's/DATE=//')
+                TRACKTOTAL=$(metaflac --show-tag=TRACKTOTAL "$REF_FLAC" 2>/dev/null | sed 's/TRACKTOTAL=//')
+                DISCTOTAL=$(metaflac --show-tag=DISCTOTAL "$REF_FLAC" 2>/dev/null | sed 's/DISCTOTAL=//')
+                DISC=$(metaflac --show-tag=disc "$REF_FLAC" 2>/dev/null | sed 's/disc=//')
 
                 [[ -n "$ALBUM" ]] && METAFLAC_ARGS+=("--set-tag=ALBUM=$ALBUM")
                 [[ -n "$ALBUM_ARTIST" ]] && METAFLAC_ARGS+=("--set-tag=album_artist=$ALBUM_ARTIST")
@@ -151,7 +151,7 @@ for i in $(seq 1 $EXPECTED_TRACKS); do
             fi
 
             # Apply metadata
-            nix-shell -p flac --run "metaflac ${METAFLAC_ARGS[*]} \"$FLAC_FILE\""
+            metaflac "${METAFLAC_ARGS[@]}" "$FLAC_FILE"
             echo "Metadata added to $FLAC_FILE"
         fi
 
@@ -162,8 +162,8 @@ for i in $(seq 1 $EXPECTED_TRACKS); do
             M3U_FILE=$(find "$ALBUM_DIR" -name "*.m3u" | head -1)
             if [[ -n "$M3U_FILE" ]]; then
                 # Get duration in seconds from FLAC metadata
-                SAMPLES=$(nix-shell -p flac --run "metaflac --show-total-samples \"$FLAC_FILE\"")
-                SAMPLE_RATE=$(nix-shell -p flac --run "metaflac --show-sample-rate \"$FLAC_FILE\"")
+                SAMPLES=$(metaflac --show-total-samples "$FLAC_FILE")
+                SAMPLE_RATE=$(metaflac --show-sample-rate "$FLAC_FILE")
                 DURATION=$((SAMPLES / SAMPLE_RATE))
 
                 FLAC_FILENAME="${BASENAME}-corrupt.flac"
@@ -208,143 +208,260 @@ else
     fi
 fi
 
-# Check if album is in unknown folder and fetch FreeDB metadata
+# If album is in unknown folder, try gnudb.org for metadata
 if [[ "$ALBUM_DIR" == *"/unknown/"* ]]; then
     echo ""
-    echo "Album in unknown folder, fetching FreeDB metadata..."
+    echo "Album is in unknown folder (not found in MusicBrainz)."
+    echo "Attempting gnudb.org lookup..."
 
     LOG_FILE=$(find "$ALBUM_DIR" -name "*.log" | head -1)
-    CDDB_ID=$(grep "CDDB Disc ID:" "$LOG_FILE" 2>/dev/null | sed 's/.*: //')
 
-    if [[ -n "$CDDB_ID" ]]; then
-        echo "CDDB Disc ID: $CDDB_ID"
+    if [[ -n "$LOG_FILE" ]]; then
+        # Extract CDDB info from whipper log
+        CDDB_ID=$(grep "CDDB Disc ID:" "$LOG_FILE" | sed 's/.*: //')
 
-        # Build query string with track offsets from log
-        # Parse "Start sector:" lines and add 150 (2-second pregap)
-        OFFSETS=$(grep "Start sector:" "$LOG_FILE" | sed 's/.*: //' | awk '{print $1+150}' | tr '\n' '+' | sed 's/+$//')
+        if [[ -n "$CDDB_ID" ]]; then
+            # Build offsets from "Start sector:" lines + 150 (CDDB offset)
+            OFFSETS=$(grep "Start sector:" "$LOG_FILE" | sed 's/.*: //' | awk '{print $1+150}' | tr '\n' '+' | sed 's/+$//')
+            TRACK_COUNT=$(grep -c "Start sector:" "$LOG_FILE")
 
-        # Get total disc length in seconds from log (End sector of last track / 75)
-        LAST_SECTOR=$(grep "End sector:" "$LOG_FILE" | tail -1 | sed 's/.*: //')
-        DISC_LENGTH=$((LAST_SECTOR / 75 + 2))
-
-        # Query gnudb for category
-        echo "Querying gnudb.org..."
-        QUERY_URL="http://gnudb.org/~cddb/cddb.cgi?cmd=cddb+query+${CDDB_ID}+${EXPECTED_TRACKS}+${OFFSETS}+${DISC_LENGTH}&hello=anonymous+localhost+rip-cd+1.0&proto=6"
-        QUERY_RESULT=$(curl -s "$QUERY_URL")
-
-        # Handle different response codes (200 = exact match, 210/211 = multiple matches)
-        if echo "$QUERY_RESULT" | grep -q "^200"; then
-            CATEGORY=$(echo "$QUERY_RESULT" | grep "^200" | awk '{print $2}')
-        elif echo "$QUERY_RESULT" | grep -q "^21[01]"; then
-            # Multiple matches - take the first one
-            CATEGORY=$(echo "$QUERY_RESULT" | grep -v "^21[01]" | head -1 | awk '{print $1}')
-        fi
-
-        if [[ -n "$CATEGORY" ]]; then
-            echo "Found in category: $CATEGORY"
-
-            # Read full metadata
-            READ_URL="http://gnudb.org/~cddb/cddb.cgi?cmd=cddb+read+${CATEGORY}+${CDDB_ID}&hello=anonymous+localhost+rip-cd+1.0&proto=6"
-            CDDB_DATA=$(curl -s "$READ_URL")
-
-            # Parse DTITLE (format: "Artist / Album")
-            DTITLE=$(echo "$CDDB_DATA" | grep "^DTITLE=" | sed 's/DTITLE=//')
-            FREEDB_ARTIST=$(echo "$DTITLE" | sed 's/ \/ .*//')
-            FREEDB_ALBUM=$(echo "$DTITLE" | sed 's/.* \/ //')
-            FREEDB_YEAR=$(echo "$CDDB_DATA" | grep "^DYEAR=" | sed 's/DYEAR=//')
-            FREEDB_GENRE=$(echo "$CDDB_DATA" | grep "^DGENRE=" | sed 's/DGENRE=//')
-
-            echo "Found: $FREEDB_ARTIST - $FREEDB_ALBUM ($FREEDB_YEAR)"
-
-            # Apply metadata to each FLAC file and rename
-            echo "Applying metadata and renaming files..."
-            for FLAC in "$ALBUM_DIR"/*.flac; do
-                OLD_NAME=$(basename "$FLAC")
-                TRACK_NUM=$(echo "$OLD_NAME" | sed 's/^\([0-9]\+\)\..*/\1/')
-                TRACK_IDX=$((10#$TRACK_NUM - 1))  # CDDB uses 0-indexed
-                FREEDB_TITLE=$(echo "$CDDB_DATA" | grep "^TTITLE${TRACK_IDX}=" | sed "s/TTITLE${TRACK_IDX}=//")
-
-                # Apply metadata
-                nix-shell -p flac --run "metaflac \
-                    --set-tag=\"ARTIST=$FREEDB_ARTIST\" \
-                    --set-tag=\"ALBUM=$FREEDB_ALBUM\" \
-                    --set-tag=\"TITLE=$FREEDB_TITLE\" \
-                    --set-tag=\"TRACKNUMBER=$TRACK_NUM\" \
-                    --set-tag=\"TRACKTOTAL=$EXPECTED_TRACKS\" \
-                    --set-tag=\"DATE=$FREEDB_YEAR\" \
-                    --set-tag=\"GENRE=$FREEDB_GENRE\" \
-                    --set-tag=\"album_artist=$FREEDB_ARTIST\" \
-                    \"$FLAC\"" 2>/dev/null
-
-                # Build new filename
-                # Check if file has -corrupt suffix
-                if [[ "$OLD_NAME" == *"-corrupt.flac" ]]; then
-                    NEW_NAME="${TRACK_NUM}. ${FREEDB_ARTIST} - ${FREEDB_TITLE}-corrupt.flac"
-                else
-                    NEW_NAME="${TRACK_NUM}. ${FREEDB_ARTIST} - ${FREEDB_TITLE}.flac"
+            # Get disc length from log (total sectors / 75 = seconds)
+            # Try leadout sector first, fall back to last track's end sector + 150
+            TOTAL_SECTORS=$(grep "Leadout sector:" "$LOG_FILE" | sed 's/.*: //')
+            if [[ -z "$TOTAL_SECTORS" ]]; then
+                # Use last track's end sector + 150 (standard leadout offset)
+                LAST_END_SECTOR=$(grep "End sector:" "$LOG_FILE" | tail -1 | sed 's/.*: //')
+                if [[ -n "$LAST_END_SECTOR" ]]; then
+                    TOTAL_SECTORS=$((LAST_END_SECTOR + 150))
                 fi
-
-                # Sanitize filename (remove invalid chars)
-                NEW_NAME=$(echo "$NEW_NAME" | tr '/:*?"<>|' '_')
-
-                if [[ "$OLD_NAME" != "$NEW_NAME" ]]; then
-                    mv "$ALBUM_DIR/$OLD_NAME" "$ALBUM_DIR/$NEW_NAME"
-                    echo "  Renamed: $OLD_NAME -> $NEW_NAME"
-                fi
-            done
-
-            # Update CUE file with new filenames
-            CUE_FILE=$(find "$ALBUM_DIR" -name "*.cue" | head -1)
-            if [[ -n "$CUE_FILE" ]]; then
-                echo "Updating CUE file..."
-                for i in $(seq 0 $((EXPECTED_TRACKS - 1))); do
-                    TRACK_NUM=$(printf "%02d" $((i + 1)))
-                    FREEDB_TITLE=$(echo "$CDDB_DATA" | grep "^TTITLE${i}=" | sed "s/TTITLE${i}=//")
-                    FREEDB_TITLE_SAFE=$(echo "$FREEDB_TITLE" | tr '/:*?"<>|' '_')
-                    FREEDB_ARTIST_SAFE=$(echo "$FREEDB_ARTIST" | tr '/:*?"<>|' '_')
-
-                    # Replace old filename pattern with new (handle both regular and corrupt files)
-                    sed -i "s|FILE \"${TRACK_NUM}\. Unknown Artist - Unknown Track [0-9]\+\.flac\"|FILE \"${TRACK_NUM}. ${FREEDB_ARTIST_SAFE} - ${FREEDB_TITLE_SAFE}.flac\"|g" "$CUE_FILE"
-                    sed -i "s|FILE \"${TRACK_NUM}\. Unknown Artist - Unknown Track [0-9]\+-corrupt\.flac\"|FILE \"${TRACK_NUM}. ${FREEDB_ARTIST_SAFE} - ${FREEDB_TITLE_SAFE}-corrupt.flac\"|g" "$CUE_FILE"
-                done
             fi
-
-            # Update M3U file with new filenames
-            M3U_FILE=$(find "$ALBUM_DIR" -name "*.m3u" | head -1)
-            if [[ -n "$M3U_FILE" ]]; then
-                echo "Updating M3U file..."
-                for i in $(seq 0 $((EXPECTED_TRACKS - 1))); do
-                    TRACK_NUM=$(printf "%02d" $((i + 1)))
-                    FREEDB_TITLE=$(echo "$CDDB_DATA" | grep "^TTITLE${i}=" | sed "s/TTITLE${i}=//")
-                    FREEDB_TITLE_SAFE=$(echo "$FREEDB_TITLE" | tr '/:*?"<>|' '_')
-                    FREEDB_ARTIST_SAFE=$(echo "$FREEDB_ARTIST" | tr '/:*?"<>|' '_')
-
-                    sed -i "s|${TRACK_NUM}\. Unknown Artist - Unknown Track [0-9]\+\.flac|${TRACK_NUM}. ${FREEDB_ARTIST_SAFE} - ${FREEDB_TITLE_SAFE}.flac|g" "$M3U_FILE"
-                    sed -i "s|${TRACK_NUM}\. Unknown Artist - Unknown Track [0-9]\+-corrupt\.flac|${TRACK_NUM}. ${FREEDB_ARTIST_SAFE} - ${FREEDB_TITLE_SAFE}-corrupt.flac|g" "$M3U_FILE"
-                done
-            fi
-
-            # Move album from unknown/ to album/
-            FREEDB_ARTIST_SAFE=$(echo "$FREEDB_ARTIST" | tr '/:*?"<>|' '_')
-            FREEDB_ALBUM_SAFE=$(echo "$FREEDB_ALBUM" | tr '/:*?"<>|' '_')
-            NEW_ALBUM_DIR=~/Music/Rips/album/"${FREEDB_ARTIST_SAFE} - ${FREEDB_ALBUM_SAFE}"
-            if [[ ! -d "$NEW_ALBUM_DIR" ]]; then
-                mkdir -p ~/Music/Rips/album
-                mv "$ALBUM_DIR" "$NEW_ALBUM_DIR"
-                ALBUM_DIR="$NEW_ALBUM_DIR"
-                echo "Moved album to: $ALBUM_DIR"
+            if [[ -n "$TOTAL_SECTORS" ]]; then
+                DISC_LENGTH=$((TOTAL_SECTORS / 75))
             else
-                echo "Warning: Target directory already exists: $NEW_ALBUM_DIR"
+                DISC_LENGTH=0
             fi
 
-            echo "FreeDB metadata applied successfully!"
+            echo "CDDB ID: $CDDB_ID"
+            echo "Track count: $TRACK_COUNT"
+
+            # Query gnudb.org using whipper's registered app name
+            # Use GET request with proper URL encoding (+ is space in query string)
+            QUERY_RESULT=$(curl -s "http://gnudb.gnudb.org:80/~cddb/cddb.cgi?cmd=cddb+query+${CDDB_ID}+${TRACK_COUNT}+${OFFSETS}+${DISC_LENGTH}&hello=anonymous+localhost+whipper+0.10.0&proto=6")
+
+            echo "Query result: $QUERY_RESULT"
+
+            # Check for match (200 = exact, 210/211 = multiple matches)
+            if echo "$QUERY_RESULT" | grep -qE "^2[01][01]"; then
+                # Extract category and disc ID from response
+                # Response format for 200: "200 category discid Artist / Album"
+                # Response format for 210/211: header line, then "category discid Artist / Album"
+                if echo "$QUERY_RESULT" | grep -q "^200"; then
+                    # Exact match - category is field 2, disc ID is field 3
+                    CATEGORY=$(echo "$QUERY_RESULT" | head -1 | awk '{print $2}')
+                    DB_DISCID=$(echo "$QUERY_RESULT" | head -1 | awk '{print $3}')
+                else
+                    # Multiple matches - take first match line after header
+                    MATCH_LINE=$(echo "$QUERY_RESULT" | grep -v "^21" | grep -v "^\." | head -1)
+                    CATEGORY=$(echo "$MATCH_LINE" | awk '{print $1}')
+                    DB_DISCID=$(echo "$MATCH_LINE" | awk '{print $2}')
+                fi
+
+                echo "Category: $CATEGORY, DB Disc ID: $DB_DISCID"
+
+                # Read full metadata using the disc ID from the database (not our calculated one)
+                GNUDB_DATA=$(curl -s "http://gnudb.gnudb.org:80/~cddb/cddb.cgi?cmd=cddb+read+${CATEGORY}+${DB_DISCID}&hello=anonymous+localhost+whipper+0.10.0&proto=6")
+
+                # Extract metadata (strip \r from CDDB response)
+                DTITLE=$(echo "$GNUDB_DATA" | grep "^DTITLE=" | sed 's/DTITLE=//' | tr -d '\r')
+                DYEAR=$(echo "$GNUDB_DATA" | grep "^DYEAR=" | sed 's/DYEAR=//' | tr -d '\r')
+                DGENRE=$(echo "$GNUDB_DATA" | grep "^DGENRE=" | sed 's/DGENRE=//' | tr -d '\r')
+
+                echo "Found: $DTITLE"
+                echo "Year: $DYEAR, Genre: $DGENRE"
+
+                # Parse artist / album from DTITLE
+                if echo "$DTITLE" | grep -q " / "; then
+                    GNUDB_ARTIST=$(echo "$DTITLE" | sed 's/ \/ .*//')
+                    GNUDB_ALBUM=$(echo "$DTITLE" | sed 's/.* \/ //')
+                else
+                    GNUDB_ARTIST="Unknown Artist"
+                    GNUDB_ALBUM="$DTITLE"
+                fi
+
+                # Determine if this is a compilation
+                IS_COMPILATION=false
+                if [[ "$GNUDB_ARTIST" == "Various Artists" ]] || [[ "$GNUDB_ARTIST" == "Various" ]]; then
+                    IS_COMPILATION=true
+                fi
+
+                # Process each FLAC file
+                for FLAC_FILE in "$ALBUM_DIR"/*.flac; do
+                    [[ -f "$FLAC_FILE" ]] || continue
+
+                    FILENAME=$(basename "$FLAC_FILE")
+                    # Extract track number from filename (format: NN. ...)
+                    TRACK_NUM=$(echo "$FILENAME" | sed 's/^\([0-9]\+\)\..*/\1/' | sed 's/^0*//')
+                    TRACK_NUM_PADDED=$(printf "%02d" "$TRACK_NUM")
+
+                    # Get track title from gnudb (TTITLE0, TTITLE1, etc. - 0-indexed)
+                    TTITLE_INDEX=$((TRACK_NUM - 1))
+                    TTITLE=$(echo "$GNUDB_DATA" | grep "^TTITLE${TTITLE_INDEX}=" | sed "s/TTITLE${TTITLE_INDEX}=//" | tr -d '\r')
+
+                    # Parse per-track artist if compilation (format: "Artist - Title" or "Artist / Title")
+                    if [[ "$IS_COMPILATION" == "true" ]]; then
+                        if echo "$TTITLE" | grep -qF " / "; then
+                            TRACK_ARTIST="${TTITLE%% / *}"
+                            TRACK_TITLE="${TTITLE#* / }"
+                        elif echo "$TTITLE" | grep -qF " - "; then
+                            TRACK_ARTIST="${TTITLE%% - *}"
+                            TRACK_TITLE="${TTITLE#* - }"
+                        else
+                            TRACK_ARTIST="$GNUDB_ARTIST"
+                            TRACK_TITLE="$TTITLE"
+                        fi
+                    else
+                        TRACK_ARTIST="$GNUDB_ARTIST"
+                        TRACK_TITLE="$TTITLE"
+                    fi
+
+                    # Fallback if no title found
+                    [[ -z "$TRACK_TITLE" ]] && TRACK_TITLE="Track $TRACK_NUM"
+
+                    echo "Track $TRACK_NUM: $TRACK_ARTIST - $TRACK_TITLE"
+
+                    # Remove existing tags and apply new ones
+                    metaflac --remove-all-tags "$FLAC_FILE"
+
+                    METAFLAC_ARGS=(
+                        "--set-tag=TRACKNUMBER=$TRACK_NUM"
+                        "--set-tag=TITLE=$TRACK_TITLE"
+                        "--set-tag=ARTIST=$TRACK_ARTIST"
+                        "--set-tag=ALBUM=$GNUDB_ALBUM"
+                        "--set-tag=TRACKTOTAL=$TRACK_COUNT"
+                    )
+
+                    [[ -n "$DYEAR" ]] && METAFLAC_ARGS+=("--set-tag=DATE=$DYEAR")
+                    [[ -n "$DGENRE" ]] && METAFLAC_ARGS+=("--set-tag=GENRE=$DGENRE")
+
+                    if [[ "$IS_COMPILATION" == "true" ]]; then
+                        METAFLAC_ARGS+=("--set-tag=album_artist=Various Artists")
+                        METAFLAC_ARGS+=("--set-tag=COMPILATION=1")
+                    else
+                        METAFLAC_ARGS+=("--set-tag=album_artist=$GNUDB_ARTIST")
+                    fi
+
+                    metaflac "${METAFLAC_ARGS[@]}" "$FLAC_FILE"
+
+                    # Rename file - sanitize title for filename
+                    SAFE_TITLE=$(echo "$TRACK_TITLE" | sed 's/[\/\\:*?"<>|]/_/g')
+                    if [[ "$IS_COMPILATION" == "true" ]]; then
+                        # Compilations: NN. Title.flac (no artist in filename)
+                        NEW_FILENAME="${TRACK_NUM_PADDED}. ${SAFE_TITLE}.flac"
+                    else
+                        # Regular albums: NN. Artist - Title.flac
+                        SAFE_ARTIST=$(echo "$TRACK_ARTIST" | sed 's/[\/\\:*?"<>|]/_/g')
+                        NEW_FILENAME="${TRACK_NUM_PADDED}. ${SAFE_ARTIST} - ${SAFE_TITLE}.flac"
+                    fi
+
+                    if [[ "$FILENAME" != "$NEW_FILENAME" ]]; then
+                        mv "$FLAC_FILE" "$ALBUM_DIR/$NEW_FILENAME"
+                        echo "Renamed: $FILENAME -> $NEW_FILENAME"
+                    fi
+                done
+
+                # Regenerate M3U file with current filenames
+                M3U_FILE=$(find "$ALBUM_DIR" -name "*.m3u" | head -1)
+                if [[ -n "$M3U_FILE" ]]; then
+                    echo "Regenerating M3U file..."
+                    echo "#EXTM3U" > "$M3U_FILE"
+                    for f in "$ALBUM_DIR"/*.flac; do
+                        [[ -f "$f" ]] || continue
+                        FNAME=$(basename "$f")
+                        SAMPLES=$(metaflac --show-total-samples "$f" 2>/dev/null)
+                        SAMPLE_RATE=$(metaflac --show-sample-rate "$f" 2>/dev/null)
+                        if [[ -n "$SAMPLES" ]] && [[ -n "$SAMPLE_RATE" ]] && [[ "$SAMPLE_RATE" -gt 0 ]]; then
+                            DURATION=$((SAMPLES / SAMPLE_RATE))
+                        else
+                            DURATION=0
+                        fi
+                        echo "#EXTINF:${DURATION},${FNAME}" >> "$M3U_FILE"
+                        echo "${FNAME}" >> "$M3U_FILE"
+                    done
+                fi
+
+                # Update CUE file with current filenames
+                CUE_FILE=$(find "$ALBUM_DIR" -name "*.cue" | head -1)
+                if [[ -n "$CUE_FILE" ]]; then
+                    echo "Updating CUE file..."
+                    for f in "$ALBUM_DIR"/*.flac; do
+                        [[ -f "$f" ]] || continue
+                        FNAME=$(basename "$f")
+                        TNUM=$(echo "$FNAME" | sed 's/^\([0-9]\+\)\..*/\1/')
+                        sed -i "s|^FILE \"${TNUM}\. .*\.flac\" WAVE|FILE \"${FNAME}\" WAVE|" "$CUE_FILE"
+                    done
+                fi
+
+                # Determine destination folder based on type
+                RIPS_BASE=~/Music/Rips
+                if [[ "$IS_COMPILATION" == "true" ]]; then
+                    DEST_TYPE="compilation"
+                elif echo "$DGENRE" | grep -iq "soundtrack"; then
+                    DEST_TYPE="soundtrack"
+                else
+                    DEST_TYPE="album"
+                fi
+
+                # Sanitize album name for folder
+                SAFE_ALBUM=$(echo "$GNUDB_ALBUM" | sed 's/[\/\\:*?"<>|]/_/g')
+                SAFE_GNUDB_ARTIST=$(echo "$GNUDB_ARTIST" | sed 's/[\/\\:*?"<>|]/_/g')
+
+                # Build new base name for metadata files
+                if [[ "$IS_COMPILATION" == "true" ]]; then
+                    NEW_BASENAME="$SAFE_ALBUM"
+                    NEW_ALBUM_DIR="$RIPS_BASE/$DEST_TYPE/$SAFE_ALBUM"
+                else
+                    NEW_BASENAME="$SAFE_GNUDB_ARTIST - $SAFE_ALBUM"
+                    NEW_ALBUM_DIR="$RIPS_BASE/$DEST_TYPE/$SAFE_GNUDB_ARTIST - $SAFE_ALBUM"
+                fi
+
+                # Rename metadata files (m3u, cue, log, toc)
+                for ext in m3u cue log toc; do
+                    OLD_FILE=$(find "$ALBUM_DIR" -name "*.$ext" | head -1)
+                    if [[ -n "$OLD_FILE" ]]; then
+                        NEW_FILE="$ALBUM_DIR/${NEW_BASENAME}.$ext"
+                        if [[ "$OLD_FILE" != "$NEW_FILE" ]]; then
+                            mv "$OLD_FILE" "$NEW_FILE"
+                            echo "Renamed: $(basename "$OLD_FILE") -> ${NEW_BASENAME}.$ext"
+                        fi
+                    fi
+                done
+
+                # Move to new location
+                if [[ "$ALBUM_DIR" != "$NEW_ALBUM_DIR" ]]; then
+                    mkdir -p "$(dirname "$NEW_ALBUM_DIR")"
+                    echo "Moving to: $NEW_ALBUM_DIR"
+                    mv "$ALBUM_DIR" "$NEW_ALBUM_DIR"
+                    ALBUM_DIR="$NEW_ALBUM_DIR"
+
+                    # Clean up empty unknown folder if empty
+                    rmdir ~/Music/Rips/unknown 2>/dev/null || true
+                fi
+
+                echo ""
+                echo "Successfully tagged and organized album from gnudb.org!"
+            else
+                echo "Album not found in gnudb.org either."
+                echo "You'll need to tag and rename files manually."
+                MB_URL=$(grep "MusicBrainz lookup URL:" "$LOG_FILE" | sed 's/.*: //')
+                if [[ -n "$MB_URL" ]]; then
+                    echo "Submit to MusicBrainz: $MB_URL"
+                fi
+            fi
         else
-            echo "Could not find category in gnudb response"
-            echo "Album remains in unknown folder"
+            echo "No CDDB ID found in log file."
         fi
     else
-        echo "Could not find CDDB Disc ID in log file"
-        echo "Album remains in unknown folder"
+        echo "No log file found in album directory."
     fi
 fi
 
