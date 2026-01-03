@@ -226,6 +226,7 @@ in
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
 
       "nvidia.NVreg_UsePageAttributeTable=1" # why this isn't default is beyond me.
+      "nvidia.NVreg_EnableStreamMemOPs=1" # experimental: may improve memory transfer operations
       "nvidia_modeset.disable_vrr_memclk_switch=1" # stop really high memclk when vrr is in use.
 
       (lib.mkIf config.hardware.nvidia.powerManagement.enable
@@ -249,8 +250,8 @@ in
       # "i915.enable_fbc=0"
       # ## Significantly higher battery usage, but may help with sleep freezes
       # "i915.enable_dc=0"
-      # ## The GuC and HuC firmware can improve GPU performance and power management for newer Intel graphics
-      # "i915.enable_guc=3"
+      ## The GuC and HuC firmware can improve GPU performance and power management for newer Intel graphics
+      "i915.enable_guc=3"
     ]);
 
     # hardware.bumblebee.enable = false;

@@ -37,12 +37,11 @@ switch:
 debug:
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true -L |& ${NOM}
 
-
 nflx-local:
-	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 
 nixvim-local:
-	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 
 boot:
 	sudo -E nixos-rebuild boot --flake .#${HOSTNAME} -L
@@ -102,7 +101,6 @@ clear-mimeapps:
 clear-gtkrc:
 	# Plasma6 overwrites this, messing up the dark theme
 	rm -f ${HOME}/.gtkrc-2.0
-
 
 update-gnupg-perms:
 	mkdir -p ${HOME}/.gnupg

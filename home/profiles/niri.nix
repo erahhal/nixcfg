@@ -826,7 +826,7 @@ in
     }
 
     window-rule {
-        match app-id=r#"^projectM.*$"#
+        match app-id=r#"^projectM"#
         open-fullscreen true
     }
 
@@ -1242,6 +1242,9 @@ in
         Mod+N hotkey-overlay-title="Toggle notification list view" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t" "-sw"; }
         Mod+Shift+N hotkey-overlay-title="Clear notifications" { spawn "${clear-notifications}"; }
         Mod+Shift+Ctrl+N hotkey-overlay-title="Toggle notification do-not-disturb" { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-d" "-sw"; }
+
+        // Debug: Toggle tint to verify direct scanout (green = composited, no tint = direct scanout)
+        Mod+Shift+Ctrl+T hotkey-overlay-title="Toggle debug tint" { toggle-debug-tint; }
 
     }
 
