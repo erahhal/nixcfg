@@ -477,6 +477,25 @@ in
     };
   };
 
+  # Also manage the config file directly as a symlink to prevent KDE from overwriting
+  xdg.configFile."xsettingsd/xsettingsd.conf".text = ''
+    Gdk/UnscaledDPI 196608
+    Gdk/WindowScalingFactor 1
+    Gtk/EnableAnimations 1
+    Gtk/DecorationLayout ":minimize,maximize,close"
+    Net/ThemeName "Tokyonight-Dark"
+    Gtk/PrimaryButtonWarpsSlider 1
+    Gtk/ToolbarStyle 3
+    Gtk/MenuImages 1
+    Gtk/ButtonImages 1
+    Net/CursorBlinkTime 1000
+    Net/CursorBlink 1
+    Gtk/CursorThemeSize ${if osConfig.hostParams.desktop.defaultSession == "none+i3" then "48" else "24"}
+    Gtk/CursorThemeName "Bibata-Modern-Classic"
+    Net/IconThemeName "breeze-dark"
+    Gtk/FontName "DejaVu Sans,  10"
+  '';
+
   qt = {
     enable = true;
     # Use qt6ct platform theme - reads icon theme from ~/.config/qt6ct/qt6ct.conf

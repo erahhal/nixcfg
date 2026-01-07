@@ -214,7 +214,8 @@
       "Bash(home-manager option gtk.gtk2.configLocation)",
       "Bash(~/.nix-profile/bin/home-manager:*)",
       "Bash(nix run:*)",
-      "Bash(sudo /run/current-system/sw/bin/nixos-rebuild:*)"
+      "Bash(sudo /run/current-system/sw/bin/nixos-rebuild:*)",
+      "Bash(xprop:*)"
     ],
     "deny": [],
     "ask": []
