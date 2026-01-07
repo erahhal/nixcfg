@@ -128,6 +128,201 @@ let
       }
     '';
   };
+
+  # Default settings - written to default-settings.json and synced to settings.json on activation
+  defaultSettings = {
+    configVersion = 2;
+    barConfigs = [{
+      id = "default";
+      name = "Main Bar";
+      enabled = true;
+
+      ## Widgets
+      leftWidgets = [
+        "launcherButton"
+        "workspaceSwitcher"
+        {
+          id = "focusedWindow";
+          enabled = true;
+          ## Don't show app name, just title
+          focusedWindowCompactMode = true;
+        }
+      ];
+      centerWidgets = [];
+      rightWidgets = [
+        {
+          id = "music";
+          enabled = true;
+        }
+        {
+          id = "easyEffects";
+          enabled = true;
+        }
+        {
+          id = "controlCenterButton";
+          enabled = true;
+          showAudioIcon = true;
+          showBatteryIcon = false;
+          showBluetoothIcon = false;
+          showBrightnessIcon = false;
+          showMicIcons = true;
+          showNetworkIcon = false;
+          showPrinterIcon = false;
+          showVpnIcon = false;
+        }
+        {
+          id = "systemTray";
+          enabled = true;
+        }
+        {
+          id = "clipboard";
+          enabled = true;
+        }
+        {
+          id = "cpuUsage";
+          enabled = true;
+        }
+        {
+          id = "memUsage";
+          enabled = true;
+        }
+        {
+          id = "battery";
+          enabled = true;
+        }
+        {
+          id = "weather";
+          enabled = true;
+        }
+        {
+          id = "controlCenterButton";
+          enabled = true;
+          showAudioIcon = false;
+          showBatteryIcon = false;
+          showBluetoothIcon = true;
+          showBrightnessIcon = true;
+          showMicIcon = false;
+          showNetworkIcon = true;
+          showPrinterIcon = false;
+          showVpnIcon = false;
+        }
+        {
+          id = "vpn";
+          enabled = true;
+        }
+        {
+          id = "networkMonitor";
+          enabled = true;
+        }
+        {
+          id = "clock";
+          enabled = true;
+        }
+        {
+          id = "idleInhibitor";
+          enabled = true;
+        }
+        {
+          id = "notificationButton";
+          enabled = true;
+        }
+      ];
+
+      ## Layout
+      position = 1;  # 0=top, 1=bottom, 2=left, 3=right
+      spacing = 3;
+      bottomGap = 1;
+      innerPadding = 8;  # Sets the bar size, strangely
+      maximizeDetection = false;  # Don't remove gaps if the window is maxximized
+
+      ## Behavior
+      scrollYBehavior = "none";
+    }];
+
+    ## Displays
+    screenPreferences = ["all"];
+    showOnLastDisplay = true;
+
+    ## Layout
+    innerPadding = 4;
+    popupGapsAuto = true;
+    popupGapsManual = 4;
+
+    ## Style
+    matugenTemplateFirefox = false; # disables creating firefox.css file on manual config change. What are the ramifications?
+    transparency = 1;
+    widgetTransparency = 1;
+    squareCorners = false;
+    noBackground = false;
+    gothCornersEnabled = false;
+    gothCornerRadiusOverride = false;
+    gothCornerRadiusValue = 12;
+    borderEnabled = false;
+    borderColor = "surfaceText";
+    borderOpacity = 1;
+    borderThickness = 1;
+    fontScale = 1;
+
+    ## Icons
+    dockIconsize = 24;
+
+    ## Behavior
+    visible = true;
+    autoHide = false;
+    autoHideDelay = 250;
+    openOnOverview = false;
+
+    # On Screen Display
+    osdPowerProfileEnabled = true;
+
+    ## Workspaces
+    showWorkspaceIndex = true;
+    showWorkspacePadding = true;
+    showWorkspaceApps = true;
+    showOccupiedWorkspacesOnly = true;
+
+    ## Dock
+    showDock = false;
+    dockAutoHide = true;
+    dockGroupByApp = false;
+    dockOpenOnOverview = true;
+
+    ## Animation
+    customAnimationDuration = 100;
+
+    ## Power/Lock screen
+    acMonitorTimeout = 300;
+    acLockTimeout = 300;
+    lockBeforeSuspend = true;
+    lockScreenShowPowerActions = true;
+    loginctlLockIntegration = true;
+    fadeToLockEnabled = true;
+    fadeToLockGracePeriod = 5;
+
+    ### Widgets
+
+    ## Clock
+    use24HourClock = false;
+
+    ## Weather
+    weatherEnabled = true;
+    useAutoLocation = true;
+    weatherLocation = "Los Angeles, CA";
+    weatherCoordinates = "34.1509, 118.4487";
+    useFahrenheit = true;
+
+    ## Night Mode
+    nightModeEnabled = true;
+
+    ## Theme
+    # currentThemeName = "custom";
+    # customThemeFile = theme-tokyonight;
+  };
+
+  # Default session - written to default-session.json and synced to session.json on activation
+  defaultSession = lib.optionalAttrs (wallpaperPath != null) {
+    wallpaperPath = wallpaperPath;
+  };
 in
 {
   imports = [
@@ -217,6 +412,14 @@ in
   xdg.configFile."DankMaterialShell/default-plugin_settings.json".text =
     builtins.toJSON defaultPluginSettings;
 
+  # Default settings file - merged into settings.json on activation
+  xdg.configFile."DankMaterialShell/default-settings.json".text =
+    builtins.toJSON defaultSettings;
+
+  # Default session file - merged into session.json on activation
+  xdg.stateFile."DankMaterialShell/default-session.json".text =
+    builtins.toJSON defaultSession;
+
   programs.dank-material-shell = {
     enable = true;
     systemd = {
@@ -247,200 +450,5 @@ in
     enableDynamicTheming = true;
     enableAudioWavelength = true;
     enableCalendarEvents = true;
-
-    # Default settings (only applied if settings.json doesn't exist)
-    default.settings = {
-      configVersion = 2;
-      barConfigs = [{
-        id = "default";
-        name = "Main Bar";
-        enabled = true;
-
-        ## Widgets
-        leftWidgets = [
-          "launcherButton"
-          "workspaceSwitcher"
-          {
-            id = "focusedWindow";
-            enabled = true;
-            ## Don't show app name, just title
-            focusedWindowCompactMode = true;
-          }
-        ];
-        centerWidgets = [];
-        rightWidgets = [
-          {
-            id = "music";
-            enabled = true;
-          }
-          {
-            id = "easyEffects";
-            enabled = true;
-          }
-          {
-            id = "controlCenterButton";
-            enabled = true;
-            showAudioIcon = true;
-            showBatteryIcon = false;
-            showBluetoothIcon = false;
-            showBrightnessIcon = false;
-            showMicIcons = true;
-            showNetworkIcon = false;
-            showPrinterIcon = false;
-            showVpnIcon = false;
-          }
-          {
-            id = "systemTray";
-            enabled = true;
-          }
-          {
-            id = "clipboard";
-            enabled = true;
-          }
-          {
-            id = "cpuUsage";
-            enabled = true;
-          }
-          {
-            id = "memUsage";
-            enabled = true;
-          }
-          {
-            id = "battery";
-            enabled = true;
-          }
-          {
-            id = "weather";
-            enabled = true;
-          }
-          {
-            id = "controlCenterButton";
-            enabled = true;
-            showAudioIcon = false;
-            showBatteryIcon = false;
-            showBluetoothIcon = true;
-            showBrightnessIcon = true;
-            showMicIcon = false;
-            showNetworkIcon = true;
-            showPrinterIcon = false;
-            showVpnIcon = false;
-          }
-          {
-            id = "vpn";
-            enabled = true;
-          }
-          {
-            id = "networkMonitor";
-            enabled = true;
-          }
-          {
-            id = "clock";
-            enabled = true;
-          }
-          {
-            id = "idleInhibitor";
-            enabled = true;
-          }
-          {
-            id = "notificationButton";
-            enabled = true;
-          }
-        ];
-
-        ## Layout
-        position = 1;  # 0=top, 1=bottom, 2=left, 3=right
-        spacing = 3;
-        bottomGap = 1;
-        innerPadding = 8;  # Sets the bar size, strangely
-        maximizeDetection = false;  # Don't remove gaps if the window is maxximized
-
-        ## Behavior
-        scrollYBehavior = "none";
-      }];
-
-      ## Displays
-      screenPreferences = ["all"];
-      showOnLastDisplay = true;
-
-      ## Layout
-      innerPadding = 4;
-      popupGapsAuto = true;
-      popupGapsManual = 4;
-
-      ## Style
-      matugenTemplateFirefox = false; # disables creating firefox.css file on manual config change. What are the ramifications?
-      transparency = 1;
-      widgetTransparency = 1;
-      squareCorners = false;
-      noBackground = false;
-      gothCornersEnabled = false;
-      gothCornerRadiusOverride = false;
-      gothCornerRadiusValue = 12;
-      borderEnabled = false;
-      borderColor = "surfaceText";
-      borderOpacity = 1;
-      borderThickness = 1;
-      fontScale = 1;
-
-      ## Icons
-      dockIconsize = 24;
-
-      ## Behavior
-      visible = true;
-      autoHide = false;
-      autoHideDelay = 250;
-      openOnOverview = false;
-
-      # On Screen Display
-      osdPowerProfileEnabled = true;
-
-      ## Workspaces
-      showWorkspaceIndex = true;
-      showWorkspacePadding = true;
-      showWorkspaceApps = true;
-      showOccupiedWorkspacesOnly = true;
-
-      ## Dock
-      showDock = false;
-      dockAutoHide = true;
-      dockGroupByApp = false;
-      dockOpenOnOverview = true;
-
-      ## Animation
-      customAnimationDuration = 100;
-
-      ## Power/Lock screen
-      acMonitorTimeout = 300;
-      acLockTimeout = 300;
-      lockBeforeSuspend = true;
-      lockScreenShowPowerActions = true;
-      loginctlLockIntegration = true;
-      fadeToLockEnabled = true;
-      fadeToLockGracePeriod = 5;
-
-      ### Widgets
-
-      ## Clock
-      use24HourClock = false;
-
-      ## Weather
-      weatherEnabled = true;
-      useAutoLocation = true;
-      weatherLocation = "Los Angeles, CA";
-      weatherCoordinates = "34.1509, 118.4487";
-      useFahrenheit = true;
-
-      ## Night Mode
-      nightModeEnabled = true;
-
-      ## Theme
-      # currentThemeName = "custom";
-      # customThemeFile = theme-tokyonight;
-    };
-
-    # Default session (wallpaper path, etc.)
-    default.session = lib.mkIf (wallpaperPath != null) {
-      wallpaperPath = wallpaperPath;
-    };
   };
 }

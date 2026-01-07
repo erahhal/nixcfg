@@ -518,7 +518,7 @@ in
         sqlitebrowser
 
         # Hardware Dev
-        gerbv
+        (broken gerbv)
 
         ## unfree
         bcompare

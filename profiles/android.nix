@@ -5,9 +5,5 @@
       "adbusers"  # Android dev
     ];
   };
-
-  programs.adb = {
-    enable = true;
-  };
 }
 

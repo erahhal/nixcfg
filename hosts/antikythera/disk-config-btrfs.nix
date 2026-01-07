@@ -30,8 +30,9 @@
                 name = "cryptroot";
                 extraOpenArgs = [
                   "--allow-discards"
-                  "--perf-no_read_workqueue"
-                  "--perf-no_write_workqueue"
+                  # Removed --perf-no_read_workqueue and --perf-no_write_workqueue
+                  # These bypass kernel workqueues for crypto operations, which can
+                  # cause I/O instability under high load on AMD systems
                 ];
                 settings = {
                   crypttabExtraOpts = ["fido2-device=auto" "token-timeout=10"];

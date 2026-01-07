@@ -65,8 +65,8 @@
     };
 
     dms-shell = {
-      # url = "github:AvengeMedia/DankMaterialShell/c281bf3b533af502de379caa0037b171b74eb508";
-      url = "github:AvengeMedia/DankMaterialShell/621710bd86d9c7c523f65d2522a99e822adae84a";
+      # url = "github:AvengeMedia/DankMaterialShell/621710bd86d9c7c523f65d2522a99e822adae84a";
+      url = "github:AvengeMedia/DankMaterialShell/3dd21382bad5d43604850e257cfd1b8d35e16fb9";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

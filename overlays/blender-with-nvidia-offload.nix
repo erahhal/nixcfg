@@ -3,9 +3,9 @@
 {
   nixpkgs.overlays = [
     (final: prev: {
-      blender-hip = prev.symlinkJoin {
+      blender = prev.symlinkJoin {
         name = "blender";
-        paths = [ prev.blender-hip ];
+        paths = [ prev.blender ];
         buildInputs = [ prev.makeWrapper ];
         postBuild = ''
           wrapProgram $out/bin/blender \

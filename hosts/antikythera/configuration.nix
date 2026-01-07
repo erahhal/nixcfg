@@ -312,12 +312,20 @@
     # Prevent spurious wakeups from a firmware bug where the EC or SMU generates spurious "heartbeat" interrupts during sleep
     "acpi.ec_no_wakeup=1"
 
-    ## Fixes input lag issue in Hyprland
-    ## @TODO: Remove after fixed in kernel
-    # "amdgpu.dcdebugmask=0x610"
-    # "amdgpu.dcdebugmask=0x10"
+    # AMD GPU stability - fixes DMUB IRQ storms on RDNA 3 (P14s Gen 5)
+    # Reduces display hotplug interrupt overhead
+    "amdgpu.dcdebugmask=0x10"
 
     "amd_pstate=active"
+
+    # AMD Ryzen C-state stability fixes
+    # Limits deep C-states that can cause system freezes on Zen 4
+    # See: https://gist.github.com/dlqqq/876d74d030f80dc899fc58a244b72df0
+    "processor.max_cstate=5"
+
+    # Offload RCU callbacks to reduce interrupt latency under load
+    # 0-15 for 16 logical cores (8 cores x 2 threads)
+    "rcu_nocbs=0-15"
 
     ## Settings for low-latency gaming/audio
     "preempt=full"    # Realtime latency
@@ -338,8 +346,13 @@
     };
   };
 
-  ## Fix WiFi not working after suspend - known ath11k issue on kernel 6.17+
-  ## https://bbs.archlinux.org/viewtopic.php?id=310363
+  ## Fix WiFi not working after suspend - known ath11k issue
+  ## References:
+  ##   https://bbs.archlinux.org/viewtopic.php?id=310363 (kernel 6.17+ issue)
+  ##   https://bbs.archlinux.org/viewtopic.php?id=295356 (workaround)
+  ##   https://bugs.archlinux.org/task/76068 (freeze after suspend/resume)
+  ##   https://bugzilla.redhat.com/show_bug.cgi?id=2262577 (QCNFA765 suspend bug)
+  ##   https://wiki.archlinux.org/title/Dell_XPS_13_(9310)#Suspend
   ## Using powerManagement.resumeCommands instead of a systemd service
   ## to ensure it only runs once on resume, not repeatedly
   powerManagement.resumeCommands = ''
@@ -350,6 +363,18 @@
     sleep 1
     ${pkgs.kmod}/bin/modprobe ath11k_pci
   '';
+
+  ## Fix WiFi not working after boot - same ath11k issue
+  ## References: See comments above for powerManagement.resumeCommands
+  systemd.services.ath11k-boot-fix = {
+    description = "Reload ath11k_pci at boot";
+    after = [ "systemd-modules-load.service" "NetworkManager.service" "iwd.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 5 && ${pkgs.kmod}/bin/modprobe -r ath11k_pci && sleep 1 && ${pkgs.kmod}/bin/modprobe ath11k_pci && sleep 3 && ${pkgs.systemd}/bin/systemctl restart NetworkManager'";
+    };
+  };
 
   # Enable power management
   powerManagement = {

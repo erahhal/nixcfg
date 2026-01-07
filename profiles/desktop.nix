@@ -35,7 +35,7 @@ in
     ./plasma.nix
     ./spacenavd.nix    # Needed for autodesk fusion 360
     # ./sway.nix
-    ./hyprland.nix
+    # ./hyprland.nix
     ./fonts.nix
     ./i2c.nix
     ./niri.nix

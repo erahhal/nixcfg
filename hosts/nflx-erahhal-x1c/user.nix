@@ -20,7 +20,7 @@ in
 
       packages = with pkgs; [
         awscli
-        blender-hip
+        blender
         chromium
 
         jetbrains-toolbox

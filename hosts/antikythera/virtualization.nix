@@ -1,15 +1,28 @@
-{ config, pkgs, recursiveMerge, ... }:
+{ config, lib, pkgs, recursiveMerge, ... }:
 {
   imports = [
     ../../profiles/virtual-machines.nix
   ];
 
-  boot.kernelModules = [ "kvm-amd" "kvm-intel" ];
+  # Override Intel-specific settings inherited from virtual-machines.nix
+  # This is an AMD system - Intel IOMMU and GVT-g don't apply
 
-  # Enable containers
+  # Use AMD-specific KVM nested virtualization (override Intel modprobe config)
+  boot.extraModprobeConfig = lib.mkForce ''
+    options kvm_amd nested=1
+  '';
+
+  # Only load AMD KVM module (not Intel)
+  boot.kernelModules = [ "kvm-amd" ];
+
+  # Enable containers and override Intel-specific virtualisation settings
   virtualisation = (
     let
       baseConfig = {
+        # Disable Intel GVT-g (not applicable to AMD GPU)
+        # This prevents i915.enable_gvt=1 from being added to kernel params
+        kvmgt.enable = lib.mkForce false;
+
         oci-containers.backend = config.hostParams.containers.backend;
         containers = {
           enable = true;

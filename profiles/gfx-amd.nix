@@ -19,6 +19,8 @@
       pkgs.lact
     ];
 
+    nixpkgs.config.rocmSupport = true;
+
     services.lact.enable = true;
 
     # systemd.services.lact = {

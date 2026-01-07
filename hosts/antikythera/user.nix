@@ -32,7 +32,7 @@ in
         ## Dev and tools
         android-studio
         bitwig-studio
-        blender-hip   # blender-hip is AMD hardware accelerated version of blender
+        blender
 
         ## Games
         atlauncher

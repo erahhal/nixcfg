@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, userParams, ... }:
+{ broken, config, pkgs, inputs, userParams, ... }:
 
 let
   env_vars = {
@@ -170,7 +170,7 @@ in
 
         ## genai
         litellm
-        vllm
+        (broken vllm)
 
         ## python
         pyright
