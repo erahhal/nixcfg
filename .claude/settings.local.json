@@ -210,7 +210,11 @@
       "Bash(socket=\"/run/user/1026/danklinux-1583911.sock\")",
       "Bash(timeout 5 bash -c \"echo ''{\"\"id\"\": 1, \"\"method\"\": \"\"subscribe\"\", \"\"params\"\": {\"\"services\"\": [\"\"network\"\"]}}'' | nc -U $socket\")",
       "Bash(nix show-derivation:*)",
-      "Bash(kdeconnect-cli:*)"
+      "Bash(kdeconnect-cli:*)",
+      "Bash(home-manager option gtk.gtk2.configLocation)",
+      "Bash(~/.nix-profile/bin/home-manager:*)",
+      "Bash(nix run:*)",
+      "Bash(sudo /run/current-system/sw/bin/nixos-rebuild:*)"
     ],
     "deny": [],
     "ask": []

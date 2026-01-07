@@ -844,6 +844,8 @@ in
         match app-id="chromium-browser$"
         match title="^Ivanti Connect Secure.*$"
         open-floating true
+        default-column-width { fixed 800; }
+        default-window-height { fixed 600; }
     }
     window-rule {
         match app-id="org.chromium.Chromium$"

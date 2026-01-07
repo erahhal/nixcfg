@@ -454,6 +454,29 @@ in
     };
   };
 
+  # Manage xsettingsd to prevent KDE from overwriting font settings
+  # This broadcasts GTK settings to Xwayland apps like Chrome
+  services.xsettingsd = {
+    enable = true;
+    settings = {
+      "Gdk/UnscaledDPI" = 196608;  # 192 * 1024 (approximates 210 DPI)
+      "Gdk/WindowScalingFactor" = 1;
+      "Gtk/EnableAnimations" = 1;
+      "Gtk/DecorationLayout" = ":minimize,maximize,close";
+      "Net/ThemeName" = "Tokyonight-Dark";
+      "Gtk/PrimaryButtonWarpsSlider" = 1;
+      "Gtk/ToolbarStyle" = 3;
+      "Gtk/MenuImages" = 1;
+      "Gtk/ButtonImages" = 1;
+      "Net/CursorBlinkTime" = 1000;
+      "Net/CursorBlink" = 1;
+      "Gtk/CursorThemeSize" = if osConfig.hostParams.desktop.defaultSession == "none+i3" then 48 else 24;
+      "Gtk/CursorThemeName" = "Bibata-Modern-Classic";
+      "Net/IconThemeName" = "breeze-dark";
+      "Gtk/FontName" = "DejaVu Sans,  10";  # Match GTK3 font settings
+    };
+  };
+
   qt = {
     enable = true;
     # Use qt6ct platform theme - reads icon theme from ~/.config/qt6ct/qt6ct.conf

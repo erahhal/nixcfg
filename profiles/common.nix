@@ -393,6 +393,7 @@
     pv
     ryzenadj
     # sambaFull
+    socat
     sqlite
     sshpass
     steam-run

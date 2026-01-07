@@ -323,7 +323,11 @@ in
             showMicIcon = false;
             showNetworkIcon = true;
             showPrinterIcon = false;
-            showVpnIcon = true;
+            showVpnIcon = false;
+          }
+          {
+            id = "vpn";
+            enabled = true;
           }
           {
             id = "networkMonitor";

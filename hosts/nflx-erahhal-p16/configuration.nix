@@ -282,7 +282,9 @@
       7001
       7101
     ];
+    trustedInterfaces = [ "docker0" "br-+" ];
   };
+
 
   services.flatpak.enable = true;
 

@@ -122,14 +122,9 @@
     nflx-nixcfg = {
       type = "git";
       url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
-      ref = "main";
+      # ref = "main";
+      ref = "cef";
     };
-    # nflx-nixcfg = {
-    #   type = "git";
-    #   url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
-    #   ref = "nm-integration";
-    # };
-    # nflx-nixcfg.url = "path:/home/erahhal/Code/nflx-nixcfg";
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
@@ -244,8 +239,9 @@
               };
               vpn.pulse = {
                 url = "https://lax001.pcs.flxvpn.net/emp-split";
-                enable-nm-applet-service = true;
+                # enable-nm-applet-service = true;
                 # enable-dtls = false;
+                # enable-selenium = true;
               };
             };
           }
