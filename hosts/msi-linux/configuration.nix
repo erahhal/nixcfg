@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, userParams, ... }:
+{ config, inputs, lib, pkgs, userParams, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -40,6 +40,9 @@
       # ../../profiles/smb-mounts.nix
       ../../profiles/kdeconnect.nix
     ];
+
+  # Disable gnome-keyring since we use autologin and don't need password storage
+  services.gnome.gnome-keyring.enable = lib.mkForce false;
 
   # Needed to setup passwords
   users.users.root.openssh.authorizedKeys.keys = [
