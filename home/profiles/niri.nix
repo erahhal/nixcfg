@@ -689,6 +689,7 @@ in
     // spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
     // spawn-sh-at-startup "systemctl --user restart waybar"
     // spawn-sh-at-startup "${wallpaper-cmd}"
+    spawn-sh-at-startup "systemctl --user restart dms"
 
     // This line starts waybar, a commonly used bar for Wayland compositors.
     // Currently using systemd service
@@ -703,6 +704,7 @@ in
     spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland &"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome &"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk &"
+    spawn-sh-at-startup "systemctl --user restart startup-apps"
     // spawn-sh-at-startup "systemctl --user restart gammastep"
     // @TODO: Move these to waybar setup
     // spawn-sh-at-startup "systemctl --user restart swaynotificationcenter"

@@ -6,6 +6,26 @@ let
 
   # Script that waits for DMS tray and then launches all startup apps
   startup-apps-script = pkgs.writeShellScript "startup-apps" ''
+    # Detect if this is a new session by checking the Wayland socket inode
+    # The inode changes each time the compositor restarts
+    WAYLAND_SOCKET="/run/user/$(id -u)/$WAYLAND_DISPLAY"
+    if [ -S "$WAYLAND_SOCKET" ]; then
+      SESSION_ID=$(${pkgs.coreutils}/bin/stat --format="%i" "$WAYLAND_SOCKET")
+    else
+      # Fallback: use current timestamp (always run)
+      SESSION_ID=$(${pkgs.coreutils}/bin/date +%s)
+    fi
+
+    MARKER_FILE="/run/user/$(id -u)/startup-apps-$SESSION_ID"
+
+    if [ -f "$MARKER_FILE" ]; then
+      echo "Already ran for session $SESSION_ID (socket inode), skipping"
+      exit 0
+    fi
+
+    # Create marker for this session
+    touch "$MARKER_FILE"
+
     # Wait for tray to be ready
     ${wait-for-tray}
 

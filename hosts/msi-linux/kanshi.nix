@@ -1,4 +1,4 @@
-{ inputs, pkgs, userParams, ... }:
+{ inputs, pkgs, userParams, lib, ... }:
 let
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   tv = "LG Electronics LG TV SSCR2 0x01010101";
@@ -7,6 +7,9 @@ let
 in
 {
   home-manager.users.${userParams.username} = {
+    # Override home-manager's Restart=always to prevent blocking graphical-session.target stop
+    systemd.user.services.kanshi.Service.Restart = lib.mkForce "on-failure";
+
     services.kanshi = {
       enable = true;
       systemdTarget = "graphical-session.target";

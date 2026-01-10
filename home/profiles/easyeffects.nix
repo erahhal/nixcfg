@@ -17,7 +17,7 @@ in
       WantedBy = [ "graphical-session.target" ];
     };
     Service = {
-      Restart = "always";
+      Restart = "on-failure";
       RestartSec = 2;
       ExecStartPre = "${wait-for-tray}";
       ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";

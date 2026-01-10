@@ -1,4 +1,4 @@
-{ inputs, pkgs, userParams, ... }:
+{ inputs, pkgs, userParams, lib, ... }:
 let
   home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
   home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
@@ -9,6 +9,9 @@ let
 in
 {
   home-manager.users.${userParams.username} = {
+    # Override home-manager's Restart=always to prevent blocking graphical-session.target stop
+    systemd.user.services.kanshi.Service.Restart = lib.mkForce "on-failure";
+
     services.kanshi = {
       enable = true;
       systemdTarget = "graphical-session.target";

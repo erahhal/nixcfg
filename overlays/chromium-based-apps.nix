@@ -107,7 +107,7 @@ let
         wrapProgram $out/bin/signal-desktop \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
-          --add-flags "--password-store=kwallet6" \
+          --add-flags "--password-store=gnome-libsecret" \
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
       '';
     });

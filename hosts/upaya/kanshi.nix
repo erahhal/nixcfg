@@ -1,4 +1,4 @@
-{ pkgs, userParams, ... }:
+{ pkgs, userParams, lib, ... }:
 let
   wlr-randr = "${pkgs.wlr-randr}/bin/wlr-randr";
   grep = "${pkgs.gnugrep}/bin/grep";
@@ -17,6 +17,9 @@ let
 in
 {
   home-manager.users.${userParams.username} = {
+    # Override home-manager's Restart=always to prevent blocking graphical-session.target stop
+    systemd.user.services.kanshi.Service.Restart = lib.mkForce "on-failure";
+
     services.kanshi = {
       enable = true;
       systemdTarget = "graphical-session.target";

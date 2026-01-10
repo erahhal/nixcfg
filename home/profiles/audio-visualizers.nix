@@ -193,7 +193,7 @@ in
 
     Service = {
       Type = "simple";
-      Restart = "always";
+      Restart = "on-failure";
       RestartSec = 2;
       ExecStart = "${pkgs.pipewire}/bin/pw-loopback --capture-props=\"media.class=Audio/Sink node.name=projectm-capture node.description=projectM-Audio-Capture node.passive=true priority.session=0\" --playback-props=\"media.class=Audio/Source node.name=projectm-source node.description=projectM-Audio-Source node.passive=true\"";
     };
