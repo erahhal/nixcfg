@@ -229,6 +229,7 @@
             nixvim-config.enable-startify-cowsay = true;
             nixvim-config.disable-indent-blankline = true;
           }
+          # inputs.nflx-nixcfg.nixosModules.pulse-vpn
           inputs.nflx-nixcfg.nixosModules.default
           {
             nflx = {

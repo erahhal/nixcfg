@@ -215,12 +215,9 @@
       "Bash(~/.nix-profile/bin/home-manager:*)",
       "Bash(nix run:*)",
       "Bash(sudo /run/current-system/sw/bin/nixos-rebuild:*)",
-<<<<<<< Updated upstream
-      "Bash(xprop:*)"
-=======
+      "Bash(xprop:*)",
       "Bash(git -C /home/erahhal/Code/nixcfg diff --stat)",
       "Bash(secret-tool search:*)"
->>>>>>> Stashed changes
     ],
     "deny": [],
     "ask": []
