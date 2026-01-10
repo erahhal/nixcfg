@@ -467,7 +467,7 @@
       # Default: <none>
 
       # CPU_SCALING_GOVERNOR_ON_AC = "balance_power";
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
       # Set the min/max frequency available for the scaling governor.

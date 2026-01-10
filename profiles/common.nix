@@ -245,7 +245,11 @@
   services.openssh.enable = true;
 
   # This will save you money and possibly your life!
-  services.thermald.enable = true;
+  services.thermald = {
+    enable = true;
+    # Required for 13th Gen Intel CPUs which aren't recognized by default
+    ignoreCpuidCheck = true;
+  };
 
   services.upower.enable = true;
 
