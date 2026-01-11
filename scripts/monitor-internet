@@ -3,7 +3,7 @@
 # Internet Connection Monitor
 # Monitors internet connectivity and logs downtime periods
 
-$CURR_DIR=$(pwd)
+CURR_DIR=$(pwd)
 
 # Configuration
 LOG_FILE="${LOG_FILE:-$CURR_DIR/internet-monitor.log}"
