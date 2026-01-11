@@ -292,17 +292,17 @@
         "quickshell": "quickshell_2"
       },
       "locked": {
-        "lastModified": 1767813183,
-        "narHash": "sha256-4tLYqLiLZqI7xmhNBi5zyGkaAXZJNUtGuxWzA7NJf8A=",
+        "lastModified": 1768096815,
+        "narHash": "sha256-zg/iJT6e/v55jNoZRAEtGXQC30+/9NeSsELoT9Eg3PI=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "3dd21382bad5d43604850e257cfd1b8d35e16fb9",
+        "rev": "510ea5d2e43b368d04856e9788d5f489482fee13",
         "type": "github"
       },
       "original": {
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "3dd21382bad5d43604850e257cfd1b8d35e16fb9",
+        "rev": "510ea5d2e43b368d04856e9788d5f489482fee13",
         "type": "github"
       }
     },
@@ -997,11 +997,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765480374,
-        "narHash": "sha256-HlbvQAqLx7WqZFFQZ8nu5UUJAVlXiV/kqKbyueA8srw=",
+        "lastModified": 1768068402,
+        "narHash": "sha256-bAXnnJZKJiF7Xr6eNW6+PhBf1lg2P1aFUO9+xgWkXfA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "39cb677ed9e908e90478aa9fe5f3383dfc1a63f3",
+        "rev": "8bc5473b6bc2b6e1529a9c4040411e1199c43b4c",
         "type": "github"
       },
       "original": {
@@ -1530,11 +1530,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1768003873,
-        "narHash": "sha256-R0921sCOup/6R5dNMTJWM16Wi8m0DdvsQ92C2C1Q0KQ=",
+        "lastModified": 1768090227,
+        "narHash": "sha256-uRjOSElt07jc8TydPKyCtY50HpHTEb6//uDXwU2ICsQ=",
         "ref": "cef",
-        "rev": "b88be5b9a70e99fba703e3755c0046edbc38211d",
-        "revCount": 44,
+        "rev": "02b37469bec7711687e46f091ab1f4d3efd4feaa",
+        "revCount": 46,
         "type": "git",
         "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -1580,6 +1580,22 @@
       "original": {
         "owner": "misterio77",
         "repo": "nix-colors",
+        "type": "github"
+      }
+    },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1739444422,
+        "narHash": "sha256-iAVVHi7X3kWORftY+LVbRiStRnQEob2TULWyjMS6dWg=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "5e54c3ca05a7c7d968ae1ddeabe01d2a9bc1e177",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "ref": "v0.6.0",
+        "repo": "nix-flatpak",
         "type": "github"
       }
     },
@@ -2188,11 +2204,11 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1765186076,
-        "narHash": "sha256-hM20uyap1a0M9d344I692r+ik4gTMyj60cQWO+hAYP8=",
+        "lastModified": 1767892417,
+        "narHash": "sha256-dhhvQY67aboBk8b0/u0XB6vwHdgbROZT3fJAjyNh5Ww=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "addf7cf5f383a3101ecfba091b98d0a1263dc9b8",
+        "rev": "3497aa5c9457a9d88d71fa93a4a8368816fbeeba",
         "type": "github"
       },
       "original": {
@@ -2281,16 +2297,18 @@
         ]
       },
       "locked": {
-        "path": "./nm-openconnect-pulse-sso",
-        "type": "path"
+        "lastModified": 1768089332,
+        "narHash": "sha256-HM2Ir4i9bDL89WfH4Ozyg6hmTxg++3ra6hLbLggPkpI=",
+        "owner": "erahhal",
+        "repo": "nm-openconnect-pulse-sso",
+        "rev": "ae3b61ea51ab114f17c049382bb2aace716447ca",
+        "type": "github"
       },
       "original": {
-        "path": "./nm-openconnect-pulse-sso",
-        "type": "path"
-      },
-      "parent": [
-        "nflx-nixcfg"
-      ]
+        "owner": "erahhal",
+        "repo": "nm-openconnect-pulse-sso",
+        "type": "github"
+      }
     },
     "nur": {
       "inputs": {
@@ -2319,11 +2337,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766003357,
-        "narHash": "sha256-Sh31XNibBzvyKrXKTacxSSGsXfAPKrsGQmPNXKLhYu0=",
+        "lastModified": 1767816492,
+        "narHash": "sha256-1WH/5+yYG0Uh2W/KcY5pOQJtaN9CWfQ9J36tuNwiH3s=",
         "owner": "erahhal",
         "repo": "openconnect-pulse-launcher",
-        "rev": "a9d567c095ef7e5928933e42de5434e47ce60b31",
+        "rev": "0daeea15958deff321b5b8bab98f64e45a24045d",
         "type": "github"
       },
       "original": {
@@ -2660,6 +2678,7 @@
         "mms": "mms",
         "nflx-nixcfg": "nflx-nixcfg",
         "nix-colors": "nix-colors",
+        "nix-flatpak": "nix-flatpak",
         "nix-inspect": "nix-inspect",
         "nix-snapd": "nix-snapd",
         "nix-software-center": "nix-software-center",

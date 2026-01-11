@@ -65,8 +65,8 @@
     };
 
     dms-shell = {
-      # url = "github:AvengeMedia/DankMaterialShell/621710bd86d9c7c523f65d2522a99e822adae84a";
-      url = "github:AvengeMedia/DankMaterialShell/3dd21382bad5d43604850e257cfd1b8d35e16fb9";
+      # url = "github:AvengeMedia/DankMaterialShell/3dd21382bad5d43604850e257cfd1b8d35e16fb9";
+      url = "github:AvengeMedia/DankMaterialShell/510ea5d2e43b368d04856e9788d5f489482fee13";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -144,6 +144,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0"; # Use latest stable
   };
 
   outputs = { debug-mode, ... }@inputs:
@@ -219,6 +221,7 @@
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
           inputs.nur.modules.nixos.default
           inputs.dms-shell.nixosModules.dank-material-shell
+          inputs.nix-flatpak.nixosModules.nix-flatpak
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
 
@@ -281,6 +284,7 @@
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
           inputs.dms-shell.nixosModules.dank-material-shell
+          inputs.nix-flatpak.nixosModules.nix-flatpak
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
 
