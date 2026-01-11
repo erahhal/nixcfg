@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+# Internet Connection Monitor
+# Monitors internet connectivity and logs downtime periods
+
+$CURR_DIR=$(pwd)
+
+# Configuration
+LOG_FILE="${LOG_FILE:-$CURR_DIR/internet-monitor.log}"
+CHECK_INTERVAL="${CHECK_INTERVAL:-1}"  # seconds between checks
+PING_HOST="${PING_HOST:-google.com}"   # Domain name to test DNS + connectivity
+PING_COUNT=1
+PING_TIMEOUT=3
+
+# State tracking
+CONNECTION_STATE="unknown"
+DOWNTIME_START=""
+
+# Colors for terminal output (optional)
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to log messages
+log_message() {
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local message="$1"
+    local color="$2"
+
+    # Write plain text to log file
+    echo "[$timestamp] $message" >> "$LOG_FILE"
+
+    # Write colored text to terminal
+    if [ -n "$color" ]; then
+        echo -e "[$timestamp] ${color}${message}${NC}"
+    else
+        echo "[$timestamp] $message"
+    fi
+}
+
+# Function to check internet connectivity
+check_connection() {
+    if ping -c "$PING_COUNT" -W "$PING_TIMEOUT" "$PING_HOST" &> /dev/null; then
+        return 0  # Connection is up
+    else
+        return 1  # Connection is down
+    fi
+}
+
+# Function to calculate downtime duration
+calculate_downtime() {
+    local start_time=$1
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+
+    local hours=$((duration / 3600))
+    local minutes=$(((duration % 3600) / 60))
+    local seconds=$((duration % 60))
+
+    if [ $hours -gt 0 ]; then
+        echo "${hours}h ${minutes}m ${seconds}s"
+    elif [ $minutes -gt 0 ]; then
+        echo "${minutes}m ${seconds}s"
+    else
+        echo "${seconds}s"
+    fi
+}
+
+# Initialize
+log_message "=== Internet Monitor Started ==="
+log_message "Monitoring host: $PING_HOST"
+log_message "Check interval: ${CHECK_INTERVAL}s"
+log_message "Log file: $LOG_FILE"
+echo ""
+
+# Main monitoring loop
+while true; do
+    if check_connection; then
+        # Connection is UP
+        if [ "$CONNECTION_STATE" = "down" ]; then
+            # Connection just came back up
+            downtime=$(calculate_downtime "$DOWNTIME_START")
+            log_message "✓ Connection RESTORED (downtime: $downtime)" "$GREEN"
+            CONNECTION_STATE="up"
+            DOWNTIME_START=""
+        elif [ "$CONNECTION_STATE" = "unknown" ]; then
+            # First check - connection is up
+            log_message "✓ Connection is UP" "$GREEN"
+            CONNECTION_STATE="up"
+        fi
+    else
+        # Connection is DOWN
+        if [ "$CONNECTION_STATE" = "up" ] || [ "$CONNECTION_STATE" = "unknown" ]; then
+            # Connection just went down
+            DOWNTIME_START=$(date +%s)
+            log_message "✗ Connection DOWN" "$RED"
+            CONNECTION_STATE="down"
+        fi
+    fi
+
+    sleep "$CHECK_INTERVAL"
+done

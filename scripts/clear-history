@@ -21,4 +21,4 @@ dconf write /org/gtk/settings/file-chooser/startup-mode "'cwd'"
 dconf reset -f /org/gnome/portal/filechooser/
 dconf reset /org/gtk/settings/file-chooser/last-folder-uri
 rm -rf ~/.local/state/nvim/shada/
-
+clear
