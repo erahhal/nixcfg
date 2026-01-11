@@ -3,3 +3,22 @@
 history -c
 echo > ~/.local/share/recently-used.xbel
 echo > ~/.local/share/autojump/autojump.txt
+atuin search --filter-mode global --delete ""
+rm -rf ~/.bash_history
+rm -rf ~/.zsh_history
+rm -rf ~/.config/vifm/vifminfo.json*
+sqlite3 ~/.mozilla/firefox/default/places.sqlite "DELETE FROM moz_historyvisits;"
+sqlite3 ~/.mozilla/firefox/*.default/places.sqlite "DELETE FROM moz_historyvisits;"
+# file picker locations
+rm -rf ~/.mozilla/firefox/default/content-prefs.sqlite
+rm -rf ~/.mozilla/firefox/*.defaulte/content-prefs.sqlite
+rm -rf ~/.cache/mozilla/firefox/*
+rm -rf ~/.config/chromium/Default/History
+rm -rf ~/.config/google-chrome/Default/History
+rm -rf ~/.config/BraveSoftware/Brave-Browser/Default/History
+rm -rf ~/.config/vlc/vlc-qt-interface.conf
+dconf write /org/gtk/settings/file-chooser/startup-mode "'cwd'"
+dconf reset -f /org/gnome/portal/filechooser/
+dconf reset /org/gtk/settings/file-chooser/last-folder-uri
+rm -rf ~/.local/state/nvim/shada/
+

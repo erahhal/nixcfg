@@ -148,6 +148,28 @@ let
     ${niri} msg -j focused-window | ${jq} '.pid' | ${pkgs.findutils}/bin/xargs -L 1 kill -9
   '';
 
+  focus-or-cycle-workspace = pkgs.writeShellScript "focus-or-cycle-workspace" ''
+    TARGET_WS="$1"
+    [ -z "$TARGET_WS" ] && exit 1
+
+    # Get current active workspace name
+    CURRENT_WS=$(${niri} msg -j workspaces | ${jq} -r '.[] | select(.is_active == true) | .name')
+
+    if [ "$CURRENT_WS" = "$TARGET_WS" ]; then
+      # Already on target workspace - cycle columns with wrap
+      BEFORE=$(${niri} msg -j focused-window | ${jq} -r '.id // empty')
+      ${niri} msg action focus-column-right
+      AFTER=$(${niri} msg -j focused-window | ${jq} -r '.id // empty')
+      # If focus didn't change, wrap to first column
+      if [ "$BEFORE" = "$AFTER" ]; then
+        ${niri} msg action focus-column-first
+      fi
+    else
+      # Different workspace - focus it
+      ${niri} msg action focus-workspace "$TARGET_WS"
+    fi
+  '';
+
   capture-screen = pkgs.writeShellScript "niri-capture-screen.sh" ''
     ${pkgs.grim}/bin/grim -o $(${niri} msg -j focused-output | jq -r '.name') - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png
   '';
@@ -1128,16 +1150,16 @@ in
         //
         // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
         // will all refer to the 3rd workspace.
-        Mod+1 { focus-workspace "1"; }
-        Mod+2 { focus-workspace "2"; }
-        Mod+3 { focus-workspace "3"; }
-        Mod+4 { focus-workspace "4"; }
-        Mod+5 { focus-workspace "5"; }
-        Mod+6 { focus-workspace "6"; }
-        Mod+7 { focus-workspace "7"; }
-        Mod+8 { focus-workspace "8"; }
-        Mod+9 { focus-workspace "9"; }
-        Mod+0 { focus-workspace "0"; }
+        Mod+1 { spawn "${focus-or-cycle-workspace}" "1"; }
+        Mod+2 { spawn "${focus-or-cycle-workspace}" "2"; }
+        Mod+3 { spawn "${focus-or-cycle-workspace}" "3"; }
+        Mod+4 { spawn "${focus-or-cycle-workspace}" "4"; }
+        Mod+5 { spawn "${focus-or-cycle-workspace}" "5"; }
+        Mod+6 { spawn "${focus-or-cycle-workspace}" "6"; }
+        Mod+7 { spawn "${focus-or-cycle-workspace}" "7"; }
+        Mod+8 { spawn "${focus-or-cycle-workspace}" "8"; }
+        Mod+9 { spawn "${focus-or-cycle-workspace}" "9"; }
+        Mod+0 { spawn "${focus-or-cycle-workspace}" "0"; }
         Mod+Ctrl+1 { move-column-to-workspace "1"; }
         Mod+Ctrl+2 { move-column-to-workspace "2"; }
         Mod+Ctrl+3 { move-column-to-workspace "3"; }
