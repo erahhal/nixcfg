@@ -2,8 +2,8 @@
   services.flatpak = {
     enable = true;
     packages = [
-      "com.google.Chrome"
-      "org.chromium.Chromium"
+      # "com.google.Chrome"
+      # "org.chromium.Chromium"
       "com.valvesoftware.Steam"
       "net.davidotek.pupgui2"
     ];

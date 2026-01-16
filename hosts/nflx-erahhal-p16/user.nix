@@ -22,6 +22,8 @@ in
         awscli
         blender
 
+        chromium
+
         lutris
         mcreator
         postgresql
