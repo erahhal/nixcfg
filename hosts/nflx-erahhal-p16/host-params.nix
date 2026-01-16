@@ -41,14 +41,11 @@
     };
 
     programs = {
-      # defaultBrowser = "chromium-browser";
-      # defaultBrowser = "chromium-intel";
-      defaultBrowser = "chromium-native";
+      defaultBrowser = "chromium-browser";
       # foot is launched directly from niri spawn-at-startup (see niri.nix)
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [
-        # "chromium-intel"
-        "chromium-native"
+        "chromium-browser"
         "slack"
         "spotify"
         "brave"

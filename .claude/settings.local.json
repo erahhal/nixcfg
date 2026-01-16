@@ -226,7 +226,8 @@
       "Bash(WAYLAND_DEBUG=1 timeout 1 weston-info:*)",
       "Bash(wl-info:*)",
       "Bash(git -C /home/erahhal/Code/nixcfg log -p --since=\"2025-12-01\" -- overlays/chromium-based-apps.nix)",
-      "Bash(pw-metadata:*)"
+      "Bash(pw-metadata:*)",
+      "Bash(XDG_UTILS_DEBUG_LEVEL=2 xdg-settings:*)"
     ],
     "deny": [],
     "ask": []
