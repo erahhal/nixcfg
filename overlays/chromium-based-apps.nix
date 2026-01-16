@@ -1,6 +1,7 @@
 { config, pkgs, userParams, ... }:
 let
   usingIntel = config.hostParams.gpu.intel.enable;
+  defaultIntel = config.hostParams.gpu.intel.defaultWindowManagerGpu;
 
   chromium-intel-script = pkgs.writeShellScriptBin "chromium-intel" ''
     # Ensure flatpak is available
@@ -50,41 +51,78 @@ let
     ];
   };
 
+  chromium-native-desktop = pkgs.makeDesktopItem {
+    name = "chromium-native";
+    desktopName = "Chromium (Native)";
+    exec = "chromium-native %U";
+    icon = "org.chromium.Chromium";
+    categories = [ "Network" "WebBrowser" ];
+    mimeTypes = [
+      "text/html"
+      "text/xml"
+      "application/xhtml+xml"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+    ];
+  };
+
   chromium-intel = pkgs.symlinkJoin {
     name = "chromium";
-    paths = [ chromium-intel-script chromium-intel-desktop ];
+    paths = [ chromium-intel-script chromium-intel-desktop chromium-native-desktop ];
   };
 
   chromiumWaylandIme = final: prev: {
-    chromium = prev.chromium.override {
+    chromium = (prev.chromium.override {
       commandLineArgs = [
         "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
         "--enable-wayland-ime"
         "--password-store=basic" # Don't show kwallet login at start
         "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
         "--ozone-platform=wayland"
-        "--enable-features=VaapiVideoEncoder,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
+        "--enable-features=WebRTCPipeWireCapturer,VaapiVideoEncoder,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
         "--enable-gpu-rasterization"
         "--enable-oop-rasterization"
         "--ignore-gpu-blocklist"
         "--enable-zero-copy"
       ];
-    };
+    }).overrideAttrs (oldAttrs: {
+      # Force Intel GPU for screen sharing compatibility with Niri (which renders on Intel)
+      postFixup = (oldAttrs.postFixup or "") + ''
+        wrapProgram $out/bin/chromium \
+          --unset __NV_PRIME_RENDER_OFFLOAD \
+          --unset __VK_LAYER_NV_optimus \
+          --set DRI_PRIME 0 \
+          --set GBM_BACKEND mesa \
+          --set LIBVA_DRIVER_NAME iHD \
+          --set __GLX_VENDOR_LIBRARY_NAME mesa
+      '';
+    });
 
-    brave = prev.brave.override {
+    brave = (prev.brave.override {
       commandLineArgs = [
         "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
         "--enable-wayland-ime"
         "--password-store=basic" # Don't show kwallet login at start
         "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
         "--ozone-platform=wayland"
-        "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
+        "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
         "--enable-gpu-rasterization"
         "--enable-oop-rasterization"
         "--ignore-gpu-blocklist"
         "--enable-zero-copy"
       ];
-    };
+    }).overrideAttrs (oldAttrs: {
+      # Force Intel GPU for screen sharing compatibility with Niri (which renders on Intel)
+      postFixup = (oldAttrs.postFixup or "") + ''
+        wrapProgram $out/bin/brave \
+          --unset __NV_PRIME_RENDER_OFFLOAD \
+          --unset __VK_LAYER_NV_optimus \
+          --set DRI_PRIME 0 \
+          --set GBM_BACKEND mesa \
+          --set LIBVA_DRIVER_NAME iHD \
+          --set __GLX_VENDOR_LIBRARY_NAME mesa
+      '';
+    });
 
     slack = prev.slack.overrideAttrs (oldAttrs: {
       postInstall = oldAttrs.postInstall or "" + ''
@@ -94,7 +132,7 @@ let
           --add-flags "--enable-features=WebRTCPipeWireCapturer" \
           --add-flags "--enable-features=UseOzonePlatform" \
           --add-flags "--ozone-platform=wayland" \
-          --add-flags "--enable-features=VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo" \
+          --add-flags "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo" \
           --add-flags "--enable-gpu-rasterization" \
           --add-flags "--enable-oop-rasterization" \
           --add-flags "--ignore-gpu-blocklist" \
@@ -158,6 +196,7 @@ let
 
     ## Telegram works out of the box
   };
+  default-chrome = if usingIntel then (if defaultIntel then "chromium-native" else "chromium-intel") else "chromium-native";
 in
 {
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
@@ -173,7 +212,16 @@ in
 
   environment.systemPackages = [
     chromium-intel
-    (pkgs.writeShellScriptBin "chromium" "chromium-intel")
-    (pkgs.writeShellScriptBin "chromium-native" "${pkgs.chromium}/bin/chromium")
+    (pkgs.writeShellScriptBin "chromium" default-chrome)
+    (pkgs.writeShellScriptBin "chromium-native" ''
+      # Force Intel GPU for screen sharing compatibility with Niri (which renders on Intel)
+      export DRI_PRIME=0
+      export GBM_BACKEND=mesa
+      export LIBVA_DRIVER_NAME=iHD
+      export __GLX_VENDOR_LIBRARY_NAME=mesa
+      unset __NV_PRIME_RENDER_OFFLOAD
+      unset __VK_LAYER_NV_optimus
+      exec ${pkgs.chromium}/bin/chromium "$@"
+    '')
   ];
 }

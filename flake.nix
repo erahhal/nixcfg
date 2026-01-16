@@ -122,8 +122,7 @@
     nflx-nixcfg = {
       type = "git";
       url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
-      # ref = "main";
-      ref = "cef";
+      ref = "main";
     };
 
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";

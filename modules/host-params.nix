@@ -299,6 +299,12 @@
           default = false;
           description = "Disable Intel GPU kernel modules";
         };
+
+        defaultWindowManagerGpu = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Make default GPU even if nvidia is enabled";
+        };
       };
 
       nvidia = {

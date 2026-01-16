@@ -1,6 +1,7 @@
 { config, lib, userParams, ... }:
 let
   usingIntel = config.hostParams.gpu.intel.enable;
+  defaultIntel = config.hostParams.gpu.intel.defaultWindowManagerGpu;
   debug-block = ''
       debug {
           honor-xdg-activation-with-invalid-serial
@@ -12,9 +13,12 @@ let
     ## - Rendering on intel and offloading to nvidia is slow on external monitors, especially high resolution ones.
     ## - Rendering on nvidia and offloading to intel is slow on laptop monitor, but tolerable
     ## - SO, make sure window manager is using discrete nvidia GPU to render
-
     ## BUUUUT it seems that Niri is faster at copying now? Using Intel and perf is not THAT bad
-    (if usingIntel then ''
+
+    (if usingIntel && defaultIntel then ''
+          // Intel Device
+          render-drm-device "/dev/dri/by-path/pci-0000:00:02.0-render"
+    '' else if usingIntel then ''
           // Use Nvidia GPU as primary
           // See comment above
           render-drm-device "/dev/dri/by-path/pci-0000:01:00.0-render"

@@ -6,7 +6,7 @@
       uid = 1026;
       gid = 100;
       # timeZone = "America/Denver";
-      thinkpad-battery-charge-to-full = false;
+      thinkpad-battery-charge-to-full = true;
     };
 
     networking = {
@@ -42,11 +42,13 @@
 
     programs = {
       # defaultBrowser = "chromium-browser";
-      defaultBrowser = "chromium-intel";
+      # defaultBrowser = "chromium-intel";
+      defaultBrowser = "chromium-native";
       # foot is launched directly from niri spawn-at-startup (see niri.nix)
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [
-        "chromium-intel"
+        # "chromium-intel"
+        "chromium-native"
         "slack"
         "spotify"
         "brave"
@@ -73,6 +75,7 @@
       ## Otherwise the laptop display is still routed through the intel GPU, and generally doesn't work, either DPMS or rendering
       intel.enable = true;
       intel.disableModules = false;
+      intel.defaultWindowManagerGpu = true;
     };
 
     virtualisation = {

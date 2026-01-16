@@ -865,7 +865,7 @@ in
     //     default-column-width { proportion 1.0; }
     // }
     window-rule {
-        match app-id="chromium-browser$"
+        match app-id="pulse-vpn-auth$"
         match title="^Ivanti Connect Secure.*$"
         open-floating true
         default-column-width { fixed 800; }

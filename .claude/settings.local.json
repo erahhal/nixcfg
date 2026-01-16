@@ -217,7 +217,16 @@
       "Bash(sudo /run/current-system/sw/bin/nixos-rebuild:*)",
       "Bash(xprop:*)",
       "Bash(git -C /home/erahhal/Code/nixcfg diff --stat)",
-      "Bash(secret-tool search:*)"
+      "Bash(secret-tool search:*)",
+      "Bash(coredumpctl list:*)",
+      "Bash(pw-cli info:*)",
+      "Bash(pw-dump:*)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline -20)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log -1 --format=\"%H %ai\" -- flake.lock)",
+      "Bash(WAYLAND_DEBUG=1 timeout 1 weston-info:*)",
+      "Bash(wl-info:*)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log -p --since=\"2025-12-01\" -- overlays/chromium-based-apps.nix)",
+      "Bash(pw-metadata:*)"
     ],
     "deny": [],
     "ask": []
