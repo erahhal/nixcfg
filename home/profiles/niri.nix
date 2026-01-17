@@ -854,101 +854,96 @@ in
         open-fullscreen true
     }
 
-    // window-rule {
-    //   match app-id="mpv"
-    //   inhibit-idle true
-    // }
-
-    // window-rule {
-    //     match app-id="chromium-browser$"
-    //     open-on-workspace "1"
-    //     default-column-width { proportion 1.0; }
-    // }
     window-rule {
         match app-id="pulse-vpn-auth$"
-        match title="^Ivanti Connect Secure.*$"
         open-floating true
         default-column-width { fixed 800; }
         default-window-height { fixed 600; }
     }
+
     window-rule {
         match app-id="org.chromium.Chromium$"
-        open-on-workspace "1"
+        open-on-workspace "one"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
+        match app-id="chromium-browser"
+        open-on-workspace "one"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="kitty$"
-        open-on-workspace "2"
+        open-on-workspace "two"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="foot$"
-        open-on-workspace "2"
+        open-on-workspace "two"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="Slack$"
-        open-on-workspace "3"
+        open-on-workspace "three"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="spotify$"
-        open-on-workspace "4"
+        open-on-workspace "four"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="Spotify$"
-        open-on-workspace "4"
+        open-on-workspace "four"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="brave-browser$"
-        open-on-workspace "4"
+        open-on-workspace "four"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="firefox$"
-        open-on-workspace "5"
+        open-on-workspace "five"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="signal$"
-        open-on-workspace "6"
+        open-on-workspace "six"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="Signal$"
-        open-on-workspace "6"
+        open-on-workspace "six"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="org.telegram.desktop$"
-        open-on-workspace "6"
+        open-on-workspace "six"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="discord$"
-        open-on-workspace "7"
+        open-on-workspace "seven"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="vesktop$"
-        open-on-workspace "7"
+        open-on-workspace "seven"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="Element$"
-        open-on-workspace "7"
+        open-on-workspace "seven"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="@joplin/app-desktop$"
-        open-on-workspace "9"
+        open-on-workspace "nine"
         default-column-width { proportion 1.0; }
     }
     window-rule {
         match app-id="Joplin$"
-        open-on-workspace "9"
+        open-on-workspace "nine"
         default-column-width { proportion 1.0; }
     }
     window-rule {
@@ -956,7 +951,7 @@ in
         // open-fullscreen true
         open-maximized true
         open-focused true
-        open-on-workspace "0"
+        open-on-workspace "ten"
         default-column-width { proportion 1.0; }
     }
     // window-rule {
@@ -1150,26 +1145,26 @@ in
         //
         // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
         // will all refer to the 3rd workspace.
-        Mod+1 { spawn "${focus-or-cycle-workspace}" "1"; }
-        Mod+2 { spawn "${focus-or-cycle-workspace}" "2"; }
-        Mod+3 { spawn "${focus-or-cycle-workspace}" "3"; }
-        Mod+4 { spawn "${focus-or-cycle-workspace}" "4"; }
-        Mod+5 { spawn "${focus-or-cycle-workspace}" "5"; }
-        Mod+6 { spawn "${focus-or-cycle-workspace}" "6"; }
-        Mod+7 { spawn "${focus-or-cycle-workspace}" "7"; }
-        Mod+8 { spawn "${focus-or-cycle-workspace}" "8"; }
-        Mod+9 { spawn "${focus-or-cycle-workspace}" "9"; }
-        Mod+0 { spawn "${focus-or-cycle-workspace}" "0"; }
-        Mod+Ctrl+1 { move-column-to-workspace "1"; }
-        Mod+Ctrl+2 { move-column-to-workspace "2"; }
-        Mod+Ctrl+3 { move-column-to-workspace "3"; }
-        Mod+Ctrl+4 { move-column-to-workspace "4"; }
-        Mod+Ctrl+5 { move-column-to-workspace "5"; }
-        Mod+Ctrl+6 { move-column-to-workspace "6"; }
-        Mod+Ctrl+7 { move-column-to-workspace "7"; }
-        Mod+Ctrl+8 { move-column-to-workspace "8"; }
-        Mod+Ctrl+9 { move-column-to-workspace "9"; }
-        Mod+Ctrl+0 { move-column-to-workspace "0"; }
+        Mod+1 { spawn "${focus-or-cycle-workspace}" "one"; }
+        Mod+2 { spawn "${focus-or-cycle-workspace}" "two"; }
+        Mod+3 { spawn "${focus-or-cycle-workspace}" "three"; }
+        Mod+4 { spawn "${focus-or-cycle-workspace}" "four"; }
+        Mod+5 { spawn "${focus-or-cycle-workspace}" "five"; }
+        Mod+6 { spawn "${focus-or-cycle-workspace}" "six"; }
+        Mod+7 { spawn "${focus-or-cycle-workspace}" "seven"; }
+        Mod+8 { spawn "${focus-or-cycle-workspace}" "eight"; }
+        Mod+9 { spawn "${focus-or-cycle-workspace}" "nine"; }
+        Mod+0 { spawn "${focus-or-cycle-workspace}" "ten"; }
+        Mod+Ctrl+1 { move-column-to-workspace "one"; }
+        Mod+Ctrl+2 { move-column-to-workspace "two"; }
+        Mod+Ctrl+3 { move-column-to-workspace "three"; }
+        Mod+Ctrl+4 { move-column-to-workspace "four"; }
+        Mod+Ctrl+5 { move-column-to-workspace "five"; }
+        Mod+Ctrl+6 { move-column-to-workspace "six"; }
+        Mod+Ctrl+7 { move-column-to-workspace "seven"; }
+        Mod+Ctrl+8 { move-column-to-workspace "eight"; }
+        Mod+Ctrl+9 { move-column-to-workspace "nine"; }
+        Mod+Ctrl+0 { move-column-to-workspace "ten"; }
 
         // Alternatively, there are commands to move just a single window:
         // Mod+Ctrl+1 { move-window-to-workspace 1; }
@@ -1274,34 +1269,34 @@ in
 
     }
 
-    workspace "1" {
+    workspace "one" {
       open-on-output "eDP-1"
     }
-    workspace "2" {
+    workspace "two" {
       open-on-output "eDP-1"
     }
-    workspace "3" {
+    workspace "three" {
       open-on-output "eDP-1"
     }
-    workspace "4" {
+    workspace "four" {
       open-on-output "eDP-1"
     }
-    workspace "5" {
+    workspace "five" {
       open-on-output "eDP-1"
     }
-    workspace "6" {
+    workspace "six" {
       open-on-output "eDP-1"
     }
-    workspace "7" {
+    workspace "seven" {
       open-on-output "eDP-1"
     }
-    workspace "8" {
+    workspace "eight" {
       open-on-output "eDP-1"
     }
-    workspace "9" {
+    workspace "nine" {
       open-on-output "eDP-1"
     }
-    workspace "0" {
+    workspace "ten" {
       open-on-output "eDP-1"
     }
   '';
