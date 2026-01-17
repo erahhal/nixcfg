@@ -227,7 +227,15 @@
       "Bash(wl-info:*)",
       "Bash(git -C /home/erahhal/Code/nixcfg log -p --since=\"2025-12-01\" -- overlays/chromium-based-apps.nix)",
       "Bash(pw-metadata:*)",
-      "Bash(XDG_UTILS_DEBUG_LEVEL=2 xdg-settings:*)"
+      "Bash(XDG_UTILS_DEBUG_LEVEL=2 xdg-settings:*)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline --since=\"2 months ago\" -- profiles/niri.nix home/profiles/niri.nix hosts/antikythera/niri.nix profiles/gfx-amd.nix hosts/antikythera/configuration.nix)",
+      "Bash(git -C /home/erahhal/Code/nixcfg show 5cc58aa --stat)",
+      "Bash(git -C /home/erahhal/Code/nixcfg show 7db9eb5 --stat)",
+      "WebFetch(domain:bugzilla.mozilla.org)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline --since=\"3 months ago\" -- home/profiles/niri.nix profiles/niri.nix)",
+      "Bash(git -C /home/erahhal/Code/nixcfg diff HEAD~30..HEAD -- home/profiles/niri.nix)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline --since=\"3 months ago\" -- hosts/antikythera/kanshi.nix profiles/wayland-window-manager.nix)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline -p flake.lock)"
     ],
     "deny": [],
     "ask": []

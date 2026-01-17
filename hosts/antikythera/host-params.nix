@@ -5,6 +5,8 @@
       hostName = "antikythera";
       uid = 1026;
       gid = 100;
+      # timeZone = "America/Denver";
+      thinkpad-battery-charge-to-full = false;
     };
 
     desktop = {

@@ -333,6 +333,12 @@
     # "threadirqs"      # Forces interrupt handlers to run in threaded context
   ];
 
+  # Set WiFi regulatory domain to fix ath11k "Failed to set Country regulatory setting" errors
+  # The WCN6855 (ath11k) adapter repeatedly fails with -EINVAL when regulatory domain is unset
+  boot.extraModprobeConfig = ''
+    options cfg80211 ieee80211_regdom=US
+  '';
+
   ## Make sure CPU runs at max performance
   systemd.services.ryzenadj = {
     description = "Set AMD CPU Power Limits";
@@ -358,10 +364,22 @@
   powerManagement.resumeCommands = ''
     # Give system time to stabilize after resume
     sleep 2
-    # Reload ath11k driver to fix WiFi
-    ${pkgs.kmod}/bin/modprobe -r ath11k_pci || true
-    sleep 1
-    ${pkgs.kmod}/bin/modprobe ath11k_pci
+
+    # Only reload ath11k driver if device is in a bad state
+    # Known issue: ath11k sometimes comes up "not ready" after resume
+    # Detection: ip link set fails with EAGAIN when device isn't ready
+    if ! ${pkgs.iproute2}/bin/ip link show wlan0 &>/dev/null; then
+      # Interface doesn't exist, reload driver
+      ${pkgs.kmod}/bin/modprobe -r ath11k_pci 2>/dev/null || true
+      sleep 1
+      ${pkgs.kmod}/bin/modprobe ath11k_pci
+    elif ! ${pkgs.iproute2}/bin/ip link set wlan0 up 2>/dev/null; then
+      # Interface exists but can't be brought UP - device in bad state
+      ${pkgs.kmod}/bin/modprobe -r ath11k_pci || true
+      sleep 1
+      ${pkgs.kmod}/bin/modprobe ath11k_pci
+    fi
+    # else: interface exists and can be brought UP - device is OK, skip reload
   '';
 
   ## Fix WiFi not working after boot - same ath11k issue

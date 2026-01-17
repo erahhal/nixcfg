@@ -70,16 +70,18 @@ in
               {
                 criteria = "Lenovo Group Limited P40w-20 V90DFGMV";
                 status = "enable";
-                mode = "5120x2160";
+                mode = "5120x2160@60"; # Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
                 position = "0,0";
-                # scale = 1.250000;
                 scale = 1.333333;
               }
               {
+                # Keep enabled but off-screen to avoid slow DRM modeset cycle
+                # Disabling causes ~20s delay on AMD GPU through MST dock
                 criteria = "eDP-1";
                 status = "disable";
                 # status = "enable";
                 mode = "2880x1800@120";
+                # position = "-3000,0";
                 position = "6249,1440";
                 scale = 1.8;
               }

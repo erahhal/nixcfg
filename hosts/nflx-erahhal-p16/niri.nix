@@ -35,8 +35,8 @@ in
 
       // ThinkVision on the left
       output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@60.000"
-        scale 1.332031
+        mode "5120x2160@60.000" // Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
+        scale 1.333333
         position x=0 y=0
         variable-refresh-rate
         focus-at-startup
@@ -66,8 +66,8 @@ in
       }
       // ThinkVision
       output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@60.000"
-        scale 1.332031
+        mode "5120x2160@60.000" // Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
+        scale 1.333333
         variable-refresh-rate
       }
       // Portable
@@ -85,11 +85,6 @@ in
       output "LG Electronics L33HD334K 0x00020F5B" {
         mode "3840x2160@60"
         scale 1.5
-        variable-refresh-rate
-      }
-      output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@74.978996"
-        scale 1.333333
         variable-refresh-rate
       }
 

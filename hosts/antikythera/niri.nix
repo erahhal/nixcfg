@@ -13,12 +13,13 @@
       }
 
       // ThinkVision on the right
+      // VRR disabled - maybe causing issues with delayed detection?
       output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@60.000"
-        scale 1.332031
+        mode "5120x2160@60.000" // Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
+        scale 1.333333
         position x=1600 y=0
-        variable-refresh-rate
         focus-at-startup
+        variable-refresh-rate
       }
     '';
   };
@@ -27,6 +28,8 @@
     xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
       debug {
           honor-xdg-activation-with-invalid-serial
+          // Explicitly set render device to avoid detection delay at startup
+          render-drm-device "/dev/dri/by-path/pci-0000:c4:00.0-render"
       }
 
       output "eDP-1" {
@@ -35,8 +38,8 @@
         variable-refresh-rate
       }
       output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@60.000"
-        scale 1.332031
+        mode "5120x2160@60.000" // Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
+        scale 1.333333
         variable-refresh-rate
       }
       output "LG Electronics 16MQ70 20NKZ005285" {
@@ -52,11 +55,6 @@
       output "LG Electronics L33HD334K 0x00020F5B" {
         mode "3840x2160@60"
         scale 1.5
-        variable-refresh-rate
-      }
-      output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@74.978996"
-        scale 1.333333
         variable-refresh-rate
       }
 

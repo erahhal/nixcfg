@@ -27,7 +27,7 @@
         "desc:LG Electronics LG Ultra HD 0x00043EAD,preferred,652x0,1.5"
         "desc:LG Electronics LG HDR 4K 0x00020F5B,preferred,3212x0,1.5"
         # "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@74.978996,0x0,1.250000"
-        "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@74.978996,0x0,1.333333"
+        "desc:Lenovo Group Limited P40w-20 V90DFGMV,5120x2160@60.000,0x0,1.333333" # Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
       ];
 
       workspace = [
