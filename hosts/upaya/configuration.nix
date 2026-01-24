@@ -217,7 +217,7 @@ in
 
   services.resolved = {
     enable = true;
-    dnssec = "false";
+    settings.Resolve.DNSSEC = "false";
   };
 
   # Enable fingerprint reading daemon.

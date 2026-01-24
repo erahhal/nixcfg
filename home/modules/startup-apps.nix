@@ -41,7 +41,7 @@ in
       Unit = {
         Description = "Launch startup applications";
         PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" "dms.service" ];
+        After = [ "graphical-session.target" "dms.service" "xdg-desktop-portal-gnome.service" ];
         # Don't restart even if the service definition changes (store path changes on each rebuild)
         X-RestartIfChanged = "false";
       };
@@ -58,6 +58,8 @@ in
           "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
           "XDG_RUNTIME_DIR" "DISPLAY" "WAYLAND_DISPLAY"
           "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
+          # D-Bus session for portal communication (screen sharing, file dialogs, etc.)
+          "DBUS_SESSION_BUS_ADDRESS"
           # Electron/Chromium Wayland native support (critical for dynamic scaling)
           "ELECTRON_OZONE_PLATFORM_HINT" "NIXOS_OZONE_WL"
           # Qt Wayland support
@@ -67,6 +69,10 @@ in
           "GTK_IM_MODULE" "GTK_PATH" "GDK_PIXBUF_MODULE_FILE"
           # Compositor socket for scale change notifications
           "NIRI_SOCKET"
+          # Portal discovery (critical for screen sharing)
+          "NIX_XDG_DESKTOP_PORTAL_DIR"
+          "XDG_DATA_DIRS"
+          "XDG_CONFIG_DIRS"
         ];
         Environment = [
           "HOME=%h"

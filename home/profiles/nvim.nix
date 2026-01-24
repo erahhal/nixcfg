@@ -1,7 +1,7 @@
 { inputs, lib, pkgs, ... }:
 {
   home.packages = with pkgs; [
-    inputs.nixd.packages.${pkgs.system}.default
+    inputs.nixd.packages.${pkgs.stdenv.hostPlatform.system}.default
     tree-sitter
     nodePackages.eslint
     nodePackages.prettier

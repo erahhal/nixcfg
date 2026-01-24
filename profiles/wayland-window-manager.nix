@@ -132,6 +132,9 @@
       # Used to inform chromium-based apps such as discord that we are using wayland
       NIXOS_OZONE_WL = "1";
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
+
+      # Force GTK/Electron apps to use xdg-desktop-portal for screen sharing
+      GTK_USE_PORTAL = "1";
     };
   };
 }

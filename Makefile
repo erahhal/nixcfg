@@ -35,13 +35,13 @@ switch:
 	fi
 
 debug:
-	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true -L |& ${NOM}
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true -L |& ${NOM}
 
 nflx-local:
-	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso -L |& ${NOM}
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 
 nixvim-local:
-	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 
 boot:
 	sudo -E nixos-rebuild boot --flake .#${HOSTNAME} -L

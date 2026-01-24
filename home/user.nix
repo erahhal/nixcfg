@@ -33,16 +33,8 @@ in
     shell = if userParams.shell == "zsh" then pkgs.zsh else pkgs.bash;
   };
 
-  imports = [
-    ../overlays/ranger-image-preview.nix
-    ../overlays/weechat.nix
-  ];
-
-  nixpkgs.config.permittedInsecurePackages = [
-    # "electron-25.9.0"
-    # "python3.9-mistune-0.8.4"
-    # "polymc-1.4.2"
-  ];
+  # Note: ranger-image-preview and weechat overlays moved to profiles/common.nix
+  # (nixpkgs.overlays not allowed in home-manager when useGlobalPkgs is true)
 
   home-manager.users.${userParams.username} = {config, ...}: {
     _module.args.inputs = inputs;
@@ -170,7 +162,7 @@ in
 
         ## genai
         litellm
-        (broken vllm)
+        vllm
 
         ## python
         pyright
@@ -306,6 +298,9 @@ in
 
     programs.zsh = {
       enable = if userParams.shell == "zsh" then true else false;
+
+      # Use XDG config directory (new default in 26.05+)
+      dotDir = "${config.xdg.configHome}/zsh";
 
       enableCompletion = false;
 

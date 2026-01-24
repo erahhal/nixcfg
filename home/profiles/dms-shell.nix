@@ -339,13 +339,29 @@ in
       # Set directly here instead of PassEnvironment to avoid stale systemd env issues
       "QT_QPA_PLATFORMTHEME=qt6ct"
     ];
-    # Inherit environment for icon theme discovery and loginctl integration
+    # Inherit environment for icon theme discovery, loginctl integration, and app screen sharing
     PassEnvironment = [
-      "XDG_DATA_DIRS"
-      "XCURSOR_SIZE"
-      "XCURSOR_THEME"
-      # Required for loginctl lock integration
-      "XDG_SESSION_ID"
+      # XDG directories
+      "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
+      "XDG_RUNTIME_DIR" "XDG_DATA_DIRS" "XDG_CONFIG_DIRS"
+      # Display/Wayland
+      "DISPLAY" "WAYLAND_DISPLAY"
+      "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE" "XDG_SESSION_ID"
+      # D-Bus session for portal communication (screen sharing, file dialogs)
+      "DBUS_SESSION_BUS_ADDRESS"
+      # Electron/Chromium Wayland native support
+      "ELECTRON_OZONE_PLATFORM_HINT" "NIXOS_OZONE_WL"
+      # Qt support
+      "QT_QPA_PLATFORM" "QT_QPA_PLATFORMTHEME" "QT_PLUGIN_PATH"
+      "QT_IM_MODULE" "QT_STYLE_OVERRIDE" "QML2_IMPORT_PATH"
+      # GTK support
+      "GTK_IM_MODULE" "GTK_PATH" "GDK_PIXBUF_MODULE_FILE" "GTK_USE_PORTAL"
+      # Compositor socket
+      "NIRI_SOCKET"
+      # Portal discovery (critical for screen sharing)
+      "NIX_XDG_DESKTOP_PORTAL_DIR"
+      # Cursor theme
+      "XCURSOR_SIZE" "XCURSOR_THEME"
     ];
   };
 

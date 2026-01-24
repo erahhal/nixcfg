@@ -283,9 +283,9 @@ in
       # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
       # Only available from driver 515.43.04+
       # Do not disable this unless your GPU is unsupported or if you have a good reason to.
-      # open = true;
-      ## open currently broken
-      open = false;
+      # Use nvidia-open kernel modules for better kernel integration
+      # May help with USB4 DP tunnel resume issues
+      open = true;
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.

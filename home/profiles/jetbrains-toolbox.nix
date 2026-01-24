@@ -1,18 +1,6 @@
 { pkgs, ... }:
-  let jetbrains-toolbox-nogpu = self: super: {
-    jetbrains-toolbox = super.jetbrains-toolbox.overrideAttrs (old: {
-      # add `makeWrapper` to existing dependencies
-      buildInputs = (old.buildInputs or []) ++ [ pkgs.makeWrapper ];
-      # wrap the binary in a script where the appropriate env var is set
-      postInstall = old.postInstall or "" + ''
-        wrapProgram "$out/bin/jetbrains-toolbox" \
-          --add-flags "--graphics-api software"
-      '';
-    });
-  };
-in
 {
-  nixpkgs.overlays = [ jetbrains-toolbox-nogpu ];
+  # Note: jetbrains-toolbox overlay with --graphics-api software is in profiles/common.nix
 
   home.packages = with pkgs; [
     jetbrains-toolbox

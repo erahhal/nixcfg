@@ -237,6 +237,12 @@ in
 
         "x-scheme-handler/kdeconnect"                                                   = [ "org.kde.dolphin.desktop" ];
 
+        # Zoom URL schemes
+        "x-scheme-handler/zoommtg"                                                        = [ "Zoom.desktop" ];
+        "x-scheme-handler/zoomus"                                                         = [ "Zoom.desktop" ];
+        "x-scheme-handler/zoomphonecall"                                                  = [ "Zoom.desktop" ];
+        "application/x-zoom"                                                              = [ "Zoom.desktop" ];
+
         "application/msword"                                                            = [ "writer.desktop" ];
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"       = [ "writer.desktop" ];
         "application/vnd.openxmlformats-officedocument.wordprocessingml.template"       = [ "writer.desktop" ];
@@ -469,7 +475,7 @@ in
         # dolphin          # Doesn't render very well
         nautilus
         krusader
-        xfce.thunar
+        thunar
         nemo
 
         # unstable.ardour
@@ -481,8 +487,8 @@ in
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application
-        xfce.xfconf # Needed to save the preferences
-        xfce.exo # Used by default for `open terminal here`, but can be changed
+        xfconf # Needed to save the preferences
+        xfce4-exo # Used by default for `open terminal here`, but can be changed
         # qt5
         # qt6
         libsForQt5.qtstyleplugins

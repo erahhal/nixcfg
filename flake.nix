@@ -66,7 +66,8 @@
 
     dms-shell = {
       # url = "github:AvengeMedia/DankMaterialShell/3dd21382bad5d43604850e257cfd1b8d35e16fb9";
-      url = "github:AvengeMedia/DankMaterialShell/510ea5d2e43b368d04856e9788d5f489482fee13";
+      # url = "github:AvengeMedia/DankMaterialShell/510ea5d2e43b368d04856e9788d5f489482fee13";
+      url = "github:AvengeMedia/DankMaterialShell/11e23feb0e233147afbd5f15ea68043c4492029b";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -164,9 +165,7 @@
       systemd.services."home-manager-${userParams.username}".serviceConfig = { RemainAfterExit = "yes"; };
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      nixpkgs.overlays = [
-        inputs.nur.overlays.default
-      ];
+      # Note: nixpkgs.overlays moved to profiles/common.nix (not allowed with useGlobalPkgs)
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
           inputs.caelestia-shell.homeManagerModules.default
@@ -236,7 +235,11 @@
           {
             nflx = {
               username = "erahhal";
-              development.java.enable = true;
+              development = {
+                java.enable = true;
+                # newt.clean-tmux-nesting = true;
+                workspaces.disable-workspace-id-warning = true;
+              };
               genai = {
                 project-id = "erahhaldevtools";
               };
@@ -245,6 +248,7 @@
                 # enable-nm-applet-service = true;
                 # enable-dtls = false;
                 # enable-selenium = true;
+                disable-nm-applet-warning = true;
               };
             };
           }

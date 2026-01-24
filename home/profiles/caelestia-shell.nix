@@ -1,6 +1,6 @@
 { inputs, pkgs, ... }:
 let
-  caelestia-shell = inputs.caelestia-shell.packages.${pkgs.system}.default.override {
+  caelestia-shell = inputs.caelestia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
     withCli = true;
   };
 in

@@ -45,7 +45,9 @@
       # foot is launched directly from niri spawn-at-startup (see niri.nix)
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [
-        "chromium-browser"
+        ## @TODO
+        ## Can't launch this from startup-apps, because window and screen sharing doesn't work
+        # "chromium-browser"
         "slack"
         "spotify"
         "brave"

@@ -168,9 +168,34 @@
   nixpkgs.overlays = [
     # @TODO: full overlay can cause rebuilds - install as package instead?
     inputs.comma.overlays.default
+    inputs.nur.overlays.default
     (final: prev: {
       ## Use SwayFX
       # sway-unwrapped = inputs.swayfx.packages.${prev.system}.default;
+
+      # jetbrains-toolbox with software rendering (moved from home-manager config)
+      jetbrains-toolbox = prev.jetbrains-toolbox.overrideAttrs (old: {
+        buildInputs = (old.buildInputs or []) ++ [ prev.makeWrapper ];
+        postInstall = old.postInstall or "" + ''
+          wrapProgram "$out/bin/jetbrains-toolbox" \
+            --add-flags "--graphics-api software"
+        '';
+      });
+
+      # ranger with image preview (moved from home-manager config)
+      ranger = prev.ranger.overrideAttrs (old: {
+        imagePreviewSupport = true;
+      });
+
+      # weechat with plugins (moved from home-manager config)
+      weechat = prev.weechat.override {
+        configure = { availablePlugins, ... }: {
+          scripts = with prev.weechatScripts; [
+            # weechat-otr
+            # wee-slack
+          ];
+        };
+      };
     })
   ];
 

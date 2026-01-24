@@ -58,13 +58,26 @@ let
       ];
     };
 
-    slack = prev.slack.overrideAttrs (oldAttrs: {
-      postInstall = oldAttrs.postInstall or "" + ''
-        wrapProgram $out/bin/slack \
+    # Slack wrapped to use Intel GPU (for screen sharing compatibility with Niri)
+    # Uses single wrapper with both env vars and flags to avoid nested wrapper issues
+    slack = let
+      originalSlack = prev.slack;
+    in prev.symlinkJoin {
+      name = "slack-${originalSlack.version}";
+      paths = [ originalSlack ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/slack
+        makeWrapper ${originalSlack}/bin/slack $out/bin/slack \
+          --set DRI_PRIME 0 \
+          --set GBM_BACKEND mesa \
+          --set LIBVA_DRIVER_NAME iHD \
+          --set __GLX_VENDOR_LIBRARY_NAME mesa \
+          --set GTK_USE_PORTAL 1 \
+          --unset __NV_PRIME_RENDER_OFFLOAD \
+          --unset __VK_LAYER_NV_optimus \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder" \
-          --add-flags "--enable-features=WebRTCPipeWireCapturer" \
-          --add-flags "--enable-features=UseOzonePlatform" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo" \
           --add-flags "--enable-gpu-rasterization" \
@@ -72,7 +85,8 @@ let
           --add-flags "--ignore-gpu-blocklist" \
           --add-flags "--enable-zero-copy"
       '';
-    });
+      inherit (originalSlack) meta;
+    };
 
     signal-desktop-bin = prev.signal-desktop-bin.overrideAttrs (oldAttrs: {
       postInstall = oldAttrs.postInstall or "" + ''
@@ -126,6 +140,27 @@ let
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
       '';
     });
+
+    # OBS Studio wrapped to use Intel GPU (for screen recording compatibility with Niri)
+    obs-studio = let
+      originalObs = prev.obs-studio;
+    in prev.symlinkJoin {
+      name = "obs-studio-${originalObs.version}";
+      paths = [ originalObs ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/obs
+        makeWrapper ${originalObs}/bin/obs $out/bin/obs \
+          --set DRI_PRIME 0 \
+          --set GBM_BACKEND mesa \
+          --set LIBVA_DRIVER_NAME iHD \
+          --set __GLX_VENDOR_LIBRARY_NAME mesa \
+          --unset __NV_PRIME_RENDER_OFFLOAD \
+          --unset __VK_LAYER_NV_optimus
+      '';
+      inherit (originalObs) meta;
+    };
+
     ## Whatsapp works out of the box
 
     ## Telegram works out of the box

@@ -95,7 +95,7 @@
 
           config = mkIf cfg.enable {
             environment.systemPackages = [
-              self.packages.${pkgs.system}.steam-loader
+              self.packages.${pkgs.stdenv.hostPlatform.system}.steam-loader
             ];
           };
         };
@@ -112,7 +112,7 @@
 
           config = mkIf cfg.enable {
             home.packages = [
-              self.packages.${pkgs.system}.steam-loader
+              self.packages.${pkgs.stdenv.hostPlatform.system}.steam-loader
             ];
           };
         };

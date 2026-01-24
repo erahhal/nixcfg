@@ -726,6 +726,7 @@ in
     spawn-sh-at-startup "systemctl --user stop xdg-desktop-portal-hyprland &"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gnome &"
     spawn-sh-at-startup "systemctl --user restart xdg-desktop-portal-gtk &"
+    spawn-sh-at-startup "systemctl --user restart easyeffects &"
     spawn-sh-at-startup "systemctl --user restart startup-apps"
     // spawn-sh-at-startup "systemctl --user restart gammastep"
     // @TODO: Move these to waybar setup
@@ -1048,6 +1049,8 @@ in
         Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
         Mod+Ctrl+L     { move-column-right-or-to-monitor-right; }
 
+        Mod+Ctrl+R { spawn "niri" "msg" "action" "set-dynamic-cast-window"; }
+
         Mod+Shift+H     { focus-monitor-left; }
         Mod+Shift+J     { move-window-down-or-to-workspace-down; }
         Mod+Shift+K     { move-window-up-or-to-workspace-up; }
@@ -1187,7 +1190,6 @@ in
         // Cycling through the presets in reverse order is also possible.
         // Mod+R { switch-preset-column-width-back; }
         Mod+I { switch-preset-window-height-back; }
-        Mod+Ctrl+R { reset-window-height; }
         Mod+F { maximize-column; }
         Mod+Shift+F { fullscreen-window; }
 

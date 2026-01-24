@@ -226,7 +226,7 @@
 
   services.resolved = {
     enable = true;
-    dnssec = "false";
+    settings.Resolve.DNSSEC = "false";
   };
 
   programs.captive-browser = {
@@ -342,6 +342,35 @@
       grep -q "RP09.*enabled" /proc/acpi/wakeup && echo RP09 > /proc/acpi/wakeup || true
     '';
   };
+
+  # # Fix NVIDIA USB4 DP tunnel not resuming after suspend
+  # # The NVIDIA driver's proprietary USB4 DP tunnel implementation doesn't properly
+  # # re-establish the tunnel after suspend. We need to reload the modules.
+  # systemd.services.nvidia-resume-fix = {
+  #   description = "Fix NVIDIA USB4 DP tunnel after resume";
+  #   after = [ "nvidia-resume.service" "systemd-suspend.service" "systemd-hibernate.service" ];
+  #   wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStartPre = "${pkgs.coreutils}/bin/sleep 3";  # Wait for Thunderbolt link
+  #   };
+  #   script = ''
+  #     # Check if DP outputs are disconnected (indicates failed resume)
+  #     if grep -q "disconnected" /sys/class/drm/card0-DP-1/status 2>/dev/null; then
+  #       echo "NVIDIA DP tunnel not restored, reloading modules..."
+  #
+  #       # Remove and reload NVIDIA modules to reset DP tunnel state
+  #       ${pkgs.kmod}/bin/rmmod nvidia_drm nvidia_modeset nvidia_uvm nvidia 2>/dev/null || true
+  #       sleep 1
+  #       ${pkgs.kmod}/bin/modprobe nvidia
+  #       ${pkgs.kmod}/bin/modprobe nvidia_modeset
+  #       ${pkgs.kmod}/bin/modprobe nvidia_uvm
+  #       ${pkgs.kmod}/bin/modprobe nvidia_drm
+  #
+  #       echo "NVIDIA modules reloaded"
+  #     fi
+  #   '';
+  # };
 
   # Enable power management
   powerManagement = {
