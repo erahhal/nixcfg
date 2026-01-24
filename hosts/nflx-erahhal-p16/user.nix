@@ -22,6 +22,9 @@ in
         awscli
         blender
 
+        ## genai (requires CUDA/NVIDIA)
+        vllm
+
         chromium
 
         lutris

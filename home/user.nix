@@ -162,7 +162,6 @@ in
 
         ## genai
         litellm
-        vllm
 
         ## python
         pyright

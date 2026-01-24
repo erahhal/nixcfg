@@ -70,7 +70,7 @@ in
               {
                 criteria = "Lenovo Group Limited P40w-20 V90DFGMV";
                 status = "enable";
-                mode = "5120x2160@60"; # Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
+                mode = "5120x2160@60.000"; # Don't use 74.97899 rate as it requires negotation and sometimes hangs for 20 seconds before displaying anything
                 position = "0,0";
                 scale = 1.333333;
               }
