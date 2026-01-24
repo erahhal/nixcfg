@@ -231,7 +231,7 @@
   };
 
   networking.wifi.qos = {
-    enble = true;
+    enable = true;
     interface = "wlp0s20f3";
   };
 
