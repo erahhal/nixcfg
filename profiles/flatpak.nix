@@ -35,7 +35,7 @@
     description = "Fix SteamVR for Flatpak (setcap + patch vrsetup.sh)";
     after = [ "flatpak-managed-install.service" ];
     wants = [ "flatpak-managed-install.service" ];
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = [ "default.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
