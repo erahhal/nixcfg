@@ -22,6 +22,7 @@
     ../../profiles/pipewire.nix
     ../../profiles/snapcast.nix
     ../../profiles/wireless.nix
+    ../../profiles/wifi-qos.nix
 
     # device specific
     ./disk-config-btrfs.nix
@@ -227,6 +228,11 @@
   services.resolved = {
     enable = true;
     settings.Resolve.DNSSEC = "false";
+  };
+
+  networking.wifi.qos = {
+    enble = true;
+    interface = "wlp0s20f3";
   };
 
   programs.captive-browser = {

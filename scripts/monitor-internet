@@ -9,6 +9,7 @@ CURR_DIR=$(pwd)
 LOG_FILE="${LOG_FILE:-$CURR_DIR/internet-monitor.log}"
 CHECK_INTERVAL="${CHECK_INTERVAL:-1}"  # seconds between checks
 PING_HOST="${PING_HOST:-google.com}"   # Domain name to test DNS + connectivity
+PING_IP="${PING_IP:-8.8.8.8}"          # Direct IP to test (bypasses DNS)
 PING_COUNT=1
 PING_TIMEOUT=3
 
@@ -39,12 +40,34 @@ log_message() {
     fi
 }
 
+# Store last DNS error for logging
+LAST_DNS_ERROR=""
+
 # Function to check internet connectivity
+# Returns: 0=up, 1=DNS failure, 2=connectivity failure
 check_connection() {
-    if ping -c "$PING_COUNT" -W "$PING_TIMEOUT" "$PING_HOST" &> /dev/null; then
-        return 0  # Connection is up
+    # First try DNS resolution with resolvectl (captures actual error)
+    local dns_output
+    dns_output=$(resolvectl query "$PING_HOST" 2>&1)
+    local dns_result=$?
+
+    if [ $dns_result -eq 0 ]; then
+        # DNS works, now check connectivity with ping
+        if ping -c "$PING_COUNT" -W "$PING_TIMEOUT" "$PING_IP" &> /dev/null; then
+            return 0  # Connection is up
+        else
+            return 2  # Connectivity failure
+        fi
     else
-        return 1  # Connection is down
+        # DNS failed - capture the error
+        LAST_DNS_ERROR=$(echo "$dns_output" | grep -v "^$" | tail -1)
+
+        # Check if IP connectivity works
+        if ping -c "$PING_COUNT" -W "$PING_TIMEOUT" "$PING_IP" &> /dev/null; then
+            return 1  # DNS failure (IP works, hostname doesn't)
+        else
+            return 2  # Connectivity failure (even IP doesn't work)
+        fi
     fi
 }
 
@@ -69,16 +92,19 @@ calculate_downtime() {
 
 # Initialize
 log_message "=== Internet Monitor Started ==="
-log_message "Monitoring host: $PING_HOST"
+log_message "Monitoring host: $PING_HOST (fallback IP: $PING_IP)"
 log_message "Check interval: ${CHECK_INTERVAL}s"
 log_message "Log file: $LOG_FILE"
 echo ""
 
 # Main monitoring loop
 while true; do
-    if check_connection; then
+    check_connection
+    result=$?
+
+    if [ $result -eq 0 ]; then
         # Connection is UP
-        if [ "$CONNECTION_STATE" = "down" ]; then
+        if [ "$CONNECTION_STATE" = "down" ] || [ "$CONNECTION_STATE" = "dns_fail" ]; then
             # Connection just came back up
             downtime=$(calculate_downtime "$DOWNTIME_START")
             log_message "✓ Connection RESTORED (downtime: $downtime)" "$GREEN"
@@ -89,12 +115,20 @@ while true; do
             log_message "✓ Connection is UP" "$GREEN"
             CONNECTION_STATE="up"
         fi
-    else
-        # Connection is DOWN
+    elif [ $result -eq 1 ]; then
+        # DNS failure (IP works but hostname doesn't)
         if [ "$CONNECTION_STATE" = "up" ] || [ "$CONNECTION_STATE" = "unknown" ]; then
-            # Connection just went down
             DOWNTIME_START=$(date +%s)
-            log_message "✗ Connection DOWN" "$RED"
+            log_message "✗ DNS FAILURE: $LAST_DNS_ERROR" "$YELLOW"
+            CONNECTION_STATE="dns_fail"
+        fi
+    else
+        # Connectivity failure (even IP doesn't work)
+        if [ "$CONNECTION_STATE" = "up" ] || [ "$CONNECTION_STATE" = "unknown" ] || [ "$CONNECTION_STATE" = "dns_fail" ]; then
+            if [ "$CONNECTION_STATE" != "down" ]; then
+                DOWNTIME_START=$(date +%s)
+            fi
+            log_message "✗ Connection DOWN (both $PING_HOST and $PING_IP failed)" "$RED"
             CONNECTION_STATE="down"
         fi
     fi

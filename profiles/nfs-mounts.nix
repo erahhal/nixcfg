@@ -2,7 +2,12 @@
 
 let
   # Prevents disconnected mounts from hanging system
-  nfs3Options = [ "nfsvers=3" ];
+  nfs3Options = [
+    "nfsvers=3"
+    "async"
+    "actimeo=60"
+    "nocto"
+  ];
   nfs4Options = [ "nfsvers=4" ];
 in
 {

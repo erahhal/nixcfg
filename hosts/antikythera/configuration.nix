@@ -18,6 +18,7 @@
     ../../profiles/pipewire.nix
     ../../profiles/snapcast.nix
     ../../profiles/wireless.nix
+    ../../profiles/wifi-qos.nix
 
     # device specific
     ./disk-config-btrfs.nix
@@ -219,6 +220,17 @@
     settings.Resolve.DNSSEC = "false";
   };
 
+  # Enable debug logging for systemd-resolved to diagnose DNS failures
+  systemd.services.systemd-resolved.environment = {
+    SYSTEMD_LOG_LEVEL = "debug";
+  };
+
+  # Reduce bufferbloat on WiFi - prioritizes small packets (DNS, ACKs) over bulk transfers
+  networking.wifi.qos = {
+    enable = true;
+    interface = "wlan0";
+  };
+
   programs.captive-browser = {
     enable = true;
     interface = "wlp0s20f3";
@@ -395,10 +407,21 @@
   };
 
   # Enable power management
+  # Note: powertop.enable disabled - its auto-tune overrides TLP's WIFI_PWR_ON_BAT=off
+  # setting, re-enabling WiFi power save which causes ath11k (QCNFA765) disconnects.
+  # TLP already handles all power management; powertop conflicts with it.
   powerManagement = {
     enable = true;
-    powertop.enable = true;
+    powertop.enable = false;
   };
+
+  # Explicitly disable WiFi power save for ath11k (QCNFA765/WCN6855)
+  # Belt-and-suspenders approach alongside powertop.enable = false above.
+  # The ath11k driver has known stability issues with power save enabled.
+  services.udev.extraRules = ''
+    # Disable WiFi power save when wlan interface appears (ath11k stability fix)
+    ACTION=="add", SUBSYSTEM=="net", KERNEL=="wlan*", RUN+="${pkgs.iw}/bin/iw dev %k set power_save off"
+  '';
 
   services.upower = {
     enable = true;
