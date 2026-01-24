@@ -67,7 +67,8 @@
     dms-shell = {
       # url = "github:AvengeMedia/DankMaterialShell/3dd21382bad5d43604850e257cfd1b8d35e16fb9";
       # url = "github:AvengeMedia/DankMaterialShell/510ea5d2e43b368d04856e9788d5f489482fee13";
-      url = "github:AvengeMedia/DankMaterialShell/11e23feb0e233147afbd5f15ea68043c4492029b";
+      # url = "github:AvengeMedia/DankMaterialShell/11e23feb0e233147afbd5f15ea68043c4492029b";
+      url = "github:AvengeMedia/DankMaterialShell/v1.2.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -263,7 +263,13 @@
       "Bash(wc:*)",
       "Bash(file:*)",
       "Bash(do find \"$d\" -name \"*.portal\")",
-      "Bash(git -C /home/erahhal/Code/nixcfg status --short)"
+      "Bash(git -C /home/erahhal/Code/nixcfg status --short)",
+      "Bash(ssh:*)",
+      "WebFetch(domain:mynixos.com)",
+      "WebFetch(domain:tailscale.com)",
+      "Bash(nix repl:*)",
+      "WebFetch(domain:headscale.net)",
+      "WebFetch(domain:search.nixos.org)"
     ],
     "deny": [],
     "ask": []

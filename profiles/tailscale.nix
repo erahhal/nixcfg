@@ -56,6 +56,14 @@ in
   # tailscaleWrapped takes precedence over the original due to package ordering
   environment.systemPackages = [ tailscaleWrapped tsupScript ];
 
+  # Ensure tailscaled-autoconnect waits for network/DNS to be ready
+  # The upstream NixOS module only depends on tailscaled.service, which
+  # can start before DNS resolution is available
+  systemd.services.tailscaled-autoconnect = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+  };
+
   # Prevent Tailscale from routing local 10.0.0.0/24 traffic
   # This ensures NFS mounts to the local Synology NAS work correctly
   # Tailscale uses policy routing (table 52) at priority 5270, so we need

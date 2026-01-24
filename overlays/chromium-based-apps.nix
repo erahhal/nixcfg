@@ -161,6 +161,22 @@ let
       inherit (originalObs) meta;
     };
 
+    # Zoom wrapped with 2x scaling for HiDPI displays
+    zoom-us = let
+      originalZoom = prev.zoom-us;
+    in prev.symlinkJoin {
+      name = "zoom-us-${originalZoom.version}";
+      paths = [ originalZoom ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/zoom $out/bin/zoom-us
+        makeWrapper ${originalZoom}/bin/zoom $out/bin/zoom \
+          --set QT_SCALE_FACTOR 2
+        ln -s $out/bin/zoom $out/bin/zoom-us
+      '';
+      inherit (originalZoom) meta;
+    };
+
     ## Whatsapp works out of the box
 
     ## Telegram works out of the box

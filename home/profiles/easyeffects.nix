@@ -7,6 +7,14 @@ in
   imports = [
     ./easyeffects-presets.nix
   ];
+
+  # Disable EasyEffects input processing to prevent microphone issues
+  dconf.settings = {
+    "com/github/wwmm/easyeffects" = {
+      process-all-inputs = false;
+    };
+  };
+
   systemd.user.services."easyeffects" = {
     Unit = {
       Description = "EasyEffects Audio Filter";
