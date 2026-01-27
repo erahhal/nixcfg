@@ -19,6 +19,15 @@ in
       ./hyprland.nix
     ];
 
+    xdg.configFile."lan-mouse/config.toml".text = ''
+      port = 4242
+
+      [[clients]]
+      hostname = "nflx-erahhal-p16.lan"
+      position = "right"
+      activate_on_startup = true
+    '';
+
     home = {
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 

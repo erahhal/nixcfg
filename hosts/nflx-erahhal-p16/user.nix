@@ -15,6 +15,15 @@ in
       ../../home/profiles/jetbrains-toolbox.nix
     ];
 
+    xdg.configFile."lan-mouse/config.toml".text = ''
+      port = 4242
+
+      [[clients]]
+      hostname = "antikythera.lan"
+      position = "left"
+      activate_on_startup = true
+    '';
+
     home = {
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
