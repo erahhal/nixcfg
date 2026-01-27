@@ -277,7 +277,10 @@
       "Bash(sudo systemctl daemon-reload:*)",
       "Bash(ip link:*)",
       "Bash(ss:*)",
-      "Bash(sudo iptables:*)"
+      "Bash(sudo iptables:*)",
+      "Bash(lan-mouse:*)",
+      "Bash(getent hosts:*)",
+      "Bash(RUST_LOG=lan_mouse::config=trace timeout 5 lan-mouse:*)"
     ],
     "deny": [],
     "ask": []

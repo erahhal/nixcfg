@@ -22,9 +22,9 @@ in
     xdg.configFile."lan-mouse/config.toml".text = ''
       port = 4242
 
-      [[clients]]
+      [right]
       hostname = "nflx-erahhal-p16.lan"
-      position = "right"
+      ips = ["10.0.0.62"]
       activate_on_startup = true
     '';
 

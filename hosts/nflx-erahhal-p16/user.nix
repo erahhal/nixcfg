@@ -18,9 +18,9 @@ in
     xdg.configFile."lan-mouse/config.toml".text = ''
       port = 4242
 
-      [[clients]]
+      [left]
       hostname = "antikythera.lan"
-      position = "left"
+      ips = ["10.0.0.59"]
       activate_on_startup = true
     '';
 

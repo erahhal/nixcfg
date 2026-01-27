@@ -938,6 +938,11 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
+        match app-id="zoom$"
+        open-on-workspace "eight"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
         match app-id="@joplin/app-desktop$"
         open-on-workspace "nine"
         default-column-width { proportion 1.0; }
