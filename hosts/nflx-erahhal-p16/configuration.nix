@@ -288,6 +288,7 @@
       7002
       7001
       7101
+      24800  # deskflow
     ];
     trustedInterfaces = [ "docker0" "br-+" ];
   };

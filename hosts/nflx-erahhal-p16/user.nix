@@ -20,8 +20,37 @@ in
 
       [left]
       hostname = "antikythera.lan"
-      ips = ["10.0.0.59"]
       activate_on_startup = true
+    '';
+
+    # Deskflow server configuration
+    xdg.configFile."Deskflow/Deskflow.conf".text = ''
+      [core]
+      screenName=nflx-erahhal-p16
+      serverMode=true
+      port=24800
+
+      [gui]
+      enableUpdateCheck=false
+    '';
+
+    xdg.configFile."Deskflow/deskflow-server.conf".text = ''
+      section: screens
+          nflx-erahhal-p16:
+          antikythera:
+      end
+
+      section: links
+          nflx-erahhal-p16:
+              left = antikythera
+          antikythera:
+              right = nflx-erahhal-p16
+      end
+
+      section: options
+          clipboardSharing = true
+          switchDelay = 250
+      end
     '';
 
     home = {

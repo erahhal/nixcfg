@@ -280,7 +280,9 @@
       "Bash(sudo iptables:*)",
       "Bash(lan-mouse:*)",
       "Bash(getent hosts:*)",
-      "Bash(RUST_LOG=lan_mouse::config=trace timeout 5 lan-mouse:*)"
+      "Bash(RUST_LOG=lan_mouse::config=trace timeout 5 lan-mouse:*)",
+      "WebFetch(domain:manpages.ubuntu.com)",
+      "Bash(nix-shell:*)"
     ],
     "deny": [],
     "ask": []

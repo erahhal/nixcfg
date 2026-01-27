@@ -24,8 +24,19 @@ in
 
       [right]
       hostname = "nflx-erahhal-p16.lan"
-      ips = ["10.0.0.62"]
       activate_on_startup = true
+    '';
+
+    # Deskflow client configuration
+    xdg.configFile."Deskflow/Deskflow.conf".text = ''
+      [core]
+      screenName=antikythera
+      clientMode=true
+      serverAddress=nflx-erahhal-p16.lan
+      port=24800
+
+      [gui]
+      enableUpdateCheck=false
     '';
 
     home = {
