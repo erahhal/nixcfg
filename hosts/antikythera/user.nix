@@ -24,6 +24,9 @@ in
       systemd = true;
       settings = {
         port = 4242;
+        authorized_fingerprints = {
+          "c7:eb:bb:58:43:24:2f:6a:7f:10:8b:da:6c:64:a4:62:c8:91:bd:9e:70:09:ce:07:19:f9:a2:2b:e6:13:da:b1" = "nflx-erahhal-p16";
+        };
         right = {
           hostname = "nflx-erahhal-p16.lan";
           activate_on_startup = true;

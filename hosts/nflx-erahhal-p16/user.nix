@@ -20,6 +20,9 @@ in
       systemd = true;
       settings = {
         port = 4242;
+        authorized_fingerprints = {
+          "db:0c:20:f1:42:2b:24:2c:a7:e0:43:bf:72:be:28:a2:24:6d:7b:38:8e:7b:8f:ad:b9:ca:f1:6c:27:ed:06:48" = "antikythera";
+        };
         left = {
           hostname = "antikythera.lan";
           activate_on_startup = true;
