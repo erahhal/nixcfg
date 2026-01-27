@@ -275,7 +275,9 @@
       "Bash(sudo systemctl stop:*)",
       "Bash(sudo systemctl reset-failed:*)",
       "Bash(sudo systemctl daemon-reload:*)",
-      "Bash(ip link:*)"
+      "Bash(ip link:*)",
+      "Bash(ss:*)",
+      "Bash(sudo iptables:*)"
     ],
     "deny": [],
     "ask": []
