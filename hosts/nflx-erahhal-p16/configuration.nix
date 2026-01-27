@@ -172,7 +172,7 @@
     enable = false;
     devices = [
       ## Real: E4:60:17:0F:28:C3
-      "wlp0s20f3"
+      "wlan0"
     ];
   };
 
@@ -222,7 +222,7 @@
     };
     ## Don't include this line - it will add an additional default route.
     ## It's not necessary.
-    # interfaces."wlp0s20f3".useDHCP = true;
+    # interfaces."wlan0".useDHCP = true;
   };
 
   services.resolved = {
@@ -232,12 +232,12 @@
 
   networking.wifi.qos = {
     enable = true;
-    interface = "wlp0s20f3";
+    interface = "wlan0";
   };
 
   programs.captive-browser = {
     enable = true;
-    interface = "wlp0s20f3";
+    interface = "wlan0";
   };
 
   ## Sound support

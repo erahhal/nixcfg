@@ -6,6 +6,7 @@
       # "org.chromium.Chromium"
       "com.valvesoftware.Steam"
       "net.davidotek.pupgui2"
+      "com.tencent.WeChat"
     ];
     # Optional: ensure Flathub is added automatically
     remotes = [
@@ -35,7 +36,7 @@
     description = "Fix SteamVR for Flatpak (setcap + patch vrsetup.sh)";
     after = [ "flatpak-managed-install.service" ];
     wants = [ "flatpak-managed-install.service" ];
-    wantedBy = [ "default.target" ];
+    wantedBy = [ "graphical.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

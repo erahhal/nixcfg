@@ -392,6 +392,10 @@ in
         xorg.xhost
         xsel              # Manipulate xwindows clipboard
 
+        ## Cross-system desktop KVM
+        deskflow
+        lan-mouse
+
         # kvantummanager
         # kvantumpreview
 

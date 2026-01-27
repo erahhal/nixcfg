@@ -269,7 +269,13 @@
       "WebFetch(domain:tailscale.com)",
       "Bash(nix repl:*)",
       "WebFetch(domain:headscale.net)",
-      "WebFetch(domain:search.nixos.org)"
+      "WebFetch(domain:search.nixos.org)",
+      "Bash(sudo systemctl cancel:*)",
+      "Bash(sudo systemctl start:*)",
+      "Bash(sudo systemctl stop:*)",
+      "Bash(sudo systemctl reset-failed:*)",
+      "Bash(sudo systemctl daemon-reload:*)",
+      "Bash(ip link:*)"
     ],
     "deny": [],
     "ask": []

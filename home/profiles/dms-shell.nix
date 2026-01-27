@@ -338,15 +338,22 @@ in
       # Use qt6ct platform theme for icon discovery
       # Set directly here instead of PassEnvironment to avoid stale systemd env issues
       "QT_QPA_PLATFORMTHEME=qt6ct"
+      # EGL/Vulkan vendor discovery paths - needed for GPU operations in screen sharing
+      # These paths aren't in systemd env because they're added by shell profile after niri starts
+      "__EGL_VENDOR_LIBRARY_DIRS=/run/opengl-driver/share/glvnd/egl_vendor.d"
     ];
     # Inherit environment for icon theme discovery, loginctl integration, and app screen sharing
     PassEnvironment = [
-      # XDG directories
+      ## XDG directories
       "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
-      "XDG_RUNTIME_DIR" "XDG_DATA_DIRS" "XDG_CONFIG_DIRS"
-      # Display/Wayland
+      "XDG_RUNTIME_DIR"
+      "XDG_DATA_DIRS"
+      "XDG_CONFIG_DIRS"
+      # # Display/Wayland
       "DISPLAY" "WAYLAND_DISPLAY"
-      "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE" "XDG_SESSION_ID"
+      "XDG_CURRENT_DESKTOP"
+      # Required for loginctl lock integration
+      "XDG_SESSION_ID"
       # D-Bus session for portal communication (screen sharing, file dialogs)
       "DBUS_SESSION_BUS_ADDRESS"
       # Electron/Chromium Wayland native support
@@ -361,7 +368,13 @@ in
       # Portal discovery (critical for screen sharing)
       "NIX_XDG_DESKTOP_PORTAL_DIR"
       # Cursor theme
-      "XCURSOR_SIZE" "XCURSOR_THEME"
+      "XCURSOR_SIZE"
+      "XCURSOR_THEME"
+      # Required for GPU libs to render PipeWire screen share streams
+      "LD_LIBRARY_PATH"
+
+      ## DON'T INCLUDE: Breaks xdg-desktop-portal-gnome
+      # "XDG_SESSION_TYPE"
     ];
   };
 

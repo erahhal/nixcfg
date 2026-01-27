@@ -73,7 +73,6 @@ let
           --set GBM_BACKEND mesa \
           --set LIBVA_DRIVER_NAME iHD \
           --set __GLX_VENDOR_LIBRARY_NAME mesa \
-          --set GTK_USE_PORTAL 1 \
           --unset __NV_PRIME_RENDER_OFFLOAD \
           --unset __VK_LAYER_NV_optimus \
           --add-flags "--enable-wayland-ime" \
@@ -84,6 +83,12 @@ let
           --add-flags "--enable-oop-rasterization" \
           --add-flags "--ignore-gpu-blocklist" \
           --add-flags "--enable-zero-copy"
+
+        # Fix .desktop file to point to wrapped binary (for DMS launcher)
+        rm -rf $out/share/applications
+        mkdir -p $out/share/applications
+        substitute ${originalSlack}/share/applications/slack.desktop $out/share/applications/slack.desktop \
+          --replace-fail "${originalSlack}/bin/slack" "$out/bin/slack"
       '';
       inherit (originalSlack) meta;
     };

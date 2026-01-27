@@ -57,7 +57,8 @@ in
         PassEnvironment = [
           "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
           "XDG_RUNTIME_DIR" "DISPLAY" "WAYLAND_DISPLAY"
-          "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE"
+          "XDG_CURRENT_DESKTOP"
+          # NOTE: XDG_SESSION_TYPE intentionally excluded - breaks portal screen sharing
           # D-Bus session for portal communication (screen sharing, file dialogs, etc.)
           "DBUS_SESSION_BUS_ADDRESS"
           # Electron/Chromium Wayland native support (critical for dynamic scaling)
@@ -77,6 +78,18 @@ in
         Environment = [
           "HOME=%h"
           "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
+          # Intel GPU settings for screen sharing compatibility with Niri
+          "DRI_PRIME=0"
+          "GBM_BACKEND=mesa"
+          "LIBVA_DRIVER_NAME=iHD"
+          "__GLX_VENDOR_LIBRARY_NAME=mesa"
+          # EGL vendor discovery path for GPU operations in screen sharing
+          "__EGL_VENDOR_LIBRARY_DIRS=/run/opengl-driver/share/glvnd/egl_vendor.d"
+        ];
+        # Unset NVIDIA GPU variables that would override Intel settings
+        UnsetEnvironment = [
+          "__NV_PRIME_RENDER_OFFLOAD"
+          "__VK_LAYER_NV_optimus"
         ];
       };
     };
