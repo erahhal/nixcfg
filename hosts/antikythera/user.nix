@@ -19,13 +19,17 @@ in
       ./hyprland.nix
     ];
 
-    xdg.configFile."lan-mouse/config.toml".text = ''
-      port = 4242
-
-      [right]
-      hostname = "nflx-erahhal-p16.lan"
-      activate_on_startup = true
-    '';
+    programs.lan-mouse = {
+      enable = true;
+      systemd = true;
+      settings = {
+        port = 4242;
+        right = {
+          hostname = "nflx-erahhal-p16.lan";
+          activate_on_startup = true;
+        };
+      };
+    };
 
     # Deskflow client configuration
     xdg.configFile."Deskflow/Deskflow.conf".text = ''

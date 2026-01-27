@@ -394,7 +394,7 @@ in
 
         ## Cross-system desktop KVM
         deskflow
-        lan-mouse
+        # lan-mouse - provided by flake module in user.nix
 
         # kvantummanager
         # kvantumpreview

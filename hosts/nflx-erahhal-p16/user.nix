@@ -15,13 +15,17 @@ in
       ../../home/profiles/jetbrains-toolbox.nix
     ];
 
-    xdg.configFile."lan-mouse/config.toml".text = ''
-      port = 4242
-
-      [left]
-      hostname = "antikythera.lan"
-      activate_on_startup = true
-    '';
+    programs.lan-mouse = {
+      enable = true;
+      systemd = true;
+      settings = {
+        port = 4242;
+        left = {
+          hostname = "antikythera.lan";
+          activate_on_startup = true;
+        };
+      };
+    };
 
     # Deskflow server configuration
     xdg.configFile."Deskflow/Deskflow.conf".text = ''

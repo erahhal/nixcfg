@@ -100,6 +100,10 @@
     mms.url = "github:mkaito/nixos-modded-minecraft-servers";
     mms.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Software KVM - use flake for latest with modifier key fix (PR #238)
+    lan-mouse.url = "github:feschber/lan-mouse";
+    lan-mouse.inputs.nixpkgs.follows = "nixpkgs";
+
     nix-software-center.url = "github:vlinkz/nix-software-center";
 
     # Hyprland WM
@@ -171,6 +175,7 @@
         imports = [
           inputs.caelestia-shell.homeManagerModules.default
           inputs.dms-shell.homeModules.dank-material-shell
+          inputs.lan-mouse.homeManagerModules.default
           inputs.nix-colors.homeManagerModules.default
           inputs.plasma-manager.homeModules.plasma-manager
           inputs.steam-loader.homeManagerModules.default
