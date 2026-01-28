@@ -1350,6 +1350,27 @@
         "type": "github"
       }
     },
+    "lan-mouse": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1764846550,
+        "narHash": "sha256-/2V2CC1rs1PPVwVBOwh15C6S7g+PMMreeWZTfEyTUAc=",
+        "owner": "feschber",
+        "repo": "lan-mouse",
+        "rev": "3922b45bd92f07f62e8af84bb9471abf8b0873a3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "feschber",
+        "repo": "lan-mouse",
+        "type": "github"
+      }
+    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane_2",
@@ -1360,7 +1381,7 @@
           "nixpkgs"
         ],
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "rust-overlay": "rust-overlay"
+        "rust-overlay": "rust-overlay_2"
       },
       "locked": {
         "lastModified": 1718178907,
@@ -1481,7 +1502,7 @@
           "nixpkgs"
         ],
         "parts": "parts",
-        "rust-overlay": "rust-overlay_2",
+        "rust-overlay": "rust-overlay_3",
         "treefmt": "treefmt"
       },
       "locked": {
@@ -1505,7 +1526,7 @@
         "mk-naked-shell": "mk-naked-shell_2",
         "nixpkgs": "nixpkgs_15",
         "parts": "parts_3",
-        "rust-overlay": "rust-overlay_3",
+        "rust-overlay": "rust-overlay_4",
         "treefmt": "treefmt_2"
       },
       "locked": {
@@ -1536,12 +1557,12 @@
         "rev": "8711dd1b81fc78d68e80c014f8a8161f2b2ebee2",
         "revCount": 51,
         "type": "git",
-        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       }
     },
     "nix": {
@@ -2674,6 +2695,7 @@
         "home-manager": "home-manager_2",
         "hyprland": "hyprland",
         "jovian": "jovian",
+        "lan-mouse": "lan-mouse",
         "lanzaboote": "lanzaboote",
         "mms": "mms",
         "nflx-nixcfg": "nflx-nixcfg",
@@ -2736,6 +2758,27 @@
     },
     "rust-overlay": {
       "inputs": {
+        "nixpkgs": [
+          "lan-mouse",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1752806774,
+        "narHash": "sha256-4cHeoR2roN7d/3J6gT+l6o7J2hTrBIUiCwVdDNMeXzE=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "3c90219b3ba1c9790c45a078eae121de48a39c55",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
+      "inputs": {
         "flake-utils": [
           "lanzaboote",
           "flake-utils"
@@ -2759,7 +2802,7 @@
         "type": "github"
       }
     },
-    "rust-overlay_2": {
+    "rust-overlay_3": {
       "inputs": {
         "nixpkgs": [
           "nix-inspect",
@@ -2781,7 +2824,7 @@
         "type": "github"
       }
     },
-    "rust-overlay_3": {
+    "rust-overlay_4": {
       "flake": false,
       "locked": {
         "lastModified": 1725848835,
@@ -2797,7 +2840,7 @@
         "type": "github"
       }
     },
-    "rust-overlay_4": {
+    "rust-overlay_5": {
       "inputs": {
         "nixpkgs": "nixpkgs_18"
       },
@@ -2862,7 +2905,7 @@
         "nci": "nci_2",
         "nixpkgs": "nixpkgs_16",
         "pre-commit-nix": "pre-commit-nix",
-        "rust-overlay": "rust-overlay_4"
+        "rust-overlay": "rust-overlay_5"
       },
       "locked": {
         "lastModified": 1737448478,

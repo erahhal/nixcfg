@@ -43,20 +43,40 @@ let
       inherit (prev.chromium) override;
     };
 
-    brave = prev.brave.override {
-      commandLineArgs = [
-        "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
-        "--enable-wayland-ime"
-        "--password-store=basic" # Don't show kwallet login at start
-        "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
-        "--ozone-platform=wayland"
-        "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
-        "--enable-gpu-rasterization"
-        "--enable-oop-rasterization"
-        "--ignore-gpu-blocklist"
-        "--enable-zero-copy"
-      ];
-    };
+    brave = let
+      originalBrave = prev.brave.override {
+        commandLineArgs = [
+          "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
+          "--enable-wayland-ime"
+          "--password-store=basic" # Don't show kwallet login at start
+          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
+          "--ozone-platform=wayland"
+          # Test: VAAPI without VaapiIgnoreDriverChecks (known to cause flickering on Wayland compositors)
+          "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,UseOzonePlatform"
+          "--enable-gpu-rasterization"
+          "--enable-oop-rasterization"
+          "--ignore-gpu-blocklist"
+        ];
+      };
+    in (prev.symlinkJoin {
+      name = "brave-${originalBrave.version}";
+      paths = [ originalBrave ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        # Remove symlinked wrapper and create new one with Intel GPU env vars
+        # (needed for screen sharing compatibility with Niri which renders on Intel)
+        rm $out/bin/brave
+        makeWrapper ${originalBrave}/bin/brave $out/bin/brave \
+          --set DRI_PRIME 0 \
+          --set GBM_BACKEND mesa \
+          --set LIBVA_DRIVER_NAME iHD \
+          --set __GLX_VENDOR_LIBRARY_NAME mesa \
+          --unset __NV_PRIME_RENDER_OFFLOAD \
+          --unset __VK_LAYER_NV_optimus
+      '';
+      passthru = originalBrave.passthru;
+      inherit (originalBrave) meta;
+    });
 
     # Slack wrapped to use Intel GPU (for screen sharing compatibility with Niri)
     # Uses single wrapper with both env vars and flags to avoid nested wrapper issues
