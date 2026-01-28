@@ -284,7 +284,8 @@
       "WebFetch(domain:manpages.ubuntu.com)",
       "Bash(nix-shell:*)",
       "Bash(brave:*)",
-      "Bash(# Check if we can build/eval the old nixpkgs to compare versions echo \"\"Old nixpkgs-unstable: 1412caf7bf9e660f2f962917c14b1ea1c3bc695e\"\" echo \"\"New nixpkgs-unstable: 88d3861acdd3d2f0e361767018218e51810df8a1\"\" echo \"\"\"\" echo \"\"You can compare by running:\"\" echo \"\"nix eval --raw ''github:NixOS/nixpkgs/1412caf7bf9e660f2f962917c14b1ea1c3bc695e#brave.version''\"\" echo \"\"\"\" echo \"\"Current system info:\"\" uname -r glxinfo)"
+      "Bash(# Check if we can build/eval the old nixpkgs to compare versions echo \"\"Old nixpkgs-unstable: 1412caf7bf9e660f2f962917c14b1ea1c3bc695e\"\" echo \"\"New nixpkgs-unstable: 88d3861acdd3d2f0e361767018218e51810df8a1\"\" echo \"\"\"\" echo \"\"You can compare by running:\"\" echo \"\"nix eval --raw ''github:NixOS/nixpkgs/1412caf7bf9e660f2f962917c14b1ea1c3bc695e#brave.version''\"\" echo \"\"\"\" echo \"\"Current system info:\"\" uname -r glxinfo)",
+      "Bash(flatpak run:*)"
     ],
     "deny": [],
     "ask": []

@@ -49,10 +49,11 @@ let
           "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
           "--enable-wayland-ime"
           "--password-store=basic" # Don't show kwallet login at start
-          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
+          # Disable VAAPI video decode - causes intermittent flickering on Brave 1.86 + Niri
+          # See: https://github.com/brave/brave-browser/issues/16392
+          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
           "--ozone-platform=wayland"
-          # Test: VAAPI without VaapiIgnoreDriverChecks (known to cause flickering on Wayland compositors)
-          "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,UseOzonePlatform"
+          "--enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations,UseOzonePlatform"
           "--enable-gpu-rasterization"
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"

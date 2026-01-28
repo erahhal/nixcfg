@@ -923,6 +923,11 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
+        match app-id="wechat$"
+        open-on-workspace "six"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
         match app-id="discord$"
         open-on-workspace "seven"
         default-column-width { proportion 1.0; }
