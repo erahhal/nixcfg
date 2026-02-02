@@ -447,6 +447,7 @@
           inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.secrets.nixosModules.msi-linux
           inputs.dms-shell.nixosModules.dank-material-shell
+          inputs.nix-flatpak.nixosModules.nix-flatpak
           # inputs.jovian.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
