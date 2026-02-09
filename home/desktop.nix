@@ -12,7 +12,7 @@ let
 in
 {
   imports = [
-    ../profiles/vdhcoapp.nix
+    # ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
     # ../profiles/ubports-installer-appimage.nix
     # ../overlays/zoom-us.nix
@@ -620,6 +620,7 @@ in
       j seek -60
       h seek -10
       l seek 10
+      s cycle sub
     '';
 
     xdg.configFile."vimiv/vimiv.conf".text = ''

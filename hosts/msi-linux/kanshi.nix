@@ -121,6 +121,30 @@ in
             ];
           };
         }
+        {
+          profile = {
+            name = "yamaha-quarto";
+            outputs = [
+              {
+                criteria = yamaha;
+                status = "enable";
+                mode = "3840x2160";
+                position = "0,0";
+                scale = 2.666667;
+              }
+              {
+                criteria = quarto;
+                status = "disable";
+                mode = "2880x1600";
+                position = "0,0";
+                scale = 1.0;
+              }
+            ];
+            exec = [
+              "${hyprctl} dispatch dpms on | true"
+            ];
+          };
+        }
       ];
     };
   };
