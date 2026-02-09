@@ -12,10 +12,8 @@ let
 in
 {
   imports = [
-    # ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
     # ../profiles/ubports-installer-appimage.nix
-    # ../overlays/zoom-us.nix
     ../overlays/igv-scaled.nix
     # ../overlays/firefox-nvidia.nix
     ../overlays/blender-with-nvidia-offload.nix
@@ -470,7 +468,7 @@ in
 
         ## Video editing
 
-        kdePackages.kdenlive
+        (broken kdePackages.kdenlive)
         shotcut
 
         ## desktop

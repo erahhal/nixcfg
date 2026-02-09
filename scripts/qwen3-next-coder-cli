@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+MODEL_REPO=unsloth/Qwen3-Coder-Next-GGUF
+MODEL_FILE=Qwen3-Coder-Next-UD-Q4_K_XL.gguf
+MODEL_LOCAL_FOLDER=~/Models/Qwen3-Coder-Next
+
+mkdir -p "$MODEL_LOCAL_FOLDER"
+if [ ! -e "$MODEL_LOCAL_FOLDER/$MODEL_FILE" ]; then
+    hf download $MODEL_REPO $MODEL_FILE --local-dir "$MODEL_LOCAL_FOLDER"
+
+fi
+
+llama-cli -m "$MODEL_LOCAL_FOLDER/$MODEL_FILE" -c 32768 --temp 1.0 --top-p 0.95 --top-k 40 --min-p 0.01 -cnv
+

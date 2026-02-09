@@ -76,7 +76,8 @@
     };
 
     virtualisation = {
-      virtualbox.enable = true;
+      ## @BROKEN
+      virtualbox.enable = false;
       ## @BROKEN
       vmware.enable = false;
       libvirtd.enable = false;

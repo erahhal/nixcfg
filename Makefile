@@ -40,6 +40,9 @@ debug:
 nflx-local:
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 
+nflx-vpn:
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso -L |& ${NOM}
+
 nixvim-local:
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 

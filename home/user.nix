@@ -91,6 +91,30 @@ in
     # Some apps require ~/.local/bin to exist
     home.file.".local/bin/.keep".text = "";
 
+    # OpenCode config for local llama-server
+    home.file.".config/opencode/opencode.json".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/config.json";
+      model = "llama.cpp/qwen3-coder-next";
+      provider = {
+        "llama.cpp" = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Qwen3-Coder-Next (local)";
+          options = {
+            baseURL = "http://127.0.0.1:8001/v1";
+          };
+          models = {
+            "qwen3-coder-next" = {
+              name = "Qwen3-Coder-Next";
+              limit = {
+                context = 32768;
+                output = 8192;
+              };
+            };
+          };
+        };
+      };
+    };
+
     # ---------------------------------------------------------------------------
     # Selected packages for all hosts
     # ---------------------------------------------------------------------------
@@ -162,6 +186,36 @@ in
 
         ## genai
         litellm
+        (llama-cpp.override { cudaSupport = true; })
+        python3Packages.huggingface-hub
+        opencode
+        (pkgs.writeShellScriptBin "opencode-local" ''
+          MODEL_PATH="$HOME/Models/Qwen3-Coder-Next/Qwen3-Coder-Next-UD-Q4_K_XL.gguf"
+
+          # Check if llama-server is already running on port 8001
+          if ! ${pkgs.curl}/bin/curl -s http://127.0.0.1:8001/health > /dev/null 2>&1; then
+            echo "Starting llama-server..."
+            ${pkgs.llama-cpp.override { cudaSupport = true; }}/bin/llama-server \
+              -m "$MODEL_PATH" \
+              --host 127.0.0.1 --port 8001 \
+              -c 32768 --flash-attn on &
+
+            # Wait for server to be ready
+            echo "Waiting for llama-server to start..."
+            for i in $(seq 1 30); do
+              if ${pkgs.curl}/bin/curl -s http://127.0.0.1:8001/health > /dev/null 2>&1; then
+                echo "llama-server ready!"
+                break
+              fi
+              sleep 1
+            done
+          else
+            echo "llama-server already running"
+          fi
+
+          # Launch opencode
+          exec ${pkgs.opencode}/bin/opencode "$@"
+        '')
 
         ## python
         pyright

@@ -5,16 +5,17 @@ let
     chromium = let
       originalChromium = prev.chromium.override {
         commandLineArgs = [
-          "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
           "--enable-wayland-ime"
           "--password-store=basic" # Don't show kwallet login at start
-          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
           "--ozone-platform=wayland"
-          "--enable-features=WebRTCPipeWireCapturer,VaapiVideoEncoder,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo"
+          # Chrome 143+ enables HW video decode by default. Disable it to fix flickering
+          # in video calls (Google Meet) on Niri. The ANGLE DMA-BUF rendering path is buggy.
+          # See: https://github.com/basecamp/omarchy/issues/3891
+          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
+          "--enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations,WaylandLinuxDrmSyncobj,UseOzonePlatform"
           "--enable-gpu-rasterization"
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"
-          "--enable-zero-copy"
         ];
       };
     in (prev.symlinkJoin {
@@ -46,14 +47,14 @@ let
     brave = let
       originalBrave = prev.brave.override {
         commandLineArgs = [
-          "--enable-features=WaylandWindowDecorations,WaylandLinuxDrmSyncobj"
           "--enable-wayland-ime"
           "--password-store=basic" # Don't show kwallet login at start
-          # Disable VAAPI video decode - causes intermittent flickering on Brave 1.86 + Niri
-          # See: https://github.com/brave/brave-browser/issues/16392
-          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
           "--ozone-platform=wayland"
-          "--enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations,UseOzonePlatform"
+          # Disable HW video decode to fix flickering in video calls on Niri.
+          # The ANGLE DMA-BUF rendering path is buggy.
+          # See: https://github.com/basecamp/omarchy/issues/3891
+          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
+          "--enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations,WaylandLinuxDrmSyncobj,UseOzonePlatform"
           "--enable-gpu-rasterization"
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"
@@ -187,21 +188,23 @@ let
       inherit (originalObs) meta;
     };
 
-    # Zoom wrapped with 2x scaling for HiDPI displays
-    zoom-us = let
-      originalZoom = prev.zoom-us;
-    in prev.symlinkJoin {
-      name = "zoom-us-${originalZoom.version}";
-      paths = [ originalZoom ];
-      nativeBuildInputs = [ prev.makeWrapper ];
-      postBuild = ''
-        rm $out/bin/zoom $out/bin/zoom-us
-        makeWrapper ${originalZoom}/bin/zoom $out/bin/zoom \
-          --set QT_SCALE_FACTOR 2
-        ln -s $out/bin/zoom $out/bin/zoom-us
-      '';
-      inherit (originalZoom) meta;
-    };
+    ## Zoom seems to work out of the box now
+
+    ## Zoom wrapped with 2x scaling for HiDPI displays
+    # zoom-us = let
+    #   originalZoom = prev.zoom-us;
+    # in prev.symlinkJoin {
+    #   name = "zoom-us-${originalZoom.version}";
+    #   paths = [ originalZoom ];
+    #   nativeBuildInputs = [ prev.makeWrapper ];
+    #   postBuild = ''
+    #     rm $out/bin/zoom $out/bin/zoom-us
+    #     makeWrapper ${originalZoom}/bin/zoom $out/bin/zoom \
+    #       --set QT_SCALE_FACTOR 2
+    #     ln -s $out/bin/zoom $out/bin/zoom-us
+    #   '';
+    #   inherit (originalZoom) meta;
+    # };
 
     ## Whatsapp works out of the box
 
