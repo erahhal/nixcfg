@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <!-- ============================================ -->
+    <!-- OnePlus 13 (CPH2655) BSG MGC 9.6.080 V17    -->
+    <!-- EIS disabled to avoid interfering with OIS   -->
+    <!-- ============================================ -->
+
+    <!-- Camera ID Mapping: Index 0=Main, 1=UW, 2=Tele, 3=Front -->
+    <set name="pref_camera_id_list_key">
+        <string>2</string>
+        <string>3</string>
+        <string>4</string>
+        <string>1</string>
+    </set>
+    <set name="pref_all_camera_id_list_key">
+        <string>0</string>
+        <string>1</string>
+        <string>2</string>
+        <string>3</string>
+        <string>4</string>
+    </set>
+
+    <!-- Active Camera Defaults -->
+    <string name="active_cam_id_back_key">2</string>
+    <string name="active_cam_id_front_key">1</string>
+
+    <!-- Lens Labels -->
+    <string name="pref_lens_title_key_0">Main</string>
+    <string name="pref_lens_title_key_1">UltraWide</string>
+    <string name="pref_lens_title_key_2">Tele 3x</string>
+    <string name="pref_lens_title_key_3">Front</string>
+
+    <!-- VIDEO STABILIZATION: EIS OFF, Hardware OIS ON -->
+    <!-- OIS runs in firmware on main (ID 2) and tele (ID 4), not controllable via API -->
+    <!-- EIS would add software stabilization on top, causing crop and jello artifacts -->
+    <string name="pref_video_stabilization_key">0</string>
+    <string name="pref_ois_key">1</string>
+    <boolean name="ois_api_supported" value="true" />
+    <boolean name="hybrid_ae_only_ois_jitter_for_back_camera_enabled" value="true" />
+
+    <!-- Device Spoofing: Pixel 8 Pro for HDR+ processing model -->
+    <string name="device_key">husky</string>
+
+    <!-- HDR+ Device Model: Pixel 3 (blueline) - most stable for all lenses -->
+    <string name="device_hdrplus_key_1">blueline</string>
+    <string name="device_hdrplus_key_2">blueline</string>
+    <string name="device_hdrplus_key_3">blueline</string>
+    <string name="device_hdrplus_key_4">blueline</string>
+
+    <!-- Hardware Level: LEVEL_3 (full Camera2 API) -->
+    <string name="hwlevel_key">0</string>
+
+    <!-- HDR+ Auto Mode -->
+    <string name="pref_camera_hdrplus_option_available_key">1</string>
+    <string name="pref_camera_hdr_plus_key">auto</string>
+
+    <!-- AUX Cameras Enabled -->
+    <string name="pref_aux_key">1</string>
+    <boolean name="camera.lenstoggles_enable" value="true" />
+
+    <!-- Motion Photos Disabled (can crash on non-Pixel) -->
+    <string name="pref_camera_catcher_key">0</string>
+
+    <!-- Picture Size: Native binned resolution -->
+    <string name="pref_camera_picturesize_back_key">4096x3072</string>
+
+    <!-- Skip Metadata Check: Required for non-Pixel devices -->
+    <string name="lib_skipmetadatacheck_key_p0_0">1</string>
+    <string name="lib_skipmetadatacheck_key_p0_1">1</string>
+    <string name="lib_skipmetadatacheck_key_p0_2">1</string>
+    <string name="lib_skipmetadatacheck_key_p0_3">1</string>
+    <string name="lib_skipmetadatacheck_key_p4_0">1</string>
+    <string name="lib_skipmetadatacheck_key_p4_1">1</string>
+    <string name="lib_skipmetadatacheck_key_p4_2">1</string>
+    <string name="lib_skipmetadatacheck_key_p4_3">1</string>
+    <string name="lib_skipmetadatacheck_key_p10_0">1</string>
+    <string name="lib_skipmetadatacheck_key_p10_1">1</string>
+    <string name="lib_skipmetadatacheck_key_p10_2">1</string>
+    <string name="lib_skipmetadatacheck_key_p10_3">1</string>
+
+    <!-- Max Zoom -->
+    <string name="pref_max_zoom_key">10</string>
+</map>
