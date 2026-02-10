@@ -288,7 +288,8 @@
       "Bash(flatpak run:*)",
       "Bash(wlr-randr:*)",
       "WebFetch(domain:unsloth.ai)",
-      "WebFetch(domain:opencode.ai)"
+      "WebFetch(domain:opencode.ai)",
+      "Bash(git rev-parse:*)"
     ],
     "deny": [],
     "ask": []

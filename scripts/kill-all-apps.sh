@@ -18,6 +18,7 @@ pkill signal
 pkill signal-desktop
 pkill Signal
 pkill telegram
+## @TODO: 15 or more chars doesn't work with pkill
 pkill telegram-desktop
 pkill Telegram
 pkill Discord
@@ -25,6 +26,7 @@ pkill discord
 pkill vesktop
 pkill app.asar
 pkill element
+## @TODO: 15 or more chars doesn't work with pkill
 pkill element-desktop
 pkill Element
 pkill electron
