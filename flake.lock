@@ -803,7 +803,7 @@
     },
     "flake-utils_5": {
       "inputs": {
-        "systems": "systems_9"
+        "systems": "systems_7"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -820,6 +820,24 @@
       }
     },
     "flake-utils_6": {
+      "inputs": {
+        "systems": "systems_10"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_7": {
       "inputs": {
         "systems": [
           "swayfx",
@@ -1544,19 +1562,43 @@
         "type": "github"
       }
     },
+    "netflix-tv-launcher": {
+      "inputs": {
+        "flake-utils": "flake-utils_4",
+        "nixpkgs": [
+          "nflx-nixcfg",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770953884,
+        "narHash": "sha256-12S+PTDdhO1mstAw6XylGFZkjasevJr/nxeaWkjZZ3Q=",
+        "ref": "main",
+        "rev": "2b760a0b823d629919884f368132ec44ad350b70",
+        "revCount": 1637,
+        "type": "git",
+        "url": "ssh://git@github.netflix.net/corp/netflix-tv-launcher"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@github.netflix.net/corp/netflix-tv-launcher"
+      }
+    },
     "nflx-nixcfg": {
       "inputs": {
         "home-manager": "home-manager_3",
+        "netflix-tv-launcher": "netflix-tv-launcher",
         "nixpkgs": "nixpkgs_7",
         "nm-openconnect-pulse-sso": "nm-openconnect-pulse-sso",
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1770946607,
-        "narHash": "sha256-OEFuo/CgJlr0cBOnde4cnpoW5eq9UV3+HLr95VyCMRM=",
+        "lastModified": 1770954051,
+        "narHash": "sha256-Tny0PscrgQ/iXQMtLqs76LLmSKgN3u6Atz1aVw2IO8g=",
         "ref": "main",
-        "rev": "cbfc25aa59122afe1a8f454249ebbdf0eb52aa3f",
-        "revCount": 68,
+        "rev": "15beaaee44fdd2e72685e4b3e2eafed972caf6a1",
+        "revCount": 69,
         "type": "git",
         "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -2276,7 +2318,7 @@
       "inputs": {
         "flake-parts": "flake-parts_4",
         "nixpkgs": "nixpkgs_13",
-        "systems": "systems_8"
+        "systems": "systems_9"
       },
       "locked": {
         "lastModified": 1766941632,
@@ -2312,7 +2354,7 @@
     },
     "nm-openconnect-pulse-sso": {
       "inputs": {
-        "flake-utils": "flake-utils_4",
+        "flake-utils": "flake-utils_5",
         "nixpkgs": [
           "nflx-nixcfg",
           "nixpkgs"
@@ -2869,7 +2911,7 @@
           "swayfx",
           "nixpkgs"
         ],
-        "systems": "systems_10"
+        "systems": "systems_11"
       },
       "locked": {
         "lastModified": 1768403764,
@@ -2990,7 +3032,7 @@
     },
     "steam-loader": {
       "inputs": {
-        "flake-utils": "flake-utils_5",
+        "flake-utils": "flake-utils_6",
         "nixpkgs": "nixpkgs_20"
       },
       "locked": {
@@ -3005,12 +3047,12 @@
     },
     "swayfx": {
       "inputs": {
-        "flake-utils": "flake-utils_6",
+        "flake-utils": "flake-utils_7",
         "nixpkgs": [
           "nixpkgs"
         ],
         "scenefx": "scenefx",
-        "systems": "systems_11"
+        "systems": "systems_12"
       },
       "locked": {
         "lastModified": 1769467630,
@@ -3043,6 +3085,21 @@
     },
     "systems_10": {
       "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_11": {
+      "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
         "owner": "nix-systems",
@@ -3056,7 +3113,7 @@
         "type": "github"
       }
     },
-    "systems_11": {
+    "systems_12": {
       "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
@@ -3297,7 +3354,7 @@
     },
     "utils_2": {
       "inputs": {
-        "systems": "systems_7"
+        "systems": "systems_8"
       },
       "locked": {
         "lastModified": 1689068808,

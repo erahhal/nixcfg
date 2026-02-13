@@ -958,7 +958,8 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
-        match app-id="steam" title="Steam Big Picture Mode"
+        match app-id="steam"
+        match app-id="com.valvesoftware.Steam"
         // open-fullscreen true
         open-maximized true
         open-focused true
