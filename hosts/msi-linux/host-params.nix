@@ -38,7 +38,7 @@
         "spotify"
         "brave"
         "firefox"
-        "flatpak run com.valvesoftware.Steam -cef-force-gpu -no-cef-sandbox"
+        "flatpak run com.valvesoftware.Steam -cef-force-gpu -no-cef-sandbox steam://open/bigpicture"
       ];
     };
 

@@ -965,12 +965,12 @@ in
         open-on-workspace "ten"
         default-column-width { proportion 1.0; }
     }
-    // window-rule {
-    //     // This matches any app-id that starts with "steam_app_"
-    //     match app-id=r#"^steam_app_.*$"#
-    //     open-fullscreen true
-    //     open-focused true
-    // }
+    window-rule {
+        // This matches any app-id that starts with "steam_app_"
+        match app-id=r#"^steam_app_.*$"#
+        open-fullscreen true
+        open-focused true
+    }
 
     // Example: block out two password managers from screen capture.
     // (This example rule is commented out with a "/-" in front.)
