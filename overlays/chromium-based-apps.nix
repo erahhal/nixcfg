@@ -16,6 +16,7 @@ let
           "--enable-gpu-rasterization"
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"
+          "--remote-debugging-port=9222"
         ];
       };
     in (prev.symlinkJoin {

@@ -13,7 +13,7 @@ pkgs.mkShell {
     # For rendering gym environments
     libGL
     libGLU
-    xorg.libX11
+    libx11
 
     cairo
     gobject-introspection

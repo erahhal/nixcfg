@@ -436,6 +436,10 @@
       SOUND_POWER_SAVE_ON_AC = 0;
       SOUND_POWER_SAVE_ON_BAT = 1;
 
+      # Restore charge thresholds when AC is unplugged, ensuring any
+      # temporary overrides (e.g. from `tlp fullcharge`) get reverted.
+      RESTORE_THRESHOLDS_ON_BAT = 1;
+
       # The following prevents the battery from charging fully to
       # preserve lifetime. Run `tlp fullcharge` to temporarily force
       # full charge.

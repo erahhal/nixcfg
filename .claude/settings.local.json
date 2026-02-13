@@ -289,7 +289,19 @@
       "Bash(wlr-randr:*)",
       "WebFetch(domain:unsloth.ai)",
       "WebFetch(domain:opencode.ai)",
-      "Bash(git rev-parse:*)"
+      "Bash(git rev-parse:*)",
+      "Bash(tlp-stat:*)",
+      "Bash(upower:*)",
+      "Bash(sudo tlp-stat:*)",
+      "Bash(dmidecode:*)",
+      "mcp__chrome-devtools__list_pages",
+      "Bash(newt --help:*)",
+      "Bash(/opt/nflx/bin/claude:*)",
+      "Bash(npx:*)",
+      "Bash(python3:*)",
+      "Bash(timeout 5 websocat:*)",
+      "Bash(node:*)",
+      "Bash(git clone:*)"
     ],
     "deny": [],
     "ask": []

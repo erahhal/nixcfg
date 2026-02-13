@@ -32,9 +32,9 @@ pkgs.buildFHSEnv {
       pango
       gtk2-x11
       udev
-      xorg.libSM
-      xorg.libX11
-      xorg.libXxf86vm
+      libsm
+      libx11
+      libxxf86vm
 
       teensy-loader-gui-bin
     ];

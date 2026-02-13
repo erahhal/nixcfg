@@ -5,7 +5,8 @@
 , makeWrapper
 , mesa
 , libGL
-, xorg
+, libx11
+, libxext
 , alsa-lib
 , pulseaudio
 , pipewire
@@ -43,8 +44,8 @@ stdenv.mkDerivation rec {
   buildInputs = [
     mesa
     libGL
-    xorg.libX11
-    xorg.libXext
+    libx11
+    libxext
     alsa-lib
     pulseaudio
     pipewire

@@ -385,9 +385,9 @@ in
         wezterm
         wl-clipboard      # Manipulate wayland clipboard
         wf-recorder       # Record video of screen portions in wayland
-        xorg.xdpyinfo
-        xorg.xeyes
-        xorg.xhost
+        xdpyinfo
+        xeyes
+        xhost
         xsel              # Manipulate xwindows clipboard
 
         ## Cross-system desktop KVM

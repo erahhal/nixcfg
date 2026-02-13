@@ -242,6 +242,9 @@
           {
             nflx = {
               username = "erahhal";
+              system = {
+                enable-systemd-resolved = true;
+              };
               development = {
                 java.enable = true;
                 # newt.clean-tmux-nesting = true;
