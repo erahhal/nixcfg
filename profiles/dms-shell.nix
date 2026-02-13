@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, userParams, ... }:
 {
   config = lib.mkIf (config.hostParams.desktop.displayManager == "dms" && config.hostParams.programs.steam.bootToSteam == false) {
     programs.dank-material-shell.enable = true;
@@ -9,7 +9,7 @@
       enableKwallet = true;
     };
 
-    services.displayManager.dms-greeter = {
+    services.displayManager.dms-greeter = lib.mkIf (!config.hostParams.desktop.autoLogin) {
       enable = true;
       compositor.name = "niri";
       logs.save = true;
@@ -21,6 +21,14 @@
       '';
     };
 
-    services.greetd.enable = true;
+    services.greetd = {
+      enable = true;
+      settings = lib.mkIf config.hostParams.desktop.autoLogin {
+        default_session = {
+          command = "niri-session";
+          user = userParams.username;
+        };
+      };
+    };
   };
 }

@@ -703,15 +703,14 @@ in
     // which may be more convenient to use.
     // See the binds section below for more spawn examples.
 
-    // Import all session environment variables to systemd user session
-    // These run synchronously to ensure env is set before services start
-    spawn-sh-at-startup "systemctl --user import-environment"
-    spawn-sh-at-startup "dbus-update-activation-environment --systemd --all"
-    //// DMS has this
-    // spawn-sh-at-startup "systemctl --user restart polkit-gnome-authentication-agent-1"
-    // spawn-sh-at-startup "systemctl --user restart waybar"
-    // spawn-sh-at-startup "${wallpaper-cmd}"
-    spawn-sh-at-startup "systemctl --user restart dms"
+    // Import all session environment variables to systemd user session,
+    // then restart DMS. These MUST be chained sequentially because niri's
+    // spawn-sh-at-startup commands run async. Without chaining, DMS may start
+    // before import-environment runs, causing it to inherit the systemd user
+    // manager's XDG_SESSION_ID (class=manager, CanLock=no) instead of the
+    // login session's XDG_SESSION_ID (class=user, CanLock=yes). This breaks
+    // DMS loginctl lock integration and the idle inhibitor button.
+    spawn-sh-at-startup "systemctl --user import-environment && dbus-update-activation-environment --systemd --all && systemctl --user restart dms"
 
     // This line starts waybar, a commonly used bar for Wayland compositors.
     // Currently using systemd service

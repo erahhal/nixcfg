@@ -10,7 +10,7 @@
     };
 
     desktop = {
-      displayManager = "sddm";
+      displayManager = "dms";
       # displayManager = "jovian";
       # defaultSession = "gamescope-wayland";
       defaultSession = "niri";
@@ -38,7 +38,7 @@
         "spotify"
         "brave"
         "firefox"
-        "flatpak run com.valvesoftware.Steam"
+        "flatpak run com.valvesoftware.Steam -cef-force-gpu -no-cef-sandbox"
       ];
     };
 

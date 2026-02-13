@@ -287,7 +287,6 @@
       "Bash(# Check if we can build/eval the old nixpkgs to compare versions echo \"\"Old nixpkgs-unstable: 1412caf7bf9e660f2f962917c14b1ea1c3bc695e\"\" echo \"\"New nixpkgs-unstable: 88d3861acdd3d2f0e361767018218e51810df8a1\"\" echo \"\"\"\" echo \"\"You can compare by running:\"\" echo \"\"nix eval --raw ''github:NixOS/nixpkgs/1412caf7bf9e660f2f962917c14b1ea1c3bc695e#brave.version''\"\" echo \"\"\"\" echo \"\"Current system info:\"\" uname -r glxinfo)",
       "Bash(flatpak run:*)",
       "Bash(wlr-randr:*)",
-<<<<<<< Updated upstream
       "WebFetch(domain:unsloth.ai)",
       "WebFetch(domain:opencode.ai)",
       "Bash(git rev-parse:*)",
@@ -302,8 +301,7 @@
       "Bash(python3:*)",
       "Bash(timeout 5 websocat:*)",
       "Bash(node:*)",
-      "Bash(git clone:*)"
-=======
+      "Bash(git clone:*)",
       "Bash(flatpak list:*)",
       "WebFetch(domain:steamcommunity.com)",
       "Bash(python3:*)",
@@ -311,7 +309,6 @@
       "Bash(# Check the START of the current webhelper session to see launch args grep \"\"Startup\\\\|commandline\\\\|Disabling GPU\\\\|force-gpu\\\\|cef-force\"\" ~/.local/share/Steam/logs/webhelper.txt)",
       "Bash(flatpak kill:*)",
       "Bash(ln:*)"
->>>>>>> Stashed changes
     ],
     "deny": [],
     "ask": []
