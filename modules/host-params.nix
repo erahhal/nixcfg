@@ -186,6 +186,12 @@
         description = "Default screenlock program";
       };
 
+      dmsLockProgram = lib.mkOption {
+        type = lib.types.enum [ "dms" "hyprlock" ];
+        default = "dms";
+        description = "Lock screen program to use with DMS (dms = built-in Quickshell lock, hyprlock = standalone)";
+      };
+
       autoLogin = lib.mkOption {
         type = lib.types.bool;
         default = false;

@@ -16,6 +16,7 @@
       dpi = 192;
       wallpaper = ../../wallpapers/huashan-temple.jpg;
       disableXwaylandScaling = true;
+      dmsLockProgram = "hyprlock";
     };
 
     programs = {

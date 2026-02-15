@@ -20,6 +20,7 @@
       autoLogin = true;
       wallpaper = ../../wallpapers/hawaii-dylan-theo.jpg;
       waybarSimple = true;
+      dmsLockProgram = "hyprlock";
     };
 
     programs = {

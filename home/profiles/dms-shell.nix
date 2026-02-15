@@ -25,6 +25,15 @@ let
 
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
+  useHyprlock = osConfig.hostParams.desktop.dmsLockProgram == "hyprlock";
+
+  pidof = "${pkgs.procps}/bin/pidof";
+
+  # Hyprlock lock command with guard against duplicate instances
+  hyprlockCmd = pkgs.writeShellScript "hyprlock-lock" ''
+    ${pidof} hyprlock || ${pkgs.hyprlock}/bin/hyprlock
+  '';
+
   # Default plugin settings - merged into plugin_settings.json on activation
   defaultPluginSettings = {
     commandRunner = {
@@ -48,12 +57,19 @@ let
     };
   };
 
-  # Script to lock screen then suspend (simulates DMS lockBeforeSuspend)
-  dms-suspend = pkgs.writeShellScript "dms-suspend" ''
-    dms ipc call lock lock
-    sleep 0.5
-    systemctl suspend
-  '';
+  # Lock screen then suspend
+  dms-suspend = if useHyprlock then
+    pkgs.writeShellScript "dms-suspend" ''
+      ${pidof} hyprlock || ${pkgs.hyprlock}/bin/hyprlock &
+      sleep 1
+      ${pkgs.systemd}/bin/systemctl suspend
+    ''
+  else
+    pkgs.writeShellScript "dms-suspend" ''
+      dms ipc call lock lock
+      sleep 0.5
+      systemctl suspend
+    '';
 
   suspend-dialog = pkgs.writeShellScript "dms-suspend-dialog" ''
     ${nag-graphical}/bin/nag-graphical 'Suspend?' '${dms-suspend}'
@@ -291,12 +307,14 @@ let
     customAnimationDuration = 100;
 
     ## Power/Lock screen
-    acMonitorTimeout = 300;
-    acLockTimeout = 300;
-    lockBeforeSuspend = true;
+    ## When using hyprlock: disable DMS lock/idle, let hypridle handle it
+    ## (DMS/Quickshell lock crashes on suspend/resume and monitor disconnect)
+    acMonitorTimeout = if useHyprlock then 0 else 300;
+    acLockTimeout = if useHyprlock then 0 else 300;
+    lockBeforeSuspend = !useHyprlock;
     lockScreenShowPowerActions = true;
-    loginctlLockIntegration = true;
-    fadeToLockEnabled = true;
+    loginctlLockIntegration = !useHyprlock;
+    fadeToLockEnabled = !useHyprlock;
     fadeToLockGracePeriod = 5;
 
     ### Widgets
@@ -416,8 +434,13 @@ in
       Ctrl+Shift+4 hotkey-overlay-title="Capture Selection" { spawn "dms" "ipc" "call" "niri" "screenshot"; }
       Ctrl+Shift+5 hotkey-overlay-title="Capture Window" { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
 
-      // Lock - use DMS lock instead of hyprlock
+      ${if useHyprlock then ''
+      // Lock - use hyprlock (DMS lock crashes on suspend/resume and monitor disconnect)
+      Mod+X hotkey-overlay-title="Lock the Screen" { spawn "sh" "-c" "${hyprlockCmd}"; }
+      '' else ''
+      // Lock - use DMS lock
       Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
+      ''}
 
       // Power actions - with confirmation dialogs
       Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "${suspend-dialog}"; }
@@ -430,6 +453,12 @@ in
       // Lid close - lock then suspend
       lid-close { spawn "${dms-suspend}"; }
     }
+
+    ${lib.optionalString useHyprlock ''
+    // Start hypridle for idle management (lock, DPMS, before-sleep hook)
+    // Replaces DMS internal idle/lock which crashes on suspend/resume
+    spawn-sh-at-startup "systemctl --user restart hypridle"
+    ''}
   '';
 
   # Include DMS keybindings in niri config
@@ -480,4 +509,34 @@ in
     enableAudioWavelength = true;
     enableCalendarEvents = true;
   };
+
+  # Hypridle for idle management when using hyprlock instead of DMS lock
+  # Handles: lock on idle, DPMS, lock before suspend, DPMS restore on resume
+  services.hypridle = lib.mkIf useHyprlock {
+    enable = true;
+    settings = {
+      general = {
+        lock_cmd = "pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
+        before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+        after_sleep_cmd = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+      };
+      listener = [
+        {
+          timeout = 300;
+          on-timeout = "${pkgs.systemd}/bin/loginctl lock-session";
+        }
+        {
+          timeout = 360;
+          on-timeout = "${pkgs.niri}/bin/niri msg action power-off-monitors";
+          on-resume = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+        }
+      ];
+    };
+  };
+
+  # Don't auto-start hypridle via systemd — start from niri spawn-sh-at-startup
+  # so it runs after NIRI_SOCKET and session env are available
+  systemd.user.services.hypridle.Install.WantedBy = lib.mkIf useHyprlock (lib.mkForce []);
+
+  home.packages = lib.mkIf useHyprlock [ pkgs.hypridle ];
 }

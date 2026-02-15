@@ -335,7 +335,7 @@ in
     ./dms-shell.nix
     # ./network-manager-applet.nix
     # ./rofi.nix
-    # ./hyprlock.nix
+    ./hyprlock.nix
     # ./gammastep.nix
     # ./wlsunset.nix
 

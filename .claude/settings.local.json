@@ -308,7 +308,9 @@
       "Bash(# Check what chrome://gpu would show - look at the gpu info file cat ~/.local/share/Steam/config/htmlcache/Default/GPUCache/data_0)",
       "Bash(# Check the START of the current webhelper session to see launch args grep \"\"Startup\\\\|commandline\\\\|Disabling GPU\\\\|force-gpu\\\\|cef-force\"\" ~/.local/share/Steam/logs/webhelper.txt)",
       "Bash(flatpak kill:*)",
-      "Bash(ln:*)"
+      "Bash(ln:*)",
+      "WebFetch(domain:quickshell.org)",
+      "WebFetch(domain:andrew-mccall.com)"
     ],
     "deny": [],
     "ask": []
