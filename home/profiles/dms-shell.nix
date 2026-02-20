@@ -4,21 +4,23 @@ let
     then toString osConfig.hostParams.desktop.wallpaper
     else null;
 
-  # Using bbedward's fork with PR #3 fix for high CPU usage
-  # (switches from Item to QtObject to fix "graphical object not placed in scene" warnings)
-  # TODO: Switch back to devnullvoid/dms-command-runner after PR #3 is merged
   dms-command-runner = pkgs.fetchFromGitHub {
-    owner = "bbedward";
+    owner = "devnullvoid";
     repo = "dms-command-runner";
-    rev = "8cbdae103d6304ad98fd4c579e82fad527ff3ebf";
-    hash = "sha256-DWSWdP/gw6tp87u/0tkk4hL1oBtLWsVN6nbqLe4ClxM=";
+    rev = "f5f676fe49d2cde86054a28ed06f824319cd5193";
+    hash = "sha256-oIzhogusDzXJ7KH/Kmu3euuBCiTJ5GAH8ho24MmXARI=";
   };
 
-  dms-easyeffects = pkgs.fetchFromGitHub {
-    owner = "jonkristian";
-    repo = "dms-easyeffects";
-    rev = "f50fdb7a110ddb90b7625bc143884fd773c3d5c7";
-    hash = "sha256-q0Xp4RzHd0HgtUZEM4hIES6SDyN8R4lPgQe5aeLMh4c=";
+  dms-easyeffects = pkgs.applyPatches {
+    src = pkgs.fetchFromGitHub {
+      owner = "jonkristian";
+      repo = "dms-easyeffects";
+      rev = "f50fdb7a110ddb90b7625bc143884fd773c3d5c7";
+      hash = "sha256-q0Xp4RzHd0HgtUZEM4hIES6SDyN8R4lPgQe5aeLMh4c=";
+    };
+    patches = [
+      ./patches/dms-easyeffects-fix-hang.patch
+    ];
   };
 
   dms-network-monitor = pkgs.callPackage ../../pkgs/dms-network-monitor {};
@@ -396,6 +398,12 @@ in
     ];
   };
 
+  # Clear Quickshell QML bytecode cache on activation so plugin changes take effect.
+  # Nix store files have epoch timestamps, so the QML engine can't detect source changes.
+  home.activation.clearQuickshellQmlCache = lib.hm.dag.entryAfter ["linkGeneration"] ''
+    rm -rf "${config.xdg.cacheHome}/quickshell/qmlcache"
+  '';
+
   # Sync DMS JSON config files on activation
   home.activation.dmsSettingsSync = mkJsonSyncScript {
     dir = "${config.xdg.configHome}/DankMaterialShell";
@@ -487,7 +495,6 @@ in
 
     # Plugins (settings are in defaultPluginSettings, synced via activation script)
     plugins = {
-      # Using bbedward's fork with PR #3 fix for graphics scene warnings
       CommandRunner = {
         enable = true;
         src = dms-command-runner;

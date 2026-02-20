@@ -1,0 +1,47 @@
+--- a/EasyEffectsWidget.qml
++++ b/EasyEffectsWidget.qml
+@@ -17,6 +17,8 @@
+     property string currentInputProfile: currentInputIndex >= 0 && currentInputIndex < inputProfiles.length ? inputProfiles[currentInputIndex] : "None"
+     property bool profilesLoaded: false
+     property string profileOutput: ""
++    property int retryCount: 0
++    property int maxRetries: 12
+
+     Component.onCompleted: {
+         // Load profiles dynamically
+@@ -147,11 +149,34 @@
+             root.inputProfiles = inputProfiles
+             root.profilesLoaded = true
+
++            console.warn("EasyEffects: loadProfiles exit code " + exitCode + ", found " + outputProfiles.length + " output, " + inputProfiles.length + " input profiles")
++            if (outputProfiles.length === 0 && inputProfiles.length === 0) {
++                console.warn("EasyEffects: raw output was: " + JSON.stringify(lines))
++            }
++
+             // Reset for next time
+             root.profileOutput = ""
+
+             // Check what's actually active in Easy Effects
+-            syncActiveProfile()
++            if (outputProfiles.length > 0 || inputProfiles.length > 0) {
++                root.retryCount = 0
++                syncActiveProfile()
++            }
++        }
++    }
++
++    // Retry loading profiles if initial load found nothing (daemon may not be ready)
++    Timer {
++        id: retryTimer
++        interval: 5000
++        repeat: true
++        running: root.profilesLoaded && root.outputProfiles.length === 0 && root.inputProfiles.length === 0 && root.retryCount < root.maxRetries
++        onTriggered: {
++            root.retryCount++
++            console.warn("EasyEffects: retry " + root.retryCount + "/" + root.maxRetries + " loading profiles...")
++            root.profileOutput = ""
++            root.profilesLoaded = false
++            loadProfiles.running = true
+         }
+     }
+

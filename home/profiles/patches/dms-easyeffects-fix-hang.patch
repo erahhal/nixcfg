@@ -1,0 +1,49 @@
+--- a/EasyEffectsWidget.qml
++++ b/EasyEffectsWidget.qml
+@@ -35,7 +35,7 @@
+
+     Process {
+         id: checkActiveOutput
+-        command: ["easyeffects", "-a", "output"]
++        command: ["sh", "-c", "timeout 10 easyeffects -a output 2>/dev/null"]
+         running: false
+         stdout: SplitParser {
+             onRead: data => {
+@@ -53,7 +53,7 @@
+
+     Process {
+         id: checkActiveInput
+-        command: ["easyeffects", "-a", "input"]
++        command: ["sh", "-c", "timeout 10 easyeffects -a input 2>/dev/null"]
+         running: false
+         stdout: SplitParser {
+             onRead: data => {
+@@ -99,7 +99,7 @@
+
+     Process {
+         id: loadProfiles
+-        command: ["sh", "-c", "easyeffects -p 2>&1"]
++        command: ["sh", "-c", "echo 'Output presets:'; i=1; for f in \"$HOME/.local/share/easyeffects/output/\"*.json; do [ -f \"$f\" ] && printf '%s\\t%s\\n' \"$i\" \"$(basename \"$f\" .json)\" && i=$((i+1)); done; echo ''; echo 'Input presets:'; i=1; for f in \"$HOME/.local/share/easyeffects/input/\"*.json; do [ -f \"$f\" ] && printf '%s\\t%s\\n' \"$i\" \"$(basename \"$f\" .json)\" && i=$((i+1)); done"]
+         running: false
+         stdout: SplitParser {
+             onRead: data => {
+@@ -153,7 +153,9 @@
+             root.profileOutput = ""
+
+             // Check what's actually active in Easy Effects
+-            syncActiveProfile()
++            if (outputProfiles.length > 0 || inputProfiles.length > 0) {
++                syncActiveProfile()
++            }
+         }
+     }
+
+@@ -191,7 +193,7 @@
+
+     Process {
+         id: startProcess
+-        command: ["easyeffects", "--service-mode"]
++        command: ["sh", "-c", "timeout 10 easyeffects --service-mode"]
+         running: false
+
+         onExited: (exitCode, exitStatus) => {
