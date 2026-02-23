@@ -150,6 +150,11 @@
     };
 
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0"; # Use latest stable
+
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { debug-mode, ... }@inputs:
@@ -225,6 +230,7 @@
           inputs.nur.modules.nixos.default
           inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
+          { nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]; }
           inputs.home-manager.nixosModules.home-manager
           homeManagerConfig
 

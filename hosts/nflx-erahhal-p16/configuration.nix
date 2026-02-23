@@ -143,7 +143,8 @@
     };
   };
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
   boot.kernel.sysctl = {
     ## attempt to get rid of "rpfilter drop" messages in dmesg, which may be causing intermittent connectivity issues

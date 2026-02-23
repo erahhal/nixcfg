@@ -25,6 +25,7 @@
   #   dates = "daily";
   # };
 
+
   nix = {
     # Which package collection to use system-wide.
 
@@ -50,6 +51,8 @@
         "https://arm.cachix.org/"
         "https://robotnix.cachix.org/"
         "https://cache.flox.dev"
+        "https://attic.xuyh0120.win/lantian"
+        "https://cache.garnix.io"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -57,7 +60,10 @@
         "arm.cachix.org-1:5BZ2kjoL1q6nWhlnrbAl+G7ThY7+HaBRD9PZzqZkbnM="
         "robotnix.cachix.org-1:+y88eX6KTvkJyernp1knbpttlaLTboVp4vq/b24BIv0="
         "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+        "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       ];
+
       download-buffer-size = 524288000;
 
       ## Needed for cross-compilation caching?

@@ -310,7 +310,8 @@
       "Bash(flatpak kill:*)",
       "Bash(ln:*)",
       "WebFetch(domain:quickshell.org)",
-      "WebFetch(domain:andrew-mccall.com)"
+      "WebFetch(domain:andrew-mccall.com)",
+      "Bash(nix path-info:*)"
     ],
     "deny": [],
     "ask": []
