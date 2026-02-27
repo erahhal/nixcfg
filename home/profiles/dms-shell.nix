@@ -514,7 +514,7 @@ in
     enableVPN = true;
     enableDynamicTheming = true;
     enableAudioWavelength = true;
-    enableCalendarEvents = true;
+    enableCalendarEvents = false; # khal 0.13.0 fails to build (sphinx bug)
   };
 
   # Hypridle for idle management when using hyprlock instead of DMS lock

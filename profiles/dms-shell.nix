@@ -2,6 +2,7 @@
 {
   config = lib.mkIf (config.hostParams.desktop.displayManager == "dms" && config.hostParams.programs.steam.bootToSteam == false) {
     programs.dank-material-shell.enable = true;
+    programs.dank-material-shell.enableCalendarEvents = false; # khal 0.13.0 fails to build (sphinx bug)
 
     # Enable automatic keyring/wallet unlock via PAM when logging in through DMS greeter
     security.pam.services.dms-greeter = {

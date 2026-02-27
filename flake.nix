@@ -186,14 +186,10 @@
         ];
       };
     };
+    mkHost = import ./lib/mkHost.nix {
+      inherit inputs userParams debugMode broken recursiveMerge homeManagerConfig;
+    };
   in {
-    # lib.pkgsParameters = {
-    #   overlays = [ ];
-    #   buildSystem = null; # same as host system
-    #   config = {
-    #     allowUnsupportedSystem = true;
-    #   };
-    # };
     homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = {
         inherit debugMode;
@@ -203,15 +199,12 @@
       };
     };
     nixosConfigurations = rec {
-      nflx-erahhal-p16 =
-      let
-        system = "x86_64-linux";
-        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
+
+      # -----------------------------------------------------------------------
+      # nflx-erahhal-p16 - Work laptop (Lenovo ThinkPad P16s)
+      # -----------------------------------------------------------------------
+      nflx-erahhal-p16 = mkHost {
+        hostName = "nflx-erahhal-p16";
         modules = [
           {
             ## @TODO: TEMPORARY
@@ -219,28 +212,14 @@
               "libsoup-2.74.3"
             ];
           }
-          ./modules/host-params.nix
-          ./hosts/nflx-erahhal-p16/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
-          ./hosts/nflx-erahhal-p16/configuration.nix
           inputs.secrets.nixosModules.nflx-erahhal-p16
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
           inputs.nur.modules.nixos.default
           inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
           { nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]; }
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
-
-          inputs.nixvim-config.nixosModules.default
-          {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = false;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
-          }
           # inputs.nflx-nixcfg.nixosModules.pulse-vpn
           inputs.nflx-nixcfg.nixosModules.default
           {
@@ -256,6 +235,9 @@
               };
               genai = {
                 project-id = "erahhaldevtools";
+                context = {
+                  enable-dx-team = true;
+                };
               };
               vpn.pulse = {
                 # url = "https://lax001.pcs.flxvpn.net/emp-split";
@@ -268,230 +250,105 @@
             };
           }
         ];
-        specialArgs = {
-          inherit debugMode;
-          inherit inputs;
-          inherit system;
-          inherit copyDesktopIcons;
-          inherit copyDesktopItems;
-          inherit mkWindowsApp;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
       };
-      antikythera =
-      let
-        system = "x86_64-linux";
-        copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-        mkWindowsApp = inputs.erosanix.lib.x86_64-linux.mkWindowsApp;
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
+
+      # -----------------------------------------------------------------------
+      # antikythera - Personal laptop (Lenovo ThinkPad P14s AMD Gen5)
+      # -----------------------------------------------------------------------
+      antikythera = mkHost {
+        hostName = "antikythera";
+        nixvimConfig = {
+          enable = true;
+          enable-ai = true;
+          enable-startify-cowsay = true;
+          disable-indent-blankline = true;
+          disable-notifications = true;
+        };
         modules = [
-          ./modules/host-params.nix
-          ./hosts/antikythera/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
-          ./hosts/antikythera/configuration.nix
           inputs.secrets.nixosModules.antikythera
           inputs.jovian.nixosModules.default
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
           inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
-
-          inputs.nixvim-config.nixosModules.default
-          {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = true;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
-            nixvim-config.disable-notifications = true;
-          }
-          # inputs.nix-snapd.nixosModules.default
-          # {
-          #   services.snap.enable = true;
-          # }
         ];
-        specialArgs = {
-          inherit debugMode;
-          inherit inputs;
-          inherit system;
-          inherit copyDesktopIcons;
-          inherit copyDesktopItems;
-          inherit mkWindowsApp;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
       };
-      upaya =
-      let
-        system = "x86_64-linux";
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
+
+      # -----------------------------------------------------------------------
+      # upaya - Dell XPS 15 9560
+      # -----------------------------------------------------------------------
+      upaya = mkHost {
+        hostName = "upaya";
+        nixvimConfig = {
+          enable = true;
+          enable-ai = true;
+          enable-startify-cowsay = true;
+          disable-indent-blankline = true;
+        };
         modules = [
-          ./modules/host-params.nix
-          ./hosts/upaya/host-params.nix
-          ./hosts/upaya/configuration.nix
           inputs.secrets.nixosModules.upaya
           inputs.jovian.nixosModules.default
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.nixos-hardware.nixosModules.dell-xps-15-9560
-          # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel
-          # inputs.nixos-hardware-xps.nixosModules.common-cpu-intel-kaby-lake
-          # inputs.nixos-hardware-xps.nixosModules.common-pc-laptop
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
-          inputs.nixvim-config.nixosModules.default
-          {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = true;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
-          }
         ];
-        specialArgs = {
-          inherit debugMode;
-          inherit inputs;
-          inherit system;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
       };
-      sicmundus =
-      let
-        system = "x86_64-linux";
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
+
+      # -----------------------------------------------------------------------
+      # sicmundus - Server
+      # -----------------------------------------------------------------------
+      sicmundus = mkHost {
+        hostName = "sicmundus";
+        nixvimConfig = {
+          enable = true;
+          enable-ai = true;
+          enable-startify-cowsay = true;
+          disable-indent-blankline = true;
+        };
         modules = [
-          ./modules/host-params.nix
-          ./hosts/sicmundus/host-params.nix
-          ./hosts/sicmundus/configuration.nix
           inputs.secrets.nixosModules.sicmundus
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
           inputs.nur.modules.nixos.default
-          inputs.nixvim-config.nixosModules.default
-          {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = true;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
-          }
         ];
-        specialArgs = {
-          inherit debugMode;
-          inherit inputs;
-          inherit system;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
       };
-      msi-desktop =
-      let
-        system = "x86_64-linux";
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
+
+      # -----------------------------------------------------------------------
+      # msi-desktop - WSL on MSI desktop
+      # -----------------------------------------------------------------------
+      msi-desktop = mkHost {
+        hostName = "msi-desktop";
         modules = [
-          ./modules/host-params.nix
-          ./hosts/msi-desktop/host-params.nix
-          ./hosts/msi-desktop/configuration.nix
           inputs.nixos-wsl.nixosModules.default
           {
             wsl.enable = true;
             wsl.defaultUser = userParams.username;
           }
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.secrets.nixosModules.msi-desktop
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
-          inputs.nixvim-config.nixosModules.default
-          {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = false;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
-          }
         ];
-        specialArgs = {
-          inherit debugMode;
-          inherit inputs;
-          inherit system;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
       };
 
       ## Default hostname for WSL is nixos
       ## Will be renamed to msi-desktop after first installation
       nixos = msi-desktop;
 
-      msi-linux =
-      let
-        system = "x86_64-linux";
-        header-space = "      ";
-      in
-      inputs.nixpkgs.lib.nixosSystem {
-        system = system;
+      # -----------------------------------------------------------------------
+      # msi-linux - MSI desktop native Linux
+      # -----------------------------------------------------------------------
+      msi-linux = mkHost {
+        hostName = "msi-linux";
         modules = [
-          ./modules/host-params.nix
-          ./hosts/msi-linux/host-params.nix
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
-          ./hosts/msi-linux/configuration.nix
-          inputs.flake-utils-plus.nixosModules.autoGenFromInputs
           inputs.secrets.nixosModules.msi-linux
           inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
-          # inputs.jovian.nixosModules.default
-          inputs.home-manager.nixosModules.home-manager
-          homeManagerConfig
-
-          inputs.nixvim-config.nixosModules.default
-          {
-            nixvim-config.enable = true;
-            nixvim-config.enable-ai = false;
-            nixvim-config.enable-startify-cowsay = true;
-            nixvim-config.disable-indent-blankline = true;
-          }
           inputs.steam-loader.nixosModules.default
           {
             programs.steam-loader.enable = true;
           }
-          # inputs.nix-snapd.nixosModules.default
-          # {
-          #   services.snap.enable = true;
-          # }
-          {
-
-            nixpkgs.overlays = [
-              # inputs.jovian.overlays.default
-            ];
-          }
         ];
-        specialArgs = {
-          inherit debugMode;
-          inherit inputs;
-          inherit system;
-          inherit broken;
-          inherit recursiveMerge;
-          inherit userParams;
-        };
       };
+
     };
   };
 }

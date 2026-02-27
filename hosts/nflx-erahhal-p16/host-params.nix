@@ -80,7 +80,7 @@
       virtualbox.enable = false;
       ## @BROKEN
       vmware.enable = false;
-      libvirtd.enable = false;
+      libvirtd.enable = true;
     };
   };
 }

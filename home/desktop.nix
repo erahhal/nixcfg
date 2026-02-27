@@ -468,7 +468,7 @@ in
 
         ## Video editing
 
-        (broken kdePackages.kdenlive)
+        kdePackages.kdenlive
         shotcut
 
         ## desktop

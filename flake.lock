@@ -1082,11 +1082,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771018093,
-        "narHash": "sha256-STUF5x1eQNKrhGn53WH1GpzBCsG719yl5rYnm7+1c4I=",
+        "lastModified": 1772060133,
+        "narHash": "sha256-VuyRptb8v1lVGMlLp4/1vRX3Efwec0CN0S6mKmDPzLg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "26dfad95d92c50a56ce708f4256bf720bb30a630",
+        "rev": "ce9b6e52500a0ea0ec48f0bbf6d7a3e431d9dfa4",
         "type": "github"
       },
       "original": {
@@ -1660,11 +1660,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1771280683,
-        "narHash": "sha256-CN6/97Kw+xi8lv9Sfu1Zy7WFPXAZFSPkncwqULa8srE=",
+        "lastModified": 1772157560,
+        "narHash": "sha256-idDWJwG/0rknvnIefOn2ro0lBpCKPZZQWNIVIVq/hxQ=",
         "ref": "main",
-        "rev": "b44fd221f3e539ac67e32a6af0474c8cc1a229e8",
-        "revCount": 72,
+        "rev": "fbec6930c10aef92c53f0aabf0a4b8fc68bbfda4",
+        "revCount": 79,
         "type": "git",
         "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -2373,11 +2373,11 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1770841267,
-        "narHash": "sha256-9xejG0KoqsoKEGp2kVbXRlEYtFFcDTHjidiuX8hGO44=",
+        "lastModified": 1771848320,
+        "narHash": "sha256-0MAd+0mun3K/Ns8JATeHT1sX28faLII5hVLq0L3BdZU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ec7c70d12ce2fc37cb92aff673dcdca89d187bae",
+        "rev": "2fc6539b481e1d2569f25f8799236694180c0993",
         "type": "github"
       },
       "original": {
@@ -2466,11 +2466,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771280666,
-        "narHash": "sha256-nneKKRHn+NRdjfPO5PCkDLOdFndYMMIo0fROgw472dU=",
+        "lastModified": 1772126251,
+        "narHash": "sha256-/R7L91iiI4vR5Hh3T5Oy2U6DKnWYCWwAOeXgjfYR6qI=",
         "owner": "erahhal",
         "repo": "nm-openconnect-pulse-sso",
-        "rev": "a432c2015df739e1bf25316bb89e8bf3cc35a7d5",
+        "rev": "b3539e7c1c9bd5ba4fa5390907c229b01202806c",
         "type": "github"
       },
       "original": {

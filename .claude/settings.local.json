@@ -311,7 +311,21 @@
       "Bash(ln:*)",
       "WebFetch(domain:quickshell.org)",
       "WebFetch(domain:andrew-mccall.com)",
-      "Bash(nix path-info:*)"
+      "Bash(nix path-info:*)",
+      "Bash(dms --version:*)",
+      "Bash(nix flake archive:*)",
+      "WebFetch(domain:pi.dev)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(nix-build:*)",
+      "Bash(/nix/store/yzl3z2ayh7f72x9y8g01vyw2sz0is10x-pi-0.55.0/bin/pi:*)",
+      "Bash(/nix/store/jfg24ri617pqdim2gi7l0hs42ja8k3qf-pi-0.55.0/bin/pi:*)",
+      "Bash(nix:*)",
+      "Bash(unzip:*)",
+      "Bash(mkdir:*)",
+      "Bash(git reset:*)",
+      "Bash(strings:*)",
+      "WebFetch(domain:source.chromium.org)"
     ],
     "deny": [],
     "ask": []

@@ -1,4 +1,4 @@
-{ pkgs, userParams, ... }:
+{ broken, pkgs, userParams, ... }:
 
 let
   mcreator = pkgs.callPackage ../../pkgs/mcreator {};
@@ -85,7 +85,7 @@ EOF
         blender
 
         ## genai (requires CUDA/NVIDIA)
-        vllm
+        (broken vllm)
 
         chromium
 

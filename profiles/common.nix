@@ -1,7 +1,4 @@
-{ config, debugMode, pkgs, inputs, system, userParams, ...}:
-# let
-#   backblaze-b2 = (pkgs.runCommandLocal "backblaze-b2" { meta.broken = true; } (lib.warn "Package backblaze-b2 is currently disabled" "mkdir -p $out"));
-# in
+{ broken, config, debugMode, pkgs, inputs, system, userParams, ...}:
 {
   # --------------------------------------------------------------------------------------
   # Debug setup
@@ -353,7 +350,7 @@
     appimage-run
     at-spi2-core
     axel
-    backblaze-b2
+    (broken backblaze-b2)
     bashmount
     bc
     bfg-repo-cleaner
