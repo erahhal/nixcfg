@@ -64,12 +64,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    dms-shell = {
-      # url = "github:AvengeMedia/DankMaterialShell/11e23feb0e233147afbd5f15ea68043c4492029b";
-      url = "github:AvengeMedia/DankMaterialShell/v1.4.2";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     steam-loader = {
       url = "path:./profiles/steam-loader";
     };
@@ -178,7 +172,6 @@
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
           inputs.caelestia-shell.homeManagerModules.default
-          inputs.dms-shell.homeModules.dank-material-shell
           inputs.lan-mouse.homeManagerModules.default
           inputs.nix-colors.homeManagerModules.default
           inputs.plasma-manager.homeModules.plasma-manager
@@ -217,9 +210,8 @@
           inputs.secrets.nixosModules.nflx-erahhal-p16
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
           inputs.nur.modules.nixos.default
-          inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
-          { nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]; }
+          # { nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]; }
           # inputs.nflx-nixcfg.nixosModules.pulse-vpn
           inputs.nflx-nixcfg.nixosModules.default
           {
@@ -272,7 +264,6 @@
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
-          inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
         ];
       };
@@ -340,7 +331,6 @@
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.secrets.nixosModules.msi-linux
-          inputs.dms-shell.nixosModules.dank-material-shell
           inputs.nix-flatpak.nixosModules.nix-flatpak
           inputs.steam-loader.nixosModules.default
           {

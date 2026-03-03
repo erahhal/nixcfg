@@ -49,7 +49,7 @@
         "https://robotnix.cachix.org/"
         "https://cache.flox.dev"
         "https://attic.xuyh0120.win/lantian"
-        "https://cache.garnix.io"
+        # "https://cache.garnix.io"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -58,7 +58,7 @@
         "robotnix.cachix.org-1:+y88eX6KTvkJyernp1knbpttlaLTboVp4vq/b24BIv0="
         "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
         "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
-        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+        # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       ];
 
       download-buffer-size = 524288000;
@@ -170,8 +170,8 @@
   # Gives access to the NUR (Nix User Repository): https://github.com/nix-community/NUR
   nixpkgs.overlays = [
     # @TODO: full overlay can cause rebuilds - install as package instead?
-    inputs.comma.overlays.default
-    inputs.nur.overlays.default
+    # inputs.comma.overlays.default
+    # inputs.nur.overlays.default
     (final: prev: {
       ## Use SwayFX
       # sway-unwrapped = inputs.swayfx.packages.${prev.system}.default;

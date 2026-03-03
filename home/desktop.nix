@@ -414,7 +414,7 @@ in
         bambu-studio
         bitwarden-desktop
         brave
-        calibre
+        (broken calibre)
         czkawka
         # digikam
         discord
@@ -435,7 +435,7 @@ in
         # Not yet available in stable
         unstable.kphotoalbum
         krita
-        libreoffice
+        libreoffice-fresh
         logseq
         mpv
         rpi-imager

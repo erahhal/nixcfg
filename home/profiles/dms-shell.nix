@@ -4,27 +4,6 @@ let
     then toString osConfig.hostParams.desktop.wallpaper
     else null;
 
-  dms-command-runner = pkgs.fetchFromGitHub {
-    owner = "devnullvoid";
-    repo = "dms-command-runner";
-    rev = "f5f676fe49d2cde86054a28ed06f824319cd5193";
-    hash = "sha256-oIzhogusDzXJ7KH/Kmu3euuBCiTJ5GAH8ho24MmXARI=";
-  };
-
-  dms-easyeffects = pkgs.applyPatches {
-    src = pkgs.fetchFromGitHub {
-      owner = "jonkristian";
-      repo = "dms-easyeffects";
-      rev = "f50fdb7a110ddb90b7625bc143884fd773c3d5c7";
-      hash = "sha256-q0Xp4RzHd0HgtUZEM4hIES6SDyN8R4lPgQe5aeLMh4c=";
-    };
-    patches = [
-      ./patches/dms-easyeffects-fix-hang.patch
-    ];
-  };
-
-  dms-network-monitor = pkgs.callPackage ../../pkgs/dms-network-monitor {};
-
   nag-graphical = pkgs.callPackage ../../pkgs/nag-graphical {};
 
   useHyprlock = osConfig.hostParams.desktop.dmsLockProgram == "hyprlock";
@@ -351,52 +330,28 @@ in
 
   home.file."Wallpaper".source = ../../wallpapers;
 
-  # Add PATH and Qt theme to dms systemd service
-  systemd.user.services.dms.Service = {
-    Environment = [
-      "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
-      # Use qt6ct platform theme for icon discovery
-      # Set directly here instead of PassEnvironment to avoid stale systemd env issues
-      "QT_QPA_PLATFORMTHEME=qt6ct"
-      # EGL/Vulkan vendor discovery paths - needed for GPU operations in screen sharing
-      # These paths aren't in systemd env because they're added by shell profile after niri starts
-      "__EGL_VENDOR_LIBRARY_DIRS=/run/opengl-driver/share/glvnd/egl_vendor.d"
-    ];
+  # Add PATH, Qt theme, and PassEnvironment to dms systemd service via drop-in override.
+  # The main dms.service unit is created by the NixOS programs.dms-shell module;
+  # using a drop-in avoids replacing the full unit (which would lose ExecStart).
+  xdg.configFile."systemd/user/dms.service.d/override.conf".text = ''
+    [Service]
+    Environment=PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin
+    # Use qt6ct platform theme for icon discovery
+    Environment=QT_QPA_PLATFORMTHEME=qt6ct
+    # EGL/Vulkan vendor discovery paths - needed for GPU operations in screen sharing
+    Environment=__EGL_VENDOR_LIBRARY_DIRS=/run/opengl-driver/share/glvnd/egl_vendor.d
     # Inherit environment for icon theme discovery, loginctl integration, and app screen sharing
-    PassEnvironment = [
-      ## XDG directories
-      "HOME" "XDG_DATA_HOME" "XDG_CONFIG_HOME" "XDG_CACHE_HOME"
-      "XDG_RUNTIME_DIR"
-      "XDG_DATA_DIRS"
-      "XDG_CONFIG_DIRS"
-      # # Display/Wayland
-      "DISPLAY" "WAYLAND_DISPLAY"
-      "XDG_CURRENT_DESKTOP"
-      # Required for loginctl lock integration
-      "XDG_SESSION_ID"
-      # D-Bus session for portal communication (screen sharing, file dialogs)
-      "DBUS_SESSION_BUS_ADDRESS"
-      # Electron/Chromium Wayland native support
-      "ELECTRON_OZONE_PLATFORM_HINT" "NIXOS_OZONE_WL"
-      # Qt support
-      "QT_QPA_PLATFORM" "QT_QPA_PLATFORMTHEME" "QT_PLUGIN_PATH"
-      "QT_IM_MODULE" "QT_STYLE_OVERRIDE" "QML2_IMPORT_PATH"
-      # GTK support
-      "GTK_IM_MODULE" "GTK_PATH" "GDK_PIXBUF_MODULE_FILE" "GTK_USE_PORTAL"
-      # Compositor socket
-      "NIRI_SOCKET"
-      # Portal discovery (critical for screen sharing)
-      "NIX_XDG_DESKTOP_PORTAL_DIR"
-      # Cursor theme
-      "XCURSOR_SIZE"
-      "XCURSOR_THEME"
-      # Required for GPU libs to render PipeWire screen share streams
-      "LD_LIBRARY_PATH"
-
-      ## DON'T INCLUDE: Breaks xdg-desktop-portal-gnome
-      # "XDG_SESSION_TYPE"
-    ];
-  };
+    PassEnvironment=HOME XDG_DATA_HOME XDG_CONFIG_HOME XDG_CACHE_HOME XDG_RUNTIME_DIR XDG_DATA_DIRS XDG_CONFIG_DIRS
+    PassEnvironment=DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_ID
+    PassEnvironment=DBUS_SESSION_BUS_ADDRESS
+    PassEnvironment=ELECTRON_OZONE_PLATFORM_HINT NIXOS_OZONE_WL
+    PassEnvironment=QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME QT_PLUGIN_PATH QT_IM_MODULE QT_STYLE_OVERRIDE QML2_IMPORT_PATH
+    PassEnvironment=GTK_IM_MODULE GTK_PATH GDK_PIXBUF_MODULE_FILE GTK_USE_PORTAL
+    PassEnvironment=NIRI_SOCKET
+    PassEnvironment=NIX_XDG_DESKTOP_PORTAL_DIR
+    PassEnvironment=XCURSOR_SIZE XCURSOR_THEME
+    PassEnvironment=LD_LIBRARY_PATH
+  '';
 
   # Clear Quickshell QML bytecode cache on activation so plugin changes take effect.
   # Nix store files have epoch timestamps, so the QML engine can't detect source changes.
@@ -485,37 +440,6 @@ in
   # Default session file - merged into session.json on activation
   xdg.stateFile."DankMaterialShell/default-session.json".text =
     builtins.toJSON defaultSession;
-
-  programs.dank-material-shell = {
-    enable = true;
-    systemd = {
-      enable = true;
-      restartIfChanged = true;
-    };
-
-    # Plugins (settings are in defaultPluginSettings, synced via activation script)
-    plugins = {
-      CommandRunner = {
-        enable = true;
-        src = dms-command-runner;
-      };
-      NetworkMonitor = {
-        enable = true;
-        src = dms-network-monitor;
-      };
-      EasyEffects = {
-        enable = true;
-        src = dms-easyeffects;
-      };
-    };
-
-    # Feature toggles (all default to true)
-    enableSystemMonitoring = true;
-    enableVPN = true;
-    enableDynamicTheming = true;
-    enableAudioWavelength = true;
-    enableCalendarEvents = false; # khal 0.13.0 fails to build (sphinx bug)
-  };
 
   # Hypridle for idle management when using hyprlock instead of DMS lock
   # Handles: lock on idle, DPMS, lock before suspend, DPMS restore on resume

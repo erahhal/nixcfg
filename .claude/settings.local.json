@@ -325,7 +325,14 @@
       "Bash(mkdir:*)",
       "Bash(git reset:*)",
       "Bash(strings:*)",
-      "WebFetch(domain:source.chromium.org)"
+      "WebFetch(domain:source.chromium.org)",
+      "Bash(systemd-inhibit:*)",
+      "Bash(hyprctl clients:*)",
+      "Bash(# KEY FINDINGS: # 1. On Feb 27 02:13, a nixos-rebuild happened \\(switching from dms 1.4.2 to 1.2.3\\) # - The service file got blanked: \"\"Service has no ExecStart=, ExecStop=, or SuccessAction=. Refusing.\"\" # - Eventually at 02:23 the new DMS started # 2. DMS 1.2.3 uses quickshell 0.2.1 which says \"\"IdleMonitor not available\"\" # while DMS 1.4.2 used a version that said \"\"IdleService: Initialized with idle monitoring support\"\" # This is the root cause: the flake was bumped and DMS was DOWNGRADED from 1.4.2 to 1.2.3 # DMS 1.2.3 with quickshell 0.2.1 doesn''t have IdleMonitor support # Let''s verify by checking the uncommitted flake.lock changes echo \"\"=== Current DMS version ===\"\" nix eval --raw .#packages.x86_64-linux.dms-shell.version || true echo \"\"\"\" echo \"\"=== Check flake inputs for dms ===\"\" grep -A5 \"\"dms\"\" /home/erahhal/Code/nixcfg/flake.lock)",
+      "Bash(git -C /home/erahhal/Code/nixcfg diff flake.nix)",
+      "Bash(gh api:*)",
+      "Bash(sudo kill:*)",
+      "Bash(sudo pkill:*)"
     ],
     "deny": [],
     "ask": []

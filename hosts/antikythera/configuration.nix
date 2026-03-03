@@ -121,8 +121,8 @@
     };
   };
 
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
   # --------------------------------------------------------------------------------------
   # Device specific
