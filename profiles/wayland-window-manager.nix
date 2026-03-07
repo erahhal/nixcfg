@@ -75,9 +75,6 @@
   # Enable XDG Autostart
   services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
-  # Enables brightness and volume functions
-  # Requires user be part of "video" group
-  programs.light.enable = true;
 
   fonts.packages = with pkgs; [ terminus_font_ttf font-awesome ];
 

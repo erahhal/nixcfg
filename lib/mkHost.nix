@@ -44,12 +44,6 @@ let
     });
   };
 
-  # Erosanix specialArgs - kept for backward compat with any packages that may need them
-  erosanixArgs = {
-    copyDesktopIcons = inputs.erosanix.lib."${system}".copyDesktopIcons;
-    copyDesktopItems = inputs.erosanix.lib."${system}".copyDesktopIcons;
-    mkWindowsApp = inputs.erosanix.lib."${system}".mkWindowsApp;
-  };
 in
 inputs.nixpkgs.lib.nixosSystem {
   inherit system;
@@ -71,5 +65,5 @@ inputs.nixpkgs.lib.nixosSystem {
 
   specialArgs = {
     inherit debugMode inputs system broken recursiveMerge userParams;
-  } // erosanixArgs;
+  };
 }

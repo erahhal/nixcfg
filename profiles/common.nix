@@ -405,7 +405,7 @@
     minicom
     mokutil
     msr-tools
-    neofetch
+    fastfetch
     nethogs
     networkmanager
     nh

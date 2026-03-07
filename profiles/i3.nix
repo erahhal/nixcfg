@@ -18,7 +18,6 @@ in
 
     services.dbus.packages = with pkgs; [ dconf ];
 
-    programs.light.enable = true;
 
     fonts.packages = with pkgs; [ terminus_font_ttf font-awesome ];
 

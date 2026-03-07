@@ -440,7 +440,7 @@ in
         mpv
         rpi-imager
         shotwell
-        signal-desktop-bin
+        signal-desktop
         slack
         spotify
         subsurface

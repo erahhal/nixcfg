@@ -9,7 +9,7 @@ let
     repeat_delay = "250";
   };
   swayfont = "Iosevka Bold 18";
-  light = "${pkgs.light}/bin/light";
+  brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   # bemenu = "BEMENU_BACKEND=wayland ${pkgs.bemenu}/bin/bemenu-run -H 32 --no-overlap -p execute: -b --fn 'Terminus 18' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
   # bespokeMenu = "${pkgs.termite}/bin/termite --name=launcher -e \"${pkgs.bashInteractive}/bin/bash -c 'compgen -c | ${pkgs.gnugrep}/bin/grep -v fzf | ${pkgs.coreutils}/bin/sort -u | ${pkgs.fzf}/bin/fzf --layout=reverse | ${pkgs.findutils}/bin/xargs -r ${pkgs.sway}/bin/swaymsg -t command exec'\"";
   # wofi = "${pkgs.wofi}/bin/wofi --show run -W 400 -H 300";
@@ -223,8 +223,8 @@ in
       ];
       modifier = "Mod4";
       keybindings = {
-        "XF86MonBrightnessUp" = "exec ${light} -A 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
-        "XF86MonBrightnessDown" = "exec ${light} -U 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
+        "XF86MonBrightnessUp" = "exec ${brightnessctl} set +5% && ${brightnessctl} get -P | cut -d'.' -f1 > $SWAYSOCK.wob";
+        "XF86MonBrightnessDown" = "exec ${brightnessctl} set 5%- && ${brightnessctl} get -P | cut -d'.' -f1 > $SWAYSOCK.wob";
         "XF86AudioRaiseVolume" = "exec ${pamixer} -ui 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
         "XF86AudioLowerVolume" = "exec ${pamixer} -ud 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
         "XF86AudioMute" = "exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && echo 0 > $SWAYSOCK.wob ) || ${pamixer} --get-volume > $SWAYSOCK.wob";

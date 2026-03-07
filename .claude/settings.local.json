@@ -332,7 +332,11 @@
       "Bash(git -C /home/erahhal/Code/nixcfg diff flake.nix)",
       "Bash(gh api:*)",
       "Bash(sudo kill:*)",
-      "Bash(sudo pkill:*)"
+      "Bash(sudo pkill:*)",
+      "Read(//nix/store/**)",
+      "Read(//home/erahhal/.config/nix/**)",
+      "Bash(NIX_CONF_DIR=/tmp nix config show)",
+      "Bash(printf:*)"
     ],
     "deny": [],
     "ask": []

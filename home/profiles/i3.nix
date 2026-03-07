@@ -5,7 +5,7 @@ let
   repeat_rate = "50";
   repeat_delay = "250";
   terminal = "${pkgs.trunk.kitty}/bin/kitty";
-  light = "${pkgs.light}/bin/light";
+  brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   wofi = "${pkgs.wofi}/bin/wofi --insensitive";
   bemenu = "${pkgs.bemenu}/bin/bemenu-run -H 48 -p execute: -b --fn 'Terminus 24' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
   launcher = bemenu;
@@ -205,8 +205,8 @@ in
         # { command = "autorandr -c --match-edid"; notification = false; }
       ];
       keybindings = {
-        "XF86MonBrightnessUp" = "exec ${light} -A 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
-        "XF86MonBrightnessDown" = "exec ${light} -U 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
+        "XF86MonBrightnessUp" = "exec ${brightnessctl} set +5% && ${brightnessctl} get -P | cut -d'.' -f1 > $SWAYSOCK.wob";
+        "XF86MonBrightnessDown" = "exec ${brightnessctl} set 5%- && ${brightnessctl} get -P | cut -d'.' -f1 > $SWAYSOCK.wob";
         "XF86AudioRaiseVolume" = "exec ${pamixer} -ui 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
         "XF86AudioLowerVolume" = "exec ${pamixer} -ud 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
         "XF86AudioMute" = "exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && echo 0 > $SWAYSOCK.wob ) || ${pamixer} --get-volume > $SWAYSOCK.wob";

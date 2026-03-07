@@ -215,8 +215,8 @@ Improvments
     - https://gist.github.com/the-kenny/9511975
   * wine
     - declarative DPI to 210 instead of using `winecfg`
-      - see reg file in remarkable flake
-    - https://github.com/emmanuelrosa/erosanix
+
+
     - https://github.com/emmanuelrosa/sumatrapdf-nix
   * Get `nmtui` working without root again
     - disable wifi iwd if that doesn't help freezes?

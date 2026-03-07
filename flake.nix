@@ -53,9 +53,6 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    # Wine wrapper
-    erosanix.url = "github:emmanuelrosa/erosanix";
-    erosanix.inputs.nixpkgs.follows = "nixpkgs";
 
     flox.url = "github:flox/flox";
 
@@ -68,11 +65,6 @@
       url = "path:./profiles/steam-loader";
     };
 
-    # Remarkable 2 Tablet Desktop App WINE wrapper
-    # See the following about why relative paths can cause build issues:
-    #   https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
-    # remarkable.url = "path:flakes/remarkable";
-    # remarkable.inputs.nixpkgs.follows = "nixpkgs";
 
     # DCC
     # See the following about why relative paths can cause build issues:

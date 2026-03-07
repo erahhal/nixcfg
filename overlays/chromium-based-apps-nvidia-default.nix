@@ -142,7 +142,7 @@ let
       '';
     });
 
-    signal-desktop-bin = prev.signal-desktop-bin.overrideAttrs (oldAttrs: {
+    signal-desktop = prev.signal-desktop.overrideAttrs (oldAttrs: {
       postInstall = oldAttrs.postInstall or "" + ''
         wrapProgram $out/bin/signal-desktop \
           --add-flags "--enable-wayland-ime" \
