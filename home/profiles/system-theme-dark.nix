@@ -210,7 +210,7 @@ in
   };
 
   programs.foot.settings = {
-    colors = {
+    colors-dark = {
       flash                 = "ffffff";
       background            = "000000";
       foreground            = "e9e9e9";

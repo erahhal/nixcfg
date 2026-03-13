@@ -336,7 +336,14 @@
       "Read(//nix/store/**)",
       "Read(//home/erahhal/.config/nix/**)",
       "Bash(NIX_CONF_DIR=/tmp nix config show)",
-      "Bash(printf:*)"
+      "Bash(printf:*)",
+      "Bash(gh issue:*)",
+      "Read(//home/erahhal/.config/**)",
+      "Read(//home/erahhal/.config/caelestia/**)",
+      "Bash(quickshell --version 2>/dev/null || /nix/store/yrpmgi52pamqcjsgj2bv213ibygaqhkf-quickshell-0.2.1/bin/quickshell --version 2>/dev/null; echo \"---\"; grep -r \"quickshell\" /home/erahhal/Code/nixcfg/flake.lock 2>/dev/null | head -5)",
+      "Bash(foot --version 2>/dev/null)",
+      "Bash(for d:*)",
+      "Bash(find /nix/store -maxdepth 1 -name \"*nixpkgs*\" -type d 2>/dev/null | head -3; find /nix/store -maxdepth 1 -name \"*source*\" -type d 2>/dev/null | while read d; do test -f \"$d/pkgs/pkgs-lib/formats.nix\" && echo \"$d\"; done 2>/dev/null | head -3)"
     ],
     "deny": [],
     "ask": []

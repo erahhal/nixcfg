@@ -197,7 +197,7 @@ in
   };
 
   programs.foot.settings = lib.mkForce {
-    colors = {
+    colors-light = {
       flash                 = "000000";
       background            = "efefef";
       foreground            = "414141";

@@ -123,6 +123,9 @@ let
     bind -n C-l run-shell 'cmd="$(tmux display-message -p "#{pane_current_command}")"; title="$(tmux display-message -p "#{pane_title}")"; if echo "$cmd" | grep -iqE "(vim|nvim)"; then tmux send-keys C-l; elif echo "$title" | grep -iqE "(vim|nvim)"; then if echo "$title" | grep -q "~R"; then tmux select-pane -R; else tmux send-keys C-l; fi; else tmux select-pane -R; fi'
     # C-\ switches to last pane
     bind -n 'C-\' run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(vim|nvim)' && tmux send-keys 'C-\\') || (tmux display-message -p '#{pane_title}' | grep -iqE '(vim|nvim)' && tmux send-keys 'C-\\') || tmux select-pane -l"
+
+    set -g extended-keys on
+    set -g extended-keys-format csi-u
  '';
 
   tmuxConf = tmuxConfLocalThemed + tmuxConfEllis + theme-status;

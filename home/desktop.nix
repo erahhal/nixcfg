@@ -414,7 +414,7 @@ in
         bambu-studio
         bitwarden-desktop
         brave
-        (broken calibre)
+        calibre
         czkawka
         # digikam
         discord
@@ -505,7 +505,7 @@ in
 
         # Pipewire connection tool
         qpwgraph
-        helvum            # this one is better
+        crosspipe            # this one is better
         unstable.coppwr   # not yet in stable
 
         ## Wine
@@ -526,7 +526,7 @@ in
         sqlitebrowser
 
         # Hardware Dev
-        (broken gerbv)
+        gerbv
 
         ## unfree
         bcompare

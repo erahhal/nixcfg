@@ -31,6 +31,7 @@
       useHyprlandFlake = false;
       disableXwaylandScaling = true;
       defaultLockProgram = "hyprlock";
+      # dmsLockProgram = "hyprlock";
       autoLogin = false;
 
       ttyFontSize = 9.0;

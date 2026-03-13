@@ -26,7 +26,7 @@
         hide-when-typing = "yes";
       };
 
-      colors = {
+      colors-dark = {
         alpha = 1.0;
       };
     };

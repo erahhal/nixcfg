@@ -248,7 +248,7 @@ in
         wireplumber = {
           format = "{volume}% {icon}";
           format-muted = "";
-          on-click = "helvum";
+          on-click = "crosspipe";
           format-icons = ["" "" ""];
         };
 

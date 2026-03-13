@@ -135,6 +135,7 @@ in
 
         ## terminal apps
         joplin
+        llmfit
         pandoc
         ranger
         samtools # DNA file processing

@@ -350,7 +350,7 @@
     appimage-run
     at-spi2-core
     axel
-    (broken backblaze-b2)
+    backblaze-b2
     bashmount
     bc
     bfg-repo-cleaner
