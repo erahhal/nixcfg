@@ -44,6 +44,7 @@ in
 
       # host specific
       ../../profiles/nfs-mounts.nix
+      ../../profiles/tailscale.nix
       ../../profiles/udev.nix
       ./backup.nix
 

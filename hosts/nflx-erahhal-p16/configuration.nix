@@ -28,6 +28,7 @@
     ./disk-config-btrfs.nix
     ./hardware-configuration.nix
     ../../profiles/android.nix
+    ../../profiles/captive-portal.nix
     ../../profiles/exclusive-lan.nix
     # ../../profiles/jovian.nix
     ../../profiles/laptop-hardware.nix
@@ -37,7 +38,7 @@
     ../../profiles/homefree.nix
     ../../profiles/mullvad.nix
     # ../../profiles/ollama.nix
-    # ../../profiles/tailscale.nix
+    ../../profiles/tailscale.nix
     # ../../profiles/thinkpad-dock-udev-rules.nix
     ../../profiles/totp.nix
     ../../profiles/udev.nix
@@ -244,10 +245,16 @@
   ## Sound support
   hardware.enableAllFirmware = true;
 
-  # Enable fingerprint reading daemon.
+    # Enable the fprintd daemon
   services.fprintd.enable = false;
-  security.pam.services.login.fprintAuth = false;
-  security.pam.services.xscreensaver.fprintAuth = false;
+
+  # Enable fingerprint auth for specific PAM services
+  security.pam.services = {
+    login.fprintAuth = false;
+    sudo.fprintAuth = false;
+    polkit-1.fprintAuth = false;
+    xscreensaver.fprintAuth = false;
+  };
 
   services.smokeping = {
     enable = false;

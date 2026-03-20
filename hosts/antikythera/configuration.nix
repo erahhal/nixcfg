@@ -24,6 +24,7 @@
     ./disk-config-btrfs.nix
     ./hardware-configuration.nix
     ../../profiles/android.nix
+    ../../profiles/captive-portal.nix
     ../../profiles/exclusive-lan.nix
     # ../../profiles/jovian.nix
     ../../profiles/laptop-hardware.nix

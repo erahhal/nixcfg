@@ -11,6 +11,7 @@
   imports =
     [
       ../../profiles/common.nix
+      ../../profiles/tailscale.nix
       ../../home/user.nix
     ];
 

@@ -10,6 +10,7 @@
     };
 
     networking = {
+      tailscale.enable = true;
       networkMonitor = {
         vpnEndpoint = "https://data.netflix.net";
       };

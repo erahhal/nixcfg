@@ -1,6 +1,10 @@
 { ... }:
 {
   hostParams = {
+    networking = {
+      tailscale.enable = true;
+    };
+
     system = {
       hostName = "nflx-erahhal-x1c";
       uid = 1026;

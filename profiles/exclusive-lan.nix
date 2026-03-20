@@ -38,6 +38,10 @@ let
     if [ "$2" = "down" ]; then
         enable_disable_wifi
     fi
+
+    if [ "$2" = "connectivity-change" ]; then
+        enable_disable_wifi
+    fi
   '';
 in
 {

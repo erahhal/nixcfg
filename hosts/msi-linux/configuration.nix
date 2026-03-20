@@ -39,6 +39,7 @@
       ../../profiles/nfs-mounts.nix
       # ../../profiles/smb-mounts.nix
       ../../profiles/kdeconnect.nix
+      ../../profiles/tailscale.nix
     ];
 
   # Disable gnome-keyring since we use autologin and don't need password storage

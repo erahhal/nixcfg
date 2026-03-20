@@ -1,6 +1,10 @@
 { ... }:
 {
   hostParams = {
+    networking = {
+      tailscale.enable = true;
+    };
+
     system = {
       hostName = "antikythera";
       uid = 1026;

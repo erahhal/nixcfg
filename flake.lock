@@ -316,6 +316,27 @@
         "type": "github"
       }
     },
+    "dms-shell": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "quickshell": "quickshell_2"
+      },
+      "locked": {
+        "lastModified": 1773945854,
+        "narHash": "sha256-3frwgWo8wRkA1PuyLlwgzc+kCPRmHo9YvH+HfDm+rBI=",
+        "owner": "AvengeMedia",
+        "repo": "DankMaterialShell",
+        "rev": "1e48976ae5c6c02c4d1d80757a14d87502c0eb1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "DankMaterialShell",
+        "type": "github"
+      }
+    },
     "dream2nix": {
       "inputs": {
         "nixpkgs": [
@@ -674,11 +695,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765835352,
-        "narHash": "sha256-XswHlK/Qtjasvhd1nOa1e8MgZ8GS//jBoTqWtrS1Giw=",
+        "lastModified": 1769996383,
+        "narHash": "sha256-AnYjnFWgS49RlqX7LrC4uA+sCCDBj0Ry/WOJ5XWAsa0=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "a34fae9c08a15ad73f295041fec82323541400a9",
+        "rev": "57928607ea566b5db3ad13af0e57e921e6b12381",
         "type": "github"
       },
       "original": {
@@ -1625,11 +1646,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1773179483,
-        "narHash": "sha256-TA9MQg76tLz0hGImHolQlD27gTGmcJcJSkbDQU/Ctjs=",
+        "lastModified": 1773975308,
+        "narHash": "sha256-lp5iXjPoF8Gng5XVm0tt4xLMYYGLQAWwGeqOGyo4Dg0=",
         "ref": "main",
-        "rev": "56e197501cebb49a54c3924ece6307465bef6f27",
-        "revCount": 91,
+        "rev": "c87f80657612c7462ae6e322fe7e51d1240577d2",
+        "revCount": 98,
         "type": "git",
         "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -2162,11 +2183,11 @@
     },
     "nixpkgs_14": {
       "locked": {
-        "lastModified": 1766840161,
-        "narHash": "sha256-Ss/LHpJJsng8vz1Pe33RSGIWUOcqM1fjrehjUkdrWio=",
+        "lastModified": 1770380644,
+        "narHash": "sha256-P7dWMHRUWG5m4G+06jDyThXO7kwSk46C1kgjEWcybkE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "3edc4a30ed3903fdf6f90c837f961fa6b49582d1",
+        "rev": "ae67888ff7ef9dff69b3cf0cc0fbfbcd3a722abe",
         "type": "github"
       },
       "original": {
@@ -2459,17 +2480,14 @@
         "nixvim": "nixvim_2"
       },
       "locked": {
-        "lastModified": 1766986418,
-        "narHash": "sha256-UwyyKJw6Nx7yWSFrPR10UJegJ1E4lRcKkpMFNCaXfeY=",
-        "ref": "refs/heads/main",
-        "rev": "d96213c31597edd6035d64a40f3b9eefcb0dfc6f",
-        "revCount": 43,
-        "type": "git",
-        "url": "https://git.homefree.host/homefree/nixvim-config"
+        "lastModified": 1773976426,
+        "narHash": "sha256-UN81w96Gw3BKKYj5O6c5lZhTBLBr/GLoCaH46v0izQU=",
+        "path": "/home/erahhal/Code/nixvim-config",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "https://git.homefree.host/homefree/nixvim-config"
+        "path": "/home/erahhal/Code/nixvim-config",
+        "type": "path"
       }
     },
     "nixvim_2": {
@@ -2479,11 +2497,11 @@
         "systems": "systems_10"
       },
       "locked": {
-        "lastModified": 1766941632,
-        "narHash": "sha256-QB8XEoY5D2iRYntcKzJ5wlvgpqqQSe0P0h5CvBO/rUk=",
+        "lastModified": 1772402258,
+        "narHash": "sha256-3DmCFOdmbkFML1/G9gj8Wb+rCCZFPOQtNoMCpqOF8SA=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "ff75a5d3cc674391814c4703464ea1a3db204078",
+        "rev": "21ae25e13b01d3b4cdc750b5f9e7bad68b150c10",
         "type": "github"
       },
       "original": {
@@ -2501,11 +2519,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773179452,
-        "narHash": "sha256-PVOQ6T30dGhVoVu4fHDCTyOQyj/yjT7Pq97OVzW/Hog=",
+        "lastModified": 1773940072,
+        "narHash": "sha256-ColXaE6Whd7x/ApVmOzG2WysUZrIEmoX1TkErF377YM=",
         "owner": "erahhal",
         "repo": "nm-openconnect-pulse-sso",
-        "rev": "47cce3dc2ada9c530ad2ab90467fcd30a26b71eb",
+        "rev": "3bf0ef83f8dc0fab6e668796fa0e735c413ce18e",
         "type": "github"
       },
       "original": {
@@ -2840,6 +2858,28 @@
         "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
       }
     },
+    "quickshell_2": {
+      "inputs": {
+        "nixpkgs": [
+          "dms-shell",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1766725085,
+        "narHash": "sha256-O2aMFdDUYJazFrlwL7aSIHbUSEm3ADVZjmf41uBJfHs=",
+        "ref": "refs/heads/master",
+        "rev": "41828c4180fb921df7992a5405f5ff05d2ac2fff",
+        "revCount": 715,
+        "type": "git",
+        "url": "https://git.outfoxxed.me/quickshell/quickshell"
+      },
+      "original": {
+        "rev": "41828c4180fb921df7992a5405f5ff05d2ac2fff",
+        "type": "git",
+        "url": "https://git.outfoxxed.me/quickshell/quickshell"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -2848,6 +2888,7 @@
         "comma": "comma",
         "debug-mode": "debug-mode",
         "disko": "disko",
+        "dms-shell": "dms-shell",
         "flake-utils": "flake-utils",
         "flake-utils-plus": "flake-utils-plus",
         "flox": "flox",

@@ -35,6 +35,7 @@ in
       ./hardware-configuration.nix
       # ../../modules/rkvm.nix
       ../../profiles/android.nix
+      ../../profiles/captive-portal.nix
       ../../profiles/exclusive-lan.nix
       ../../profiles/dell-dcc.nix
       ../../profiles/laptop-hardware.nix
@@ -44,6 +45,7 @@ in
       ../../profiles/nfs-mounts.nix
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
+      ../../profiles/tailscale.nix
       ../../profiles/wireguard.nix
       ../../profiles/virtual-machines.nix
 

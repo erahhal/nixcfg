@@ -61,6 +61,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dms-shell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     steam-loader = {
       url = "path:./profiles/steam-loader";
     };
@@ -119,8 +124,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 
@@ -163,6 +168,7 @@
       # Note: nixpkgs.overlays moved to profiles/common.nix (not allowed with useGlobalPkgs)
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
+          inputs.dms-shell.homeModules.default
           inputs.caelestia-shell.homeManagerModules.default
           inputs.lan-mouse.homeManagerModules.default
           inputs.nix-colors.homeManagerModules.default
@@ -197,6 +203,8 @@
               "libsoup-2.74.3"
             ];
           }
+          inputs.dms-shell.nixosModules.default
+          inputs.dms-shell.nixosModules.greeter
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.secrets.nixosModules.nflx-erahhal-p16
@@ -219,9 +227,25 @@
               };
               genai = {
                 project-id = "erahhaldevtools";
-                context = {
-                  enable-dx-team = true;
-                };
+                skills = [
+                  # Marketplace plugin (has @, uses claude plugin install)
+
+                  ## DX Team
+                  # "dx-documentation-plugin@dx-ai-context"
+                  # "dx-ui-plugin@dx-ai-context"
+                  # "find-skills-plugin@dx-ai-context"
+                  # "initiatives-plugin@dx-ai-context"
+                  "*@dx-ai-context"
+
+                  ## NGP Skills
+                  "*@ngp-skills"
+
+                  ## AITC skill (URL, uses aitc skill add)
+                  "https://github.netflix.net/corp/prod-sci-dse-templates/blob/main/templates/skills/create-presentation/SKILL.md"
+
+                  ## Generic
+                  "frontend-design@claude-code-plugins"
+                ];
               };
               vpn.pulse = {
                 # url = "https://lax001.pcs.flxvpn.net/emp-split";
@@ -249,6 +273,8 @@
           disable-notifications = true;
         };
         modules = [
+          inputs.dms-shell.nixosModules.default
+          inputs.dms-shell.nixosModules.greeter
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.secrets.nixosModules.antikythera
@@ -320,6 +346,8 @@
       msi-linux = mkHost {
         hostName = "msi-linux";
         modules = [
+          inputs.dms-shell.nixosModules.default
+          inputs.dms-shell.nixosModules.greeter
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.secrets.nixosModules.msi-linux
