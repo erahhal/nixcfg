@@ -156,10 +156,6 @@
           config = config.nixpkgs.config;
           inherit system;
         };
-        nixpkgs-windsurf = import inputs.nixpkgs-windsurf {
-          config = config.nixpkgs.config;
-          inherit system;
-        };
         bottles = pkgs.bottles.override {
           removeWarningPopup = true;
         };

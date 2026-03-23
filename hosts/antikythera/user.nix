@@ -84,8 +84,10 @@ in
         wesnoth
 
         ## Desktop
+        chromium
         cool-retro-term
         nicotine-plus
+        qbittorrent
         telegram-desktop
         telegram-mz
         thunderbird

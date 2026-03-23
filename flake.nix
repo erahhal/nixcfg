@@ -124,8 +124,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 
@@ -278,7 +278,7 @@
           inputs.disko.nixosModules.disko
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.secrets.nixosModules.antikythera
-          inputs.jovian.nixosModules.default
+          # inputs.jovian.nixosModules.default
           # @TODO: Switch to gen5 when available
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
           inputs.nur.modules.nixos.default
@@ -299,7 +299,7 @@
         };
         modules = [
           inputs.secrets.nixosModules.upaya
-          inputs.jovian.nixosModules.default
+          # inputs.jovian.nixosModules.default
           inputs.nixos-hardware.nixosModules.dell-xps-15-9560
         ];
       };

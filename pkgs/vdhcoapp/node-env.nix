@@ -1,12 +1,12 @@
 # This file originates from node2nix
 
-{lib, stdenv, nodejs, python2, pkgs, libtool, runCommand, writeTextFile, writeShellScript}:
+{lib, stdenv, nodejs, python3, pkgs, libtool, runCommand, writeTextFile, writeShellScript}:
 
 let
   # Workaround to cope with util-linux in Nixpkgs 20.09 and util-linux in Nixpkgs master
   util-linux = if pkgs ? util-linux then pkgs.util-linux else pkgs.util-linux;
 
-  python = if nodejs ? python then nodejs.python else python2;
+  python = if nodejs ? python then nodejs.python else python3;
 
   # Create a tar wrapper that filters all the 'Ignoring unknown extended header keyword' noise
   tarWrapper = runCommand "tarWrapper" {} ''

@@ -12,6 +12,7 @@ let
 in
 {
   imports = [
+    ../profiles/vdhcoapp.nix
     ../profiles/vlc-wayland.nix
     # ../profiles/ubports-installer-appimage.nix
     ../overlays/igv-scaled.nix

@@ -25,6 +25,7 @@
         lutris
         postgresql
         # nodejs-16_x
+        qbittorrent
         transmission_4-gtk
 
         # AI

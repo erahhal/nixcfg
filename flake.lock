@@ -1646,11 +1646,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1773975308,
-        "narHash": "sha256-lp5iXjPoF8Gng5XVm0tt4xLMYYGLQAWwGeqOGyo4Dg0=",
+        "lastModified": 1774240676,
+        "narHash": "sha256-OBlzwUqOUrOokoJAX4rqbKZ1CiLC4tZayxw2uRMQtJc=",
         "ref": "main",
-        "rev": "c87f80657612c7462ae6e322fe7e51d1240577d2",
-        "revCount": 98,
+        "rev": "dbd0e121f1764f22a2d985bc966c5855d2e8b74e",
+        "revCount": 100,
         "type": "git",
         "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -2480,14 +2480,17 @@
         "nixvim": "nixvim_2"
       },
       "locked": {
-        "lastModified": 1773976426,
-        "narHash": "sha256-UN81w96Gw3BKKYj5O6c5lZhTBLBr/GLoCaH46v0izQU=",
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "lastModified": 1774214884,
+        "narHash": "sha256-0gUTF4f7PcPIgLoPMsQpgDsrgLGEHIBFtmRh1ChChE0=",
+        "ref": "refs/heads/main",
+        "rev": "ef9ff9311149356f34f32d9b7da4472666200f20",
+        "revCount": 45,
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       },
       "original": {
-        "path": "/home/erahhal/Code/nixvim-config",
-        "type": "path"
+        "type": "git",
+        "url": "https://git.homefree.host/homefree/nixvim-config"
       }
     },
     "nixvim_2": {
@@ -2519,11 +2522,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773940072,
-        "narHash": "sha256-ColXaE6Whd7x/ApVmOzG2WysUZrIEmoX1TkErF377YM=",
+        "lastModified": 1774219109,
+        "narHash": "sha256-Sre62GmKAWfcron2dXSw+MQVNnsDpoBDWlRXAEZ8FT0=",
         "owner": "erahhal",
         "repo": "nm-openconnect-pulse-sso",
-        "rev": "3bf0ef83f8dc0fab6e668796fa0e735c413ce18e",
+        "rev": "c21e0e2c8c0acc0c8d8bb3a4bccd392ece76f556",
         "type": "github"
       },
       "original": {
