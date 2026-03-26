@@ -208,7 +208,7 @@ FocusScope {
                     RadioButton {
                         id: httpRadio
                         text: "HTTP Request"
-                        checked: loadSettings("checkMethod", "http") === "http"
+                        checked: loadSettings("checkMethod", "ping") === "http"
                         onCheckedChanged: {
                             if (checked) saveSettings("checkMethod", "http")
                         }
@@ -225,7 +225,7 @@ FocusScope {
                     RadioButton {
                         id: pingRadio
                         text: "Ping"
-                        checked: loadSettings("checkMethod", "http") === "ping"
+                        checked: loadSettings("checkMethod", "ping") === "ping"
                         onCheckedChanged: {
                             if (checked) saveSettings("checkMethod", "ping")
                         }

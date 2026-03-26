@@ -27,8 +27,8 @@ let
     networkMonitor = {
       enabled = true;
       checkInterval = 5;
-      checkMethod = osConfig.hostParams.networking.networkMonitor.checkMethod;
-      normalEndpoint = osConfig.hostParams.networking.networkMonitor.normalEndpoint;
+      checkMethod = osConfig.hostParams.networking.networkMonitor.normalEndpoint.method;
+      normalEndpoint = osConfig.hostParams.networking.networkMonitor.normalEndpoint.endpoint;
       vpnEndpoints = osConfig.hostParams.networking.networkMonitor.vpnEndpoints;
       vpnInterfaces = ["tailscale0" "wg0" "tun0"];
     };

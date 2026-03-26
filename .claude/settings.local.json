@@ -368,7 +368,11 @@
       "WebFetch(domain:pacsafe.co.uk)",
       "WebFetch(domain:pacsafe.eu)",
       "WebFetch(domain:www.bhphotovideo.com)",
-      "WebFetch(domain:www.kensington.com)"
+      "WebFetch(domain:www.kensington.com)",
+      "Bash(ip addr:*)",
+      "Bash(tailscale netcheck:*)",
+      "Bash(ip -s link show wlan0)",
+      "Bash(tc -s qdisc show dev wlan0)"
     ],
     "deny": [],
     "ask": []

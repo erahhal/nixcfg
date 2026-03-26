@@ -46,7 +46,7 @@ in
       ../../profiles/udev.nix
       ../../profiles/waydroid.nix
       ../../profiles/tailscale.nix
-      ../../profiles/wireguard.nix
+      # ../../profiles/wireguard.nix
       ../../profiles/virtual-machines.nix
 
       # user specific

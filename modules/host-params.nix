@@ -48,16 +48,21 @@
       };
 
       networkMonitor = {
-        checkMethod = lib.mkOption {
-          type = lib.types.enum [
-            "http"
-            "ping"
-          ];
-          default = "http";
-        };
         normalEndpoint = lib.mkOption {
-          type = lib.types.str;
-          default = "https://github.com";
+          type = lib.types.submodule {
+            options = {
+              endpoint = lib.mkOption {
+                type = lib.types.str;
+                default = "https://github.com";
+              };
+              method = lib.mkOption {
+                type = lib.types.enum [ "http" "ping" ];
+                default = "ping";
+              };
+            };
+          };
+          default = {};
+          description = "Default (non-VPN) connectivity check endpoint and method.";
         };
         vpnEndpoints = lib.mkOption {
           type = lib.types.attrsOf (lib.types.submodule {

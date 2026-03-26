@@ -38,7 +38,7 @@
     ../../profiles/totp.nix
     ../../profiles/udev.nix
     ../../profiles/waydroid.nix
-    ../../profiles/wireguard.nix
+    # ../../profiles/wireguard.nix
     ../../profiles/kdeconnect.nix
     ## Only needed if the docker version needs to be overridden for some reason
     # ../../overlays/docker.nix

@@ -20,6 +20,9 @@ PluginComponent {
     // Per-VPN history: { "tun0": [{timestamp, active, online, pingMs, hasEndpoint}, ...], ... }
     property var vpnHistories: ({})
     property int maxHistory: 60
+    // Internet history
+    property var internetHistory: []
+    property real internetPingMs: -1
 
     // Aggregate VPN state (updated by updateAggregateStatus)
     property bool hasAnyVpn: false
@@ -28,7 +31,7 @@ PluginComponent {
     // Settings from pluginData
     readonly property bool enabled: pluginData.enabled ?? true
     readonly property int checkInterval: pluginData.checkInterval ?? 30
-    readonly property string checkMethod: pluginData.checkMethod ?? "http"
+    readonly property string checkMethod: pluginData.checkMethod ?? "ping"
     readonly property string normalEndpoint: pluginData.normalEndpoint ?? "https://github.com"
     readonly property var vpnEndpoints: pluginData.vpnEndpoints ?? {}
     readonly property var vpnInterfaces: pluginData.vpnInterfaces ?? ["tailscale0", "wg0", "tun0"]
@@ -48,6 +51,8 @@ PluginComponent {
 
                 if (key === "internet") {
                     root.isOnline = (parts[1] === "online")
+                    var inetPing = parts.length > 2 ? parseFloat(parts[2]) : -1
+                    root.internetPingMs = isNaN(inetPing) ? -1 : inetPing
                     return
                 }
 
@@ -109,9 +114,11 @@ PluginComponent {
         var normalHost = normalEndpoint.replace(/^https?:\/\//, "").split("/")[0]
         var internetCmd
         if (checkMethod === "ping") {
-            internetCmd = "ping -c 1 -W 2 '" + normalHost + "' >/dev/null 2>&1 && echo 'internet:online' || echo 'internet:offline'"
+            internetCmd = "MS=$(ping -c 1 -W 2 '" + normalHost + "' 2>/dev/null | grep -oP 'time=\\K[\\d.]+'); "
+                        + "if [ -n \"$MS\" ]; then echo \"internet:online:$MS\"; "
+                        + "else echo 'internet:offline:-1'; fi"
         } else {
-            internetCmd = "wget -q --timeout=2 --tries=1 --spider '" + normalEndpoint + "' 2>/dev/null && echo 'internet:online' || echo 'internet:offline'"
+            internetCmd = "wget -q --timeout=2 --tries=1 --spider '" + normalEndpoint + "' 2>/dev/null && echo 'internet:online:-1' || echo 'internet:offline:-1'"
         }
         parts.push("( " + internetCmd + " )")
 
@@ -177,6 +184,18 @@ PluginComponent {
 
     // Append one history entry per VPN interface after each check cycle
     function recordAllHistory() {
+        // Internet history
+        var inetArr = (internetHistory || []).slice()
+        inetArr.push({
+            timestamp: Date.now(),
+            active: true,
+            online: isOnline,
+            pingMs: internetPingMs,
+            hasEndpoint: true
+        })
+        if (inetArr.length > maxHistory) inetArr.shift()
+        internetHistory = inetArr
+
         var newHistories = Object.assign({}, vpnHistories)
         var ifaces = vpnInterfaces || []
         for (var i = 0; i < ifaces.length; i++) {
@@ -374,6 +393,47 @@ PluginComponent {
                             font.weight: Font.Medium
                             color: root.isOnline ? Theme.surfaceText : Theme.error
                         }
+
+                        Row {
+                            spacing: Theme.spacingXS
+
+                            StyledText {
+                                visible: root.isOnline
+                                text: root.checkMethod.toUpperCase() + " · " + root.normalEndpoint
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+
+                            StyledText {
+                                visible: root.isOnline && root.internetPingMs >= 0
+                                text: "· " + root.internetPingMs.toFixed(1) + " ms"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+                }
+
+                // Internet history chart
+                Column {
+                    width: parent.width
+                    spacing: 4
+
+                    StyledText {
+                        text: "History (" + root.internetHistory.length + ")"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                    }
+
+                    Canvas {
+                        width: parent.width
+                        height: 56
+                        property var histRef: root.internetHistory
+                        onHistRefChanged: requestPaint()
+                        onPaint: {
+                            var ctx = getContext("2d")
+                            root.paintVpnChart(ctx, width, height, root.internetHistory)
+                        }
                     }
                 }
 
@@ -426,6 +486,7 @@ PluginComponent {
                     model: root.vpnInterfaces
 
                     delegate: Column {
+                        visible: isActive
                         width: parent.width
                         spacing: Theme.spacingS
 
@@ -468,7 +529,7 @@ PluginComponent {
                             }
 
                             StyledText {
-                                text: isActive ? " · Active" : " · Inactive"
+                                text: isActive ? " · Active" : " · Not Available"
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: isActive ? Theme.primary : Theme.surfaceVariantText
                                 anchors.verticalCenter: parent.verticalCenter
