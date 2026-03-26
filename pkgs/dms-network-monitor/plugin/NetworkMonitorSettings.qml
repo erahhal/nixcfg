@@ -11,6 +11,9 @@ FocusScope {
     implicitHeight: settingsColumn.implicitHeight
     height: implicitHeight
 
+    // Live copy of vpnEndpoints map, kept in sync with saves
+    property var vpnEndpointsData: ({})
+
     function saveSettings(key, value) {
         if (pluginService) {
             pluginService.savePluginData("networkMonitor", key, value)
@@ -23,6 +26,20 @@ FocusScope {
         }
         return defaultValue
     }
+
+    function loadVpnEndpoints() {
+        vpnEndpointsData = loadSettings("vpnEndpoints", {})
+    }
+
+    function saveVpnEndpoint(iface, endpoint, method) {
+        var updated = Object.assign({}, vpnEndpointsData)
+        updated[iface] = { endpoint: endpoint, method: method }
+        vpnEndpointsData = updated
+        saveSettings("vpnEndpoints", updated)
+    }
+
+    onPluginServiceChanged: if (pluginService) loadVpnEndpoints()
+    Component.onCompleted: loadVpnEndpoints()
 
     Column {
         id: settingsColumn
@@ -231,97 +248,116 @@ FocusScope {
             color: Theme.outlineVariant
         }
 
-        // VPN Endpoint Section
+        // Per-VPN Endpoint Section
         Column {
-            spacing: 12
+            spacing: 4
             width: parent.width - 32
 
             StyledText {
-                text: "VPN Endpoint (optional)"
+                text: "VPN Endpoints"
                 font.pixelSize: Theme.fontSizeLarge
                 font.weight: Font.Medium
                 color: Theme.surfaceText
             }
 
             StyledText {
-                text: "Used when VPN is detected. Leave empty to use default endpoint."
+                text: "Configure a test endpoint for each VPN interface. Leave empty to use the default endpoint."
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.surfaceVariantText
                 wrapMode: Text.WordWrap
                 width: parent.width
             }
+        }
 
-            Column {
-                spacing: 4
-                width: parent.width
-
-                StyledText {
-                    text: "URL/Host"
-                    font.pixelSize: Theme.fontSizeMedium
-                    color: Theme.surfaceText
-                }
-
-                DankTextField {
-                    id: vpnEndpointField
-                    width: parent.width
-                    height: 40
-                    text: loadSettings("vpnEndpoint", "")
-                    placeholderText: "https://internal.example.com"
-                    backgroundColor: Theme.surfaceContainer
-                    textColor: Theme.surfaceText
-
-                    onTextEdited: {
-                        saveSettings("vpnEndpoint", text)
-                    }
-                }
+        Repeater {
+            model: {
+                var interfaces = loadSettings("vpnInterfaces", ["tailscale0", "wg0", "tun0"])
+                return Array.isArray(interfaces) ? interfaces : interfaces.split(",").map(function(s) { return s.trim() })
             }
 
-            Column {
-                spacing: 4
+            delegate: Column {
+                spacing: 8
                 width: parent.width
 
+                property string ifaceName: modelData
+                property var ifaceConfig: root.vpnEndpointsData[ifaceName] || {}
+
                 StyledText {
-                    text: "Check Method"
+                    text: ifaceName
                     font.pixelSize: Theme.fontSizeMedium
+                    font.weight: Font.Medium
                     color: Theme.surfaceText
+                }
+
+                Column {
+                    spacing: 4
+                    width: parent.width
+
+                    StyledText {
+                        text: "URL/Host (optional)"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
+                    }
+
+                    DankTextField {
+                        id: ifaceEndpointField
+                        width: parent.width
+                        height: 40
+                        text: ifaceConfig.endpoint || ""
+                        placeholderText: "Leave empty to use default endpoint"
+                        backgroundColor: Theme.surfaceContainer
+                        textColor: Theme.surfaceText
+
+                        onTextEdited: {
+                            var method = ifaceMethodPing.checked ? "ping" : "http"
+                            root.saveVpnEndpoint(ifaceName, text, method)
+                        }
+                    }
                 }
 
                 Row {
                     spacing: 16
 
                     RadioButton {
-                        id: vpnHttpRadio
-                        text: "HTTP Request"
-                        checked: loadSettings("vpnCheckMethod", "http") === "http"
+                        id: ifaceMethodHttp
+                        text: "HTTP"
+                        checked: (ifaceConfig.method || "http") === "http"
                         onCheckedChanged: {
-                            if (checked) saveSettings("vpnCheckMethod", "http")
+                            if (checked) root.saveVpnEndpoint(ifaceName, ifaceEndpointField.text, "http")
                         }
 
                         contentItem: StyledText {
-                            text: vpnHttpRadio.text
+                            text: ifaceMethodHttp.text
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.surfaceText
-                            leftPadding: vpnHttpRadio.indicator.width + 8
+                            leftPadding: ifaceMethodHttp.indicator.width + 8
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
 
                     RadioButton {
-                        id: vpnPingRadio
+                        id: ifaceMethodPing
                         text: "Ping"
-                        checked: loadSettings("vpnCheckMethod", "http") === "ping"
+                        checked: (ifaceConfig.method || "http") === "ping"
                         onCheckedChanged: {
-                            if (checked) saveSettings("vpnCheckMethod", "ping")
+                            if (checked) root.saveVpnEndpoint(ifaceName, ifaceEndpointField.text, "ping")
                         }
 
                         contentItem: StyledText {
-                            text: vpnPingRadio.text
+                            text: ifaceMethodPing.text
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.surfaceText
-                            leftPadding: vpnPingRadio.indicator.width + 8
+                            leftPadding: ifaceMethodPing.indicator.width + 8
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
+                }
+
+                StyledRect {
+                    width: parent.width
+                    height: 1
+                    color: Theme.outlineVariant
+                    opacity: 0.5
                 }
             }
         }

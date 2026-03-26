@@ -59,16 +59,21 @@
           type = lib.types.str;
           default = "https://github.com";
         };
-        vpnCheckMethod = lib.mkOption {
-          type = lib.types.enum [
-            "http"
-            "ping"
-          ];
-          default = "http";
-        };
-        vpnEndpoint = lib.mkOption {
-          type = lib.types.str;
-          default = "";
+        vpnEndpoints = lib.mkOption {
+          type = lib.types.attrsOf (lib.types.submodule {
+            options = {
+              endpoint = lib.mkOption {
+                type = lib.types.str;
+                default = "";
+              };
+              method = lib.mkOption {
+                type = lib.types.enum [ "http" "ping" ];
+                default = "http";
+              };
+            };
+          });
+          default = {};
+          description = "Per-VPN-interface endpoint config. Key = interface name (tailscale0, wg0, tun0, …).";
         };
       };
 

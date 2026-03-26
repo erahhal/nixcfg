@@ -11,49 +11,67 @@ PluginComponent {
 
     // Status properties
     property bool isOnline: false
-    property bool hasVpn: false
     property string statusText: "Checking..."
-    property string lastCheckEndpoint: ""
     property bool isChecking: false
     property string currentIp: "..."
-    property string vpnInterfaceName: ""
+
+    // Per-VPN status map: { "tun0": {active, online, pingMs, hasEndpoint}, ... }
+    property var vpnStatus: ({})
+    // Per-VPN history: { "tun0": [{timestamp, active, online, pingMs, hasEndpoint}, ...], ... }
+    property var vpnHistories: ({})
+    property int maxHistory: 60
+
+    // Aggregate VPN state (updated by updateAggregateStatus)
+    property bool hasAnyVpn: false
+    property bool vpnProblem: false   // any active VPN with endpoint is offline
 
     // Settings from pluginData
     readonly property bool enabled: pluginData.enabled ?? true
     readonly property int checkInterval: pluginData.checkInterval ?? 30
     readonly property string checkMethod: pluginData.checkMethod ?? "http"
-    readonly property string vpnCheckMethod: pluginData.vpnCheckMethod ?? "http"
     readonly property string normalEndpoint: pluginData.normalEndpoint ?? "https://github.com"
-    readonly property string vpnEndpoint: pluginData.vpnEndpoint ?? ""
+    readonly property var vpnEndpoints: pluginData.vpnEndpoints ?? {}
     readonly property var vpnInterfaces: pluginData.vpnInterfaces ?? ["tailscale0", "wg0", "tun0"]
 
-    // VPN interface detection process
+    // Single comprehensive check process — runs all checks in parallel subshells
     Process {
-        id: vpnCheckProcess
-        command: ["sh", "-c", root.buildVpnCheckCommand()]
+        id: allChecksProcess
         stdout: SplitParser {
             onRead: data => {
-                var iface = data.trim()
-                root.hasVpn = iface !== ""
-                root.vpnInterfaceName = iface
+                var line = data.trim()
+                if (!line) return
+
+                var parts = line.split(":")
+                if (parts.length < 2) return
+
+                var key = parts[0]
+
+                if (key === "internet") {
+                    root.isOnline = (parts[1] === "online")
+                    return
+                }
+
+                // Per-VPN line: iface:active:online:pingMs  or  iface:active:skip  or  iface:inactive
+                var active = (parts[1] === "active")
+                var status = parts.length > 2 ? parts[2] : ""
+                var online = (status === "online")
+                var pingMs = parts.length > 3 ? parseFloat(parts[3]) : -1
+                var hasEndpoint = !!(root.vpnEndpoints[key] && root.vpnEndpoints[key].endpoint)
+
+                var updated = Object.assign({}, root.vpnStatus)
+                updated[key] = {
+                    active: active,
+                    online: online,
+                    pingMs: isNaN(pingMs) ? -1 : pingMs,
+                    hasEndpoint: hasEndpoint
+                }
+                root.vpnStatus = updated
             }
         }
         onExited: (exitCode, exitStatus) => {
-            // VPN check complete, now check connectivity
-            root.hasVpn = exitCode === 0
-            connectivityCheck.command = root.buildConnectivityCommand()
-            connectivityCheck.running = true
-        }
-    }
-
-    // Connectivity check process
-    Process {
-        id: connectivityCheck
-        onExited: (exitCode, exitStatus) => {
-            root.isOnline = (exitCode === 0)
             root.isChecking = false
-            root.updateStatusText()
-            // Fetch IP after connectivity check
+            root.updateAggregateStatus()
+            root.recordAllHistory()
             ipFetchProcess.running = true
         }
     }
@@ -65,15 +83,11 @@ PluginComponent {
         stdout: SplitParser {
             onRead: data => {
                 var ip = data.trim()
-                if (ip !== "") {
-                    root.currentIp = ip
-                }
+                if (ip !== "") root.currentIp = ip
             }
         }
         onExited: (exitCode, exitStatus) => {
-            if (exitCode !== 0 || root.currentIp === "...") {
-                root.currentIp = "N/A"
-            }
+            if (exitCode !== 0 || root.currentIp === "...") root.currentIp = "N/A"
         }
     }
 
@@ -87,68 +101,176 @@ PluginComponent {
         onTriggered: root.performCheck()
     }
 
-    // Build command to check for VPN interfaces
-    function buildVpnCheckCommand() {
-        if (!vpnInterfaces || vpnInterfaces.length === 0) {
-            return "false"
-        }
+    // Build one comprehensive parallel shell script for all checks
+    function buildAllChecksCommand() {
+        var parts = []
 
-        // Build command that checks Tailscale status first, then falls back to interface check
-        var script = ""
-
-        // Check Tailscale if tailscale0 is in the interface list
-        if (vpnInterfaces.indexOf("tailscale0") !== -1) {
-            // Use tailscale status for connection check, then find actual interface name (tailscale0, tailscale0Link, etc.)
-            // Use grep -m 1 instead of head -1 to preserve exit code
-            script += "if tailscale status >/dev/null 2>&1; then for f in /sys/class/net/*; do basename \"$f\"; done | grep -E -m 1 '^tailscale0'; exit 0; fi; "
-        }
-
-        // For other interfaces, check if they exist in /sys/class/net (prefix match)
-        var otherInterfaces = vpnInterfaces.filter(function(iface) {
-            return iface !== "tailscale0"
-        })
-
-        if (otherInterfaces.length > 0) {
-            // Use prefix matching: wg0 matches wg0, wg0-mullvad, wg0-mullvadLink, etc.
-            // Use grep -m 1 instead of head -1 to preserve exit code
-            var interfaces = otherInterfaces.join("|")
-            script += "for f in /sys/class/net/*; do basename \"$f\"; done | grep -E -m 1 '^(" + interfaces + ")'"
-        } else if (script === "") {
-            return "false"
-        }
-
-        return script
-    }
-
-    // Build connectivity check command based on settings
-    function buildConnectivityCommand() {
-        var endpoint = (hasVpn && vpnEndpoint) ? vpnEndpoint : normalEndpoint
-        var method = (hasVpn && vpnEndpoint) ? vpnCheckMethod : checkMethod
-        lastCheckEndpoint = endpoint
-
-        if (method === "ping") {
-            // Extract hostname from URL for ping
-            var host = endpoint.replace(/^https?:\/\//, "").split("/")[0]
-            return ["ping", "-c", "1", "-W", "2", host]
+        // Internet connectivity check
+        var normalHost = normalEndpoint.replace(/^https?:\/\//, "").split("/")[0]
+        var internetCmd
+        if (checkMethod === "ping") {
+            internetCmd = "ping -c 1 -W 2 '" + normalHost + "' >/dev/null 2>&1 && echo 'internet:online' || echo 'internet:offline'"
         } else {
-            // HTTP check using wget
-            return ["wget", "-q", "--timeout=2", "--tries=1", "--spider", endpoint]
+            internetCmd = "wget -q --timeout=2 --tries=1 --spider '" + normalEndpoint + "' 2>/dev/null && echo 'internet:online' || echo 'internet:offline'"
         }
+        parts.push("( " + internetCmd + " )")
+
+        // Per-VPN interface checks
+        var ifaces = vpnInterfaces || []
+        for (var i = 0; i < ifaces.length; i++) {
+            var iface = ifaces[i]
+            var vpnConfig = vpnEndpoints[iface] || {}
+            var endpoint = vpnConfig.endpoint || ""
+            var method = vpnConfig.method || "http"
+
+            // Connectivity test command (used when interface is active)
+            var connectCmd
+            if (endpoint) {
+                if (method === "ping") {
+                    var host = endpoint.replace(/^https?:\/\//, "").split("/")[0]
+                    connectCmd = "MS=$(ping -c 1 -W 2 '" + host + "' 2>/dev/null | grep -oP 'time=\\K[\\d.]+'); "
+                               + "if [ -n \"$MS\" ]; then echo \"" + iface + ":active:online:$MS\"; "
+                               + "else echo '" + iface + ":active:offline:-1'; fi"
+                } else {
+                    connectCmd = "wget -q --timeout=2 --tries=1 --spider '" + endpoint + "' 2>/dev/null"
+                               + " && echo '" + iface + ":active:online:-1'"
+                               + " || echo '" + iface + ":active:offline:-1'"
+                }
+            } else {
+                connectCmd = "echo '" + iface + ":active:skip'"
+            }
+
+            // Interface active detection + connectivity check
+            var subshell
+            if (iface === "tailscale0") {
+                subshell = "if tailscale status >/dev/null 2>&1; then "
+                         + "TSIF=$(ls /sys/class/net/ 2>/dev/null | grep -E '^tailscale0' | head -1); "
+                         + "if [ -n \"$TSIF\" ]; then " + connectCmd + "; "
+                         + "else echo 'tailscale0:inactive'; fi; "
+                         + "else echo 'tailscale0:inactive'; fi"
+            } else {
+                subshell = "NIF=$(ls /sys/class/net/ 2>/dev/null | grep -E '^" + iface + "' | head -1); "
+                         + "if [ -n \"$NIF\" ]; then " + connectCmd + "; "
+                         + "else echo '" + iface + ":inactive'; fi"
+            }
+            parts.push("( " + subshell + " )")
+        }
+
+        return ["sh", "-c", parts.join(" & ") + "; wait"]
     }
 
-    // Perform connectivity check
+    // Recompute aggregate VPN state after a check cycle
+    function updateAggregateStatus() {
+        var anyActive = false
+        var problem = false
+        var ifaces = vpnInterfaces || []
+        for (var i = 0; i < ifaces.length; i++) {
+            var s = vpnStatus[ifaces[i]]
+            if (!s) continue
+            if (s.active) anyActive = true
+            if (s.active && s.hasEndpoint && !s.online) problem = true
+        }
+        hasAnyVpn = anyActive
+        vpnProblem = problem
+        statusText = isOnline ? ("Online" + (hasAnyVpn ? " (VPN)" : "")) : "Offline"
+    }
+
+    // Append one history entry per VPN interface after each check cycle
+    function recordAllHistory() {
+        var newHistories = Object.assign({}, vpnHistories)
+        var ifaces = vpnInterfaces || []
+        for (var i = 0; i < ifaces.length; i++) {
+            var iface = ifaces[i]
+            var s = vpnStatus[iface] || { active: false, online: false, pingMs: -1, hasEndpoint: false }
+            var arr = (newHistories[iface] || []).slice()
+            arr.push({
+                timestamp: Date.now(),
+                active: s.active,
+                online: s.online,
+                pingMs: s.pingMs,
+                hasEndpoint: s.hasEndpoint
+            })
+            if (arr.length > maxHistory) arr.shift()
+            newHistories[iface] = arr
+        }
+        vpnHistories = newHistories
+    }
+
+    // Kick off a full check cycle
     function performCheck() {
         if (isChecking || !enabled) return
         isChecking = true
-        vpnCheckProcess.running = true
+        allChecksProcess.command = buildAllChecksCommand()
+        allChecksProcess.running = true
     }
 
-    // Update status text based on current state
-    function updateStatusText() {
-        if (isOnline) {
-            statusText = "Online" + (hasVpn ? " (VPN)" : "")
-        } else {
-            statusText = "Offline"
+    // Shared canvas paint logic — draws a bar chart for one VPN's history array
+    function paintVpnChart(ctx, w, h, data) {
+        ctx.clearRect(0, 0, w, h)
+        ctx.fillStyle = Theme.surfaceContainer
+        ctx.fillRect(0, 0, w, h)
+
+        if (!data || data.length === 0) {
+            ctx.fillStyle = Theme.surfaceVariantText
+            ctx.font = "11px sans-serif"
+            ctx.textAlign = "center"
+            ctx.fillText("No data yet", w / 2, h / 2 + 4)
+            return
+        }
+
+        // Compute max ping for scaling
+        var hasPing = data.some(function(e) { return e.pingMs >= 0 && e.online })
+        var maxPing = 500
+        if (hasPing) {
+            maxPing = 0
+            data.forEach(function(e) { if (e.pingMs > maxPing) maxPing = e.pingMs })
+            maxPing = Math.max(maxPing, 50)
+            maxPing = Math.ceil(maxPing * 1.2)
+        }
+
+        var barW = w / maxHistory
+        var startX = (maxHistory - data.length) * barW
+
+        for (var i = 0; i < data.length; i++) {
+            var e = data[i]
+            var x = startX + i * barW
+            var barH, barY
+
+            if (!e.active) {
+                // Interface was inactive — dim grey tick
+                ctx.fillStyle = Theme.outlineVariant || "#555"
+                ctx.fillRect(x, h - 3, barW - 1, 3)
+            } else if (!e.hasEndpoint) {
+                // Active but no endpoint configured — medium grey full bar
+                ctx.fillStyle = Theme.outline || "#777"
+                ctx.fillRect(x, 0, barW - 1, h)
+            } else if (!e.online) {
+                // Active + endpoint checked + offline — red
+                ctx.fillStyle = Theme.error
+                ctx.fillRect(x, 0, barW - 1, h)
+            } else if (hasPing && e.pingMs >= 0) {
+                // Online with ping latency — green bar height ∝ latency
+                var ratio = Math.min(e.pingMs / maxPing, 1.0)
+                barH = Math.max(2, Math.round(h * ratio))
+                barY = h - barH
+                ctx.fillStyle = "#4caf50"
+                ctx.fillRect(x, barY, barW - 1, barH)
+            } else {
+                // Online HTTP — full green bar
+                ctx.fillStyle = "#4caf50"
+                ctx.fillRect(x, 0, barW - 1, h)
+            }
+        }
+
+        // Scale overlay — drawn last so it sits above bars
+        ctx.font = "10px sans-serif"
+        ctx.textAlign = "left"
+        if (hasPing) {
+            ctx.fillStyle = Theme.surfaceVariantText
+            ctx.fillText(maxPing + " ms", 3, 11)
+        } else if (data.some(function(e) { return e.active && e.online })) {
+            ctx.fillStyle = Theme.surfaceVariantText
+            ctx.fillText("HTTP", 3, 11)
         }
     }
 
@@ -157,12 +279,30 @@ PluginComponent {
         Row {
             spacing: Theme.spacingXS
 
-            // Network status icon - single icon showing connectivity and VPN status
-            DankIcon {
-                name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
-                size: root.iconSize
-                color: root.isOnline ? Theme.surfaceText : Theme.error
+            Item {
+                width: root.iconSize
+                height: root.iconSize
                 anchors.verticalCenter: parent.verticalCenter
+
+                DankIcon {
+                    anchors.centerIn: parent
+                    name: root.hasAnyVpn ? "security" : (root.isOnline ? "public" : "public_off")
+                    size: root.iconSize
+                    color: {
+                        if (!root.hasAnyVpn) return root.isOnline ? Theme.surfaceText : Theme.error
+                        return root.vpnProblem ? "#f0b030" : Theme.surfaceText
+                    }
+                }
+
+                StyledText {
+                    visible: root.hasAnyVpn && root.vpnProblem
+                    text: "!"
+                    font.pixelSize: Math.max(7, Math.round(root.iconSize * 0.4))
+                    font.weight: Font.Bold
+                    color: "#f0b030"
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                }
             }
         }
     }
@@ -172,17 +312,35 @@ PluginComponent {
         Column {
             spacing: Theme.spacingXS
 
-            // Network status icon - single icon showing connectivity and VPN status
-            DankIcon {
-                name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
-                size: root.iconSize
-                color: root.isOnline ? Theme.surfaceText : Theme.error
+            Item {
+                width: root.iconSize
+                height: root.iconSize
                 anchors.horizontalCenter: parent.horizontalCenter
+
+                DankIcon {
+                    anchors.centerIn: parent
+                    name: root.hasAnyVpn ? "security" : (root.isOnline ? "public" : "public_off")
+                    size: root.iconSize
+                    color: {
+                        if (!root.hasAnyVpn) return root.isOnline ? Theme.surfaceText : Theme.error
+                        return root.vpnProblem ? "#f0b030" : Theme.surfaceText
+                    }
+                }
+
+                StyledText {
+                    visible: root.hasAnyVpn && root.vpnProblem
+                    text: "!"
+                    font.pixelSize: Math.max(7, Math.round(root.iconSize * 0.4))
+                    font.weight: Font.Bold
+                    color: "#f0b030"
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                }
             }
         }
     }
 
-    // Popout content with more details
+    // Popout content
     popoutContent: Component {
         PopoutComponent {
             id: popoutColumn
@@ -194,13 +352,13 @@ PluginComponent {
                 width: parent.width
                 spacing: Theme.spacingM
 
-                // Status row with icon
+                // ── Internet status ──────────────────────────────────────
                 Row {
                     spacing: Theme.spacingM
                     width: parent.width
 
                     DankIcon {
-                        name: root.isOnline ? (root.hasVpn ? "security" : "public") : "public_off"
+                        name: root.isOnline ? "public" : "public_off"
                         size: 32
                         color: root.isOnline ? Theme.surfaceText : Theme.error
                         anchors.verticalCenter: parent.verticalCenter
@@ -226,7 +384,7 @@ PluginComponent {
                     color: Theme.outlineVariant
                 }
 
-                // IP Address
+                // ── IP Address ───────────────────────────────────────────
                 Row {
                     spacing: Theme.spacingS
                     width: parent.width
@@ -256,70 +414,160 @@ PluginComponent {
                     }
                 }
 
-                // VPN Status
-                Row {
-                    spacing: Theme.spacingS
+                // Divider
+                StyledRect {
                     width: parent.width
-
-                    DankIcon {
-                        name: root.hasVpn ? "vpn_lock" : "vpn_lock"
-                        size: 20
-                        color: root.hasVpn ? Theme.primary : Theme.surfaceVariantText
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Column {
-                        spacing: 2
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        StyledText {
-                            text: "VPN Status"
-                            font.pixelSize: Theme.fontSizeSmall
-                            color: Theme.surfaceVariantText
-                        }
-
-                        StyledText {
-                            text: root.hasVpn ? ("Connected" + (root.vpnInterfaceName ? " (" + root.vpnInterfaceName + ")" : "")) : "Not Connected"
-                            font.pixelSize: Theme.fontSizeMedium
-                            color: root.hasVpn ? Theme.primary : Theme.surfaceText
-                        }
-                    }
+                    height: 1
+                    color: Theme.outlineVariant
                 }
 
-                // Endpoint being checked
-                Row {
-                    spacing: Theme.spacingS
-                    width: parent.width
+                // ── Per-VPN sections ─────────────────────────────────────
+                Repeater {
+                    model: root.vpnInterfaces
 
-                    DankIcon {
-                        name: "link"
-                        size: 20
-                        color: Theme.surfaceVariantText
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
+                    delegate: Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
 
-                    Column {
-                        spacing: 2
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width - 32
+                        property string ifaceName: modelData
+                        // Bind to whole maps so delegate re-evaluates when either is reassigned
+                        property var allStatus: root.vpnStatus
+                        property var allHistories: root.vpnHistories
 
-                        StyledText {
-                            text: "Checking Endpoint"
-                            font.pixelSize: Theme.fontSizeSmall
-                            color: Theme.surfaceVariantText
-                        }
+                        property var ifaceStatus: allStatus[ifaceName] || {}
+                        property var ifaceHistory: allHistories[ifaceName] || []
+                        property var ifaceConfig: root.vpnEndpoints[ifaceName] || {}
 
-                        StyledText {
-                            text: root.lastCheckEndpoint || "Not set"
-                            font.pixelSize: Theme.fontSizeMedium
-                            color: Theme.surfaceText
-                            elide: Text.ElideMiddle
+                        property bool isActive: ifaceStatus.active || false
+                        property bool isOnlineVpn: ifaceStatus.online || false
+                        property bool hasEndpoint: !!(ifaceConfig.endpoint)
+                        property real pingMs: ifaceStatus.pingMs !== undefined ? ifaceStatus.pingMs : -1
+
+                        // Interface header row
+                        Row {
+                            spacing: Theme.spacingS
                             width: parent.width
+
+                            DankIcon {
+                                name: "vpn_lock"
+                                size: 20
+                                color: {
+                                    if (!isActive) return Theme.surfaceVariantText
+                                    if (hasEndpoint && !isOnlineVpn) return Theme.error
+                                    return Theme.primary
+                                }
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            StyledText {
+                                text: ifaceName
+                                font.pixelSize: Theme.fontSizeMedium
+                                font.weight: Font.Medium
+                                color: Theme.surfaceText
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            StyledText {
+                                text: isActive ? " · Active" : " · Inactive"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: isActive ? Theme.primary : Theme.surfaceVariantText
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        // Active details — only shown when interface is up
+                        // Use a Row with a spacer item to indent under the icon
+                        Row {
+                            visible: isActive
+                            width: parent.width
+                            spacing: 0
+
+                            Item { width: 28; height: 1 }
+
+                            Column {
+                                spacing: 4
+                                width: parent.width - 28
+
+                                // Endpoint + method
+                                StyledText {
+                                    visible: hasEndpoint
+                                    text: {
+                                        var m = (ifaceConfig.method || "http").toUpperCase()
+                                        return m + " · " + ifaceConfig.endpoint
+                                    }
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceVariantText
+                                    elide: Text.ElideMiddle
+                                    width: parent.width
+                                }
+
+                                // Connectivity result
+                                Row {
+                                    spacing: Theme.spacingXS
+                                    visible: hasEndpoint
+
+                                    StyledText {
+                                        text: isOnlineVpn ? "Online" : "Offline"
+                                        font.pixelSize: Theme.fontSizeSmall
+                                        font.weight: Font.Medium
+                                        color: isOnlineVpn ? "#4caf50" : Theme.error
+                                    }
+
+                                    StyledText {
+                                        visible: isOnlineVpn && pingMs >= 0
+                                        text: "· " + pingMs.toFixed(1) + " ms"
+                                        font.pixelSize: Theme.fontSizeSmall
+                                        color: Theme.surfaceVariantText
+                                    }
+                                }
+
+                                StyledText {
+                                    visible: !hasEndpoint
+                                    text: "No test endpoint configured"
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.surfaceVariantText
+                                }
+                            }
+                        }
+
+                        // Per-VPN history chart
+                        Column {
+                            width: parent.width
+                            spacing: 4
+                            topPadding: 4
+
+                            StyledText {
+                                text: "History (" + ifaceHistory.length + ")"
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+
+                            Canvas {
+                                id: vpnCanvas
+                                width: parent.width
+                                height: 56
+                                property var allHistoriesRef: root.vpnHistories
+                                onAllHistoriesRefChanged: requestPaint()
+
+                                onPaint: {
+                                    var ctx = getContext("2d")
+                                    var data = root.vpnHistories[ifaceName] || []
+                                    root.paintVpnChart(ctx, width, height, data)
+                                }
+                            }
+                        }
+
+                        // Section divider
+                        StyledRect {
+                            width: parent.width
+                            height: 1
+                            color: Theme.outlineVariant
+                            opacity: 0.6
                         }
                     }
                 }
 
-                // Check method and interval
+                // ── Check method info ────────────────────────────────────
                 Row {
                     spacing: Theme.spacingS
                     width: parent.width
@@ -331,21 +579,11 @@ PluginComponent {
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    Column {
-                        spacing: 2
+                    StyledText {
+                        text: "every " + root.checkInterval + "s"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.surfaceVariantText
                         anchors.verticalCenter: parent.verticalCenter
-
-                        StyledText {
-                            text: "Check Method"
-                            font.pixelSize: Theme.fontSizeSmall
-                            color: Theme.surfaceVariantText
-                        }
-
-                        StyledText {
-                            text: ((root.hasVpn && root.vpnEndpoint) ? root.vpnCheckMethod : root.checkMethod).toUpperCase() + " every " + root.checkInterval + "s"
-                            font.pixelSize: Theme.fontSizeMedium
-                            color: Theme.surfaceText
-                        }
                     }
                 }
 
@@ -356,7 +594,7 @@ PluginComponent {
                     color: Theme.outlineVariant
                 }
 
-                // Refresh button
+                // ── Check Now button ─────────────────────────────────────
                 StyledRect {
                     width: parent.width
                     height: 36
@@ -385,15 +623,14 @@ PluginComponent {
     }
 
     popoutWidth: 320
-    popoutHeight: 380
+    popoutHeight: 700
 
-    // Right-click action - open plugin settings
+    // Right-click action — open plugin settings
     pillRightClickAction: function() {
         PopoutService.openSettingsWithTab("plugins")
     }
 
     Component.onCompleted: {
-        // Initial check on load
         Qt.callLater(performCheck)
     }
 }

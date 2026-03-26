@@ -107,5 +107,32 @@ in
         echo "Added policy rule: to 10.0.0.42/32 lookup main priority 5200"
       '';
     };
+
+    systemd.services.tailscale-split-dns = {
+      description = "Configure split DNS routing for Tailscale domains";
+      after = [ "tailscaled.service" "network-online.target" "tailscale-local-route.service" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+
+      script = ''
+        # Wait for tailscale0 interface to be up
+        for i in {1..30}; do
+          if ${pkgs.iproute2}/bin/ip addr show tailscale0 >/dev/null 2>&1; then
+            break
+          fi
+          sleep 1
+        done
+
+        # Set routing domains so systemd-resolved forwards these queries to tailscale's DNS
+        # ~ prefix = routing domain (not search domain): only used when querying these domains
+        ${pkgs.systemd}/bin/resolvectl domain tailscale0 ~rahh.al ~homefree.host
+        echo "Split DNS configured: rahh.al and homefree.host -> tailscale0"
+      '';
+    };
   };
 }

@@ -29,8 +29,7 @@ let
       checkInterval = 5;
       checkMethod = osConfig.hostParams.networking.networkMonitor.checkMethod;
       normalEndpoint = osConfig.hostParams.networking.networkMonitor.normalEndpoint;
-      vpnCheckMethod = osConfig.hostParams.networking.networkMonitor.vpnCheckMethod;
-      vpnEndpoint = osConfig.hostParams.networking.networkMonitor.vpnEndpoint;
+      vpnEndpoints = osConfig.hostParams.networking.networkMonitor.vpnEndpoints;
       vpnInterfaces = ["tailscale0" "wg0" "tun0"];
     };
     easyEffects = {

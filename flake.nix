@@ -196,6 +196,10 @@
       # -----------------------------------------------------------------------
       nflx-erahhal-p16 = mkHost {
         hostName = "nflx-erahhal-p16";
+        nixvimConfig = {
+          enable = true;
+          enable-ai = true;
+        };
         modules = [
           {
             ## @TODO: TEMPORARY
@@ -254,6 +258,8 @@
                 # enable-selenium = true;
                 disable-url-warning = true;
                 disable-nm-applet-warning = true;
+                ## Defaults to 1300, which is low but ensures it works everywhere
+                # vpn-mtu = 1300;
               };
             };
           }

@@ -12,7 +12,18 @@
     networking = {
       tailscale.enable = true;
       networkMonitor = {
-        vpnEndpoint = "https://data.netflix.net";
+        vpnEndpoints = {
+          tun0 = {
+            # endpoint = "https://data.netflix.net";
+            # method = "http";
+            endpoint = "data.netflix.net";
+            method = "ping";
+          };
+          tailscale0 = {
+            endpoint = "10.0.0.1";
+            method = "ping";
+          };
+        };
       };
     };
 
