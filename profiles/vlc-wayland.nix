@@ -10,7 +10,8 @@
         buildInputs = [ pkgs.makeWrapper ];
         postBuild = ''
           wrapProgram $out/bin/vlc \
-            --unset DISPLAY
+            --unset DISPLAY \
+            --add-flags "--aout=alsa"
         '';
       })
     ];

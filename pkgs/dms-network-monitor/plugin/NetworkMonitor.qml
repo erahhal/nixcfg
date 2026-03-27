@@ -27,6 +27,7 @@ PluginComponent {
     // Aggregate VPN state (updated by updateAggregateStatus)
     property bool hasAnyVpn: false
     property bool vpnProblem: false   // any active VPN with endpoint is offline
+    property bool allOffline: false   // internet AND all active VPNs with endpoints are offline
 
     // Settings from pluginData
     readonly property bool enabled: pluginData.enabled ?? true
@@ -177,8 +178,15 @@ PluginComponent {
             if (s.active) anyActive = true
             if (s.active && s.hasEndpoint && !s.online) problem = true
         }
+        var allDown = !isOnline
+        for (var j = 0; j < ifaces.length; j++) {
+            var st = vpnStatus[ifaces[j]]
+            if (!st) continue
+            if (st.active && st.hasEndpoint && st.online) allDown = false
+        }
         hasAnyVpn = anyActive
         vpnProblem = problem
+        allOffline = allDown
         statusText = isOnline ? ("Online" + (hasAnyVpn ? " (VPN)" : "")) : "Offline"
     }
 
@@ -308,6 +316,7 @@ PluginComponent {
                     name: root.hasAnyVpn ? "security" : (root.isOnline ? "public" : "public_off")
                     size: root.iconSize
                     color: {
+                        if (root.allOffline) return Theme.error
                         if (!root.hasAnyVpn) return root.isOnline ? Theme.surfaceText : Theme.error
                         return root.vpnProblem ? "#f0b030" : Theme.surfaceText
                     }
@@ -318,7 +327,7 @@ PluginComponent {
                     text: "!"
                     font.pixelSize: Math.max(7, Math.round(root.iconSize * 0.4))
                     font.weight: Font.Bold
-                    color: "#f0b030"
+                    color: root.allOffline ? Theme.error : "#f0b030"
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
                 }
@@ -341,6 +350,7 @@ PluginComponent {
                     name: root.hasAnyVpn ? "security" : (root.isOnline ? "public" : "public_off")
                     size: root.iconSize
                     color: {
+                        if (root.allOffline) return Theme.error
                         if (!root.hasAnyVpn) return root.isOnline ? Theme.surfaceText : Theme.error
                         return root.vpnProblem ? "#f0b030" : Theme.surfaceText
                     }
@@ -351,7 +361,7 @@ PluginComponent {
                     text: "!"
                     font.pixelSize: Math.max(7, Math.round(root.iconSize * 0.4))
                     font.weight: Font.Bold
-                    color: "#f0b030"
+                    color: root.allOffline ? Theme.error : "#f0b030"
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
                 }

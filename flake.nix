@@ -244,11 +244,21 @@
                   ## NGP Skills
                   "*@ngp-skills"
 
-                  ## AITC skill (URL, uses aitc skill add)
-                  "https://github.netflix.net/corp/prod-sci-dse-templates/blob/main/templates/skills/create-presentation/SKILL.md"
-
-                  ## Generic
+                  ## Individual
                   "frontend-design@claude-code-plugins"
+
+                  ## AITC skills (URL, uses aitc skill add)
+
+                  # Build Presentation
+                  "https://github.netflix.net/corp/prod-sci-dse-templates/blob/main/templates/skills/create-presentation/SKILL.md"
+                  ## discovery prototype /find-tables skill
+                  "https://github.netflix.net/cdhanaraj/discovery-agent/blob/main/.claude/skills/find-tables/SKILL.md"
+                ];
+                gitSkills = [
+                  {
+                    url  = "https://github.netflix.net/cdhanaraj/discovery-agent.git";
+                    path = ".claude/skills/find-tables";
+                  }
                 ];
               };
               vpn.pulse = {
