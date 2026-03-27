@@ -3,6 +3,14 @@
   hostParams = {
     networking = {
       tailscale.enable = true;
+      networkMonitor = {
+        vpnEndpoints = {
+          tailscale0 = {
+            endpoint = "10.0.0.1";
+            method = "ping";
+          };
+        };
+      };
     };
 
     system = {
