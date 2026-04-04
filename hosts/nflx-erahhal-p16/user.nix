@@ -85,7 +85,7 @@ EOF
         blender
 
         ## genai (requires CUDA/NVIDIA)
-        vllm
+        (broken vllm)
 
         chromium
 

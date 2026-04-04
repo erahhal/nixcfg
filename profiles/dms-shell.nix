@@ -25,9 +25,6 @@ in
   config = lib.mkIf (config.hostParams.desktop.displayManager == "dms" && config.hostParams.programs.steam.bootToSteam == false) {
     programs.dank-material-shell = {
       enable = true;
-      # Use nixpkgs dms-shell package (correct Go vendorHash);
-      # the flake's quickshell (with IdleMonitor) is used automatically
-      package = pkgs.dms-shell;
       systemd = {
         enable = true;
         restartIfChanged = true;

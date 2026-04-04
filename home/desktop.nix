@@ -134,8 +134,11 @@ in
       gtk3.extraConfig = {
         gtk-im-module = "fcitx";
       };
-      gtk4.extraConfig = {
-        gtk-im-module = "fcitx";
+      gtk4 = {
+        theme = null;
+        extraConfig = {
+          gtk-im-module = "fcitx";
+        };
       };
     };
 
@@ -305,8 +308,8 @@ in
       # ---------------------------------------------------------------------------
       # Browser
       # ---------------------------------------------------------------------------
-      BROWSER = "firefox";
-      DEFAULT_BROWSER = "firefox";
+      BROWSER = config.hostParams.programs.defaultBrowser;
+      DEFAULT_BROWSER = config.hostParams.programs.defaultBrowser;
 
       # ---------------------------------------------------------------------------
       # Java / Jetbrains
@@ -513,7 +516,7 @@ in
         ## wine-staging (version with experimental features)
         ## winetricks and other programs depending on wine need to use the same wine version
         bottles # Has issues with i686 dependencies (mangohud)
-        wineWowPackages.stagingFull
+        wineWow64Packages.stagingFull
         winetricks
         # wineWowPackages.stable
         # winetricks

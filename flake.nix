@@ -56,13 +56,8 @@
 
     flox.url = "github:flox/flox";
 
-    caelestia-shell = {
-      url = "github:caelestia-dots/shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     dms-shell = {
-      url = "github:AvengeMedia/DankMaterialShell";
+      url = "github:AvengeMedia/DankMaterialShell/v1.4.4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -124,8 +119,8 @@
     secrets.url = "git+ssh://git@github.com/erahhal/nixcfg-secrets";
     # secrets.url = "path:/home/erahhal/Code/nixcfg-secrets";
 
-    nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
-    # nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
+    # nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
+    nixvim-config.url = "path:/home/erahhal/Code/nixvim-config";
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 
@@ -154,7 +149,7 @@
     broken = import ./helpers/broken.nix {
       lib = inputs.nixpkgs.lib;
       pkgs = import inputs.nixpkgs {
-        system = "x86_64-linux";
+        localSystem = "x86_64-linux";
         config.allowBroken = true;
       };
     };
@@ -169,7 +164,7 @@
       home-manager.users.${userParams.username} = {config, ...}: {
         imports = [
           inputs.dms-shell.homeModules.default
-          inputs.caelestia-shell.homeManagerModules.default
+
           inputs.lan-mouse.homeManagerModules.default
           inputs.nix-colors.homeManagerModules.default
           inputs.plasma-manager.homeModules.plasma-manager
@@ -201,12 +196,6 @@
           enable-ai = true;
         };
         modules = [
-          {
-            ## @TODO: TEMPORARY
-            nixpkgs.config.permittedInsecurePackages = [
-              "libsoup-2.74.3"
-            ];
-          }
           inputs.dms-shell.nixosModules.default
           inputs.dms-shell.nixosModules.greeter
           inputs.disko.nixosModules.disko
@@ -221,6 +210,7 @@
           {
             nflx = {
               username = "erahhal";
+              ssh-agent.enable = true;
               system = {
                 enable-systemd-resolved = true;
               };
@@ -231,6 +221,12 @@
               };
               genai = {
                 project-id = "erahhaldevtools";
+                stride = {
+                  enable = true;
+                  workspace.name = "erahhal-stride";
+                  timezone = "America/Los_Angeles";
+                  model = "sonnet";
+                };
                 skills = [
                   # Marketplace plugin (has @, uses claude plugin install)
 

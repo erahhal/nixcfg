@@ -35,15 +35,19 @@ switch:
 	fi
 
 debug:
+	nixos-rebuild ${LOGFORMAT} build --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true -L |& ${NOM}
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true -L |& ${NOM}
 
 nflx-local:
+	nixos-rebuild ${LOGFORMAT} build --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg -L |& ${NOM}
 
 nflx-vpn:
+	nixos-rebuild ${LOGFORMAT} build --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso -L |& ${NOM}
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso -L |& ${NOM}
 
 nixvim-local:
+	nixos-rebuild ${LOGFORMAT} build --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 
 boot:
