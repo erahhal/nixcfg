@@ -1,0 +1,78 @@
+# Shared values and module lists for host configurations.
+# Each host flake-parts module imports this and calls nixosSystem directly.
+
+{ inputs }:
+
+let
+  lib = inputs.nixpkgs.lib;
+
+  debugMode = inputs.debug-mode.value;
+  broken = import ./broken.nix {
+    inherit lib;
+    pkgs = import inputs.nixpkgs {
+      localSystem = "x86_64-linux";
+      config.allowBroken = true;
+    };
+  };
+  recursiveMerge = import ./recursive-merge.nix { inherit lib; };
+  userParams = import ../user-params.nix {};
+
+in {
+  inherit userParams;
+
+  specialArgs = {
+    inherit debugMode inputs broken recursiveMerge userParams;
+    system = "x86_64-linux";
+  };
+
+  # Base modules included for every host
+  baseModules = hostName: [
+    ./host-params.nix
+    ../modules/hosts/${hostName}/host-params.nix
+    ../modules/hosts/${hostName}/configuration.nix
+    # Base system
+    ../modules/system/nix-config
+    ../modules/system/overlays
+    ../modules/system/boot
+    ../modules/system/security
+    ../modules/system/services
+    ../modules/system/base-packages
+    ../modules/system/networking
+    ../modules/hardware/base
+    ../modules/base-user
+    # Flake integrations
+    inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+    inputs.home-manager.nixosModules.home-manager
+  ];
+
+  # Home-manager base wiring (included for every host)
+  homeManagerConfig = {
+    systemd.services."home-manager-${userParams.username}".serviceConfig = { RemainAfterExit = "yes"; };
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
+    home-manager.users.${userParams.username} = {config, ...}: {
+      imports = [
+        inputs.dms-shell.homeModules.default
+        inputs.lan-mouse.homeManagerModules.default
+        inputs.nix-colors.homeManagerModules.default
+        inputs.plasma-manager.homeModules.plasma-manager
+        inputs.steam-loader.homeManagerModules.default
+      ];
+    };
+  };
+
+  # Nixvim module with configurable options
+  nixvimModule = nixvimConfig: [
+    inputs.nixvim-config.nixosModules.default
+    {
+      nixvim-config = {
+        enable = nixvimConfig.enable or true;
+        enable-ai = nixvimConfig.enable-ai or false;
+        enable-startify-cowsay = nixvimConfig.enable-startify-cowsay or true;
+        disable-indent-blankline = nixvimConfig.disable-indent-blankline or true;
+      } // (lib.optionalAttrs (nixvimConfig ? disable-notifications) {
+        disable-notifications = nixvimConfig.disable-notifications;
+      });
+    }
+  ];
+}

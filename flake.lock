@@ -54,26 +54,6 @@
         "type": "github"
       }
     },
-    "astal": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1773914523,
-        "narHash": "sha256-GOL+bR30FPImAzy4NNsTMY1gpoINMsLTXR0WJBRSq30=",
-        "owner": "aylur",
-        "repo": "astal",
-        "rev": "41b50290c6a1cdce7b482897c22fe49286912b9a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aylur",
-        "repo": "astal",
-        "type": "github"
-      }
-    },
     "base16-schemes": {
       "flake": false,
       "locked": {
@@ -546,6 +526,26 @@
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775087534,
+        "narHash": "sha256-91qqW8lhL7TLwgQWijoGBbiD4t7/q75KTi8NxjVmSmA=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "3107b77cd68437b9a76194f0f7f9c55f2329ca5b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_2": {
+      "inputs": {
+        "nixpkgs-lib": [
           "lanzaboote",
           "nixpkgs"
         ]
@@ -564,7 +564,7 @@
         "type": "github"
       }
     },
-    "flake-parts_2": {
+    "flake-parts_3": {
       "inputs": {
         "nixpkgs-lib": [
           "nflx-nixcfg",
@@ -587,7 +587,7 @@
         "type": "github"
       }
     },
-    "flake-parts_3": {
+    "flake-parts_4": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
       },
@@ -605,7 +605,7 @@
         "type": "github"
       }
     },
-    "flake-parts_4": {
+    "flake-parts_5": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib_3"
       },
@@ -623,7 +623,7 @@
         "type": "github"
       }
     },
-    "flake-parts_5": {
+    "flake-parts_6": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib_4"
       },
@@ -641,7 +641,7 @@
         "type": "github"
       }
     },
-    "flake-parts_6": {
+    "flake-parts_7": {
       "inputs": {
         "nixpkgs-lib": [
           "nixvim-config",
@@ -663,7 +663,7 @@
         "type": "github"
       }
     },
-    "flake-parts_7": {
+    "flake-parts_8": {
       "inputs": {
         "nixpkgs-lib": [
           "nur",
@@ -684,7 +684,7 @@
         "type": "github"
       }
     },
-    "flake-parts_8": {
+    "flake-parts_9": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib_5"
       },
@@ -1340,6 +1340,21 @@
         "type": "github"
       }
     },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1773693634,
+        "narHash": "sha256-BtZ2dtkBdSUnFPPFc+n0kcMbgaTxzFNPv2iaO326Ffg=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "c41e7d58045f9057880b0d85e1152d6a4430dbf1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
     "jovian": {
       "inputs": {
         "nix-github-actions": "nix-github-actions",
@@ -1384,7 +1399,7 @@
       "inputs": {
         "crane": "crane_2",
         "flake-compat": "flake-compat_4",
-        "flake-parts": "flake-parts",
+        "flake-parts": "flake-parts_2",
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
           "nixpkgs"
@@ -1586,11 +1601,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1775266771,
-        "narHash": "sha256-4xlDSOaly2CZKmiNipiBMYq+7q07o42ZqeQ3zahZCVg=",
+        "lastModified": 1775349463,
+        "narHash": "sha256-okFIJvdyGHqYC4obdu2Fp/yFI+qxgzwtQLoKLCKyMNA=",
         "ref": "main",
-        "rev": "8395ceee23b7f0684e8e9ace69eec11054eafa5b",
-        "revCount": 117,
+        "rev": "aec9148f5894403925c47ab40add23553b094b49",
+        "revCount": 122,
         "type": "git",
         "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -1625,7 +1640,7 @@
         "cachyos-kernel": "cachyos-kernel",
         "cachyos-kernel-patches": "cachyos-kernel-patches",
         "flake-compat": "flake-compat_6",
-        "flake-parts": "flake-parts_3",
+        "flake-parts": "flake-parts_4",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -1724,7 +1739,7 @@
     "nix-snapd": {
       "inputs": {
         "flake-compat": "flake-compat_8",
-        "flake-parts": "flake-parts_4",
+        "flake-parts": "flake-parts_5",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -1765,7 +1780,7 @@
     },
     "nixd": {
       "inputs": {
-        "flake-parts": "flake-parts_5",
+        "flake-parts": "flake-parts_6",
         "nixpkgs": "nixpkgs_11",
         "treefmt-nix": "treefmt-nix"
       },
@@ -2378,7 +2393,7 @@
     },
     "nixvim": {
       "inputs": {
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "nixpkgs": "nixpkgs_8",
         "systems": "systems_7"
       },
@@ -2432,7 +2447,7 @@
     },
     "nixvim_2": {
       "inputs": {
-        "flake-parts": "flake-parts_6",
+        "flake-parts": "flake-parts_7",
         "nixpkgs": [
           "nixvim-config",
           "nixpkgs"
@@ -2462,11 +2477,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775262740,
-        "narHash": "sha256-DMtg5xhavxbxBa/LbI40Fe4zraP85pIzEEvDscLJX04=",
+        "lastModified": 1775342717,
+        "narHash": "sha256-mgYUhKNHsylaPsLD5AzPgBU6wGLpX7GPDtuLMZBmmAs=",
         "owner": "erahhal",
         "repo": "nm-openconnect-pulse-sso",
-        "rev": "2776fc8396d65e3d48eedb9df15a276e89d2d1cc",
+        "rev": "429eb1762545cd301face8d3ecf530562bbcb7e3",
         "type": "github"
       },
       "original": {
@@ -2477,7 +2492,7 @@
     },
     "nur": {
       "inputs": {
-        "flake-parts": "flake-parts_7",
+        "flake-parts": "flake-parts_8",
         "nixpkgs": "nixpkgs_15"
       },
       "locked": {
@@ -2805,16 +2820,17 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
-        "astal": "astal",
         "comma": "comma",
         "debug-mode": "debug-mode",
         "disko": "disko",
         "dms-shell": "dms-shell",
+        "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "flake-utils-plus": "flake-utils-plus",
         "flox": "flox",
         "home-manager": "home-manager_2",
         "hyprland": "hyprland",
+        "import-tree": "import-tree",
         "jovian": "jovian",
         "lan-mouse": "lan-mouse",
         "lanzaboote": "lanzaboote",
@@ -3023,7 +3039,7 @@
     },
     "sg-nvim": {
       "inputs": {
-        "flake-parts": "flake-parts_8",
+        "flake-parts": "flake-parts_9",
         "nci": "nci_2",
         "nixpkgs": "nixpkgs_17",
         "pre-commit-nix": "pre-commit-nix",
@@ -3115,11 +3131,11 @@
         "nixpkgs": "nixpkgs_21"
       },
       "locked": {
-        "path": "./profiles/steam-loader",
+        "path": "./modules/programs/steam-loader",
         "type": "path"
       },
       "original": {
-        "path": "./profiles/steam-loader",
+        "path": "./modules/programs/steam-loader",
         "type": "path"
       },
       "parent": []

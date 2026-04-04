@@ -45,6 +45,12 @@
     flake-utils-plus.url = "github:gytis-ivaskevicius/flake-utils-plus";
     flake-utils-plus.inputs.flake-utils.follows = "flake-utils";
 
+    # flake-parts
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+
+    import-tree.url = "github:vic/import-tree";
+
     nix-snapd.url = "github:io12/nix-snapd";
     nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -62,7 +68,7 @@
     };
 
     steam-loader = {
-      url = "path:./profiles/steam-loader";
+      url = "path:./modules/programs/steam-loader";
     };
 
 
@@ -124,10 +130,6 @@
 
     jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
 
-    astal = {
-      url = "github:aylur/astal";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
@@ -143,234 +145,10 @@
     };
   };
 
-  outputs = { debug-mode, ... }@inputs:
-  let
-    debugMode = debug-mode.value;
-    broken = import ./helpers/broken.nix {
-      lib = inputs.nixpkgs.lib;
-      pkgs = import inputs.nixpkgs {
-        localSystem = "x86_64-linux";
-        config.allowBroken = true;
-      };
-    };
-    recursiveMerge = import ./helpers/recursive-merge.nix { lib = inputs.nixpkgs.lib; };
-    userParams = import ./user-params.nix {};
-    homeManagerConfig = {
-      ## Make sure it restarts after rebuilding system config
-      systemd.services."home-manager-${userParams.username}".serviceConfig = { RemainAfterExit = "yes"; };
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      # Note: nixpkgs.overlays moved to profiles/common.nix (not allowed with useGlobalPkgs)
-      home-manager.users.${userParams.username} = {config, ...}: {
-        imports = [
-          inputs.dms-shell.homeModules.default
+  outputs = inputs:
+  inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    systems = [ "x86_64-linux" ];
 
-          inputs.lan-mouse.homeManagerModules.default
-          inputs.nix-colors.homeManagerModules.default
-          inputs.plasma-manager.homeModules.plasma-manager
-          inputs.steam-loader.homeManagerModules.default
-        ];
-      };
-    };
-    mkHost = import ./lib/mkHost.nix {
-      inherit inputs userParams debugMode broken recursiveMerge homeManagerConfig;
-    };
-  in {
-    homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {
-      extraSpecialArgs = {
-        inherit debugMode;
-        inherit userParams;
-        inherit broken;
-        inherit recursiveMerge;
-      };
-    };
-    nixosConfigurations = rec {
-
-      # -----------------------------------------------------------------------
-      # nflx-erahhal-p16 - Work laptop (Lenovo ThinkPad P16s)
-      # -----------------------------------------------------------------------
-      nflx-erahhal-p16 = mkHost {
-        hostName = "nflx-erahhal-p16";
-        nixvimConfig = {
-          enable = true;
-          enable-ai = true;
-        };
-        modules = [
-          inputs.dms-shell.nixosModules.default
-          inputs.dms-shell.nixosModules.greeter
-          inputs.disko.nixosModules.disko
-          inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.secrets.nixosModules.nflx-erahhal-p16
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
-          inputs.nur.modules.nixos.default
-          inputs.nix-flatpak.nixosModules.nix-flatpak
-          # { nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]; }
-          # inputs.nflx-nixcfg.nixosModules.pulse-vpn
-          inputs.nflx-nixcfg.nixosModules.default
-          {
-            nflx = {
-              username = "erahhal";
-              ssh-agent.enable = true;
-              system = {
-                enable-systemd-resolved = true;
-              };
-              development = {
-                java.enable = true;
-                # newt.clean-tmux-nesting = true;
-                workspaces.disable-workspace-id-warning = true;
-              };
-              genai = {
-                project-id = "erahhaldevtools";
-                stride = {
-                  enable = true;
-                  workspace.name = "erahhal-stride";
-                  timezone = "America/Los_Angeles";
-                  model = "sonnet";
-                };
-                skills = [
-                  # Marketplace plugin (has @, uses claude plugin install)
-
-                  ## DX Team
-                  # "dx-documentation-plugin@dx-ai-context"
-                  # "dx-ui-plugin@dx-ai-context"
-                  # "find-skills-plugin@dx-ai-context"
-                  # "initiatives-plugin@dx-ai-context"
-                  "*@dx-ai-context"
-
-                  ## NGP Skills
-                  "*@ngp-skills"
-
-                  ## Individual
-                  "frontend-design@claude-code-plugins"
-
-                  ## AITC skills (URL, uses aitc skill add)
-
-                  # Build Presentation
-                  "https://github.netflix.net/corp/prod-sci-dse-templates/blob/main/templates/skills/create-presentation/SKILL.md"
-                  ## discovery prototype /find-tables skill
-                  "https://github.netflix.net/cdhanaraj/discovery-agent/blob/main/.claude/skills/find-tables/SKILL.md"
-                ];
-                gitSkills = [
-                  {
-                    url  = "https://github.netflix.net/cdhanaraj/discovery-agent.git";
-                    path = ".claude/skills/find-tables";
-                  }
-                ];
-              };
-              vpn.pulse = {
-                # url = "https://lax001.pcs.flxvpn.net/emp-split";
-                # enable-nm-applet-service = true;
-                # enable-dtls = false;
-                # enable-selenium = true;
-                disable-url-warning = true;
-                disable-nm-applet-warning = true;
-                ## Defaults to 1300, which is low but ensures it works everywhere
-                # vpn-mtu = 1300;
-              };
-            };
-          }
-        ];
-      };
-
-      # -----------------------------------------------------------------------
-      # antikythera - Personal laptop (Lenovo ThinkPad P14s AMD Gen5)
-      # -----------------------------------------------------------------------
-      antikythera = mkHost {
-        hostName = "antikythera";
-        nixvimConfig = {
-          enable = true;
-          enable-ai = true;
-          enable-startify-cowsay = true;
-          disable-indent-blankline = true;
-          disable-notifications = true;
-        };
-        modules = [
-          inputs.dms-shell.nixosModules.default
-          inputs.dms-shell.nixosModules.greeter
-          inputs.disko.nixosModules.disko
-          inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.secrets.nixosModules.antikythera
-          # inputs.jovian.nixosModules.default
-          # @TODO: Switch to gen5 when available
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
-          inputs.nur.modules.nixos.default
-          inputs.nix-flatpak.nixosModules.nix-flatpak
-        ];
-      };
-
-      # -----------------------------------------------------------------------
-      # upaya - Dell XPS 15 9560
-      # -----------------------------------------------------------------------
-      upaya = mkHost {
-        hostName = "upaya";
-        nixvimConfig = {
-          enable = true;
-          enable-ai = true;
-          enable-startify-cowsay = true;
-          disable-indent-blankline = true;
-        };
-        modules = [
-          inputs.secrets.nixosModules.upaya
-          # inputs.jovian.nixosModules.default
-          inputs.nixos-hardware.nixosModules.dell-xps-15-9560
-        ];
-      };
-
-      # -----------------------------------------------------------------------
-      # sicmundus - Server
-      # -----------------------------------------------------------------------
-      sicmundus = mkHost {
-        hostName = "sicmundus";
-        nixvimConfig = {
-          enable = true;
-          enable-ai = true;
-          enable-startify-cowsay = true;
-          disable-indent-blankline = true;
-        };
-        modules = [
-          inputs.secrets.nixosModules.sicmundus
-          inputs.nur.modules.nixos.default
-        ];
-      };
-
-      # -----------------------------------------------------------------------
-      # msi-desktop - WSL on MSI desktop
-      # -----------------------------------------------------------------------
-      msi-desktop = mkHost {
-        hostName = "msi-desktop";
-        modules = [
-          inputs.nixos-wsl.nixosModules.default
-          {
-            wsl.enable = true;
-            wsl.defaultUser = userParams.username;
-          }
-          inputs.secrets.nixosModules.msi-desktop
-        ];
-      };
-
-      ## Default hostname for WSL is nixos
-      ## Will be renamed to msi-desktop after first installation
-      nixos = msi-desktop;
-
-      # -----------------------------------------------------------------------
-      # msi-linux - MSI desktop native Linux
-      # -----------------------------------------------------------------------
-      msi-linux = mkHost {
-        hostName = "msi-linux";
-        modules = [
-          inputs.dms-shell.nixosModules.default
-          inputs.dms-shell.nixosModules.greeter
-          inputs.disko.nixosModules.disko
-          inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.secrets.nixosModules.msi-linux
-          inputs.nix-flatpak.nixosModules.nix-flatpak
-          inputs.steam-loader.nixosModules.default
-          {
-            programs.steam-loader.enable = true;
-          }
-        ];
-      };
-
-    };
+    imports = (inputs.import-tree ./flake-modules).imports;
   };
 }

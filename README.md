@@ -94,11 +94,6 @@ or
 
 - `build/` - files used at nixos-rebuild time
 
-- `containers/` - Container configs, mainly docker setups for use on a server.
-
-- `dotfiles/` - Legacy [dotfile](https://wiki.archlinux.org/index.php/Dotfiles)
-  configs that are not written in nix, but should be at a later date.
-
 - `flakes/` - Independent flakes, in development, before they are ready to be broken out into a separate repo
 
 - `helpers/` - Nix helper functions to assist with configuration

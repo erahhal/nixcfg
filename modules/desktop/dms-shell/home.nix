@@ -1,0 +1,472 @@
+{ pkgs, config, lib, osConfig, ... }:
+let
+  wallpaperPath = if osConfig.hostParams.desktop.wallpaper != null
+    then toString osConfig.hostParams.desktop.wallpaper
+    else null;
+
+  nag-graphical = pkgs.callPackage ../../../pkgs/nag-graphical {};
+
+  useHyprlock = osConfig.hostParams.desktop.dmsLockProgram == "hyprlock";
+
+  pidof = "${pkgs.procps}/bin/pidof";
+
+  # Hyprlock lock command with guard against duplicate instances
+  hyprlockCmd = pkgs.writeShellScript "hyprlock-lock" ''
+    ${pidof} hyprlock || ${pkgs.hyprlock}/bin/hyprlock
+  '';
+
+  # Default plugin settings - merged into plugin_settings.json on activation
+  defaultPluginSettings = {
+    commandRunner = {
+      enabled = true;
+      noTrigger = true;
+      trigger = ">";
+      terminal = "foot";
+      execFlag = "-e";
+    };
+    networkMonitor = {
+      enabled = true;
+      checkInterval = 5;
+      checkMethod = osConfig.hostParams.networking.networkMonitor.normalEndpoint.method;
+      normalEndpoint = osConfig.hostParams.networking.networkMonitor.normalEndpoint.endpoint;
+      vpnEndpoints = osConfig.hostParams.networking.networkMonitor.vpnEndpoints;
+      vpnInterfaces = ["tailscale0" "wg0" "tun0"];
+    };
+    easyEffects = {
+      enabled = true;
+    };
+  };
+
+  # Lock screen then suspend
+  dms-suspend = if useHyprlock then
+    pkgs.writeShellScript "dms-suspend" ''
+      ${pidof} hyprlock || ${pkgs.hyprlock}/bin/hyprlock &
+      sleep 1
+      ${pkgs.systemd}/bin/systemctl suspend
+    ''
+  else
+    pkgs.writeShellScript "dms-suspend" ''
+      dms ipc call lock lock
+      sleep 0.5
+      systemctl suspend
+    '';
+
+  suspend-dialog = pkgs.writeShellScript "dms-suspend-dialog" ''
+    ${nag-graphical}/bin/nag-graphical 'Suspend?' '${dms-suspend}'
+  '';
+
+  # Helper function to create JSON sync activation scripts
+  # Merges default file into target file, preserving user-added keys
+  mkJsonSyncScript = { dir, defaultFile, targetFile, name }: lib.hm.dag.entryAfter ["linkGeneration"] ''
+    DIR="${dir}"
+    DEFAULT="$DIR/${defaultFile}"
+    TARGET="$DIR/${targetFile}"
+
+    if [ -f "$DEFAULT" ]; then
+      mkdir -p "$DIR"
+      if [ -f "$TARGET" ]; then
+        if ${pkgs.jq}/bin/jq -S -s '.[0] * .[1]' "$TARGET" "$DEFAULT" > "$TARGET.tmp" 2>/dev/null; then
+          mv "$TARGET.tmp" "$TARGET"
+        else
+          rm -f "$TARGET.tmp"
+          echo "Warning: Failed to merge DMS ${name}, keeping existing ${targetFile}"
+        fi
+      else
+        cp "$DEFAULT" "$TARGET"
+      fi
+    fi
+  '';
+
+  theme-tokyonight = pkgs.writeTextFile {
+    name = "theme_tokyonight.json";
+    text = ''
+      {
+        "dark": {
+          "name": "Tokyo Night night",
+          "primary": "#7aa2f7",
+          "primaryText": "#16161e",
+          "primaryContainer": "#7dcfff",
+          "secondary": "#bb9af7",
+          "surface": "#1a1b26",
+          "surfaceText": "#73daca",
+          "surfaceVariant": "#2f3549",
+          "surfaceVariantText": "#cbccd1",
+          "surfaceTint": "#7aa2f7",
+          "background": "#16161e",
+          "backgroundText": "#d5d6db",
+          "outline": "#787c99",
+          "surfaceContainer": "#2f3549",
+          "surfaceContainerHigh": "#444b6a",
+          "error": "#f7768e",
+          "warning": "#ff9e64",
+          "info": "#7dcfff"
+      },
+        "light": {
+          "name": "Tokyo Night day",
+          "primary": "#2e7de9",
+          "primaryText": "#d0d5e3",
+          "primaryContainer": "#007197",
+          "secondary": "#9854f1",
+          "surface": "#e1e2e7",
+          "surfaceText": "#387068",
+          "surfaceVariant": "#c4c8da",
+          "surfaceVariantText": "#1a1b26",
+          "surfaceTint": "#2e7de9",
+          "background": "#cbccd1",
+          "backgroundText": "#1a1b26",
+          "outline": "#4c505e",
+          "surfaceContainer": "#dfe0e5",
+          "surfaceContainerHigh": "#9699a3",
+          "error": "#f52a65",
+          "warning": "#b15c00",
+          "info": "#007197"
+        }
+      }
+    '';
+  };
+
+  # Default settings - written to default-settings.json and synced to settings.json on activation
+  defaultSettings = {
+    configVersion = 2;
+    barConfigs = [{
+      id = "default";
+      name = "Main Bar";
+      enabled = true;
+
+      ## Widgets
+      leftWidgets = [
+        "launcherButton"
+        "workspaceSwitcher"
+        {
+          id = "focusedWindow";
+          enabled = true;
+          ## Don't show app name, just title
+          focusedWindowCompactMode = true;
+        }
+      ];
+      centerWidgets = [];
+      rightWidgets = [
+        {
+          id = "music";
+          enabled = true;
+        }
+        {
+          id = "easyEffects";
+          enabled = true;
+        }
+        {
+          id = "controlCenterButton";
+          enabled = true;
+          showAudioIcon = true;
+          showBatteryIcon = false;
+          showBluetoothIcon = false;
+          showBrightnessIcon = false;
+          showMicIcons = true;
+          showNetworkIcon = false;
+          showPrinterIcon = false;
+          showVpnIcon = false;
+        }
+        {
+          id = "systemTray";
+          enabled = true;
+        }
+        {
+          id = "clipboard";
+          enabled = true;
+        }
+        {
+          id = "cpuUsage";
+          enabled = true;
+        }
+        {
+          id = "memUsage";
+          enabled = true;
+        }
+        {
+          id = "battery";
+          enabled = true;
+        }
+        {
+          id = "weather";
+          enabled = true;
+        }
+        {
+          id = "controlCenterButton";
+          enabled = true;
+          showAudioIcon = false;
+          showBatteryIcon = false;
+          showBluetoothIcon = true;
+          showBrightnessIcon = true;
+          showMicIcon = false;
+          showNetworkIcon = true;
+          showPrinterIcon = false;
+          showVpnIcon = false;
+        }
+        {
+          id = "vpn";
+          enabled = true;
+        }
+        {
+          id = "networkMonitor";
+          enabled = true;
+        }
+        {
+          id = "clock";
+          enabled = true;
+        }
+        {
+          id = "idleInhibitor";
+          enabled = true;
+        }
+        {
+          id = "notificationButton";
+          enabled = true;
+        }
+      ];
+
+      ## Layout
+      position = 1;  # 0=top, 1=bottom, 2=left, 3=right
+      spacing = 3;
+      bottomGap = 1;
+      innerPadding = 8;  # Sets the bar size, strangely
+      maximizeDetection = false;  # Don't remove gaps if the window is maxximized
+
+      ## Behavior
+      scrollYBehavior = "none";
+    }];
+
+    ## Displays
+    screenPreferences = ["all"];
+    showOnLastDisplay = true;
+
+    ## Layout
+    innerPadding = 4;
+    popupGapsAuto = true;
+    popupGapsManual = 4;
+
+    ## Style
+    matugenTemplateFirefox = false; # disables creating firefox.css file on manual config change. What are the ramifications?
+    transparency = 1;
+    widgetTransparency = 1;
+    squareCorners = false;
+    noBackground = false;
+    gothCornersEnabled = false;
+    gothCornerRadiusOverride = false;
+    gothCornerRadiusValue = 12;
+    borderEnabled = false;
+    borderColor = "surfaceText";
+    borderOpacity = 1;
+    borderThickness = 1;
+    fontScale = 1;
+
+    ## Icons
+    dockIconsize = 24;
+
+    ## Behavior
+    visible = true;
+    autoHide = false;
+    autoHideDelay = 250;
+    openOnOverview = false;
+
+    # On Screen Display
+    osdPowerProfileEnabled = true;
+
+    ## Workspaces
+    showWorkspaceIndex = true;
+    showWorkspacePadding = true;
+    showWorkspaceApps = true;
+    showOccupiedWorkspacesOnly = true;
+
+    ## Dock
+    showDock = false;
+    dockAutoHide = true;
+    dockGroupByApp = false;
+    dockOpenOnOverview = true;
+
+    ## Animation
+    customAnimationDuration = 100;
+
+    ## Power/Lock screen
+    ## When using hyprlock: disable DMS lock/idle, let hypridle handle it
+    ## (DMS/Quickshell lock crashes on suspend/resume and monitor disconnect)
+    acMonitorTimeout = if useHyprlock then 0 else 300;
+    acLockTimeout = if useHyprlock then 0 else 300;
+    lockBeforeSuspend = !useHyprlock;
+    lockScreenShowPowerActions = true;
+    loginctlLockIntegration = !useHyprlock;
+    fadeToLockEnabled = !useHyprlock;
+    fadeToLockGracePeriod = 5;
+
+    ### Widgets
+
+    ## Clock
+    use24HourClock = false;
+
+    ## Weather
+    weatherEnabled = true;
+    useAutoLocation = true;
+    weatherLocation = "Los Angeles, CA";
+    weatherCoordinates = "34.1509, 118.4487";
+    useFahrenheit = true;
+
+    ## Night Mode
+    nightModeEnabled = true;
+
+    ## Theme
+    # currentThemeName = "custom";
+    # customThemeFile = theme-tokyonight;
+  };
+
+  # Default session - written to default-session.json and synced to session.json on activation
+  defaultSession = lib.optionalAttrs (wallpaperPath != null) {
+    wallpaperPath = wallpaperPath;
+  };
+in
+{
+  imports = [
+    ./easyeffects.nix
+  ];
+
+  home.file."Wallpaper".source = ../../../wallpapers;
+
+  # Add PATH, Qt theme, and PassEnvironment to dms systemd service via drop-in override.
+  # The main dms.service unit is created by the NixOS programs.dms-shell module;
+  # using a drop-in avoids replacing the full unit (which would lose ExecStart).
+  xdg.configFile."systemd/user/dms.service.d/override.conf".text = ''
+    [Service]
+    Environment=PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin
+    # Use qt6ct platform theme for icon discovery
+    Environment=QT_QPA_PLATFORMTHEME=qt6ct
+    # EGL/Vulkan vendor discovery paths - needed for GPU operations in screen sharing
+    Environment=__EGL_VENDOR_LIBRARY_DIRS=/run/opengl-driver/share/glvnd/egl_vendor.d
+    # Inherit environment for icon theme discovery, loginctl integration, and app screen sharing
+    PassEnvironment=HOME XDG_DATA_HOME XDG_CONFIG_HOME XDG_CACHE_HOME XDG_RUNTIME_DIR XDG_DATA_DIRS XDG_CONFIG_DIRS
+    PassEnvironment=DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_ID
+    PassEnvironment=DBUS_SESSION_BUS_ADDRESS
+    PassEnvironment=ELECTRON_OZONE_PLATFORM_HINT NIXOS_OZONE_WL
+    PassEnvironment=QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME QT_PLUGIN_PATH QT_IM_MODULE QT_STYLE_OVERRIDE QML2_IMPORT_PATH
+    PassEnvironment=GTK_IM_MODULE GTK_PATH GDK_PIXBUF_MODULE_FILE GTK_USE_PORTAL
+    PassEnvironment=NIRI_SOCKET
+    PassEnvironment=NIX_XDG_DESKTOP_PORTAL_DIR
+    PassEnvironment=XCURSOR_SIZE XCURSOR_THEME
+    PassEnvironment=LD_LIBRARY_PATH
+  '';
+
+  # Clear Quickshell QML bytecode cache on activation so plugin changes take effect.
+  # Nix store files have epoch timestamps, so the QML engine can't detect source changes.
+  home.activation.clearQuickshellQmlCache = lib.hm.dag.entryAfter ["linkGeneration"] ''
+    rm -rf "${config.xdg.cacheHome}/quickshell/qmlcache"
+  '';
+
+  # Sync DMS JSON config files on activation
+  home.activation.dmsSettingsSync = mkJsonSyncScript {
+    dir = "${config.xdg.configHome}/DankMaterialShell";
+    defaultFile = "default-settings.json";
+    targetFile = "settings.json";
+    name = "settings";
+  };
+
+  home.activation.dmsSessionSync = mkJsonSyncScript {
+    dir = "${config.xdg.stateHome}/DankMaterialShell";
+    defaultFile = "default-session.json";
+    targetFile = "session.json";
+    name = "session";
+  };
+
+  home.activation.dmsPluginSettingsSync = mkJsonSyncScript {
+    dir = "${config.xdg.configHome}/DankMaterialShell";
+    defaultFile = "default-plugin_settings.json";
+    targetFile = "plugin_settings.json";
+    name = "plugin settings";
+  };
+
+  # Niri keybinding overrides for DMS
+  xdg.configFile."niri/dms.kdl".text = ''
+    binds {
+      // DMS Application Launcher and Notification Center
+      // Temporarily disabled as it doesn't run arbitray executables
+      Mod+P hotkey-overlay-title="DMS Application Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+      Mod+N hotkey-overlay-title="DMS Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+
+      // Color picker - use DMS color picker (auto-copy hex to clipboard)
+      Mod+A hotkey-overlay-title="DMS Color Picker" { spawn "dms" "color" "pick" "--hex" "-a"; }
+
+      // Screenshots - use DMS screenshot (opens in editor for annotation)
+      Ctrl+Shift+3 hotkey-overlay-title="Capture Screen" { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
+      Ctrl+Shift+4 hotkey-overlay-title="Capture Selection" { spawn "dms" "ipc" "call" "niri" "screenshot"; }
+      Ctrl+Shift+5 hotkey-overlay-title="Capture Window" { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
+
+      ${if useHyprlock then ''
+      // Lock - use hyprlock (DMS lock crashes on suspend/resume and monitor disconnect)
+      Mod+X hotkey-overlay-title="Lock the Screen" { spawn "sh" "-c" "${hyprlockCmd}"; }
+      '' else ''
+      // Lock - use DMS lock
+      Mod+X hotkey-overlay-title="Lock the Screen: DMS" allow-when-locked=true { spawn "dms" "ipc" "call" "lock" "lock"; }
+      ''}
+
+      // Power actions - with confirmation dialogs
+      Mod+Shift+S hotkey-overlay-title="Suspend" { spawn "${suspend-dialog}"; }
+
+      // Ctrl+Alt+Delete - quit niri (shows confirmation)
+      Ctrl+Alt+Delete { quit; }
+    }
+
+    switch-events {
+      // Lid close - lock then suspend
+      lid-close { spawn "${dms-suspend}"; }
+    }
+
+    ${lib.optionalString useHyprlock ''
+    // Start hypridle for idle management (lock, DPMS, before-sleep hook)
+    // Replaces DMS internal idle/lock which crashes on suspend/resume
+    spawn-sh-at-startup "systemctl --user restart hypridle"
+    ''}
+  '';
+
+  # Include DMS keybindings in niri config
+  xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
+    include "dms.kdl"
+  '';
+
+  # Default plugin settings file - merged into plugin_settings.json on activation
+  xdg.configFile."DankMaterialShell/default-plugin_settings.json".text =
+    builtins.toJSON defaultPluginSettings;
+
+  # Default settings file - merged into settings.json on activation
+  xdg.configFile."DankMaterialShell/default-settings.json".text =
+    builtins.toJSON defaultSettings;
+
+  # Default session file - merged into session.json on activation
+  xdg.stateFile."DankMaterialShell/default-session.json".text =
+    builtins.toJSON defaultSession;
+
+  # Hypridle for idle management when using hyprlock instead of DMS lock
+  # Handles: lock on idle, DPMS, lock before suspend, DPMS restore on resume
+  services.hypridle = lib.mkIf useHyprlock {
+    enable = true;
+    settings = {
+      general = {
+        lock_cmd = "pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
+        before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+        after_sleep_cmd = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+      };
+      listener = [
+        {
+          timeout = 300;
+          on-timeout = "${pkgs.systemd}/bin/loginctl lock-session";
+        }
+        {
+          timeout = 360;
+          on-timeout = "${pkgs.niri}/bin/niri msg action power-off-monitors";
+          on-resume = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+        }
+      ];
+    };
+  };
+
+  # Don't auto-start hypridle via systemd — start from niri spawn-sh-at-startup
+  # so it runs after NIRI_SOCKET and session env are available
+  systemd.user.services.hypridle.Install.WantedBy = lib.mkIf useHyprlock (lib.mkForce []);
+
+  home.packages = lib.mkIf useHyprlock [ pkgs.hypridle ];
+}

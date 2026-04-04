@@ -1,3 +1,0 @@
-[filter]
-irc_smart = on;*;irc_smart_filter;*
-joinquit = on;*;irc_join,irc_part,irc_quit;*

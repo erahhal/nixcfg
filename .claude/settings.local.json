@@ -400,7 +400,13 @@
       "Bash(sudo:*)",
       "Bash(ssh-add:*)",
       "Bash(git rm:*)",
-      "Bash(git -C /home/erahhal/Code/nflx-nixcfg add modules/ssh-agent.nix)"
+      "Bash(git -C /home/erahhal/Code/nflx-nixcfg add modules/ssh-agent.nix)",
+      "Bash(sed -i 's|../nixos/|../modules/|g' /home/erahhal/Code/nixcfg/lib/mkNixosSystem.nix /home/erahhal/Code/nixcfg/flake-modules/nixos-modules.nix)",
+      "Bash(sed -i 's|path:./nixos/|path:./modules/|' /home/erahhal/Code/nixcfg/flake.nix)",
+      "Read(//sys/power/**)",
+      "Bash(git -C /home/erahhal/Code/nixcfg log --oneline -5 --all -- modules/hardware/gfx-nvidia/default.nix)",
+      "Bash(git -C /home/erahhal/Code/nixcfg show 2e53802 --stat)",
+      "Bash(/run/current-system/sw/bin/nvidia-smi --query-gpu=driver_version --format=csv,noheader)"
     ],
     "deny": [],
     "ask": []

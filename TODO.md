@@ -111,10 +111,6 @@ Improvments
   * git remote add all <url1>
   * git remote set-url --add --push all <url1>
   * git remote set-url --add --push all <url2>
-* Look into native nixos containers
-  * https://nixos.wiki/wiki/NixOS_Containers
-* Look at protonmail-bridge docker image for email service for various servers
-  * https://hub.docker.com/r/shenxn/protonmail-bridge
 * Terminal
   * Base16
     * https://github.com/SenchoPens/base16.nix
