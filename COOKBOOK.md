@@ -68,13 +68,6 @@ inputs.nixpkgs.lib.nixosSystem {
 };
 ```
 
-### nix-inspect
-
-* https://discourse.nixos.org/t/nix-inspect-a-tui-for-browsing-nix-configs-and-other-expressions/43180
-* https://github.com/bluskript/nix-inspect
-
-`nix-inspect .`
-
 ### Removing a file from /nix/store, e.g. a lock file that has somehow been left behind
 
 ```

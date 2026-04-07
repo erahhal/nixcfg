@@ -22,7 +22,9 @@
         "*@dx-ai-context"
         "*@ngp-skills"
         "frontend-design@claude-plugins-official"
-        "https://github.netflix.net/corp/prod-sci-dse-templates/blob/main/templates/skills/create-presentation/SKILL.md"
+        "presentation@nflx-skills"
+        "https://github.netflix.net/corp/nflx-skills/blob/main/.generator/output/platform-engineering/developer-enablement/skills/presentation/SKILL.md"
+        # "https://github.netflix.net/corp/prod-sci-dse-templates/blob/main/ajaishankar/skills/create-presentation/SKILL.md"
         "https://github.netflix.net/cdhanaraj/discovery-agent/blob/main/.claude/skills/find-tables/SKILL.md"
       ];
       gitSkills = [

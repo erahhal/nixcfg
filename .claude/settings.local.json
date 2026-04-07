@@ -406,7 +406,11 @@
       "Read(//sys/power/**)",
       "Bash(git -C /home/erahhal/Code/nixcfg log --oneline -5 --all -- modules/hardware/gfx-nvidia/default.nix)",
       "Bash(git -C /home/erahhal/Code/nixcfg show 2e53802 --stat)",
-      "Bash(/run/current-system/sw/bin/nvidia-smi --query-gpu=driver_version --format=csv,noheader)"
+      "Bash(/run/current-system/sw/bin/nvidia-smi --query-gpu=driver_version --format=csv,noheader)",
+      "Bash(bash /tmp/check_all_inputs.sh)",
+      "Bash(bash /tmp/verify_import_tree.sh)",
+      "Bash(bash /tmp/final_check.sh)",
+      "Bash(git grep:*)"
     ],
     "deny": [],
     "ask": []

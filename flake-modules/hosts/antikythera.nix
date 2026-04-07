@@ -46,7 +46,6 @@ in
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.antikythera
       inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
-      inputs.nur.modules.nixos.default
       inputs.nix-flatpak.nixosModules.nix-flatpak
     ];
   };

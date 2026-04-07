@@ -25,7 +25,6 @@ in
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.nflx-erahhal-p16
       inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p16s-intel-gen2
-      inputs.nur.modules.nixos.default
       inputs.nix-flatpak.nixosModules.nix-flatpak
       inputs.nflx-nixcfg.nixosModules.default
       ../../modules/hosts/nflx-erahhal-p16/nflx-nixcfg.nix

@@ -118,7 +118,6 @@
     yt-dlp
     zip
     zsh
-    inputs.nix-inspect.packages.${system}.default
 
     # cd/dvd ripping/recovery
     cdparanoia
