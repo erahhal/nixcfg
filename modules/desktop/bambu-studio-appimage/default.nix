@@ -2,11 +2,11 @@
 
 let
   pname = "bambu-studio";
-  version = "02.05.00.67";
-  ubuntu_version = "24.04_PR-9540";
+  version = "02.05.00.65";
+  ubuntu_version = "24.04_PR-9504";
   src = pkgs.fetchurl {
     url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu-${ubuntu_version}.AppImage";
-    sha256 = "sha256-3ubZblrsOJzz1p34QiiwiagKaB7nI8xDeadFWHBkWfg=";
+    sha256 = "sha256-tVjzyV0kEf5kx0C4PvxeS3+FOQZKtPuVRJkiLeQQFhc=";
   };
   appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
   bambu-studio-appimage = pkgs.appimageTools.wrapType2 rec {

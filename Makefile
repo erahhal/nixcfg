@@ -25,6 +25,7 @@ switch:
 	make clear-mimeapps
 	make clear-gpu-cache
 	make clear-gtkrc
+	nixos-rebuild ${LOGFORMAT} build --flake .#${HOSTNAME} -L |& ${NOM}
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --flake .#${HOSTNAME} -L |& ${NOM}
 	# sudo -E nixos-rebuild switch --flake .#${HOSTNAME} -L
 	make update-gnupg-perms

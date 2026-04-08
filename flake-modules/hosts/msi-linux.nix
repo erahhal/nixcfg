@@ -14,13 +14,17 @@ in
       pipewire
       fonts
       chromium-based-apps
-      tailscale
       mullvad
       kdeconnect
       gfx-nvidia gfx-intel laptop udev-rules
       openrgb
       keyboard-debounce
       nfs-mounts
+      android
+      flatpak
+      flox
+      spacenavd
+      connection-sharing
     ])
     ++ [
       inputs.dms-shell.nixosModules.default

@@ -17,6 +17,10 @@ in
       gfx-nvidia gfx-intel laptop udev-rules
       appimage android totp
       waydroid snapcast virtual-machines macchanger printers-scanners
+      flatpak
+      flox
+      spacenavd
+      connection-sharing
     ])
     ++ [
       inputs.dms-shell.nixosModules.default

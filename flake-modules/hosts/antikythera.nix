@@ -38,6 +38,10 @@ in
       snapcast
       nfs-mounts
       virtual-machines macchanger printers-scanners
+      flatpak
+      flox
+      spacenavd
+      connection-sharing
     ])
     ++ [
       inputs.dms-shell.nixosModules.default

@@ -11,20 +11,30 @@
   nixcfg = {
     desktop = {
       enable = true;
+      niri.enable = true;
+      dms.enable = true;
       pipewire.enable = true;
       fonts.enable = true;
       chromium-based-apps.enable = true;
     };
     networking = {
-      tailscale.enable = true;
       mullvad.enable = true;
       kdeconnect.enable = true;
+      connection-sharing.enable = true;
     };
     hardware = {
+      gfx-nvidia.enable = true;
+      gfx-intel.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
       openrgb.enable = true;
       keyboard-debounce.enable = true;
+      spacenavd.enable = true;
+    };
+    programs = {
+      android.enable = true;
+      flatpak.enable = true;
+      flox.enable = true;
     };
     services = {
       nfs-mounts.enable = true;

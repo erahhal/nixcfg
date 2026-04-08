@@ -410,7 +410,9 @@
       "Bash(bash /tmp/check_all_inputs.sh)",
       "Bash(bash /tmp/verify_import_tree.sh)",
       "Bash(bash /tmp/final_check.sh)",
-      "Bash(git grep:*)"
+      "Bash(git grep:*)",
+      "Bash(nix-hash:*)",
+      "Bash(git ls-tree:*)"
     ],
     "deny": [],
     "ask": []

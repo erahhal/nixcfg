@@ -18,7 +18,6 @@ in
       desktop
       pipewire
       fonts
-      tailscale
       mullvad
       kdeconnect
       wireless
@@ -31,6 +30,10 @@ in
       waydroid
       nfs-mounts
       virtual-machines macchanger printers-scanners
+      flatpak
+      flox
+      spacenavd
+      connection-sharing
     ])
     ++ [
       inputs.secrets.nixosModules.upaya

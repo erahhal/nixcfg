@@ -23,6 +23,7 @@
     homefree = import ../modules/networking/homefree;
     captive-portal = import ../modules/networking/captive-portal;
     exclusive-lan = import ../modules/networking/exclusive-lan;
+    connection-sharing = import ../modules/networking/connection-sharing;
 
     # Hardware
     gfx-amd = import ../modules/hardware/gfx-amd;
@@ -33,6 +34,7 @@
     thinkpad-dock-udev = import ../modules/hardware/thinkpad-dock-udev;
     openrgb = import ../modules/hardware/openrgb;
     keyboard-debounce = import ../modules/hardware/keyboard-debounce;
+    spacenavd = import ../modules/hardware/spacenavd;
 
     # Programs
     steam = import ../modules/programs/steam;

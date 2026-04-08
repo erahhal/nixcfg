@@ -24,6 +24,8 @@ in {
             ];
           };
           Environment = {
+            FLATPAK_STEAM_XDG_DIRS_PREFIX = "~";
+            FLATPAK_STEAM_UPDATE_SYMLINKS = "1";
             QT_QPA_PLATFORM = "xcb";
             STEAM_FORCE_DESKTOPUI_SCALING = "2.0";
             STEAM_DISABLE_BROWSER_SANDBOX_FOR_CEF_SUBPROCESSES = "1";
@@ -70,12 +72,10 @@ in {
             fi
 
             if [ -f "$SETUP_SCRIPT" ]; then
-              if ! grep -q "# NIXOS_PATCHED: skip capability check" "$SETUP_SCRIPT"; then
-                sed -i '/^function SteamVRLauncherSetup()/a\    # NIXOS_PATCHED: skip capability check - capability set by systemd service\n    return 0' "$SETUP_SCRIPT"
-                echo "Patched $SETUP_SCRIPT to skip capability check"
-              else
-                echo "$SETUP_SCRIPT already patched"
-              fi
+              sed -i '/# NIXOS_PATCHED: skip capability check/{N;d}' "$SETUP_SCRIPT"
+              sed -i '/^function SteamVRLauncherSetup()/{n;a\    # NIXOS_PATCHED: skip capability check - capability set by systemd service\n    return 0
+}' "$SETUP_SCRIPT"
+              echo "Patched $SETUP_SCRIPT to skip capability check"
             fi
           done
         done

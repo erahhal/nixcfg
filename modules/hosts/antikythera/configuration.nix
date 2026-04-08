@@ -11,6 +11,7 @@
   nixcfg = {
     desktop = {
       enable = true;
+      niri.enable = true;
       dms.enable = true;
       pipewire.enable = true;
       fonts.enable = true;
@@ -25,22 +26,28 @@
       homefree.enable = true;
       captive-portal.enable = true;
       exclusive-lan.enable = true;
+      connection-sharing.enable = true;
     };
     hardware = {
+      gfx-amd.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
       thinkpad-dock-udev.enable = true;
+      spacenavd.enable = true;
     };
     programs = {
       appimage.enable = true;
       android.enable = true;
       totp.enable = true;
       steam.enable = true;
+      flatpak.enable = true;
+      flox.enable = true;
     };
     services = {
       waydroid.enable = true;
       snapcast.enable = true;
       nfs-mounts.enable = true;
+      printers-scanners.enable = true;
     };
   };
 
@@ -255,8 +262,6 @@
     ];
   };
 
-
-  services.flatpak.enable = true;
 
   # --------------------------------------------------------------------------------------
   # Hardware specific

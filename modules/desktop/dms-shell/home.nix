@@ -289,8 +289,8 @@ let
     ## Power/Lock screen
     ## When using hyprlock: disable DMS lock/idle, let hypridle handle it
     ## (DMS/Quickshell lock crashes on suspend/resume and monitor disconnect)
-    acMonitorTimeout = if useHyprlock then 0 else 300;
-    acLockTimeout = if useHyprlock then 0 else 300;
+    acMonitorTimeout = if useHyprlock then 999999 else 300;
+    acLockTimeout = if useHyprlock then 999999 else 300;
     lockBeforeSuspend = !useHyprlock;
     lockScreenShowPowerActions = true;
     loginctlLockIntegration = !useHyprlock;

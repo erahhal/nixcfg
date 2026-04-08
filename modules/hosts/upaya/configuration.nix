@@ -23,21 +23,26 @@ in
       fonts.enable = true;
     };
     networking = {
-      tailscale.enable = true;
       mullvad.enable = true;
       kdeconnect.enable = true;
       wireless.enable = true;
       captive-portal.enable = true;
       exclusive-lan.enable = true;
+      connection-sharing.enable = true;
     };
     hardware = {
+      gfx-nvidia.enable = true;
+      gfx-intel.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
+      spacenavd.enable = true;
     };
     programs = {
       appimage.enable = true;
       android.enable = true;
       dell-dcc.enable = true;
+      flatpak.enable = true;
+      flox.enable = true;
     };
     services = {
       waydroid.enable = true;

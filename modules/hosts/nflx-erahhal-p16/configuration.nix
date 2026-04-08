@@ -33,16 +33,22 @@
       homefree.enable = true;
       captive-portal.enable = true;
       exclusive-lan.enable = true;
+      connection-sharing.enable = true;
     };
     hardware = {
+      gfx-nvidia.enable = true;
+      gfx-intel.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
+      spacenavd.enable = true;
     };
     programs = {
       appimage.enable = true;
       android.enable = true;
       totp.enable = true;
       # steam.enable = true;
+      flatpak.enable = true;
+      flox.enable = true;
     };
     services = {
       waydroid.enable = true;
@@ -273,8 +279,6 @@
     trustedInterfaces = [ "docker0" "br-+" ];
   };
 
-
-  services.flatpak.enable = true;
 
   # --------------------------------------------------------------------------------------
   # Hardware specific
