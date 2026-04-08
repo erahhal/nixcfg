@@ -413,7 +413,10 @@
       "Bash(git grep:*)",
       "Bash(nix-hash:*)",
       "Bash(git ls-tree:*)",
-      "Bash(flatpak remote-ls:*)"
+      "Bash(flatpak remote-ls:*)",
+      "Bash(pactl get-default-sink:*)",
+      "Bash(iptables -L -n)",
+      "Bash(nft list:*)"
     ],
     "deny": [],
     "ask": []

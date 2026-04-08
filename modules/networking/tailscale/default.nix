@@ -73,8 +73,8 @@ in {
       wants = [ "network-online.target" ];
     };
 
-    # Prevent Tailscale from routing traffic to the Synology NAS (10.0.0.42)
-    # through the tunnel, so NFS/SMB mounts work via LAN when at home.
+    # Prevent Tailscale from routing local LAN traffic (10.0.0.0/24) through
+    # the tunnel, so LAN services (NFS/SMB, Snapcast, etc.) work directly.
     systemd.services.tailscale-local-route = {
       description = "Exclude local network from Tailscale routing";
       after = [ "tailscaled.service" "network-online.target" ];
@@ -84,7 +84,7 @@ in {
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStop = "${pkgs.iproute2}/bin/ip rule del to 10.0.0.42/32 lookup main priority 5200 2>/dev/null || true";
+        ExecStop = "${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5200 2>/dev/null || true";
       };
 
       script = ''
@@ -96,10 +96,10 @@ in {
           sleep 1
         done
 
-        # Add policy rule to route 10.0.0.42/32 via main table BEFORE tailscale's table 52
-        ${pkgs.iproute2}/bin/ip rule del to 10.0.0.42/32 lookup main priority 5200 2>/dev/null || true
-        ${pkgs.iproute2}/bin/ip rule add to 10.0.0.42/32 lookup main priority 5200
-        echo "Added policy rule: to 10.0.0.42/32 lookup main priority 5200"
+        # Add policy rule to route 10.0.0.0/24 via main table BEFORE tailscale's table 52
+        ${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5200 2>/dev/null || true
+        ${pkgs.iproute2}/bin/ip rule add to 10.0.0.0/24 lookup main priority 5200
+        echo "Added policy rule: to 10.0.0.0/24 lookup main priority 5200"
       '';
     };
 
