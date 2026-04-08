@@ -33,10 +33,10 @@ in
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.msi-linux
       inputs.nix-flatpak.nixosModules.nix-flatpak
-      inputs.steam-loader.nixosModules.default
-      {
-        programs.steam-loader.enable = true;
-      }
+      # inputs.steam-loader.nixosModules.default
+      # {
+      #   programs.steam-loader.enable = true;
+      # }
     ];
   };
 }

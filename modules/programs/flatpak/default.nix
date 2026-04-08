@@ -1,6 +1,43 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.nixcfg.programs.flatpak;
+  hasNvidia = config.hardware.nvidia.modesetting.enable or false;
+
+  flatpak-sync-nvidia-gl = pkgs.writeShellScript "flatpak-sync-nvidia-gl" ''
+    # Get host NVIDIA driver version
+    DRIVER_VERSION=$(cat /sys/module/nvidia/version 2>/dev/null || true)
+    if [ -z "$DRIVER_VERSION" ]; then
+      echo "No NVIDIA driver detected, skipping GL runtime sync"
+      exit 0
+    fi
+
+    # Convert 595.58.03 -> nvidia-595-58-03
+    FLATPAK_VERSION="nvidia-''${DRIVER_VERSION//./-}"
+    GL_RUNTIME="org.freedesktop.Platform.GL.$FLATPAK_VERSION"
+    GL32_RUNTIME="org.freedesktop.Platform.GL32.$FLATPAK_VERSION"
+
+    echo "Host NVIDIA driver: $DRIVER_VERSION"
+    echo "Required flatpak GL runtime: $FLATPAK_VERSION"
+
+    # Install matching runtimes if not present
+    for RUNTIME in "$GL_RUNTIME" "$GL32_RUNTIME"; do
+      if ! ${pkgs.flatpak}/bin/flatpak info "$RUNTIME" &>/dev/null; then
+        echo "Installing $RUNTIME..."
+        ${pkgs.flatpak}/bin/flatpak install -y --noninteractive flathub "$RUNTIME" || \
+          echo "Warning: failed to install $RUNTIME (may not be available yet)"
+      else
+        echo "$RUNTIME already installed"
+      fi
+    done
+
+    # Remove old NVIDIA GL runtimes that don't match
+    ${pkgs.flatpak}/bin/flatpak list --runtime --columns=application | grep 'org.freedesktop.Platform.GL' | grep nvidia | while read -r OLD; do
+      if [ "$OLD" != "$GL_RUNTIME" ] && [ "$OLD" != "$GL32_RUNTIME" ]; then
+        echo "Removing old runtime: $OLD"
+        ${pkgs.flatpak}/bin/flatpak uninstall -y --noninteractive "$OLD" 2>/dev/null || true
+      fi
+    done
+  '';
 in {
   options.nixcfg.programs.flatpak = {
     enable = lib.mkEnableOption "Flatpak with Steam and SteamVR support";
@@ -31,7 +68,10 @@ in {
             STEAM_DISABLE_BROWSER_SANDBOX_FOR_CEF_SUBPROCESSES = "1";
             __NV_PRIME_RENDER_OFFLOAD = "1";
             __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-            __GLX_VENDOR_LIBRARY_NAME = "";
+            # Was previously cleared to work around CEF GPU crash (flathub #1198),
+            # but empty causes Steam to fall back to mesa/zink which fails entirely.
+            # -cef-force-gpu flag handles CEF GPU rendering separately.
+            __GLX_VENDOR_LIBRARY_NAME = "nvidia";
             __VK_LAYER_NV_optimus = "";
           };
         };
@@ -44,6 +84,19 @@ in {
       enable = true;
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       config.common.default = "gtk";
+    };
+
+    # Sync flatpak NVIDIA GL runtime with host driver version
+    systemd.services.flatpak-sync-nvidia-gl = lib.mkIf hasNvidia {
+      description = "Sync flatpak NVIDIA GL runtime with host driver";
+      after = [ "flatpak-managed-install.service" "network-online.target" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "graphical.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = "${flatpak-sync-nvidia-gl}";
     };
 
     # SteamVR Flatpak fix

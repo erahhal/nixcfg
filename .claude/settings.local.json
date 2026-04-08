@@ -412,7 +412,8 @@
       "Bash(bash /tmp/final_check.sh)",
       "Bash(git grep:*)",
       "Bash(nix-hash:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(flatpak remote-ls:*)"
     ],
     "deny": [],
     "ask": []
