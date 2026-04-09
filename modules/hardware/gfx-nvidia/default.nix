@@ -222,18 +222,21 @@ in
       "rdblacklist=nouveau"
       "nouveau.modeset=0"
 
-      # Supposedly prevents 20-30 second handoff delay to compositor, but doesn't seem to work
-      # Causes power management to be offloaded to CPU
-      # Only works with proprietary driver (open = false)
-      "nvidia.NVreg_EnableGpuFirmware=0"
+      ## DISABLED: Incompatible with open=true (open kernel modules require GSP firmware).
+      ## Likely cause of "Failed to initialize semaphore for plane fence" errors
+      ## preventing external displays from turning on via USB4/Thunderbolt dock.
+      # "nvidia.NVreg_EnableGpuFirmware=0"
 
       ## Supposedly solves issues with corrupted desktop / videos after waking
       ## See: https://wiki.hyprland.org/Nvidia/
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
 
-      "nvidia.NVreg_UsePageAttributeTable=1" # why this isn't default is beyond me.
-      "nvidia.NVreg_EnableStreamMemOPs=1" # experimental: may improve memory transfer operations
-      "nvidia_modeset.disable_vrr_memclk_switch=1" # stop really high memclk when vrr is in use.
+      ## Default since driver 515+; redundant
+      # "nvidia.NVreg_UsePageAttributeTable=1"
+      ## Experimental CUDA streaming feature, not relevant for display
+      # "nvidia.NVreg_EnableStreamMemOPs=1"
+      ## Can starve high-res displays (5120x2160) of memory bandwidth during VRR
+      # "nvidia_modeset.disable_vrr_memclk_switch=1"
 
       (lib.mkIf config.hardware.nvidia.powerManagement.enable
         "nvidia.NVreg_TemporaryFilePath=/var/tmp" # store on disk, not /tmp which is on RAM
@@ -344,10 +347,12 @@ in
         ## Causes Niri to fail to load on external monitor
         # __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json:/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json";
         LIBVA_DRIVER_NAME = "nvidia";
-        GBM_BACKEND = "nvidia-drm";
-        GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
+        ## Auto-detected since driver 495+; can break multi-GPU setups
+        # GBM_BACKEND = "nvidia-drm";
+        # GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
         __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        EGL_PLATFORM = "wayland";
+        ## Auto-detected by modern EGL; breaks XWayland apps when set globally
+        # EGL_PLATFORM = "wayland";
         ## Tells chromium-based apps to use Wayland instead of X11
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         ## Should do the same thing as ELECTRON_OZONE_PLATFORM_HINT
@@ -357,8 +362,8 @@ in
         # __VK_LAYER_NV_optimus = "NVIDIA_only";
         # NVD_BACKEND = "direct";
 
-        ## Hyprland: Disable hardware mouse cursor to prevent GPU issues
-        WLR_NO_HARDWARE_CURSORS = "1";
+        ## wlroots-only; niri uses Smithay. Deprecated even in Hyprland 0.41+.
+        # WLR_NO_HARDWARE_CURSORS = "1";
         # __GL_SYNC_TO_VBLANK = "1";
         # __GL_GSYNC_ALLOWED = "0";
         # __GL_VRR_ALLOWED = "0";

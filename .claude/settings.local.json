@@ -416,7 +416,19 @@
       "Bash(flatpak remote-ls:*)",
       "Bash(pactl get-default-sink:*)",
       "Bash(iptables -L -n)",
-      "Bash(nft list:*)"
+      "Bash(nft list:*)",
+      "Bash(swaymsg -t get_outputs)",
+      "Read(//sys/module/nvidia/**)",
+      "Read(//sys/module/nvidia_drm/**)",
+      "WebFetch(domain:download.nvidia.com)",
+      "WebFetch(domain:wiki.hypr.land)",
+      "WebFetch(domain:linuxiac.com)",
+      "WebFetch(domain:community.kde.org)",
+      "WebFetch(domain:forums.developer.nvidia.com)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:code.hyprland.org)",
+      "WebFetch(domain:cgit.freedesktop.org)",
+      "WebFetch(domain:michael.stapelberg.ch)"
     ],
     "deny": [],
     "ask": []

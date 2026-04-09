@@ -957,6 +957,11 @@ in
         default-column-width { proportion 1.0; }
     }
     window-rule {
+        match app-id="joplin$"
+        open-on-workspace "nine"
+        default-column-width { proportion 1.0; }
+    }
+    window-rule {
         match app-id="steam"
         match app-id="com.valvesoftware.Steam"
         // open-fullscreen true
