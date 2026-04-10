@@ -141,7 +141,6 @@ in
   networking = {
     hostId = "39ed170e";
 
-    useNetworkd = true;
     networkmanager = {
       enable = true;
       wifi = {

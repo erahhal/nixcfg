@@ -175,7 +175,6 @@
   # '';
 
   networking = {
-    useNetworkd = false;
     networkmanager = {
       enable = true;
       # Wifi power settings - do not remove

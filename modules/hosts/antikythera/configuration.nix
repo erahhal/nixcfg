@@ -158,7 +158,6 @@
   };
 
   networking = {
-    useNetworkd = false;
     networkmanager = {
       enable = true;
       wifi = {

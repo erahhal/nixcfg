@@ -6,7 +6,6 @@
     hostName = config.hostParams.system.hostName;
     search = [];
 
-    useNetworkd = lib.mkDefault true;
     networkmanager = {
       enable = lib.mkDefault true;
       wifi = {

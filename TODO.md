@@ -3,11 +3,10 @@ TODOs
 
 ## Functionality
 
-* Get rid of all references to Networkd? Only if it's not used.
-  * Network Manager is already used. There is no GUI or tray applet for Networkd - NetworkManager is used for desktops, networkd for servers/headless
-* Erase your darlings / Impermanence
-  * https://grahamc.com/blog/erase-your-darlings/
-  * https://nixos.wiki/wiki/Impermanence
+* current build scripts in flake-parts/app.nix do a build follwed by a switch, because the switch command uses sudo -E. The reason for this is that some flake inputs are private and we want to make sure the user's ssh key is used, which doesn't work with root. can we just switch to using the --sudo flag with switch instead, no first build step?  Would it use the user's keys?
+* Add first-class protonmail-bridge support if it is not already added.
+  * if necessary update ~/Code/nixcfg-secrets
+  * set this up with thunderbird
 * Greeter config option
   * DMS Greeter vs SDDM vs new Plasma greeter
   * Is the new Plasma greeter the same as SDDM?
@@ -16,7 +15,9 @@ TODOs
   * Get proper backup regime of home folder
   * Borg backups? what's the best right now? https://nixos.wiki/wiki/Borg_backup
 * Get secure boot setup (lanzaboote?)
-* Add first-class protonmail-bridge support if it is not already added.
+* Erase your darlings / Impermanence
+  * https://grahamc.com/blog/erase-your-darlings/
+  * https://nixos.wiki/wiki/Impermanence
 
 ## Bugs
 
