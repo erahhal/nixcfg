@@ -3,9 +3,8 @@ TODOs
 
 ## Functionality
 
-* Look into replacing custom recursiveMerge with lib.recursiveMerge
 * Get rid of all references to Networkd? Only if it's not used.
-  * There is no GUI or tray applet for Networkd - NetworkManager is used for desktops, networkd for servers/headless
+  * Network Manager is already used. There is no GUI or tray applet for Networkd - NetworkManager is used for desktops, networkd for servers/headless
 * Erase your darlings / Impermanence
   * https://grahamc.com/blog/erase-your-darlings/
   * https://nixos.wiki/wiki/Impermanence

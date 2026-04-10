@@ -9,7 +9,6 @@ let
       config.allowBroken = true;
     };
   };
-  recursiveMerge = import ../lib/recursive-merge.nix { inherit lib; };
   # Standalone home-manager config needs user values directly (no NixOS module system)
   userParams = { username = "erahhal"; fullName = "Ellis Rahhal"; shell = "zsh"; tty = "foot"; };
 in
@@ -19,7 +18,6 @@ in
       inherit debugMode;
       inherit userParams;
       inherit broken;
-      inherit recursiveMerge;
     };
   };
 }

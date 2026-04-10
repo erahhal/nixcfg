@@ -14,11 +14,9 @@ let
       config.allowBroken = true;
     };
   };
-  recursiveMerge = import ./recursive-merge.nix { inherit lib; };
-
 in {
   specialArgs = {
-    inherit debugMode inputs broken recursiveMerge;
+    inherit debugMode inputs broken;
     system = "x86_64-linux";
   };
 

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, recursiveMerge, ... }:
+{ config, lib, pkgs, ... }:
 {
   nixcfg.services.virtual-machines.enable = true;
 
@@ -48,8 +48,8 @@
       };
     in
     if config.hostParams.containers.backend == "podman" then
-      recursiveMerge [ baseConfig podmanConfig ]
+      lib.recursiveUpdate baseConfig podmanConfig
     else
-      recursiveMerge [ baseConfig dockerConfig ]
+      lib.recursiveUpdate baseConfig dockerConfig
   );
 }

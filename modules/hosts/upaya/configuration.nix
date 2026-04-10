@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, lib, pkgs, recursiveMerge, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   dell-dock-udev-rules = pkgs.callPackage ../../../pkgs/dell-dock-udev-rules {};
@@ -258,9 +258,9 @@ in
     };
   in
     if config.hostParams.containers.backend == "podman" then
-      recursiveMerge [ baseConfig podmanConfig ]
+      lib.recursiveUpdate baseConfig podmanConfig
     else
-      recursiveMerge [ baseConfig dockerConfig ]
+      lib.recursiveUpdate baseConfig dockerConfig
   );
 
   # --------------------------------------------------------------------------------------
