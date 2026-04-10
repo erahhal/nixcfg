@@ -10,6 +10,8 @@ in
 
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
     imports = [
+      ../../services/protonmail-bridge
+      ../../programs/thunderbird
       ./hyprland.nix
       ## Needed to create .desktop entry which is currently broken
       ## Also used to register mime types

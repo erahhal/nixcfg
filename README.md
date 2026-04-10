@@ -71,3 +71,7 @@ nix run .#get-new-packages  # Compare current system to new build with nvd
 - `pkgs/` - Custom packages/derivations not in nixpkgs
 - `scripts/` - Utility shell scripts (managed via home-manager)
 - `wallpapers/` - Background images
+
+## Setup Guides
+
+- [ProtonMail Bridge + Thunderbird](docs/protonmail-bridge-setup.md)

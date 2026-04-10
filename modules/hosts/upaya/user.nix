@@ -14,6 +14,7 @@ in
 
     imports = [
       ../../services/protonmail-bridge
+      ../../programs/thunderbird
       ./hyprland.nix
     ];
 
@@ -37,7 +38,6 @@ in
         blender
         phockup
         simple-scan
-        thunderbird
         transmission_4-gtk
         chromium
 

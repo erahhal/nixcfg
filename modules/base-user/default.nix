@@ -549,6 +549,7 @@ in
       settings = {
         user = {
           name = userParams.fullName;
+          email = userParams.email;
         };
         alias = {
           undo = "reset HEAD~1 --mixed";

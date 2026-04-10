@@ -1903,11 +1903,11 @@
         "sops-nix": "sops-nix"
       },
       "locked": {
-        "lastModified": 1775844648,
-        "narHash": "sha256-lApIVK9X+5uowMCdrE6WK/R75LtDJNSp8utzTDNXvoI=",
+        "lastModified": 1775849567,
+        "narHash": "sha256-ldCDyWVMbO0a6tOCnLvyXAhgDWijkg0fUHunm27PXNk=",
         "ref": "refs/heads/master",
-        "rev": "e6275d41a16b6be5b5782bc62433987319d00dee",
-        "revCount": 35,
+        "rev": "e484e52f7936d3aef33870fb5bb72f1d32b81bec",
+        "revCount": 36,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

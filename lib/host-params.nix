@@ -60,6 +60,16 @@
         default = "foot";
         description = "Default terminal emulator";
       };
+      email = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Primary email address for this host (set in secrets)";
+      };
+      protonmailEmail = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "ProtonMail email address for protonmail-bridge (set in secrets)";
+      };
     };
 
     networking = {

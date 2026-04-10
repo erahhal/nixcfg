@@ -4,6 +4,8 @@ let userParams = config.hostParams.user; in
   home-manager.users.${userParams.username} = {
 
     imports = [
+      ../../services/protonmail-bridge
+      ../../programs/thunderbird
       ./hyprland.nix
       ./niri.nix
       ../../programs/clonehero

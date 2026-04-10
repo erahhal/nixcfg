@@ -3,9 +3,6 @@ TODOs
 
 ## Functionality
 
-* Add first-class protonmail-bridge support if it is not already added.
-  * if necessary update ~/Code/nixcfg-secrets
-  * set this up with thunderbird
 * Greeter config option
   * DMS Greeter vs SDDM vs new Plasma greeter
   * Is the new Plasma greeter the same as SDDM?

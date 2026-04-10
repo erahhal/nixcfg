@@ -430,7 +430,8 @@
       "WebFetch(domain:cgit.freedesktop.org)",
       "WebFetch(domain:michael.stapelberg.ch)",
       "Bash(git mv:*)",
-      "Bash(nixos-rebuild --help)"
+      "Bash(nixos-rebuild --help)",
+      "WebFetch(domain:nix-community.github.io)"
     ],
     "deny": [],
     "ask": []

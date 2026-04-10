@@ -16,7 +16,8 @@ in
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
 
     imports = [
-      # ../../home/profiles/protonmail-bridge.nix
+      ../../services/protonmail-bridge
+      ../../programs/thunderbird
       ./hyprland.nix
     ];
 
@@ -91,7 +92,6 @@ in
         qbittorrent
         telegram-desktop
         telegram-mz
-        thunderbird
         transmission_4-gtk
 
         ## arduino
