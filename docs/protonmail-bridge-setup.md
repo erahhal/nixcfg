@@ -1,6 +1,20 @@
 # ProtonMail Bridge + Thunderbird Setup
 
-Thunderbird and protonmail-bridge are configured declaratively, but the bridge requires a one-time interactive login.
+Thunderbird and protonmail-bridge are configured declaratively, but the bridge requires one-time setup for credential storage and login.
+
+## 0. Initialize password store
+
+ProtonMail Bridge uses `pass` (password-store) to persist credentials. It must be initialized with a GPG key before the bridge can save login state.
+
+```bash
+# List available GPG keys
+gpg --list-keys
+
+# Initialize pass with your GPG key ID
+pass init <GPG_KEY_ID>
+```
+
+Without this, the bridge will lose credentials on every restart.
 
 ## 1. Log in to ProtonMail Bridge
 

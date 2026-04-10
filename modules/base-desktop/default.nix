@@ -85,7 +85,6 @@ in
       ../desktop/gthumb
       ../desktop/qt4-hidpi
       ../desktop/vscode-settings
-      ../desktop/startup-apps
       ../desktop/kdeconnect-home
     ];
 

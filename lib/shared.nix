@@ -47,7 +47,9 @@ in {
     home-manager.useUserPackages = true;
     home-manager.users.${config.hostParams.user.username} = {config, ...}: {
       imports = [
-        inputs.dms-shell.homeModules.default
+        inputs.nixcfg-niri.homeModules.dms-shell
+        inputs.nixcfg-niri.homeModules.niri
+        inputs.nixcfg-niri.homeModules.startup-apps
         inputs.lan-mouse.homeManagerModules.default
         inputs.nix-colors.homeManagerModules.default
         inputs.plasma-manager.homeModules.plasma-manager

@@ -35,8 +35,6 @@ in {
     ./plasma
     ./spacenavd
     ./i2c
-    ./niri
-    ./dms-shell
     ./sddm
   ];
 

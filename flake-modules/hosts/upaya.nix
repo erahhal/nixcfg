@@ -37,8 +37,7 @@ in
     ])
     ++ [
       inputs.secrets.nixosModules.upaya
-      inputs.dms-shell.nixosModules.default
-      inputs.dms-shell.nixosModules.greeter
+      inputs.nixcfg-niri.nixosModules.default
       inputs.nix-flatpak.nixosModules.nix-flatpak
       inputs.nixos-hardware.nixosModules.dell-xps-15-9560
     ];

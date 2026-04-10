@@ -431,7 +431,21 @@
       "WebFetch(domain:michael.stapelberg.ch)",
       "Bash(git mv:*)",
       "Bash(nixos-rebuild --help)",
-      "WebFetch(domain:nix-community.github.io)"
+      "WebFetch(domain:nix-community.github.io)",
+      "Bash(mkdir -p modules/desktop/startup-apps lib)",
+      "Bash(cp -r ~/Code/nixcfg/modules/desktop/niri/* modules/desktop/niri/)",
+      "Bash(cp -r ~/Code/nixcfg/modules/desktop/dms-shell/* modules/desktop/dms-shell/)",
+      "Bash(cp -r ~/Code/nixcfg/modules/desktop/startup-apps/* modules/desktop/startup-apps/)",
+      "Bash(cp -r ~/Code/nixcfg/pkgs/dms-network-monitor/* pkgs/dms-network-monitor/)",
+      "Bash(mkdir -p pkgs/nag-graphical pkgs/sway-lock-command pkgs/hyprlock-command scripts)",
+      "Bash(cp ~/Code/nixcfg/pkgs/nag-graphical/default.nix pkgs/nag-graphical/)",
+      "Bash(cp ~/Code/nixcfg/pkgs/sway-lock-command/default.nix pkgs/sway-lock-command/)",
+      "Bash(cp ~/Code/nixcfg/pkgs/hyprlock-command/default.nix pkgs/hyprlock-command/)",
+      "Bash(cp ~/Code/nixcfg/scripts/kill-all-apps.sh scripts/)",
+      "Bash(git:*)",
+      "Bash(kill 632842 633409 633681)",
+      "Bash(gpg --list-keys)",
+      "Bash(pass init:*)"
     ],
     "deny": [],
     "ask": []

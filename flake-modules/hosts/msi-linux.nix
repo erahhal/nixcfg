@@ -10,7 +10,7 @@ in
     ++ [ shared.homeManagerConfig ]
     ++ shared.nixvimModule {}
     ++ (with self.nixosModules; [
-      desktop niri dms hyprland
+      desktop hyprland
       pipewire
       fonts
       chromium-based-apps
@@ -27,8 +27,7 @@ in
       connection-sharing
     ])
     ++ [
-      inputs.dms-shell.nixosModules.default
-      inputs.dms-shell.nixosModules.greeter
+      inputs.nixcfg-niri.nixosModules.default
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.msi-linux

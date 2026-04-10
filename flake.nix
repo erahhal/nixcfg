@@ -47,8 +47,8 @@
 
     flox.url = "github:flox/flox";
 
-    dms-shell = {
-      url = "github:AvengeMedia/DankMaterialShell/v1.4.4";
+    nixcfg-niri = {
+      url = "git+file:///home/erahhal/Code/nixcfg-niri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

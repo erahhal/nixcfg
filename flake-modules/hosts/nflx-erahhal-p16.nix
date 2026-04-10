@@ -10,7 +10,7 @@ in
     ++ [ shared.homeManagerConfig ]
     ++ shared.nixvimModule { enable = true; enable-ai = true; }
     ++ (with self.nixosModules; [
-      desktop niri dms hyprland
+      desktop hyprland
       pipewire fonts chromium-based-apps
       tailscale mullvad kdeconnect wireless wifi-qos
       homefree captive-portal exclusive-lan
@@ -23,8 +23,7 @@ in
       connection-sharing
     ])
     ++ [
-      inputs.dms-shell.nixosModules.default
-      inputs.dms-shell.nixosModules.greeter
+      inputs.nixcfg-niri.nixosModules.default
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.nflx-erahhal-p16

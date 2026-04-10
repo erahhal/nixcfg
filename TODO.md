@@ -3,6 +3,11 @@ TODOs
 
 ## Functionality
 
+* Convert niri KDL string config to niri-flake programs.niri.settings (native Nix attrsets)
+  * Add niri-flake input to ~/Code/nixcfg-niri
+  * Rewrite modules/desktop/niri/home.nix from KDL strings to programs.niri.settings
+  * Convert per-host niri.nix overrides (antikythera, nflx-erahhal-p16, msi-linux)
+* Once nixcfg-niri is stable, update ~/Code/nflx-nixcfg to use it instead of the niri config that is in there.
 * Greeter config option
   * DMS Greeter vs SDDM vs new Plasma greeter
   * Is the new Plasma greeter the same as SDDM?

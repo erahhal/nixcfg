@@ -5,8 +5,6 @@
   flake.nixosModules = {
     # Desktop
     desktop = import ../modules/desktop;
-    niri = import ../modules/desktop/niri;
-    dms = import ../modules/desktop/dms-shell;
     hyprland = import ../modules/desktop/hyprland;
     plasma = import ../modules/desktop/plasma;
     sddm = import ../modules/desktop/sddm;

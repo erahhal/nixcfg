@@ -12,8 +12,7 @@ let
     ])
     ++ [
       inputs.nixos-wsl.nixosModules.default
-      inputs.dms-shell.nixosModules.default
-      inputs.dms-shell.nixosModules.greeter
+      inputs.nixcfg-niri.nixosModules.default
       inputs.nix-flatpak.nixosModules.nix-flatpak
       ({ config, ... }: {
         wsl.enable = true;
