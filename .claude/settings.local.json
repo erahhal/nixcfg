@@ -429,7 +429,8 @@
       "WebFetch(domain:code.hyprland.org)",
       "WebFetch(domain:cgit.freedesktop.org)",
       "WebFetch(domain:michael.stapelberg.ch)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(nixos-rebuild --help)"
     ],
     "deny": [],
     "ask": []

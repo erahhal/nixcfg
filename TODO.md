@@ -3,7 +3,6 @@ TODOs
 
 ## Functionality
 
-* current build scripts in flake-parts/app.nix do a build follwed by a switch, because the switch command uses sudo -E. The reason for this is that some flake inputs are private and we want to make sure the user's ssh key is used, which doesn't work with root. can we just switch to using the --sudo flag with switch instead, no first build step?  Would it use the user's keys?
 * Add first-class protonmail-bridge support if it is not already added.
   * if necessary update ~/Code/nixcfg-secrets
   * set this up with thunderbird

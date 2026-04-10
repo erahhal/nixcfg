@@ -39,11 +39,10 @@
       fi
     '';
 
-    buildAndSwitch = { extraBuildArgs ? "", extraSwitchArgs ? "" }: ''
+    buildAndSwitch = { extraArgs ? "" }: ''
       CURR_THEME=$(cat "''${HOME}/.system-theme" 2>/dev/null || echo "")
       ${preSwitch}
-      nixos-rebuild build --flake .#${hostname} ${extraBuildArgs} -L
-      sudo -E nixos-rebuild switch --flake .#${hostname} ${extraSwitchArgs} -L
+      nixos-rebuild switch --sudo --flake .#${hostname} ${extraArgs} -L
       ${postSwitch}
     '';
   in {
@@ -54,56 +53,51 @@
 
       debug = mkApp "nixcfg-debug" {
         text = buildAndSwitch {
-          extraBuildArgs = "--show-trace --override-input debug-mode github:boolean-option/true";
-          extraSwitchArgs = "--show-trace --override-input debug-mode github:boolean-option/true";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true";
         };
       };
 
       boot = mkApp "nixcfg-boot" {
         text = ''
-          sudo -E nixos-rebuild boot --flake .#${hostname} -L
+          nixos-rebuild boot --sudo --flake .#${hostname} -L
         '';
       };
 
       show-trace = mkApp "nixcfg-show-trace" {
         text = ''
           ${preSwitch}
-          sudo -E nixos-rebuild switch --show-trace --flake .#${hostname} -L
+          nixos-rebuild switch --sudo --show-trace --flake .#${hostname} -L
           ${postSwitch}
         '';
       };
 
       offline = mkApp "nixcfg-offline" {
         text = ''
-          sudo -E nixos-rebuild switch --offline --option binary-caches "" --flake .#${hostname} -L
+          nixos-rebuild switch --sudo --offline --option binary-caches "" --flake .#${hostname} -L
         '';
       };
 
       nflx-local = mkApp "nixcfg-nflx-local" {
         text = buildAndSwitch {
-          extraBuildArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg";
-          extraSwitchArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg";
         };
       };
 
       nflx-vpn = mkApp "nixcfg-nflx-vpn" {
         text = buildAndSwitch {
-          extraBuildArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso";
-          extraSwitchArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso";
         };
       };
 
       nixvim-local = mkApp "nixcfg-nixvim-local" {
         text = buildAndSwitch {
-          extraBuildArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config";
-          extraSwitchArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config";
         };
       };
 
       secrets-local = mkApp "nixcfg-secrets-local" {
         text = buildAndSwitch {
-          extraBuildArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input secrets ~/Code/nixcfg-secrets";
-          extraSwitchArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input secrets ~/Code/nixcfg-secrets";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input secrets ~/Code/nixcfg-secrets";
         };
       };
 
