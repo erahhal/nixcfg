@@ -3,8 +3,7 @@ TODOs
 
 ## Functionality
 
-* Investigate whether all the Makefile functionality could be moved to scripts managed by the flake
-  * This would include getting rid of the "build" folder
+* Clean up README.md. Not sure it even matches what is in this repo anymore. Add the commands in flake-moduels/apps.nix
 * Delete "pi" package if it's not used anywhere
 * Look into replacing custom recursiveMerge with lib.recursiveMerge
 * Get rid of all references to Networkd? Only if it's not used.
