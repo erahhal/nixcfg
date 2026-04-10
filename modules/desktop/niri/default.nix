@@ -1,5 +1,6 @@
-{ config, inputs, lib, pkgs, userParams, ... }:
+{ config, inputs, lib, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   niri-script = pkgs.writeShellScriptBin "niri" ''
     export NIRI_SOCKET=$(${pkgs.findutils}/bin/find /run/user/$(id -u) -name "niri.wayland-*.sock" 2>/dev/null | head -1)
      ${pkgs.niri}/bin/niri "$@"

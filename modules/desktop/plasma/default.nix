@@ -1,5 +1,6 @@
-{ config, inputs, lib, userParams, ... }:
+{ config, inputs, lib, ... }:
 let
+  userParams = config.hostParams.user;
   cfg = config.nixcfg.desktop.plasma;
 in
 {

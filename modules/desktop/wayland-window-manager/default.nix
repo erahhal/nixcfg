@@ -1,4 +1,5 @@
-{ pkgs, userParams, ... }:
+{ config, pkgs, ... }:
+let userParams = config.hostParams.user; in
 {
   # XDG portals - allow desktop apps to use resources outside their sandbox
   xdg.portal = {

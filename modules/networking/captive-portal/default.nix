@@ -1,5 +1,6 @@
-{ config, lib, pkgs, userParams, ... }:
+{ config, lib, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   cfg = config.nixcfg.networking.captive-portal;
 
   captive-portal-dispatcher = pkgs.writeShellScriptBin "90-captive-portal.sh" ''

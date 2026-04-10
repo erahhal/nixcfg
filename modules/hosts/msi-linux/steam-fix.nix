@@ -1,7 +1,8 @@
 ## Since the steam path is written to by the windows
 ## installation, ownership is sometimes incorrect. This
 ## script fixes permissions on startup.
-{ pkgs, userParams, ... }:
+{ config, pkgs, ... }:
+let userParams = config.hostParams.user; in
 {
   ## Override the flatpak Steam desktop file to add -cef-force-gpu flag.
   ## Without it, Steam hardcodes --disable-gpu on the CEF webhelper,

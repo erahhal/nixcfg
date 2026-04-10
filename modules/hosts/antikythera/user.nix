@@ -1,6 +1,7 @@
-{ pkgs, hostParams, userParams, ... }:
+{ config, pkgs, hostParams, ... }:
 
 let
+  userParams = config.hostParams.user;
   mcreator = pkgs.callPackage ../../../pkgs/mcreator {};
   teensy-loader-gui = pkgs.callPackage ../../../pkgs/teensy-loader-gui {};
   telegram-mz =  pkgs.writeShellScriptBin "telegram-mz" ''

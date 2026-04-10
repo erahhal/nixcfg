@@ -1,4 +1,5 @@
-{ config, pkgs, lib, userParams, ... }:
+{ config, pkgs, lib, ... }:
+let userParams = config.hostParams.user; in
 
 ## Available Themes
 # "abstractdark"; # good, needs layout fix

@@ -1,5 +1,6 @@
-{ inputs, pkgs, userParams, lib, ... }:
+{ config, inputs, pkgs, lib, ... }:
 let
+  userParams = config.hostParams.user;
   home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
   home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";

@@ -428,7 +428,8 @@
       "WebFetch(domain:deepwiki.com)",
       "WebFetch(domain:code.hyprland.org)",
       "WebFetch(domain:cgit.freedesktop.org)",
-      "WebFetch(domain:michael.stapelberg.ch)"
+      "WebFetch(domain:michael.stapelberg.ch)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []

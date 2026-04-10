@@ -1,6 +1,7 @@
-{ broken, pkgs, userParams, ... }:
+{ broken, config, pkgs, ... }:
 
 let
+  userParams = config.hostParams.user;
   mcreator = pkgs.callPackage ../../../pkgs/mcreator {};
 in
 {

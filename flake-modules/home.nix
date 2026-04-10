@@ -10,7 +10,8 @@ let
     };
   };
   recursiveMerge = import ../lib/recursive-merge.nix { inherit lib; };
-  userParams = import ../user-params.nix {};
+  # Standalone home-manager config needs user values directly (no NixOS module system)
+  userParams = { username = "erahhal"; fullName = "Ellis Rahhal"; shell = "zsh"; tty = "foot"; };
 in
 {
   flake.homeConfigurations.${userParams.username} = inputs.home-manager.lib.homeManagerConfiguration {

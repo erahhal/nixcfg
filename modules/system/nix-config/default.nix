@@ -1,5 +1,6 @@
 # Nix daemon, flake, garbage collection, and registry configuration
-{ config, pkgs, inputs, system, userParams, ... }:
+{ config, pkgs, inputs, system, ... }:
+let userParams = config.hostParams.user; in
 {
   nix = {
     package = pkgs.nixVersions.latest;

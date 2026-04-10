@@ -1,5 +1,6 @@
-{ config, lib, pkgs, userParams, ... }:
+{ config, lib, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   cfg = config.nixcfg.services.virtual-machines;
 
   run-windows = pkgs.writeScriptBin "run-windows" ''

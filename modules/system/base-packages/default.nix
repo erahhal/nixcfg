@@ -1,5 +1,6 @@
 # Base system packages installed on every host
-{ pkgs, inputs, system, userParams, ... }:
+{ config, pkgs, inputs, system, ... }:
+let userParams = config.hostParams.user; in
 {
   programs.nix-ld.enable = true;
   programs.command-not-found.enable = true;

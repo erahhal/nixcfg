@@ -1,5 +1,6 @@
-{ pkgs, userParams, ... }:
+{ config, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   mcreator = pkgs.callPackage ../../../pkgs/mcreator {};
   phockup = pkgs.callPackage ../../../pkgs/phockup {};
   teensy-loader-gui = pkgs.callPackage ../../../pkgs/teensy-loader-gui {};

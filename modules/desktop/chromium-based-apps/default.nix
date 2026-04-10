@@ -1,5 +1,6 @@
-{ config, lib, pkgs, userParams, ... }:
+{ config, lib, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   cfg = config.nixcfg.desktop.chromium-based-apps;
   usingIntel = config.hostParams.gpu.intel.enable;
   chromium-overlays = final: prev: {

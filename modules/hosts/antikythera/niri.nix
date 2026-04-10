@@ -1,4 +1,5 @@
-{ lib, userParams, ... }:
+{ config, lib, ... }:
+let userParams = config.hostParams.user; in
 {
   services.displayManager.dms-greeter = {
     compositor.customConfig = lib.mkAfter ''

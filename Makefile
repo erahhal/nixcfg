@@ -51,6 +51,10 @@ nixvim-local:
 	nixos-rebuild ${LOGFORMAT} build --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config -L |& ${NOM}
 
+secrets-local:
+	nixos-rebuild ${LOGFORMAT} build --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input secrets ~/Code/nixcfg-secrets -L |& ${NOM}
+	sudo -E nixos-rebuild ${LOGFORMAT} switch --show-trace --flake .#${HOSTNAME} --override-input debug-mode github:boolean-option/true --override-input secrets ~/Code/nixcfg-secrets -L |& ${NOM}
+
 boot:
 	sudo -E nixos-rebuild boot --flake .#${HOSTNAME} -L
 	

@@ -1,6 +1,7 @@
-{ pkgs, userParams, ... }:
+{ config, pkgs, ... }:
 
 let
+  userParams = config.hostParams.user;
   vdhcoapp = pkgs.callPackage ../../../pkgs/vdhcoapp {};
 in
 {

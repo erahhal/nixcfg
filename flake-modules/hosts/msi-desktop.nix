@@ -15,10 +15,10 @@ let
       inputs.dms-shell.nixosModules.default
       inputs.dms-shell.nixosModules.greeter
       inputs.nix-flatpak.nixosModules.nix-flatpak
-      {
+      ({ config, ... }: {
         wsl.enable = true;
-        wsl.defaultUser = shared.userParams.username;
-      }
+        wsl.defaultUser = config.hostParams.user.username;
+      })
       inputs.secrets.nixosModules.msi-desktop
     ];
   };

@@ -1,6 +1,7 @@
-{ broken, config, pkgs, userParams, ... }:
+{ broken, config, pkgs, ... }:
 
 let
+  userParams = config.hostParams.user;
   kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
   '';

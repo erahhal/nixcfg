@@ -366,9 +366,6 @@ in
     wallpaper = ,${osConfig.hostParams.desktop.wallpaper}
   '';
 
-  programs.niriswitcher = {
-    enable = true;
-  };
 
   xdg.configFile."niri/config.kdl".text = ''
     // This config is in the KDL format: https://kdl.dev
@@ -994,6 +991,15 @@ in
     /-window-rule {
         geometry-corner-radius 12
         clip-to-geometry true
+    }
+
+    recent-windows {
+        binds {
+            Alt+Tab         { next-window; }
+            Alt+Shift+Tab   { previous-window; }
+            Mod+Tab         { next-window; }
+            Mod+Shift+Tab   { previous-window; }
+        }
     }
 
     binds {

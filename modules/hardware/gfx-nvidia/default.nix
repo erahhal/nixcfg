@@ -1,4 +1,5 @@
-{ config, lib, pkgs, userParams, ... }:
+{ config, lib, pkgs, ... }:
+let userParams = config.hostParams.user; in
 
 # See: https://nixos.wiki/wiki/Nvidia
 

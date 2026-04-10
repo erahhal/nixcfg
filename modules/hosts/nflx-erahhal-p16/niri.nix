@@ -1,5 +1,6 @@
-{ config, lib, userParams, ... }:
+{ config, lib, ... }:
 let
+  userParams = config.hostParams.user;
   usingIntel = config.hostParams.gpu.intel.enable;
   defaultIntel = config.hostParams.gpu.intel.defaultWindowManagerGpu;
   debug-block = ''

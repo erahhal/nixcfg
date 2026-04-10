@@ -1,4 +1,4 @@
-{ inputs, pkgs, userParams, ... }:
+{ config, inputs, pkgs, userParams, ... }:
 let
   hyprlockCommand = pkgs.callPackage ../../../pkgs/hyprlock-command { inputs = inputs; pkgs = pkgs; };
   hyprctl="${pkgs.hyprland}/bin/hyprctl";

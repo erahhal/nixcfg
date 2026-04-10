@@ -1,4 +1,5 @@
-{ pkgs, lib, hostParams, userParams, ... }:
+{ config, pkgs, lib, hostParams, ... }:
+let userParams = config.hostParams.user; in
 {
   home-manager.users.${userParams.username} = {
 

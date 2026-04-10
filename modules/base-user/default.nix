@@ -1,6 +1,7 @@
-{ broken, config, pkgs, inputs, userParams, ... }:
+{ broken, config, pkgs, inputs, ... }:
 
 let
+  userParams = config.hostParams.user;
   env_vars = {
     EDITOR = "vim";
     # PATH = "$HOME/Scripts:$HOME/.yarn/bin:$HOME/.local/bin:$PATH";

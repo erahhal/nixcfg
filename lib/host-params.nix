@@ -39,6 +39,29 @@
       };
     };
 
+    user = {
+      username = lib.mkOption {
+        type = lib.types.str;
+        default = "erahhal";
+        description = "Primary username";
+      };
+      fullName = lib.mkOption {
+        type = lib.types.str;
+        default = "Ellis Rahhal";
+        description = "User's full name";
+      };
+      shell = lib.mkOption {
+        type = lib.types.str;
+        default = "zsh";
+        description = "Default shell";
+      };
+      tty = lib.mkOption {
+        type = lib.types.str;
+        default = "foot";
+        description = "Default terminal emulator";
+      };
+    };
+
     networking = {
       networkMonitor = {
         normalEndpoint = lib.mkOption {

@@ -1,5 +1,6 @@
-{ config, inputs, lib, pkgs, userParams, ... }:
+{ config, inputs, lib, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   cfg = config.nixcfg.desktop.hyprland;
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   # In case of a long-lived session, e.g. in tmux after logging in and back out, this

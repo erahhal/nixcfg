@@ -1,5 +1,6 @@
-{ inputs, pkgs, userParams, lib, ... }:
+{ config, inputs, pkgs, lib, ... }:
 let
+  userParams = config.hostParams.user;
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
   tv = "LG Electronics LG TV SSCR2 0x01010101";
   yamaha = "Yamaha Corporation * *";

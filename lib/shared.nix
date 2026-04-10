@@ -15,13 +15,10 @@ let
     };
   };
   recursiveMerge = import ./recursive-merge.nix { inherit lib; };
-  userParams = import ../user-params.nix {};
 
 in {
-  inherit userParams;
-
   specialArgs = {
-    inherit debugMode inputs broken recursiveMerge userParams;
+    inherit debugMode inputs broken recursiveMerge;
     system = "x86_64-linux";
   };
 
@@ -46,11 +43,11 @@ in {
   ];
 
   # Home-manager base wiring (included for every host)
-  homeManagerConfig = {
-    systemd.services."home-manager-${userParams.username}".serviceConfig = { RemainAfterExit = "yes"; };
+  homeManagerConfig = { config, ... }: {
+    systemd.services."home-manager-${config.hostParams.user.username}".serviceConfig = { RemainAfterExit = "yes"; };
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
-    home-manager.users.${userParams.username} = {config, ...}: {
+    home-manager.users.${config.hostParams.user.username} = {config, ...}: {
       imports = [
         inputs.dms-shell.homeModules.default
         inputs.lan-mouse.homeManagerModules.default

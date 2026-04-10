@@ -1,5 +1,6 @@
-{ pkgs, userParams, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
+  userParams = config.hostParams.user;
   wlr-randr = "${pkgs.wlr-randr}/bin/wlr-randr";
   grep = "${pkgs.gnugrep}/bin/grep";
   awk = "${pkgs.gawk}/bin/awk";

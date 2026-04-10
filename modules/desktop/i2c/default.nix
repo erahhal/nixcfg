@@ -1,5 +1,5 @@
-{ pkgs, userParams, ... }:
-
+{ config, pkgs, ... }:
+let userParams = config.hostParams.user; in
 {
   users.groups.i2c = {};
   users.users."${userParams.username}".extraGroups = [ "i2c" ];
