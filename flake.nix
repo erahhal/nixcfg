@@ -48,7 +48,7 @@
     flox.url = "github:flox/flox";
 
     nixcfg-niri = {
-      url = "git+file:///home/erahhal/Code/nixcfg-niri";
+      url = "github:erahhal/nixcfg-niri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -445,7 +445,8 @@
       "Bash(git:*)",
       "Bash(kill 632842 633409 633681)",
       "Bash(gpg --list-keys)",
-      "Bash(pass init:*)"
+      "Bash(pass init:*)",
+      "Bash(gpg:*)"
     ],
     "deny": [],
     "ask": []

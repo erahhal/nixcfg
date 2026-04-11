@@ -1,6 +1,21 @@
 { ... }:
 {
   hostParams = {
+    networking = {
+      networkMonitor = {
+        vpnEndpoints = {
+          tailscale0 = {
+            endpoint = "10.0.0.1";
+            method = "ping";
+          };
+          wg0 = {
+            endpoint = "github.com";
+            method = "ping";
+          };
+        };
+      };
+    };
+
     system = {
       hostName = "msi-linux";
     };
