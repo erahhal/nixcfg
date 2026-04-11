@@ -39,15 +39,6 @@
     };
 
     programs = {
-      # steam = {
-      #   ## Currently broken
-      #   bootToSteam = false;
-      #   gamescope = {
-      #     enable = true;
-      #     width = 3840;
-      #     height = 2160;
-      #   };
-      # };
       # foot is launched directly from niri spawn-at-startup (see niri.nix)
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [

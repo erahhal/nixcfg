@@ -446,7 +446,10 @@
       "Bash(kill 632842 633409 633681)",
       "Bash(gpg --list-keys)",
       "Bash(pass init:*)",
-      "Bash(gpg:*)"
+      "Bash(gpg:*)",
+      "Bash(flatpak:*)",
+      "Bash(strace -f -e trace=openat flatpak run --command=bash com.valvesoftware.Steam -c '~/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/bin/steam-runtime-check-requirements')",
+      "WebFetch(domain:patch-diff.githubusercontent.com)"
     ],
     "deny": [],
     "ask": []

@@ -39,7 +39,6 @@
       appimage.enable = true;
       android.enable = true;
       totp.enable = true;
-      steam.enable = true;
       flatpak.enable = true;
       flox.enable = true;
     };

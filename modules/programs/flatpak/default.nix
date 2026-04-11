@@ -66,6 +66,7 @@ in {
             QT_QPA_PLATFORM = "xcb";
             STEAM_FORCE_DESKTOPUI_SCALING = "2.0";
             STEAM_DISABLE_BROWSER_SANDBOX_FOR_CEF_SUBPROCESSES = "1";
+          } // lib.optionalAttrs hasNvidia {
             __NV_PRIME_RENDER_OFFLOAD = "1";
             __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
             # Was previously cleared to work around CEF GPU crash (flathub #1198),
@@ -97,6 +98,27 @@ in {
         RemainAfterExit = true;
       };
       script = "${flatpak-sync-nvidia-gl}";
+    };
+
+    # Native Steam creates some files as read-only; the Flatpak wrapper
+    # uses set -e and dies on the first failed cp/write.
+    systemd.services.steam-fix-flatpak-perms = {
+      description = "Make Steam data directory writable for Flatpak";
+      after = [ "local-fs.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        for user_home in /home/*; do
+          STEAM_DIR="$user_home/.local/share/Steam"
+          if [ -d "$STEAM_DIR" ]; then
+            ${pkgs.findutils}/bin/find "$STEAM_DIR" -maxdepth 1 ! -perm -u+w -exec chmod u+w {} +
+            echo "Fixed permissions in $STEAM_DIR"
+          fi
+        done
+      '';
     };
 
     # SteamVR Flatpak fix

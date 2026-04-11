@@ -287,34 +287,6 @@
         description = "Default web browser";
       };
 
-      steam = {
-        bootToSteam = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Boot directly to Steambox-like experience";
-        };
-
-        gamescope = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description = "Enable Steam Gamescope";
-          };
-
-          width = lib.mkOption {
-            type = lib.types.int;
-            default = 1920;
-            description = "Gamescope width";
-          };
-
-          height = lib.mkOption {
-            type = lib.types.int;
-            default = 1080;
-            description = "Gamescope height";
-          };
-        };
-      };
-
       startupApps = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [];

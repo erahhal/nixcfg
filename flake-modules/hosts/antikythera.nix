@@ -33,7 +33,6 @@ in
       appimage
       android
       totp
-      steam
       waydroid
       snapcast
       nfs-mounts
