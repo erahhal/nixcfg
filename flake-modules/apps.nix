@@ -89,6 +89,12 @@
         };
       };
 
+      niri-local = mkApp "nixcfg-niri-local" {
+        text = buildAndSwitch {
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nixcfg-niri ~/Code/nixcfg-niri";
+        };
+      };
+
       nixvim-local = mkApp "nixcfg-nixvim-local" {
         text = buildAndSwitch {
           extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nixvim-config ~/Code/nixvim-config";

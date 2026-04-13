@@ -220,6 +220,15 @@
   security.pam.services.login.fprintAuth = true;
   security.pam.services.xscreensaver.fprintAuth = true;
 
+  # Allow passwordless modprobe for DDC/CI i2c-dev reload (needed for monitor input toggle through dock MST)
+  security.sudo.extraRules = [{
+    users = [ config.hostParams.user.username ];
+    commands = [
+      { command = "/run/current-system/sw/bin/modprobe -r i2c-dev"; options = [ "NOPASSWD" ]; }
+      { command = "/run/current-system/sw/bin/modprobe i2c-dev"; options = [ "NOPASSWD" ]; }
+    ];
+  }];
+
   services.smokeping = {
     enable = false;
     hostName = "antikythera.lan";

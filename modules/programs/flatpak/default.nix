@@ -1,7 +1,63 @@
 { config, lib, pkgs, ... }:
 let
+  userParams = config.hostParams.user;
   cfg = config.nixcfg.programs.flatpak;
   hasNvidia = config.hardware.nvidia.modesetting.enable or false;
+
+  # When Steam runs in gamescope --steam mode, "Switch to Desktop" calls
+  # steamos-session-select. Provide a script that cleanly shuts down Steam.
+  steamos-session-select = pkgs.writeShellScriptBin "steamos-session-select" ''
+    ${pkgs.procps}/bin/pkill gamescope
+  '';
+
+  steam-gamescope-runtime-paths = lib.makeBinPath [
+    pkgs.niri
+    pkgs.jq
+    pkgs.gamescope
+    steamos-session-select
+  ];
+
+  steam-gamescope-flatpak-script = pkgs.writeShellScriptBin "steam-gamescope-flatpak" ''
+    # Kill any existing Steam/gamescope and clean stale state
+    ${pkgs.procps}/bin/pkill -x gamescope 2>/dev/null
+    ${pkgs.procps}/bin/pkill -x steam 2>/dev/null
+    sleep 1
+    rm -f "$XDG_RUNTIME_DIR"/gamescope-* 2>/dev/null
+    rm -f /tmp/.X*-lock 2>/dev/null
+    rm -f /tmp/.X11-unix/X[1-9]* 2>/dev/null
+    WIDTH=$(niri msg --json focused-output | jq '.modes[.current_mode].width')
+    HEIGHT=$(niri msg --json focused-output | jq '.modes[.current_mode].height')
+    INNER_W=$WIDTH
+    INNER_H=$HEIGHT
+    if [ "$WIDTH" -gt 2880 ] || [ "$HEIGHT" -gt 1800 ]; then
+      INNER_W=$((WIDTH / 2))
+      INNER_H=$((HEIGHT / 2))
+    fi
+    gamescope \
+      --steam \
+      --backend sdl \
+      -W $WIDTH \
+      -w $INNER_W \
+      -H $HEIGHT \
+      -h $INNER_H \
+      --fullscreen \
+      --grab \
+      --force-grab-cursor \
+      --cursor-scale-height $HEIGHT \
+      --adaptive-sync \
+      -- flatpak run com.valvesoftware.Steam -tenfoot -pipewire-dmabuf
+  '';
+
+  steam-gamescope-flatpak = pkgs.stdenv.mkDerivation {
+    name = "steam-gamescope-flatpak";
+    dontUnpack = true;
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    installPhase = ''
+      install -Dm755 ${steam-gamescope-flatpak-script}/bin/steam-gamescope-flatpak $out/bin/steam-gamescope-flatpak
+      wrapProgram $out/bin/steam-gamescope-flatpak \
+        --suffix PATH : ${steam-gamescope-runtime-paths}
+    '';
+  };
 
   flatpak-sync-nvidia-gl = pkgs.writeShellScript "flatpak-sync-nvidia-gl" ''
     # Get host NVIDIA driver version
@@ -80,6 +136,21 @@ in {
     };
 
     hardware.steam-hardware.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      gamescope
+      steam-gamescope-flatpak
+    ];
+
+    home-manager.users.${userParams.username} = {
+      xdg.desktopEntries.steam-gamescope-flatpak = {
+        name = "Steam (Gamescope)";
+        exec = "steam-gamescope-flatpak";
+        terminal = false;
+        type = "Application";
+        icon = "steam";
+      };
+    };
 
     xdg.portal = {
       enable = true;
