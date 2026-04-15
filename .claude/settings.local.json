@@ -489,7 +489,10 @@
       "Bash(tmux list-keys:*)",
       "Bash(chromium --user-data-dir=/tmp/chromium-test-profile --no-first-run)",
       "Bash(disown)",
-      "Bash(tmux source-file:*)"
+      "Bash(tmux source-file:*)",
+      "Read(//etc/xdg/quickshell/**)",
+      "Read(//etc/xdg/quickshell/dms-plugins/**)",
+      "Bash(/run/current-system/sw/bin/dms plugins:*)"
     ],
     "deny": [],
     "ask": []

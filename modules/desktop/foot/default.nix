@@ -1,4 +1,4 @@
-{ osConfig, userParams, ... }:
+{ lib, osConfig, userParams, ... }:
 {
   programs.foot = {
     enable = true;

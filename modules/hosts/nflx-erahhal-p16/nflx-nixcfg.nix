@@ -12,6 +12,7 @@
     };
     genai = {
       project-id = "erahhaldevtools";
+      enable-experimental-claude-optimizations = true;
       stride = {
         enable = true;
         workspace.name = "erahhal-stride";
