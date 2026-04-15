@@ -38,6 +38,7 @@ in {
     # Flake integrations
     inputs.flake-utils-plus.nixosModules.autoGenFromInputs
     inputs.home-manager.nixosModules.home-manager
+    inputs.stylix.nixosModules.stylix
   ];
 
   # Home-manager base wiring (included for every host)
@@ -51,7 +52,6 @@ in {
         inputs.nixcfg-niri.homeModules.niri
         inputs.nixcfg-niri.homeModules.startup-apps
         inputs.lan-mouse.homeManagerModules.default
-        inputs.nix-colors.homeManagerModules.default
         inputs.plasma-manager.homeModules.plasma-manager
         inputs.steam-loader.homeManagerModules.default
       ];

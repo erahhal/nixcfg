@@ -174,9 +174,26 @@ in {
   config = lib.mkIf cfg.enable {
     home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
       home.activation.chromium = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ -e ~/.config/chromium/Default/Preferences ]; then
-          ${pkgs.gnused}/bin/sed -i 's/"custom_chrome_frame":true/"custom_chrome_frame":false/g' ~/.config/chromium/Default/Preferences
-        fi
+        for prefs in ~/.config/chromium/Default/Preferences; do
+          if [ -e "$prefs" ]; then
+            ${pkgs.gnused}/bin/sed -i 's/"custom_chrome_frame":true/"custom_chrome_frame":false/g' "$prefs"
+            # Enable system theme following for live dark/light switching
+            ${pkgs.python3}/bin/python3 -c "
+import json
+path = '$prefs'
+with open(path) as f:
+    d = json.load(f)
+bt = d.setdefault('browser', {}).setdefault('theme', {})
+bt['follows_system_colors'] = True
+bt['color_scheme2'] = 0
+et = d.setdefault('extensions', {}).setdefault('theme', {})
+et.pop('id', None)
+et.pop('pack', None)
+with open(path, 'w') as f:
+    json.dump(d, f)
+" 2>/dev/null || true
+          fi
+        done
       '';
     };
 

@@ -1,4 +1,4 @@
-{ osConfig, ... }:
+{ ... }:
 {
   programs.ghostty = {
     enable = true;
@@ -6,9 +6,7 @@
     enableBashIntegration = true;
     installVimSyntax = true;
     settings = {
-      theme = "tokyonight_night";
-      font-family = "DejaVu Sans Mono";
-      font-size = toString osConfig.hostParams.desktop.ttyFontSize;
+      # Theme and fonts handled by Stylix
       link-url = true;
       clipboard-read = "allow";
       clipboard-write = "allow";

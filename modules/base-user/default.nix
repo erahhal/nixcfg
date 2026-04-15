@@ -49,7 +49,8 @@ in
     _module.args.userParams = userParams;
 
     imports = [
-      ../desktop/system-theme
+      ../desktop/theme
+      ../desktop/tmux
       ../desktop/btop
       ../programs/git-ssh-config
       ../programs/vifm

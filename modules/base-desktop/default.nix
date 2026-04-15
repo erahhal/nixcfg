@@ -73,6 +73,19 @@ in
 
   services.gnome.gnome-keyring.enable = true;
 
+  # Firefox — use "System theme — auto" to follow portal dark/light preference
+  programs.firefox = {
+    enable = true;
+    policies = {
+      Preferences = {
+        "extensions.activeThemeID" = {
+          Value = "default-theme@mozilla.org";
+          Status = "default";
+        };
+      };
+    };
+  };
+
   home-manager.users.${userParams.username} = { osConfig, ... }: {
     imports = [
       # Terminals
@@ -396,8 +409,7 @@ in
         ## audio
         easyeffects
 
-        # Browsers
-        firefox
+        # Browsers — firefox managed via programs.firefox below
         # librewolf-wayland
 
         ## apps

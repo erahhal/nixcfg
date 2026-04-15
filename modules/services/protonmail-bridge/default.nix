@@ -27,6 +27,7 @@ in
   programs.password-store.enable = true;
 
   home.activation.protonmailBridgeGpg = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    set +e
     PROTONMAIL_EMAIL="${userParams.protonmailEmail}"
     FULL_NAME="${userParams.fullName}"
 

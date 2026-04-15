@@ -10,13 +10,7 @@
         animation = "EaseOutExpo";
         duration = 5;
       };
-      font = {
-        normal = {
-          family = "DejaVu Sans Mono";
-          # style = "Medium";
-        };
-        size = osConfig.hostParams.desktop.ttyFontSize;
-      };
+      # Font handled by Stylix
       hints.enabled = [
         {
           regex = ''(mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-\u009F<>"\\s{-}\\^⟨⟩`]+'';

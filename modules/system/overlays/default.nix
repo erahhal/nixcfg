@@ -35,20 +35,6 @@
         patches = (old.patches or []) ++ [ ../../../overlays/flatpak-fix-subsandbox.patch ];
       });
 
-      # Pin gamescope to 3.16.4 to avoid SDL backend swapchain crash at high resolutions
-      # (ValveSoftware/gamescope#1857, scRGB regression in 3.16.5+)
-      # Remove this overlay once the upstream fix lands.
-      gamescope = prev.gamescope.overrideAttrs (old: rec {
-        version = "3.16.4";
-        src = prev.fetchFromGitHub {
-          owner = "ValveSoftware";
-          repo = "gamescope";
-          tag = version;
-          fetchSubmodules = true;
-          hash = "sha256-2AxqvZA1eZaJFKMfRljCIcP0M2nMngw0FQiXsfBW7IA=";
-        };
-      });
-
       jetbrains-toolbox = prev.jetbrains-toolbox.overrideAttrs (old: {
         buildInputs = (old.buildInputs or []) ++ [ prev.makeWrapper ];
         postInstall = old.postInstall or "" + ''

@@ -59,6 +59,9 @@
     # Home-manager theming
     nix-colors.url = "github:misterio77/nix-colors";
 
+    stylix.url = "github:nix-community/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
+
     # Software KVM - use flake for latest with modifier key fix (PR #238)
     lan-mouse.url = "github:feschber/lan-mouse";
     lan-mouse.inputs.nixpkgs.follows = "nixpkgs";

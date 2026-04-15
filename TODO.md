@@ -3,15 +3,12 @@ TODOs
 
 ## Functionality
 
-* Convert niri KDL string config to niri-flake programs.niri.settings (native Nix attrsets)
-  * Add niri-flake input to ~/Code/nixcfg-niri
-  * Rewrite modules/desktop/niri/home.nix from KDL strings to programs.niri.settings
-  * Convert per-host niri.nix overrides (antikythera, nflx-erahhal-p16, msi-linux)
-* Once nixcfg-niri is stable, update ~/Code/nflx-nixcfg to use it instead of the niri config that is in there.
-* Greeter config option
-  * DMS Greeter vs SDDM vs new Plasma greeter
-  * Is the new Plasma greeter the same as SDDM?
-* Centralize all theming with light and dark modes. Look into the idiomatic way used by most people using Niri+DMS
+* ~~Make specialization-based dark/light toggle faster and more reliable~~
+  * ~~Replaced full HM activate with fast symlink-swap toggle~~
+  * ~~Added Mod+Shift+T keybinding via DMS~~
+  * ~~Stylix does NOT support runtime toggling (issue #447) — kept specialization for build-time generation~~
+* Fix all evaluation warnings during build
+* in the Niri migration, it seems the touchpad mode got switched to modern mode. I prefer the old reverse mode, where moving the fingers up scrolls up, and moving the fingers down scrolls down.
 * Backups
   * Get proper backup regime of home folder
   * Borg backups? what's the best right now? https://nixos.wiki/wiki/Borg_backup
@@ -19,6 +16,9 @@ TODOs
 * Erase your darlings / Impermanence
   * https://grahamc.com/blog/erase-your-darlings/
   * https://nixos.wiki/wiki/Impermanence
+* Greeter config option
+  * DMS Greeter vs SDDM vs new Plasma greeter
+  * Is the new Plasma greeter the same as SDDM?
 
 ## Bugs
 

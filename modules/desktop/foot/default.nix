@@ -7,7 +7,7 @@
         shell = userParams.shell;
         term = "xterm-256color";
         dpi-aware = "no";
-        font = "DejaVu Sans Mono:size=" + toString osConfig.hostParams.desktop.ttyFontSize;
+        # Font handled by Stylix
         # line-height = hostParams.ttyLineHeight;
         # font-bold = "";
         # font-italic = "";

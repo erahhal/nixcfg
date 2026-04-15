@@ -1,5 +1,70 @@
-{ pkgs, lib, forceConfig, theme-colors, theme-status, userParams, ... }:
+{ pkgs, lib, config, userParams, ... }:
 let
+  colors = config.lib.stylixScheme or config.lib.stylix.colors or {};
+  hasColors = colors != {};
+
+  # Powerline rounded glyphs for tmux pill-shaped tabs
+  plRoundLeft = builtins.fromJSON ''"\\uE0B6"'';   #
+  plRoundRight = builtins.fromJSON ''"\\uE0B4"'';   #
+  windowIcon = builtins.fromJSON ''"\\uF2D0"'';     # Nerd Font window icon
+
+  # gpakosz tmux theme colors driven by Stylix base16 palette
+  theme-colors = lib.optionalString hasColors ''
+    tmux_conf_theme_colour_1="#${colors.base00}"
+    tmux_conf_theme_colour_2="#${colors.base02}"
+    tmux_conf_theme_colour_3="#${colors.base03}"
+    tmux_conf_theme_colour_4="#${colors.base0D}"
+    tmux_conf_theme_colour_5="#${colors.base0A}"
+    tmux_conf_theme_colour_6="#${colors.base01}"
+    tmux_conf_theme_colour_7="#${colors.base05}"
+    tmux_conf_theme_colour_8="#${colors.base00}"
+    tmux_conf_theme_colour_9="#${colors.base0A}"
+    tmux_conf_theme_colour_10="#${colors.base0E}"
+    tmux_conf_theme_colour_11="#${colors.base0B}"
+    tmux_conf_theme_colour_12="#${colors.base03}"
+    tmux_conf_theme_colour_13="#${colors.base05}"
+    tmux_conf_theme_colour_14="#${colors.base00}"
+    tmux_conf_theme_colour_15="#${colors.base00}"
+    tmux_conf_theme_colour_16="#${colors.base08}"
+    tmux_conf_theme_colour_17="#${colors.base06}"
+  '';
+  # gpakosz theme variables — gpakosz _apply_theme() reads these shell variables and
+  # generates tmux settings. Direct `set -g` commands get OVERRIDDEN by gpakosz.
+  # The window pill shape works because: left_separator_main is empty (default),
+  # and window_status_current_format contains the full format with  and  chars.
+  theme-status = lib.optionalString hasColors ''
+    # Message
+    tmux_conf_theme_message_fg="#${colors.base0A}"
+    tmux_conf_theme_message_bg="#${colors.base00}"
+    tmux_conf_theme_message_attr="bold"
+    tmux_conf_theme_message_command_fg="#${colors.base0A}"
+    tmux_conf_theme_message_command_bg="#${colors.base00}"
+    tmux_conf_theme_message_command_attr="bold"
+
+    # Pane borders — use gpakosz defaults (colour_2 for inactive, colour_4/cyan for active)
+    # No override needed; colour_2=base01, colour_4=base0D (teal)
+
+    # Status bar
+    tmux_conf_theme_status_fg="#${colors.base05}"
+    tmux_conf_theme_status_bg="#${colors.base00}"
+
+    # Status left: icon, session name, session-attached pill
+    tmux_conf_theme_status_left="#[fg=#${colors.base00},bg=#${colors.base00}] #[fg=#${colors.base0D},bg=#${colors.base00}] ${windowIcon} #[fg=#${colors.base03},bg=#${colors.base00}] #S #[fg=#${colors.base0B},bg=#${colors.base00}]${plRoundLeft}#[fg=#${colors.base00},bg=#${colors.base0B},bold]#{session_attached}#[fg=#${colors.base0B},bg=#${colors.base00}]${plRoundRight} "
+    tmux_conf_theme_status_left_length="100"
+
+    # Status right: battery, time, date, username pill, hostname pill
+    tmux_conf_theme_status_right_fg="#${colors.base05}"
+    tmux_conf_theme_status_right_bg="#${colors.base00}"
+    tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #[fg=#${colors.base00},bg=#${colors.base0B},bold] #{username} #[bg=#${colors.base08}]#{root}#[fg=#${colors.base00},bg=#${colors.base0D},bold] #{hostname} "
+
+    # Window status — current window as rounded pill using  (U+E0B6) and  (U+E0B4)
+    tmux_conf_theme_window_status_fg="#${colors.base04}"
+    tmux_conf_theme_window_status_bg="#${colors.base00}"
+    tmux_conf_theme_window_status_current_fg="#${colors.base00}"
+    tmux_conf_theme_window_status_current_bg="#${colors.base0D}"
+    tmux_conf_theme_window_status_current_attr="bold"
+    tmux_conf_theme_window_status_current_format="#[fg=#${colors.base0D},bg=#${colors.base00}]${plRoundLeft}#[fg=#${colors.base00},bg=#${colors.base0D},bold]#I:#W#[fg=#${colors.base0D},bg=#${colors.base01}]${plRoundRight}"
+  '';
   tmux-conf = pkgs.callPackage ../../../pkgs/tmux-conf {};
   tmuxConfBase = builtins.readFile "${tmux-conf}/.tmux.conf";
   tmuxConfLocal = builtins.readFile "${tmux-conf}/.tmux.conf.local";
@@ -66,7 +131,6 @@ let
     set -g @continuum-restore 'on'
     set -g @continuum-save-interval '5' # minutes
     run-shell ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux
-    run-shell ${pkgs.tmuxPlugins.yank}/share/tmux-plugins/yank/yank.tmux
 
     ## Set terminal colors to support RGB truecolor
     set -as terminal-features ',${term}:RGB'
@@ -108,6 +172,18 @@ let
     # Enable vim-like ctrl-v block selection
     bind -T copy-mode-vi 'C-v' send -X begin-selection \; send -X rectangle-toggle
 
+    # Clipboard copy: override gpakosz copy-selection with copy-pipe to use copy-command
+    bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel
+    bind -T copy-mode y send-keys -X copy-pipe-and-cancel
+
+    # Copy and paste in place (replaces tmux-yank Y binding)
+    bind -T copy-mode-vi Y send-keys -X copy-pipe-and-cancel \; paste-buffer -p
+    bind -T copy-mode Y send-keys -X copy-pipe-and-cancel \; paste-buffer -p
+
+    # Copy without trailing newline (replaces tmux-yank ! binding)
+    bind -T copy-mode-vi ! send-keys -X copy-pipe-and-cancel "tr -d '\\n' | ${wl-copy}"
+    bind -T copy-mode ! send-keys -X copy-pipe-and-cancel "tr -d '\\n' | ${wl-copy}"
+
     ## "send-keys" -X sends a command into copy mode
     ## @TODO: remove this once confirmed. Seems to only be needed for tmux 3.1 and older
     # bind -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel "${xclip} -i -f -selection primary | ${xclip} -i -selection clipboard"
@@ -128,7 +204,7 @@ let
     set -g extended-keys-format csi-u
  '';
 
-  tmuxConf = tmuxConfLocalThemed + tmuxConfEllis + theme-status;
+  tmuxConf = theme-colors + tmuxConfLocalThemed + tmuxConfEllis + theme-status;
 in
 {
   home.packages = with pkgs; [
@@ -138,8 +214,7 @@ in
     tmuxPlugins.open
     tmuxPlugins.resurrect
     tmuxPlugins.sensible
-    tmuxPlugins.yank
   ];
   home.file.".tmux.conf".text = tmuxConfBase;
-  home.file.".tmux.conf.local".text = if forceConfig then lib.mkForce tmuxConf else tmuxConf;
+  home.file.".tmux.conf.local".text = tmuxConf;
 }

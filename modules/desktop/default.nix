@@ -41,6 +41,40 @@ in {
   options.nixcfg.desktop.enable = lib.mkEnableOption "desktop environment";
 
   config = lib.mkIf cfg.enable {
+    # Disable Stylix chromium theme — use GTK mode instead for live dark/light switching
+    stylix.targets.chromium.enable = false;
+
+    # Stylix theming — centralized color scheme
+    stylix = {
+      enable = true;
+      image = config.hostParams.desktop.wallpaper;
+      polarity = "dark";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+
+      # Pure black background for OLED battery savings
+      override = {
+        base00 = "000000";
+      };
+
+      cursor = {
+        package = pkgs.bibata-cursors;
+        name = "Bibata-Modern-Classic";
+        size = 16;
+      };
+
+      fonts = {
+        monospace = { name = "DejaVu Sans Mono"; package = pkgs.dejavu_fonts; };
+        sansSerif = { name = "DejaVu Sans"; package = pkgs.dejavu_fonts; };
+        serif = { name = "DejaVu Serif"; package = pkgs.dejavu_fonts; };
+        sizes = {
+          terminal = lib.mkDefault (builtins.floor config.hostParams.desktop.ttyFontSize);
+          applications = 11;
+          desktop = 10;
+          popups = 10;
+        };
+      };
+    };
+
     environment.systemPackages = with pkgs; [
       mesa-demos
       inxi
