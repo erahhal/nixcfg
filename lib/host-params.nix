@@ -307,6 +307,26 @@
         default = false;
         description = "Simplified Waybar config";
       };
+
+      gamescope = {
+        halveResolution = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Halve gamescope inner resolution when display exceeds max dimensions";
+        };
+
+        maxWidth = lib.mkOption {
+          type = lib.types.int;
+          default = 2880;
+          description = "Maximum display width before resolution is halved";
+        };
+
+        maxHeight = lib.mkOption {
+          type = lib.types.int;
+          default = 1800;
+          description = "Maximum display height before resolution is halved";
+        };
+      };
     };
 
     programs = {

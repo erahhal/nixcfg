@@ -502,7 +502,12 @@
       "Read(//sys/devices/pci0000:00/0000:00:1d.0/0000:20:00.0/0000:21:02.0/0000:48:00.0/usb3/**)",
       "WebFetch(domain:highorderlogic.github.io)",
       "Bash(awk '$9 ~ /X11|X0/ {print}')",
-      "Bash(kill %1 wait)"
+      "Bash(kill %1 wait)",
+      "Bash(7z x:*)",
+      "Bash(tail -5 ls -la /tmp/ea_msi/*.msi)",
+      "Bash(cabextract ea_deep/4.cab -d ea_app_msi)",
+      "Bash(tail -5 ls -la /tmp/ea_app_msi/*.msi)",
+      "Bash(STEAM_EXTRA_COMPAT_TOOLS_PATHS=\"\" flatpak run com.github.Matoking.protontricks 1328670 --proton \"Proton - Experimental\" -c 'wine msiexec /i C:\\\\\\\\EAapp.msi /quiet')"
     ],
     "deny": [],
     "ask": []

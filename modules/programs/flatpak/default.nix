@@ -4,58 +4,16 @@ let
   cfg = config.nixcfg.programs.flatpak;
   hasNvidia = config.hardware.nvidia.modesetting.enable or false;
 
-  # When Steam runs in gamescope --steam mode, "Switch to Desktop" calls
-  # steamos-session-select. Provide a script that cleanly shuts down Steam.
-  steamos-session-select = pkgs.writeShellScriptBin "steamos-session-select" ''
-    ${pkgs.procps}/bin/pkill gamescope
-  '';
+  mkGamescopeScript = import ../../../lib/mkGamescopeScript.nix { inherit pkgs lib config; };
 
-  steam-gamescope-runtime-paths = lib.makeBinPath [
-    pkgs.niri
-    pkgs.jq
-    pkgs.gamescope
-    steamos-session-select
-  ];
-
-  steam-gamescope-flatpak-script = pkgs.writeShellScriptBin "steam-gamescope-flatpak" ''
-    # Kill any existing Steam/gamescope and clean stale state
-    ${pkgs.procps}/bin/pkill -x gamescope 2>/dev/null
-    ${pkgs.procps}/bin/pkill -x steam 2>/dev/null
-    sleep 1
-    rm -f "$XDG_RUNTIME_DIR"/gamescope-* 2>/dev/null
-    rm -f /tmp/.X*-lock 2>/dev/null
-    rm -f /tmp/.X11-unix/X[1-9]* 2>/dev/null
-    WIDTH=$(niri msg --json focused-output | jq '.modes[.current_mode].width')
-    HEIGHT=$(niri msg --json focused-output | jq '.modes[.current_mode].height')
-    INNER_W=$WIDTH
-    INNER_H=$HEIGHT
-    if [ "$WIDTH" -gt 2880 ] || [ "$HEIGHT" -gt 1800 ]; then
-      INNER_W=$((WIDTH / 2))
-      INNER_H=$((HEIGHT / 2))
-    fi
-    gamescope \
-      --steam \
-      --backend sdl \
-      -W $WIDTH \
-      -w $INNER_W \
-      -H $HEIGHT \
-      -h $INNER_H \
-      --fullscreen \
-      --grab \
-      --force-grab-cursor \
-      --cursor-scale-height $HEIGHT \
-      --adaptive-sync \
-      -- flatpak run com.valvesoftware.Steam -tenfoot -pipewire-dmabuf
-  '';
-
-  steam-gamescope-flatpak = pkgs.stdenv.mkDerivation {
+  steam-gamescope-flatpak = mkGamescopeScript {
     name = "steam-gamescope-flatpak";
-    dontUnpack = true;
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    installPhase = ''
-      install -Dm755 ${steam-gamescope-flatpak-script}/bin/steam-gamescope-flatpak $out/bin/steam-gamescope-flatpak
-      wrapProgram $out/bin/steam-gamescope-flatpak \
-        --suffix PATH : ${steam-gamescope-runtime-paths}
+    innerCommand = "flatpak run com.valvesoftware.Steam -tenfoot -steamos3 -pipewire-dmabuf";
+    # Remove stale theme symlinks in Flatpak persistent storage that conflict
+    # with bwrap when home-manager nix store paths change after rebuilds
+    preCommands = ''
+      rm -rf "$HOME/.var/app/com.valvesoftware.Steam/.themes" 2>/dev/null
+      rm -rf "$HOME/.var/app/com.valvesoftware.Steam/.icons" 2>/dev/null
     '';
   };
 
@@ -103,6 +61,7 @@ in {
       enable = true;
       packages = [
         "com.valvesoftware.Steam"
+        "com.github.Matoking.protontricks"
         "net.davidotek.pupgui2"
         "com.tencent.WeChat"
       ];
@@ -114,6 +73,10 @@ in {
           Context = {
             filesystems = [
               "~/.local/share/Steam"
+              "~/.themes:ro"
+              "~/.icons:ro"
+              "~/.local/bin:ro"
+              "/nix/store:ro"
             ];
           };
           Environment = {
@@ -122,6 +85,8 @@ in {
             QT_QPA_PLATFORM = "xcb";
             STEAM_FORCE_DESKTOPUI_SCALING = "2.0";
             STEAM_DISABLE_BROWSER_SANDBOX_FOR_CEF_SUBPROCESSES = "1";
+            STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${pkgs.proton-ge-bin.steamcompattool}";
+            PATH = "/app/bin:/app/utils/bin:/usr/bin:/home/${userParams.username}/.local/bin";
           } // lib.optionalAttrs hasNvidia {
             __NV_PRIME_RENDER_OFFLOAD = "1";
             __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
@@ -142,7 +107,7 @@ in {
       steam-gamescope-flatpak
     ];
 
-    home-manager.users.${userParams.username} = {
+    home-manager.users.${userParams.username} = { lib, ... }: {
       xdg.desktopEntries.steam-gamescope-flatpak = {
         name = "Steam (Gamescope)";
         exec = "steam-gamescope-flatpak";
@@ -150,6 +115,22 @@ in {
         type = "Application";
         icon = "steam";
       };
+
+      # Place steamos-session-select inside ~/.local/bin so the Flatpak sandbox
+      # can find it when Steam's "Switch to Desktop" falls back to the legacy
+      # path: PATH="${SYSTEM_PATH-${PATH}}" steamos-session-select <session>
+      # Kills Steam from within the sandbox; gamescope exits when its child dies.
+      # Written as a real file (not symlink) because home-manager symlinks
+      # point to the nix store which isn't accessible inside the Flatpak sandbox.
+      home.activation.steamos-session-select = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "$HOME/.local/bin"
+        cat > "$HOME/.local/bin/steamos-session-select" << 'SCRIPT'
+#!/bin/sh
+kill $(pidof steam) 2>/dev/null
+touch "$HOME/.local/share/Steam/.gamescope-exit"
+SCRIPT
+        chmod +x "$HOME/.local/bin/steamos-session-select"
+      '';
     };
 
     xdg.portal = {

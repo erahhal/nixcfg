@@ -1265,12 +1265,12 @@
         "rev": "58d29862b00fa4949b7f982d5cc1ac95e1c62c45",
         "revCount": 128,
         "type": "git",
-        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
       }
     },
     "niri-flake": {

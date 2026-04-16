@@ -1,0 +1,106 @@
+diff --git a/src/rendervulkan.cpp b/src/rendervulkan.cpp
+index abcdef1..1234567 100644
+--- a/src/rendervulkan.cpp
++++ b/src/rendervulkan.cpp
+@@ -3025,9 +3025,8 @@ void vulkan_present_to_window( void )
+ 	else
+ 		vulkan_remake_swapchain();
+
+-	while ( !acquire_next_image() )
+-		vulkan_remake_swapchain();
++	vulkan_remake_and_acquire();
+ }
+
+ gamescope::Rc<CVulkanTexture> vulkan_create_1d_lut(uint32_t size)
+@@ -3246,6 +3245,7 @@ static bool vulkan_make_output_images( VulkanOutput_t *pOutput )
+ bool vulkan_remake_swapchain( void )
+ {
+ 	std::unique_lock lock(present_wait_lock);
++	VkResult result;
+ 	g_currentPresentWaitId = 0;
+ 	g_currentPresentWaitId.notify_all();
+
+@@ -3260,8 +3260,32 @@ bool vulkan_remake_swapchain( void )
+ 	for (auto& pScreenshotImage : pOutput->pScreenshotImages)
+ 		pScreenshotImage = nullptr;
+
++	// Re-query surface capabilities before recreating the swapchain.
++	// The capabilities (image extents, formats) may have changed since
++	// init -- e.g. when the SDL window is shown or fullscreened on a
++	// Wayland compositor. Without this, vkCreateSwapchainKHR fails with
++	// stale extents, causing an infinite loop or crash.
++	if ( GetBackend()->UsesVulkanSwapchain() )
++	{
++		result = g_device.vk.GetPhysicalDeviceSurfaceCapabilitiesKHR( g_device.physDev(), pOutput->surface, &pOutput->surfaceCaps );
++		if ( result != VK_SUCCESS )
++		{
++			fprintf( stderr, "[gamescope] vulkan_remake_swapchain: failed to re-query surface caps\n" );
++			return false;
++		}
++		uint32_t formatCount = 0;
++		result = g_device.vk.GetPhysicalDeviceSurfaceFormatsKHR( g_device.physDev(), pOutput->surface, &formatCount, nullptr );
++		if ( result == VK_SUCCESS && formatCount != 0 )
++		{
++			pOutput->surfaceFormats.resize( formatCount );
++			g_device.vk.GetPhysicalDeviceSurfaceFormatsKHR( g_device.physDev(), pOutput->surface, &formatCount, pOutput->surfaceFormats.data() );
++		}
++	}
++
+ 	bool bRet = vulkan_make_swapchain( pOutput );
+-	assert( bRet ); // Something has gone horribly wrong!
++	if ( !bRet )
++		fprintf( stderr, "[gamescope] vulkan_remake_swapchain: swapchain recreation failed\n" );
+ 	return bRet;
+ }
+
++bool vulkan_remake_and_acquire( void )
++{
++	int attempts = 0;
++	while ( !acquire_next_image() )
++	{
++		if ( ++attempts > 3 || !vulkan_remake_swapchain() )
++			return false;
++	}
++	return true;
++}
++
+ static bool vulkan_make_output_images( VulkanOutput_t *pOutput )
+ {
+ 	CVulkanTexture::createFlags outputImageflags;
+@@ -3414,8 +3438,7 @@ bool vulkan_make_output()
+ 		if ( !vulkan_make_swapchain( pOutput ) )
+ 			return false;
+
+-		while ( !acquire_next_image() )
+-			vulkan_remake_swapchain();
++		vulkan_remake_and_acquire();
+ 	}
+ 	else
+ 	{
+diff --git a/src/rendervulkan.hpp b/src/rendervulkan.hpp
+index abcdef2..1234568 100644
+--- a/src/rendervulkan.hpp
++++ b/src/rendervulkan.hpp
+@@ -419,6 +419,7 @@ void vulkan_garbage_collect( void );
+ bool vulkan_remake_swapchain( void );
+ bool vulkan_remake_output_images( void );
+ bool acquire_next_image( void );
++bool vulkan_remake_and_acquire( void );
+
+ struct wlr_buffer;
+
+diff --git a/src/steamcompmgr.cpp b/src/steamcompmgr.cpp
+index abcdef3..1234569 100644
+--- a/src/steamcompmgr.cpp
++++ b/src/steamcompmgr.cpp
+@@ -8556,9 +8556,7 @@ vblank:
+ 			if ( GetBackend()->UsesVulkanSwapchain() )
+ 			{
+ 				vulkan_remake_swapchain();
+-
+-				while ( !acquire_next_image() )
+-					vulkan_remake_swapchain();
++				vulkan_remake_and_acquire();
+ 			}
+ 			else
+ 			{
