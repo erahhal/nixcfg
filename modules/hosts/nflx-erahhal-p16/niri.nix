@@ -44,30 +44,35 @@ let
     + ''
       }
   '';
+
+  greeter-compositor-config = lib.mkAfter ''
+    ${debug-block}
+
+    // ThinkVision on the left
+    output "Lenovo Group Limited P40w-20 V90DFGMV" {
+      mode "5120x2160@60.000"
+      scale 1.333333
+      position x=0 y=0
+      variable-refresh-rate
+      focus-at-startup
+    }
+
+    // Internal laptop display on the right
+    output "eDP-1" {
+      mode "3840x2400@60"
+      scale 2.1333333
+      position x=3843 y=1300
+      variable-refresh-rate
+    }
+  '';
 in
 {
-  services.displayManager.dms-greeter = {
-    compositor.customConfig = lib.mkAfter ''
-      ${debug-block}
-
-      // ThinkVision on the left
-      output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@60.000"
-        scale 1.333333
-        position x=0 y=0
-        variable-refresh-rate
-        focus-at-startup
-      }
-
-      // Internal laptop display on the right
-      output "eDP-1" {
-        mode "3840x2400@60"
-        scale 2.1333333
-        position x=3843 y=1300
-        variable-refresh-rate
-      }
-    '';
-  };
+  # Set both option paths so the config applies whether the greeter is
+  # sourced from the DMS flake (programs.dank-material-shell.greeter) or
+  # from the nixpkgs-native module (services.displayManager.dms-greeter).
+  # Only one is active at a time; the unused one is a no-op.
+  programs.dank-material-shell.greeter.compositor.customConfig = greeter-compositor-config;
+  services.displayManager.dms-greeter.compositor.customConfig = greeter-compositor-config;
 
   home-manager.users.${userParams.username} = {
     programs.niri.settings = {

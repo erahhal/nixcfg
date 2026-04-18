@@ -57,30 +57,34 @@ let
       notify "Unknown current input: 0x$CURRENT_INPUT"
     fi
   '';
+  greeter-compositor-config = lib.mkAfter ''
+    // Internal laptop display on the left
+    // ThinkVision logical: 3843x1621, Laptop logical: 1600x1000
+    // Bottom-align: y = 1621 - 1125 = 496
+    output "eDP-1" {
+      mode "2880x1800@120"
+      scale 1.8
+      position x=0 y=800
+      variable-refresh-rate
+    }
+
+    // ThinkVision on the right
+    output "Lenovo Group Limited P40w-20 V90DFGMV" {
+      mode "5120x2160@60.000"
+      scale 1.333333
+      position x=1600 y=0
+      focus-at-startup
+      variable-refresh-rate
+    }
+  '';
 in
 {
-  services.displayManager.dms-greeter = {
-    compositor.customConfig = lib.mkAfter ''
-      // Internal laptop display on the left
-      // ThinkVision logical: 3843x1621, Laptop logical: 1600x1000
-      // Bottom-align: y = 1621 - 1125 = 496
-      output "eDP-1" {
-        mode "2880x1800@120"
-        scale 1.8
-        position x=0 y=800
-        variable-refresh-rate
-      }
-
-      // ThinkVision on the right
-      output "Lenovo Group Limited P40w-20 V90DFGMV" {
-        mode "5120x2160@60.000"
-        scale 1.333333
-        position x=1600 y=0
-        focus-at-startup
-        variable-refresh-rate
-      }
-    '';
-  };
+  # Set both option paths so the config applies whether the greeter is
+  # sourced from the DMS flake (programs.dank-material-shell.greeter) or
+  # from the nixpkgs-native module (services.displayManager.dms-greeter).
+  # Only one is active at a time; the unused one is a no-op.
+  programs.dank-material-shell.greeter.compositor.customConfig = greeter-compositor-config;
+  services.displayManager.dms-greeter.compositor.customConfig = greeter-compositor-config;
 
   home-manager.users.${userParams.username} = {
     programs.niri.settings = {
