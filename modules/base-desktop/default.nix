@@ -31,12 +31,14 @@ in
     # GLFW_IM_MODULE = "ibus";
 
     GLFW_IM_MODULE = "fcitx";
-    ## This interferes with wayland input, and should be set per-app
+    ## Both GTK_IM_MODULE and QT_IM_MODULE interfere with the Wayland input
+    ## method frontend. Leave them unset so GTK/Qt apps use the Wayland
+    ## text-input protocol directly (see i18n.inputMethod.fcitx5.waylandFrontend).
     # GTK_IM_MODULE = "fcitx";
+    # QT_IM_MODULE = "fcitx";
     INPUT_METHOD = "fcitx";
     XMODIFIERS = "@im=fcitx";
     IMSETTINGS_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
     SDL_IM_MODULE = "fcitx";
     XIM_SERVERS = "fcitx";
     XIM = "fcitx";
@@ -114,16 +116,68 @@ in
         # ibus = { engines = with pkgs.ibus-engines; [ libpinyin rime ]; };
         type = "fcitx5";
         enable = true;
-        fcitx5.addons = with pkgs; [
-          qt6Packages.fcitx5-configtool
-          qt6Packages.fcitx5-chinese-addons
-          fcitx5-gtk
-          fcitx5-nord
-          fcitx5-rime
-          libsForQt5.fcitx5-qt
-          plasma5Packages.fcitx5-qt
-          rime-data
-        ];
+        fcitx5 = {
+          # Use Wayland input method frontend: prevents home-manager from
+          # setting GTK_IM_MODULE/QT_IM_MODULE so GTK/Qt apps use the Wayland
+          # text-input protocol directly. See https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
+          waylandFrontend = true;
+          addons = with pkgs; [
+            qt6Packages.fcitx5-configtool
+            qt6Packages.fcitx5-chinese-addons
+            fcitx5-gtk
+            fcitx5-mozc
+            fcitx5-nord
+            fcitx5-rime
+            libsForQt5.fcitx5-qt
+            plasma5Packages.fcitx5-qt
+            rime-data
+          ];
+          ## Declarative IMEs: keyboard-us + pinyin + mozc.
+          ## ~/.config/fcitx5/ is a read-only symlink into a home-manager
+          ## linkFarm (stylix writes conf/classicui.conf through the same
+          ## `settings` API), so fcitx5-configtool changes never stick.
+          ## Merge into that linkFarm via settings.inputMethod / globalOptions.
+          settings = {
+            inputMethod = {
+              "Groups/0" = {
+                Name = "Default";
+                "Default Layout" = "us";
+                DefaultIM = "keyboard-us";
+              };
+              "Groups/0/Items/0" = {
+                Name = "keyboard-us";
+                Layout = "";
+              };
+              "Groups/0/Items/1" = {
+                Name = "pinyin";
+                Layout = "";
+              };
+              "Groups/0/Items/2" = {
+                Name = "mozc";
+                Layout = "";
+              };
+              GroupOrder."0" = "Default";
+            };
+            globalOptions = {
+              Hotkey = {
+                EnumerateWithTriggerKeys = "True";
+                EnumerateGroupForwardKeys = "Super+space";
+                EnumerateGroupBackwardKeys = "Shift+Super+space";
+              };
+              "Hotkey/TriggerKeys"."0" = "Control+space";
+              Behavior = {
+                ActiveByDefault = "False";
+                ShareInputState = "No";
+                PreeditEnabledByDefault = "True";
+                ShowInputMethodInformation = "True";
+                showInputMethodInformationWhenFocusIn = "False";
+                CompactInputMethodInformation = "True";
+                ShowFirstInputMethodInformation = "True";
+                DefaultPageSize = 5;
+              };
+            };
+          };
+        };
       };
     };
 
@@ -392,7 +446,10 @@ in
         xdpyinfo
         xeyes
         xhost
+        xlsclients        # List X11 clients connected to Xwayland
+        xprop             # Inspect X11 window properties (click-to-identify)
         xsel              # Manipulate xwindows clipboard
+        xwininfo          # Show X11 window tree / structure
 
         ## Cross-system desktop KVM
         deskflow

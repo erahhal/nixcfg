@@ -25,6 +25,7 @@ in
   '';
 
   programs.password-store.enable = true;
+  programs.password-store.settings = { };
 
   home.activation.protonmailBridgeGpg = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     set +e

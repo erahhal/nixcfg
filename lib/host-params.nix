@@ -272,6 +272,36 @@
         description = "Path to wallpaper";
       };
 
+      location = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "City/region display string (used by widgets: weather, news, events, etc.).";
+      };
+
+      coordinates = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Latitude, longitude (used by widgets needing GPS: weather, local services, etc.).";
+      };
+
+      useFahrenheit = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Use Fahrenheit instead of Celsius wherever temperature is displayed.";
+      };
+
+      killOnExit = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "Process names to pkill before session exit/reboot/poweroff, for a clean logout.";
+      };
+
+      cycleColumnsOnRepeatedWorkspaceFocus = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "When pressing Mod+<N> while already on workspace N, cycle through columns instead of doing nothing.";
+      };
+
       waybarSimple = lib.mkOption {
         type = lib.types.bool;
         default = false;

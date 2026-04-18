@@ -492,7 +492,17 @@
       "Bash(tmux source-file:*)",
       "Read(//etc/xdg/quickshell/**)",
       "Read(//etc/xdg/quickshell/dms-plugins/**)",
-      "Bash(/run/current-system/sw/bin/dms plugins:*)"
+      "Bash(/run/current-system/sw/bin/dms plugins:*)",
+      "Bash(nvim --version)",
+      "Bash(nvim --headless -c 'echo stdpath\\(\"config\"\\)' -c 'echo stdpath\\(\"data\"\\)' -c 'qa')",
+      "Read(//dev/input/**)",
+      "Read(//proc/bus/input/**)",
+      "Bash(last reboot *)",
+      "Read(//sys/bus/usb/devices/**)",
+      "Read(//sys/devices/pci0000:00/0000:00:1d.0/0000:20:00.0/0000:21:02.0/0000:48:00.0/usb3/**)",
+      "WebFetch(domain:highorderlogic.github.io)",
+      "Bash(awk '$9 ~ /X11|X0/ {print}')",
+      "Bash(kill %1 wait)"
     ],
     "deny": [],
     "ask": []

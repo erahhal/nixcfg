@@ -77,6 +77,12 @@
         '';
       };
 
+      local = mkApp "nixcfg-nflx-local" {
+        text = buildAndSwitch {
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso --override-input nixcfg-niri ~/Code/nixcfg-niri --override-input nixvim-config ~/Code/nixvim-config --override-input secrets ~/Code/nixcfg-secrets";
+        };
+      };
+
       nflx-local = mkApp "nixcfg-nflx-local" {
         text = buildAndSwitch {
           extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg";

@@ -51,6 +51,8 @@
 
       # display
       ./kanshi.nix
+      ../../desktop/niri/user-window-rules.nix
+      ../../desktop/niri/user-overrides.nix
     ];
 
   # Disable gnome-keyring since we use autologin and don't need password storage

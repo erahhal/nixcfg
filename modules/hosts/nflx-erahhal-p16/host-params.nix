@@ -55,6 +55,29 @@
       dpi = 210;
 
       wallpaper = ../../../wallpapers/tokyo-park.jpeg;
+
+      location = "Los Angeles, CA";
+      coordinates = "34.1509, 118.4487";
+      useFahrenheit = true;
+
+      killOnExit = [
+        "chromium" "chrome"
+        "slack" "Slack"
+        "brave" "Brave"
+        "joplin" "joplin-desktop"
+        "code"
+        "spotify" "Spotify"
+        "firefox"
+        "signal" "signal-desktop" "Signal"
+        "telegram" "telegram-desktop" "Telegram"
+        "discord" "Discord"
+        "vesktop"
+        "app.asar"
+        "element" "element-desktop" "Element"
+        "electron"
+        "whatsapp-for-linux"
+        "vlc"
+      ];
     };
 
     programs = {

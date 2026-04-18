@@ -75,6 +75,8 @@
     # Display config
     ./kanshi.nix
     ./niri.nix
+    ../../desktop/niri/user-window-rules.nix
+    ../../desktop/niri/user-overrides.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {
@@ -309,6 +311,12 @@
     ## Settings that supposedly increase gaming perf and prevent HDMI audio dropouts during gaming
     "preempt=full"    # Realitime latency
     "threadirqs"      # forces most interrupt handlers to run in a threaded context, thus reducing input latency.
+
+    # Retry PCI resource assignment so the TB4 dock's downstream bridges get I/O space.
+    # Without this, "bridge window [io size 0x5000]: can't assign; no space" errors on
+    # the Goshen Ridge bridges leave the dock's USB 2.0 tunnel (Fresco Logic V1003,
+    # 17ef:30ba) unenumerated, which breaks every HID device on the dock/monitor.
+    "pci=realloc=on"
   ];
 
   # Disable wakeup sources that cause spurious wakes with Thunderbolt dock

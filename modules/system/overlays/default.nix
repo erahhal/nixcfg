@@ -27,14 +27,6 @@
 
   nixpkgs.overlays = [
     (final: prev: {
-      # Fix Flatpak 1.16.4 regression that breaks sub-sandboxing with --app-path=""
-      # (flatpak/flatpak#6568, fixed by flatpak/flatpak#6569)
-      # This causes steam-runtime-check-requirements to fail, preventing Steam from launching.
-      # Remove this overlay once nixpkgs updates to a Flatpak version that includes the fix.
-      flatpak = prev.flatpak.overrideAttrs (old: {
-        patches = (old.patches or []) ++ [ ../../../overlays/flatpak-fix-subsandbox.patch ];
-      });
-
       jetbrains-toolbox = prev.jetbrains-toolbox.overrideAttrs (old: {
         buildInputs = (old.buildInputs or []) ++ [ prev.makeWrapper ];
         postInstall = old.postInstall or "" + ''

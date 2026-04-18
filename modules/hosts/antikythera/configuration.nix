@@ -64,6 +64,8 @@
     # Display config
     ./kanshi.nix
     ./niri.nix
+    ../../desktop/niri/user-window-rules.nix
+    ../../desktop/niri/user-overrides.nix
   ];
 
   nixpkgs = {

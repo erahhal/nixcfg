@@ -11,7 +11,7 @@
 
     desktop = {
       dpi = 210;
-      wallpaper = ../../../wallpapers/teundenouden-polar-gilds-darkened-CC-BY-NC-ND-3.0.png;
+      wallpaper = ../../../wallpapers/yellowstone.jpg;
     };
 
     gpu = {
