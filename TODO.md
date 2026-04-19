@@ -3,7 +3,6 @@ TODOs
 
 ## Functionality
 
-* Determine whether kmscon can work on multiple monitors/external monitors, and can dynamically update resolution/scaling with external monitor connection/disconnection.
 * Backups
   * Get proper backup regime of home folder
   * Borg backups? what's the best right now? https://nixos.wiki/wiki/Borg_backup
