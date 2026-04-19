@@ -63,7 +63,10 @@ in {
           package = pkgs.nerd-fonts.droid-sans-mono;
         }
       ];
-      extraConfig = "backspace-delete";
+      extraConfig = ''
+        backspace-delete
+        use-original-mode
+      '';
       extraOptions = "--font-size 19";
     };
   };
