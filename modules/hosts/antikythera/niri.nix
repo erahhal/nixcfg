@@ -7,51 +7,53 @@ let
   notify-send = "${pkgs.libnotify}/bin/notify-send";
 
   toggle-thinkvision-input = pkgs.writeShellScript "toggle-input" ''
+    CACHE="/tmp/thinkvision_bus"
+
     notify() {
       ${notify-send} -t 3000 "Monitor Input" "$1"
     }
 
-    try_detect() {
-      ${ddcutil} detect --sleep-multiplier 2 2>/dev/null | grep -i "P40w-20"
-    }
-
+    # Try cached bus first, fall back to full detect
     get_bus() {
-      ${ddcutil} detect --sleep-multiplier 2 2>/dev/null | grep -B 4 "P40w-20" | grep "I2C bus:" | sed -E 's/.*\/dev\/i2c-([0-9]+).*/\1/'
-    }
+      if [ -f "$CACHE" ]; then
+        cached=$(cat "$CACHE")
+        # Verify cached bus still works
+        if ${ddcutil} --bus "$cached" --skip-ddc-checks getvcp 60 &>/dev/null; then
+          echo "$cached"
+          return
+        fi
+        rm -f "$CACHE"
+      fi
 
-    MONITOR_CONNECTED=$(try_detect)
-
-    # If not found, try reloading i2c-dev and retry
-    if [ -z "$MONITOR_CONNECTED" ]; then
-      for attempt in 1 2; do
+      # Full detect with i2c-dev reload fallback
+      for attempt in 1 2 3; do
+        BUS=$(${ddcutil} detect 2>/dev/null | grep -B 4 "P40w-20" | grep "I2C bus:" | sed -E 's/.*\/dev\/i2c-([0-9]+).*/\1/')
+        if [ -n "$BUS" ]; then
+          echo "$BUS" > "$CACHE"
+          echo "$BUS"
+          return
+        fi
         sudo ${modprobe} -r i2c-dev 2>/dev/null
         sudo ${modprobe} i2c-dev 2>/dev/null
         sleep 1
-        MONITOR_CONNECTED=$(try_detect)
-        [ -n "$MONITOR_CONNECTED" ] && break
       done
-    fi
-
-    if [ -z "$MONITOR_CONNECTED" ]; then
-      notify "P40w-20 not detected (DDC/CI unavailable through dock MST)"
-      exit 1
-    fi
+    }
 
     BUS_NUMBER=$(get_bus)
     if [ -z "$BUS_NUMBER" ]; then
-      notify "Could not determine I2C bus for P40w-20"
+      notify "P40w-20 not detected (DDC/CI unavailable)"
       exit 1
     fi
 
-    CURRENT_INPUT=$(${ddcutil} --bus "$BUS_NUMBER" --sleep-multiplier 2 getvcp 60 2>/dev/null | grep -o "sl=0x[0-9a-f]\+" | cut -d'x' -f2)
+    CURRENT_INPUT=$(${ddcutil} --bus "$BUS_NUMBER" --skip-ddc-checks getvcp 60 2>/dev/null | grep -o "sl=0x[0-9a-f]\+" | cut -d'x' -f2)
     CURRENT_INPUT=''${CURRENT_INPUT#0x}
     CURRENT_INPUT=$(echo "$CURRENT_INPUT" | tr '[:upper:]' '[:lower:]')
 
     if [ "$CURRENT_INPUT" = "0f" ] || [ "$CURRENT_INPUT" = "f" ]; then
-      ${ddcutil} --bus "$BUS_NUMBER" --sleep-multiplier 2 setvcp 60 0x31 2>/dev/null
+      ${ddcutil} --bus "$BUS_NUMBER" --skip-ddc-checks --noverify setvcp 60 0x31 2>/dev/null
       notify "Switched to HDMI-2"
     elif [ "$CURRENT_INPUT" = "31" ]; then
-      ${ddcutil} --bus "$BUS_NUMBER" --sleep-multiplier 2 setvcp 60 0x0f 2>/dev/null
+      ${ddcutil} --bus "$BUS_NUMBER" --skip-ddc-checks --noverify setvcp 60 0x0f 2>/dev/null
       notify "Switched to DisplayPort-1"
     else
       notify "Unknown current input: 0x$CURRENT_INPUT"

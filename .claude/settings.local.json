@@ -509,7 +509,10 @@
       "Bash(tail -5 ls -la /tmp/ea_app_msi/*.msi)",
       "Bash(STEAM_EXTRA_COMPAT_TOOLS_PATHS=\"\" flatpak run com.github.Matoking.protontricks 1328670 --proton \"Proton - Experimental\" -c 'wine msiexec /i C:\\\\\\\\EAapp.msi /quiet')",
       "Read(//sys/devices/pci0000:00/0000:00:08.3/0000:c6:00.4/usb7/7-1/**)",
-      "Bash(awk '{print $1, $2, $3, $5, $6, $7, $8, $9}')"
+      "Bash(awk '{print $1, $2, $3, $5, $6, $7, $8, $9}')",
+      "WebFetch(domain:www.mankier.com)",
+      "WebFetch(domain:manpages.debian.org)",
+      "WebFetch(domain:dvdhrm.wordpress.com)"
     ],
     "deny": [],
     "ask": []

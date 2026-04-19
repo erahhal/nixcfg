@@ -53,17 +53,18 @@ in {
 
     ## after boot, use graphical console TTY that supports TrueType fonts and glyphs
     services.kmscon = {
-      enable = false;
+      enable = true;
       hwRender = true;
+      useXkbConfig = true;
+      term = "xterm-256color";
       fonts =  [
         {
           name = "DejaVu Sans Mono";
           package = pkgs.nerd-fonts.droid-sans-mono;
         }
       ];
-      extraOptions = ''
-        --login ${pkgs.shadow}/bin/login --xkb-layout us --term xterm-256color --font-name "DejaVu Sans Mono" --font-size 19
-      '';
+      extraConfig = "backspace-delete";
+      extraOptions = "--font-size 19";
     };
   };
 }

@@ -1400,11 +1400,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776496559,
-        "narHash": "sha256-mib8l+SXF6KuRYdD3R+lk2kMf6FaRhL6fOlK+W8Y5hM=",
+        "lastModified": 1776618672,
+        "narHash": "sha256-7ljfZltEqywLn9SW7fN8TvZWYjoIrzJcrcbJv2PNG4g=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "0e503f1e03b9a359358b1ebb47fed238fb60f081",
+        "rev": "307d763631efc1562def0ef29d26ce573e9093c4",
         "type": "github"
       },
       "original": {
@@ -1841,11 +1841,11 @@
         "nixvim": "nixvim_2"
       },
       "locked": {
-        "lastModified": 1776465974,
-        "narHash": "sha256-N/+cBnX1T66J05gc2B+AjtP1jW502P52W1oGe87ugJY=",
+        "lastModified": 1776619361,
+        "narHash": "sha256-leFSeyxjBX17O1l6jIiLc4vYEDWIquc0LBSKnd0sW8M=",
         "ref": "refs/heads/main",
-        "rev": "af44522add37cc21871854ef0cc0767c245114d1",
-        "revCount": 48,
+        "rev": "ac73dbf4a89f896db1ea05c9876948a176cc3dd7",
+        "revCount": 49,
         "type": "git",
         "url": "https://git.homefree.host/homefree/nixvim-config"
       },

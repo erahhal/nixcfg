@@ -1,26 +1,39 @@
 { lib, pkgs, ... }:
 let
   toggle-thinkvision-input = pkgs.writeShellScript "toggle-input" ''
-    MONITOR_CONNECTED=$(${pkgs.ddcutil}/bin/ddcutil detect | grep -i "P40w-20")
-    if [ -z "$MONITOR_CONNECTED" ]; then
-      echo "ThinkVision P40w-20 monitor not detected. No action taken."
-      exit 1
-    fi
-    BUS_NUMBER=$(${pkgs.ddcutil}/bin/ddcutil detect | grep -B 4 "P40w-20" | grep "I2C bus:" | sed -E 's/.*\/dev\/i2c-([0-9]+).*/\1/')
+    CACHE="/tmp/thinkvision_bus"
+
+    get_bus() {
+      if [ -f "$CACHE" ]; then
+        cached=$(cat "$CACHE")
+        if ${pkgs.ddcutil}/bin/ddcutil --bus "$cached" --skip-ddc-checks getvcp 60 &>/dev/null; then
+          echo "$cached"
+          return
+        fi
+        rm -f "$CACHE"
+      fi
+
+      BUS=$(${pkgs.ddcutil}/bin/ddcutil detect 2>/dev/null | grep -B 4 "P40w-20" | grep "I2C bus:" | sed -E 's/.*\/dev\/i2c-([0-9]+).*/\1/')
+      if [ -n "$BUS" ]; then
+        echo "$BUS" > "$CACHE"
+        echo "$BUS"
+      fi
+    }
+
+    BUS_NUMBER=$(get_bus)
     if [ -z "$BUS_NUMBER" ]; then
-      echo "Could not determine I2C bus for ThinkVision P40w-20. No action taken."
+      echo "ThinkVision P40w-20 not detected."
       exit 1
     fi
-    echo "Found ThinkVision P40w-20 on bus $BUS_NUMBER"
-    CURRENT_INPUT=$(${pkgs.ddcutil}/bin/ddcutil --bus $BUS_NUMBER getvcp 60 | grep -o "sl=0x[0-9a-f]\+" | cut -d'x' -f2)
+
+    CURRENT_INPUT=$(${pkgs.ddcutil}/bin/ddcutil --bus "$BUS_NUMBER" --skip-ddc-checks getvcp 60 2>/dev/null | grep -o "sl=0x[0-9a-f]\+" | cut -d'x' -f2)
     CURRENT_INPUT=''${CURRENT_INPUT#0x}
     CURRENT_INPUT=$(echo "$CURRENT_INPUT" | tr '[:upper:]' '[:lower:]')
+
     if [ "$CURRENT_INPUT" = "0f" ] || [ "$CURRENT_INPUT" = "f" ]; then
-      echo "Switching ThinkVision P40w-20 to input 0x31"
-      ${pkgs.ddcutil}/bin/ddcutil --bus $BUS_NUMBER setvcp 60 0x31
+      ${pkgs.ddcutil}/bin/ddcutil --bus "$BUS_NUMBER" --skip-ddc-checks --noverify setvcp 60 0x31
     elif [ "$CURRENT_INPUT" = "31" ]; then
-      echo "Switching ThinkVision P40w-20 to DisplayPort-1 (0x0F)"
-      ${pkgs.ddcutil}/bin/ddcutil --bus $BUS_NUMBER setvcp 60 0x0f
+      ${pkgs.ddcutil}/bin/ddcutil --bus "$BUS_NUMBER" --skip-ddc-checks --noverify setvcp 60 0x0f
     fi
   '';
 in
