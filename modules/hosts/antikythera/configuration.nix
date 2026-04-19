@@ -322,6 +322,12 @@
     # 0-15 for 16 logical cores (8 cores x 2 threads)
     "rcu_nocbs=0-15"
 
+    # Prevent USB autosuspend on dock hubs — keeps Thunderbolt dock USB tunnels
+    # responsive during KVM switches. Without this, the GenesysLogic USB3.2 hub
+    # (17ef:1043) inside the dock fails to re-enumerate after KVM switch,
+    # cycling between connect/disconnect with error -62 (timeout).
+    "usbcore.autosuspend=-1"
+
     ## Settings for low-latency gaming/audio
     "preempt=full"    # Realtime latency
     ## threadirqs removed - causes interrupt starvation under 100% CPU load, leading to hard freeze
@@ -802,7 +808,7 @@
       # Set to 0 to disable, 1 to enable USB autosuspend feature.
       # Default: 1
 
-      USB_AUTOSUSPEND = "1";
+      USB_AUTOSUSPEND = "0";
 
       # Exclude listed devices from USB autosuspend (separate with spaces).
       # Use lsusb to get the ids.

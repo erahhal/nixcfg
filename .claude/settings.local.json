@@ -507,7 +507,9 @@
       "Bash(tail -5 ls -la /tmp/ea_msi/*.msi)",
       "Bash(cabextract ea_deep/4.cab -d ea_app_msi)",
       "Bash(tail -5 ls -la /tmp/ea_app_msi/*.msi)",
-      "Bash(STEAM_EXTRA_COMPAT_TOOLS_PATHS=\"\" flatpak run com.github.Matoking.protontricks 1328670 --proton \"Proton - Experimental\" -c 'wine msiexec /i C:\\\\\\\\EAapp.msi /quiet')"
+      "Bash(STEAM_EXTRA_COMPAT_TOOLS_PATHS=\"\" flatpak run com.github.Matoking.protontricks 1328670 --proton \"Proton - Experimental\" -c 'wine msiexec /i C:\\\\\\\\EAapp.msi /quiet')",
+      "Read(//sys/devices/pci0000:00/0000:00:08.3/0000:c6:00.4/usb7/7-1/**)",
+      "Bash(awk '{print $1, $2, $3, $5, $6, $7, $8, $9}')"
     ],
     "deny": [],
     "ask": []

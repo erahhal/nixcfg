@@ -251,11 +251,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773889306,
-        "narHash": "sha256-PAqwnsBSI9SVC2QugvQ3xeYCB0otOwCacB1ueQj2tgw=",
+        "lastModified": 1776613567,
+        "narHash": "sha256-gC9Cp5ibBmGD5awCA9z7xy6MW6iJufhazTYJOiGlCUI=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "5ad85c82cc52264f4beddc934ba57f3789f28347",
+        "rev": "32f4236bfc141ae930b5ba2fb604f561fed5219d",
         "type": "github"
       },
       "original": {
@@ -785,11 +785,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776454077,
-        "narHash": "sha256-7zSUFWsU0+jlD7WB3YAxQ84Z/iJurA5hKPm8EfEyGJk=",
+        "lastModified": 1776562531,
+        "narHash": "sha256-Lh5Ns9DI67E+lSMOCGK0S+mFPy0mz0yOGiJTUXiR9JI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "565e5349208fe7d0831ef959103c9bafbeac0681",
+        "rev": "5b56ad02dc643808b8af6d5f3ff179e2ce9593f4",
         "type": "github"
       },
       "original": {
@@ -916,11 +916,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1776451738,
-        "narHash": "sha256-XhK/qfQvvKlhcNGNOxh9UmmgnGJZtFHCK1xhgXRD6lQ=",
+        "lastModified": 1776514109,
+        "narHash": "sha256-WkUvIWPUrZxR4oSCiExhuMFCjFMQ0cRnZk9e0+ZqhC0=",
         "ref": "refs/heads/main",
-        "rev": "78f091833956c2c08459cc06e47e01bfb8e63967",
-        "revCount": 7160,
+        "rev": "889ee4f26d77ff0c36f5c4767ef0629371fd2c18",
+        "revCount": 7163,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -1265,12 +1265,12 @@
         "rev": "58d29862b00fa4949b7f982d5cc1ac95e1c62c45",
         "revCount": 128,
         "type": "git",
-        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "git+ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       }
     },
     "niri-flake": {
@@ -1343,11 +1343,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776387631,
-        "narHash": "sha256-Ws02sv0IPKgo0JGaaiAFGt2IWnLQI+i3Y8jeVBx6V80=",
+        "lastModified": 1776535646,
+        "narHash": "sha256-ynXxDJ66ZgN7NlXuMxH9aIMnmiX4Q4ZhdEDie9Klnfc=",
         "owner": "xddxdd",
         "repo": "nix-cachyos-kernel",
-        "rev": "a26503528b4a4ab7310c6167da549f8fbee91f30",
+        "rev": "c5b2b559d888644417de5eb3939548854fa4d837",
         "type": "github"
       },
       "original": {
@@ -1595,11 +1595,11 @@
     },
     "nixpkgs-trunk": {
       "locked": {
-        "lastModified": 1776465722,
-        "narHash": "sha256-Dicq32RTZUMbBpmNAg74Il63acBkdUPpX5X0/1qzN0c=",
+        "lastModified": 1776614282,
+        "narHash": "sha256-vcczSbVddQp6bM2Lo9wdKBAqOY2NTCkj8QnNkj27DKY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0c8ebf42bcbdea02a9fff419bb76e920f150a5eb",
+        "rev": "699f0c21d356e20f9eed33d894f5a79437c83c96",
         "type": "github"
       },
       "original": {
