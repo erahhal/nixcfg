@@ -394,6 +394,16 @@ in
       base16Scheme = lib.mkForce "${pkgs.base16-schemes}/share/themes/tokyo-night-light.yaml";
     };
 
+    # Override stylix's default color-scheme. Stylix writes
+    # color-scheme='default' for light polarity, which makes xdg-desktop-portal
+    # emit org.freedesktop.appearance/color-scheme = uint32 0 ("no preference").
+    # Chromium-based apps (Chromium, Brave, Signal, Joplin, etc.) receive that
+    # intermediate signal first and stay on their old theme; the corrective
+    # prefer-light signal that followed was ignored. Setting prefer-light
+    # directly in the dconf database means dconf load emits exactly one
+    # SettingChanged with uint32 2 and Electron apps flip cleanly.
+    dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-light";
+
     # btop light theme (Stylix auto-themes dark; "paper" is a built-in light theme)
     xdg.configFile."btop/btop.conf".text = lib.mkAfter ''
       color_theme = "paper"

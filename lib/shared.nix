@@ -58,18 +58,38 @@ in {
     };
   };
 
-  # Nixvim module with configurable options
+  # Nixvim wired into home-manager so its generated config lives under
+  # home-files (and therefore flips with the toggle-theme symlink swap).
+  # Colorscheme follows the HM-level stylix.polarity (which the light-mode
+  # HM specialisation flips to "light") unless explicitly overridden.
   nixvimModule = nixvimConfig: [
-    inputs.nixvim-config.nixosModules.default
-    {
-      nixvim-config = {
-        enable = nixvimConfig.enable or true;
-        enable-ai = nixvimConfig.enable-ai or false;
-        enable-startify-cowsay = nixvimConfig.enable-startify-cowsay or true;
-        disable-indent-blankline = nixvimConfig.disable-indent-blankline or true;
-      } // (lib.optionalAttrs (nixvimConfig ? disable-notifications) {
-        disable-notifications = nixvimConfig.disable-notifications;
-      });
-    }
+    ({ config, ... }:
+    let
+      username = config.hostParams.user.username;
+    in {
+      home-manager.users.${username} = hmArgs:
+      let
+        polarity = hmArgs.config.stylix.polarity;
+        colorscheme =
+          nixvimConfig.colorscheme
+            or (if polarity == "light"
+                then "tokyonight-day"
+                else "tokyonight-storm");
+      in {
+        imports = [ inputs.nixvim-config.homeManagerModules.default ];
+        nixvim-config = {
+          enable = nixvimConfig.enable or true;
+          enable-ai = nixvimConfig.enable-ai or false;
+          enable-startify-cowsay = nixvimConfig.enable-startify-cowsay or true;
+          disable-indent-blankline = nixvimConfig.disable-indent-blankline or true;
+          inherit colorscheme;
+        } // (lib.optionalAttrs (nixvimConfig ? disable-notifications) {
+          disable-notifications = nixvimConfig.disable-notifications;
+        });
+        # Let stylix drive nixvim highlights only when colorscheme == "stylix";
+        # otherwise keep tokyonight in charge.
+        stylix.targets.nixvim.enable = colorscheme == "stylix";
+      };
+    })
   ];
 }
