@@ -146,6 +146,7 @@
 
   # boot.kernelPackages = pkgs.linuxPackages_6_18;
   # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.kernel.sysctl = {
     ## attempt to get rid of "rpfilter drop" messages in dmesg, which may be causing intermittent connectivity issues
@@ -317,6 +318,16 @@
     # the Goshen Ridge bridges leave the dock's USB 2.0 tunnel (Fresco Logic V1003,
     # 17ef:30ba) unenumerated, which breaks every HID device on the dock/monitor.
     "pci=realloc=on"
+
+    # IOMMU passthrough for trusted integrated devices. The Intel IOMMU on this
+    # platform has a 39-bit MGAW; after pci=realloc=on, the integrated xHCI
+    # (0000:00:14.0) was issued DMA addresses beyond that, producing
+    # "DMAR: [DMA Read NO_PASID] ... Access beyond MGAW" and halting the
+    # controller with "xhci_hcd: WARNING: Host System Error" ~25s after login —
+    # taking every USB HID device with it. Passthrough bypasses IOMMU
+    # translation for integrated PCIe devices; Thunderbolt peripherals still
+    # get IOMMU isolation via bolt's iommu policy.
+    "iommu=pt"
   ];
 
   # Disable wakeup sources that cause spurious wakes with Thunderbolt dock

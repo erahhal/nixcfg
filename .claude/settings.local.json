@@ -514,7 +514,9 @@
       "WebFetch(domain:manpages.debian.org)",
       "WebFetch(domain:dvdhrm.wordpress.com)",
       "WebFetch(domain:en.wikipedia.org)",
-      "Bash(set +e)"
+      "Bash(set +e)",
+      "Bash(awk '/xhci_hcd 0000:00:14.0: WARNING: Host System Error/{found=1} found{print; count++; if\\(count>80\\) exit}')",
+      "Read(//sys/devices/pci0000:00/0000:00:14.0/usb1/1-6/1-6.4/1-6.4.3/**)"
     ],
     "deny": [],
     "ask": []
