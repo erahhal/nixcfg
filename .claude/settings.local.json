@@ -513,7 +513,8 @@
       "WebFetch(domain:www.mankier.com)",
       "WebFetch(domain:manpages.debian.org)",
       "WebFetch(domain:dvdhrm.wordpress.com)",
-      "WebFetch(domain:en.wikipedia.org)"
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(set +e)"
     ],
     "deny": [],
     "ask": []

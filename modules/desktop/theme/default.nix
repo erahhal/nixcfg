@@ -384,6 +384,12 @@ in
     };
   };
 
+  # GTK3 Electron apps (Signal, Slack, Electron <= 40) render CSD/menu colors
+  # from gtk-application-prefer-dark-theme, not from the GTK4-era color-scheme
+  # key. Stylix only writes color-scheme, which leaves these apps with light
+  # menu bars under adw-gtk3. Force the legacy key to match polarity.
+  dconf.settings."org/gnome/desktop/interface".gtk-application-prefer-dark-theme = true;
+
   # ===================================================================
   # Light mode specialization
   # Only needs: Stylix polarity + p10k (everything else adapts via isDark)
@@ -403,6 +409,10 @@ in
     # directly in the dconf database means dconf load emits exactly one
     # SettingChanged with uint32 2 and Electron apps flip cleanly.
     dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-light";
+
+    # Counterpart to the dark-mode setting above: flip Electron 40/GTK3
+    # prefer-dark-theme to false so Signal/Slack/etc. pick up light CSD colors.
+    dconf.settings."org/gnome/desktop/interface".gtk-application-prefer-dark-theme = lib.mkForce false;
 
     # btop light theme (Stylix auto-themes dark; "paper" is a built-in light theme)
     xdg.configFile."btop/btop.conf".text = lib.mkAfter ''
