@@ -1,8 +1,6 @@
 { config, inputs, pkgs, lib, ... }:
 let
   userParams = config.hostParams.user;
-  home-monitor-left-sway = "LG Electronics LG Ultra HD 0x00003EAD";
-  home-monitor-right-sway = "LG Electronics LG HDR 4K 0x00000F5B";
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
@@ -223,38 +221,72 @@ in
         #     ];
         #   };
         # }
+        # {
+        #   profile = {
+        #     name = "portable-right";
+        #     outputs = [
+        #       {
+        #         criteria = "eDP-1";
+        #         status = "enable";
+        #         mode = "3840x2400@60";
+        #         position = "0,0";
+        #         # Resolution must be integer divisible by scale
+        #         scale = eDP-1-scale;
+        #       }
+        #       {
+        #         criteria = portable-monitor;
+        #         status = "enable";
+        #         mode = "2560x1600@59.972000Hz";
+        #         position = "1801,200";
+        #         # Resolution must be integer divisible by scale
+        #         scale = portable-monitor-scale;
+        #       }
+        #     ];
+        #     exec = [
+        #     #   ## Only chrome on external monitor
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 2 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 4 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 5 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 6 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 7 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 8 eDP-1"
+        #     #   "${hyprctl} dispatch moveworkspacetomonitor 9 eDP-1"
+        #     ];
+        #   };
+        # }
         {
           profile = {
-            name = "portable-right";
+            name = "portable-left";
             outputs = [
-              {
-                criteria = "eDP-1";
-                status = "enable";
-                mode = "3840x2400@60";
-                position = "0,0";
-                # Resolution must be integer divisible by scale
-                scale = eDP-1-scale;
-              }
               {
                 criteria = portable-monitor;
                 status = "enable";
                 mode = "2560x1600@59.972000Hz";
-                position = "1801,200";
+                position = "0,200";
                 # Resolution must be integer divisible by scale
                 scale = portable-monitor-scale;
               }
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                mode = "3840x2400@60";
+                position = "1600,0";
+                # Resolution must be integer divisible by scale
+                scale = eDP-1-scale;
+              }
             ];
             exec = [
-            #   ## Only chrome on external monitor
-            #   "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${portable-monitor}"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 2 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 3 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 4 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 5 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 6 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 7 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 8 eDP-1"
-            #   "${hyprctl} dispatch moveworkspacetomonitor 9 eDP-1"
+              # "swaymsg workspace 1, move workspace to output left"
+              # "swaymsg workspace 2, move workspace to eDP-1"
+              # "swaymsg workspace 3, move workspace to eDP-1"
+              # "swaymsg workspace 4, move workspace to output left"
+              # "swaymsg workspace 5, move workspace to output left"
+              # "swaymsg workspace 6, move workspace to output left"
+              # "swaymsg workspace 7, move workspace to output left"
+              # "swaymsg workspace 8, move workspace to output left"
+              # "swaymsg workspace 9, move workspace to output left"
             ];
           };
         }
