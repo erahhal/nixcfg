@@ -123,22 +123,7 @@ gamescope::Rc<CVulkanTexture> vulkan_create_1d_lut'
 	if ( !pFocus )
 		return;'
 
-          # 6) Fix --force-grab-cursor not actually forcing.
-          # The compositor loop calls SetRelativeMouseMode(false) when cursor
-          # state changes, overriding the init-time force. Make the setter
-          # respect g_bForceRelativeMouse. (gamescope#1711)
-          substituteInPlace src/Backends/SDLBackend.cpp \
-            --replace-fail \
-              '	void CSDLBackend::SetRelativeMouseMode( bool bRelative )
-	{
-		m_bApplicationGrabbed = bRelative;' \
-              '	void CSDLBackend::SetRelativeMouseMode( bool bRelative )
-	{
-		if ( g_bForceRelativeMouse )
-			bRelative = true;
-		m_bApplicationGrabbed = bRelative;'
-
-          # 7) Add declaration to header
+          # 6) Add declaration to header
           substituteInPlace src/rendervulkan.hpp \
             --replace-fail \
               'bool vulkan_remake_swapchain( void );' \

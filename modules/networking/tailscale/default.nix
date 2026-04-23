@@ -85,7 +85,7 @@ in {
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStop = "${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5200 2>/dev/null || true";
+        ExecStop = "${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5195 2>/dev/null || true";
       };
 
       script = ''
@@ -98,9 +98,9 @@ in {
         done
 
         # Add policy rule to route 10.0.0.0/24 via main table BEFORE tailscale's table 52
-        ${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5200 2>/dev/null || true
-        ${pkgs.iproute2}/bin/ip rule add to 10.0.0.0/24 lookup main priority 5200
-        echo "Added policy rule: to 10.0.0.0/24 lookup main priority 5200"
+        ${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5195 2>/dev/null || true
+        ${pkgs.iproute2}/bin/ip rule add to 10.0.0.0/24 lookup main priority 5195
+        echo "Added policy rule: to 10.0.0.0/24 lookup main priority 5195"
       '';
     };
 

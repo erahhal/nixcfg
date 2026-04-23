@@ -33,6 +33,9 @@ in {
     ../modules/system/services
     ../modules/system/base-packages
     ../modules/system/networking
+    ../modules/system/write-cache
+    ../modules/system/zswap
+    ../modules/system/responsiveness
     ../modules/hardware/base
     ../modules/base-user
     # Flake integrations

@@ -17,6 +17,11 @@ in {
   config = lib.mkIf cfg.enable {
     programs.steam = {
       enable = true;
+      package = pkgs.steam.override {
+        extraEnv = {
+          STEAM_FORCE_DESKTOPUI_SCALING = "2.0";
+        };
+      };
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
       gamescopeSession.enable = true;
@@ -25,7 +30,6 @@ in {
     hardware.steam-hardware.enable = true;
 
     environment.systemPackages = with pkgs; [
-      gamemode
       gamescope
       protonup-ng
       steam-tui

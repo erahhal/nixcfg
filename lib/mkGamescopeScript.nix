@@ -43,9 +43,14 @@ let
     done) &
     WATCHER_PID=$!
 
+    # Make Proton games run as native Wayland clients inside gamescope,
+    # giving them proper pointer constraints instead of X11 cursor position tracking.
+    export PROTON_ENABLE_WAYLAND=1
+
     gamescope \
       --steam \
-      --backend sdl \
+      --backend wayland \
+      --expose-wayland \
       -W $WIDTH \
       -w $INNER_W \
       -H $HEIGHT \

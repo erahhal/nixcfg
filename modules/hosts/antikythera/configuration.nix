@@ -118,23 +118,15 @@
     };
   };
 
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
   # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
   # Device specific
   # --------------------------------------------------------------------------------------
 
-  ## Enable zram compressed swap (uses ~25% of RAM for ~2x effective swap capacity)
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 25;  # 16GB compressed swap from 64GB RAM
-  };
-
-  ## Enable file-based swap as overflow (64GB swapfile defined in disk-config-btrfs.nix)
-  ## Removed: swapDevices = lib.mkForce [ ];
-  ## The swapfile will be enabled automatically from disk-config if properly mounted
+  ## zswap is now enabled globally via modules/system/zswap.
+  ## The 64GB swapfile is defined in disk-config-btrfs.nix.
 
   ## Change mac randomly on connection
   sec.macchanger = {

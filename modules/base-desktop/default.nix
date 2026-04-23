@@ -448,6 +448,7 @@ in
         xhost
         xlsclients        # List X11 clients connected to Xwayland
         xprop             # Inspect X11 window properties (click-to-identify)
+        xrdb
         xsel              # Manipulate xwindows clipboard
         xwininfo          # Show X11 window tree / structure
 
