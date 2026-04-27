@@ -33,6 +33,7 @@
     openrgb = import ../modules/hardware/openrgb;
     keyboard-debounce = import ../modules/hardware/keyboard-debounce;
     spacenavd = import ../modules/hardware/spacenavd;
+    ryzenadj = import ../modules/hardware/ryzenadj;
 
     # Programs
     steam = import ../modules/programs/steam;

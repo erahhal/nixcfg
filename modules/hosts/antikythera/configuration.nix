@@ -34,6 +34,7 @@
       udev-rules.enable = true;
       thinkpad-dock-udev.enable = true;
       spacenavd.enable = true;
+      ryzenadj.enable = true;
     };
     programs = {
       appimage.enable = true;
@@ -332,18 +333,6 @@
     options cfg80211 ieee80211_regdom=US
   '';
 
-  ## Make sure CPU runs at max performance
-  systemd.services.ryzenadj = {
-    description = "Set AMD CPU Power Limits";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "syslog.target" "systemd-modules-load.service" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.ryzenadj}/bin/ryzenadj --stapm-limit=54000 --fast-limit=65000 --slow-limit=54000 --tctl-temp=95 --vrm-current=150000 --vrmmax-current=150000";
-    };
-  };
 
   ## Fix WiFi not working after suspend - known ath11k issue
   ## References:
@@ -521,8 +510,7 @@
       #   EPP: amd-pstate driver in active mode ('amd-pstate-epp') as of kernel 6.3
       # Default: balance_performance (AC), balance_power (BAT)
 
-      # CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
       CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
 
       # Set Intel CPU P-state performance: 0..100 (%).
@@ -573,7 +561,7 @@
       # hardware and additional profiles such as: balanced-performance, quiet, cool.
       # Default: <none>
 
-      PLATFORM_PROFILE_ON_AC = "performance";
+      PLATFORM_PROFILE_ON_AC = "balanced";
       PLATFORM_PROFILE_ON_BAT = "low-power";
 
       # System suspend mode:

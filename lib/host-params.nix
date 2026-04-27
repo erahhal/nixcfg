@@ -344,6 +344,16 @@
       };
     };
 
+    cpu = {
+      amd = {
+        ryzenadj = lib.mkOption {
+          type = lib.types.enum [ "off" "medium" "high" ];
+          default = "off";
+          description = "AMD CPU power tuning via ryzenadj: off=BIOS defaults, medium=balanced, high=max performance";
+        };
+      };
+    };
+
     gpu = {
       amd = {
         enable = lib.mkOption {

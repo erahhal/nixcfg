@@ -73,6 +73,10 @@
       ];
     };
 
+    cpu = {
+      amd.ryzenadj = "off";   # options: off, medium, high
+    };
+
     gpu = {
       amd.enable = true;
     };
