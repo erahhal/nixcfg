@@ -516,7 +516,10 @@
       "WebFetch(domain:en.wikipedia.org)",
       "Bash(set +e)",
       "Bash(awk '/xhci_hcd 0000:00:14.0: WARNING: Host System Error/{found=1} found{print; count++; if\\(count>80\\) exit}')",
-      "Read(//sys/devices/pci0000:00/0000:00:14.0/usb1/1-6/1-6.4/1-6.4.3/**)"
+      "Read(//sys/devices/pci0000:00/0000:00:14.0/usb1/1-6/1-6.4/1-6.4.3/**)",
+      "Bash(pstree -p 742499)",
+      "Bash([ -f \"$dir/flake.nix\" ])",
+      "Bash(nix-diff /nix/store/abq2d8kfixpmgn0sm843pf6jhv5s4qhg-ripgrep-15.1.0 /nix/store/922crn2k3v8yaqk7anps80hba919lnds-ripgrep-15.1.0)"
     ],
     "deny": [],
     "ask": []

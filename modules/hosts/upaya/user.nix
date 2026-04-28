@@ -42,7 +42,7 @@ in
         chromium
 
         ## games
-        lutris
+        # lutris
         steamtinkerlaunch
         mcreator
         prismlauncher

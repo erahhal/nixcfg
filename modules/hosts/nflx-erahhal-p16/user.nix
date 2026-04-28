@@ -92,7 +92,7 @@ EOF
 
         chromium
 
-        lutris
+        # lutris
         mcreator
         postgresql
         # nodejs-16_x

@@ -18,9 +18,9 @@
           config = config.nixpkgs.config;
           inherit system;
         };
-        bottles = pkgs.bottles.override {
-          removeWarningPopup = true;
-        };
+        # bottles = pkgs.bottles.override {
+        #   removeWarningPopup = true;
+        # };
       };
     };
   };
@@ -149,6 +149,8 @@ bool vulkan_remake_and_acquire( void );'
           scripts = with prev.weechatScripts; [];
         };
       };
+
+
     })
   ];
 }

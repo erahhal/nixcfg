@@ -78,7 +78,7 @@ in
         atlauncher
         glfw3-minecraft
         hmcl
-        lutris
+        # lutris
         mcreator
         prismlauncher
         steamtinkerlaunch

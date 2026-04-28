@@ -69,5 +69,12 @@ in {
       '';
       extraOptions = "--font-size 19";
     };
+
+    # kmscon aliases itself as autovt@.service, so it claims tty1 at boot. greetd
+    # then takes tty1 over, but the kernel's active VT can migrate to tty2 (where
+    # the second kmsconvt is running) and never switches back, leaving the greeter
+    # session non-active on seat0 — so niri can't become DRM master and the
+    # screen stays black. Keep kmscon off tty1 so greetd owns it from boot.
+    systemd.services."kmsconvt@tty1".enable = false;
   };
 }

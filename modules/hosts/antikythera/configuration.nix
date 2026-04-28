@@ -734,14 +734,8 @@
       # systems without PulseAudio may require 10.
       # Default: 1
 
-      #SOUND_POWER_SAVE_ON_AC = 1;
-      #SOUND_POWER_SAVE_ON_BAT = 1;
-
-      # Disable controller too (HDA only): Y/N.
-      # Note: effective only when SOUND_POWER_SAVE_ON_AC/BAT is activated.
-      # Default: Y
-
-      #SOUND_POWER_SAVE_CONTROLLER = "Y";
+      SOUND_POWER_SAVE_ON_AC = 0;
+      SOUND_POWER_SAVE_ON_BAT = 1;
 
       # PCIe Active State Power Management (ASPM):
       #   default(*), performance, powersave, powersupersave.

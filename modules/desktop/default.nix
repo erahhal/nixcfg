@@ -41,9 +41,6 @@ in {
   options.nixcfg.desktop.enable = lib.mkEnableOption "desktop environment";
 
   config = lib.mkIf cfg.enable {
-    # Disable Stylix chromium theme — use GTK mode instead for live dark/light switching
-    stylix.targets.chromium.enable = false;
-
     # Stylix theming — centralized color scheme
     stylix = {
       enable = true;

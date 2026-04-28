@@ -131,7 +131,6 @@ in
         autojump
         fortune
         fzf
-        ripgrep
         wol
 
         ## terminal apps

@@ -572,7 +572,7 @@ in
         ## Wine
         ## wine-staging (version with experimental features)
         ## winetricks and other programs depending on wine need to use the same wine version
-        bottles # Has issues with i686 dependencies (mangohud)
+        # bottles # Has issues with i686 dependencies (mangohud)
         wineWow64Packages.stagingFull
         winetricks
         # wineWowPackages.stable
@@ -667,10 +667,6 @@ in
       # hwdec=vulkan
       # gpu-context=waylandvk
 
-      ## Key bindings
-
-      # Rotate video
-      r cycle_values video-rotate 90 180 270 0
     '';
 
     xdg.configFile."mpv/input.conf".text = ''
@@ -679,6 +675,8 @@ in
       h seek -10
       l seek 10
       s cycle sub
+      # Rotate video
+      r cycle_values video-rotate 90 180 270 0
     '';
 
     xdg.configFile."vimiv/vimiv.conf".text = ''

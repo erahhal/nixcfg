@@ -25,7 +25,7 @@ let userParams = config.hostParams.user; in
         # jetbrains.datagrip
         # jetbrains.idea-ultimate
 
-        lutris
+        # lutris
         postgresql
         # nodejs-16_x
         qbittorrent

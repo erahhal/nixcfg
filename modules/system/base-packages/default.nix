@@ -4,7 +4,6 @@ let userParams = config.hostParams.user; in
 {
   programs.nix-ld.enable = true;
   programs.command-not-found.enable = true;
-  programs.command-not-found.dbPath = "${inputs.nixpkgs}/programs.sqlite";
   programs.mosh.enable = true;
   programs.zsh.enable = if userParams.shell == "zsh" then true else false;
 
