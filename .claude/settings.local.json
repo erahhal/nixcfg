@@ -534,7 +534,9 @@
       "Bash(ip -4 route show default)",
       "Bash(awk '/10:42:1[0-9]/ || /10:42:[2-5][0-9]/ || /10:43:/ || /10:44:/ || /10:45:[0-2][0-9]/ || /10:45:3[0-5]/')",
       "Read(//run/current-system/sw/etc/**)",
-      "Read(//etc/**)"
+      "Read(//etc/**)",
+      "Bash(sensors)",
+      "Read(//sys/devices/system/cpu/cpufreq/policy0/**)"
     ],
     "deny": [],
     "ask": []
