@@ -1309,11 +1309,11 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher"
       },
       "locked": {
-        "lastModified": 1777313607,
-        "narHash": "sha256-L67Ah1vyJova3K6aZA2M0s6xMliCgjL5dEWmS9xlSj0=",
+        "lastModified": 1777489970,
+        "narHash": "sha256-2ZGZ2rRmHOyvoCLMpeYQUhg7W2ZfEJNS/mf/Fe3Ntb0=",
         "ref": "main",
-        "rev": "c7c85acf1c6978d9d5a654343422cbe4c59d2390",
-        "revCount": 138,
+        "rev": "05e0f9bedc1d17aaa13dfcc27a1b9d4d8873e1af",
+        "revCount": 140,
         "type": "git",
         "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -1450,11 +1450,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777359016,
-        "narHash": "sha256-ZsxWNnn0mKQHLB6QICcM8q1rjemSmtXMgLWoXST2Gy0=",
+        "lastModified": 1777448507,
+        "narHash": "sha256-LNrWO6yTSNSsNXuACFf51TBbrH34j0XDJXWRgamBPTk=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "2d09e85c593a3e8c4fd1018b76cafa4fa9fad720",
+        "rev": "202245e8d9a445a5c4719a9dcf06fafc002417d4",
         "type": "github"
       },
       "original": {

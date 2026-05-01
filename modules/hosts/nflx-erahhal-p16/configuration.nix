@@ -49,6 +49,26 @@
       # steam.enable = true;
       flatpak.enable = true;
       flox.enable = true;
+      whisper-dictation = {
+        enable = true;
+        # Toggle-style -- bind `whisper-dictate` to a compositor hotkey.
+        # See modules/hosts/nflx-erahhal-p16/niri.nix (Mod+Period).
+      };
+      nerd-dictation = {
+        enable = true;
+        # Full 1.8 GB US English model -- most accurate non-gigaspeech option,
+        # still realtime on this CPU. See models.nix for smaller alternatives:
+        #   small-en-us-0_15     (≈40 MB, fastest)
+        #   en-us-0_22-lgraph    (≈130 MB, balanced)
+        #   en-us-0_22           (≈1.8 GB, this one)
+        model = "en-us-0_22";
+      };
+      # moonshine dropped (2026-04): even on the largest streaming model
+      # (MEDIUM_STREAMING) it clipped first words and hallucinated on
+      # short utterances. Replaced by the combination of nerd-dictation
+      # (streaming, Mod+Comma, en-us-0_22) + whisper-dictate (batch,
+      # Mod+Period, large-v3-turbo Vulkan). Packaging kept in pkgs/ if
+      # we want to revisit.
     };
     services = {
       waydroid.enable = true;
@@ -306,8 +326,24 @@
     # Prevent spurious wakeups from a firmware bug where the EC or SMU generates spurious "heartbeat" interrupts during sleep
     "acpi.ec_no_wakeup=1"
 
-    # Prevents dock from waking up laptop right after suspend
-    "usbcore.autosuspend=-1"
+    # NOTE: `usbcore.autosuspend=-1` was previously set here to "prevent the
+    # dock from waking up the laptop right after suspend". It had a severe
+    # side effect: this hardware only supports s2idle / Modern Standby (the
+    # firmware does not expose S3 / `deep` in /sys/power/mem_sleep), and
+    # globally disabling USB autosuspend kept the XHCI controllers (and
+    # therefore the PCH) out of any low-power state during sleep. Result:
+    # `slp_s0_residency_usec` was always 0 -- the SoC never entered S0ix
+    # during "sleep", so the laptop drew ~1.5-2W with the lid closed and
+    # a multi-hour sleep would chew through most of the battery. The
+    # original wakeup concern is already addressed by the
+    # `disable-wakeup-sources` systemd service below (which disables wakeup
+    # on the Thunderbolt root port RP09 and the XHCI controller) plus
+    # `acpi.ec_no_wakeup=1` above. If a *specific* dock device misbehaves
+    # in the future, denylist just that device via TLP's USB_DENYLIST
+    # rather than re-disabling autosuspend globally. To verify S0ix entry
+    # after a suspend cycle:
+    #   sudo cat /sys/kernel/debug/pmc_core/slp_s0_residency_usec
+    # (should be > 0 and growing across suspends).
 
     ## Settings that supposedly increase gaming perf and prevent HDMI audio dropouts during gaming
     "preempt=full"    # Realitime latency
@@ -330,6 +366,56 @@
     "iommu=pt"
   ];
 
+  # ------------------------------------------------------------------------
+  # Suspend / S0ix power-management knobs
+  # ------------------------------------------------------------------------
+  # Known BIOS limitation -- multi-hour standby battery drain:
+  #
+  # This laptop's firmware only advertises s2idle in /sys/power/mem_sleep
+  # (Modern Standby) -- there is no S3 / `deep` option. For s2idle to be
+  # low-power the SoC must reach S0ix. However, S0ix is completely blocked
+  # by firmware limitations on this P16 Gen 2:
+  #   1. The Lenovo BIOS actively disables ASPM on the TB4 root port
+  #      (00:1d.0 / RP09) and hides L1 substates.
+  #   2. The NVIDIA GPU GSP firmware times out during the PMC handshake
+  #      (`PFM_REQ_HNDLR_STATE_SYNC_CALLBACK`).
+  # As a result, `slp_s0_residency_usec` will always remain 0, and the
+  # laptop will draw ~1.5-2W during sleep. Pure OS-level changes CANNOT
+  # fix this.
+  #
+  # Solution: suspend-then-hibernate.
+  # The machine will sleep normally (in s2idle) for 30 minutes, allowing
+  # quick desk-to-desk roaming. After 30 minutes of sleep, it automatically
+  # wakes up briefly to save the session to the SSD and fully powers off.
+  services.logind = {
+    lidSwitch = lib.mkForce "suspend-then-hibernate";
+    # Optional: also hibernate on external power so it doesn't cook in a bag
+    # lidSwitchExternalPower = "suspend-then-hibernate";
+  };
+
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "30m";
+  };
+
+  # Keep the VeriMark fingerprint key (047d:8055) from pinning USB2 awake.
+  # It defaults to `power/control=on` because it enumerates as an HID
+  # device, and fprintd is disabled here anyway, so it is literally never
+  # used -- but while it is powered the PMC's `USB2_SUS_PG_Sys_REQ_STS`
+  # stays 0, which is one of the concrete S0ix blockers observed in
+  # `substate_status_registers` on this machine.
+  services.udev.extraRules = ''
+    # Autosuspend unused USB HID fingerprint reader (ThinkPad P16)
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="047d", ATTR{idProduct}=="8055", TEST=="power/control", ATTR{power/control}="auto"
+
+    # Trigger PCI rescan when the ThinkPad TB4 Dock is authorized.
+    # The dock's Goshen Ridge PCIe endpoint devices (ethernet, USB 3.x xHCI,
+    # DisplayPort) need a few seconds to power up after Thunderbolt authorization;
+    # pciehp has already initialized its slots by then and will miss them unless
+    # we force a rescan.
+    # UUID: ThinkPad Thunderbolt 4 Dock = 11328780-0035-7a6c-ffff-ffffffffffff
+    ACTION=="change", SUBSYSTEM=="thunderbolt", ATTR{unique_id}=="11328780-0035-7a6c-ffff-ffffffffffff", ATTR{authorized}=="1", RUN+="${pkgs.systemd}/bin/systemctl start --no-block dock-pcie-rescan.service"
+  '';
+
   # Disable wakeup sources that cause spurious wakes with Thunderbolt dock
   systemd.services.disable-wakeup-sources = {
     description = "Disable Thunderbolt/USB wakeup sources";
@@ -349,6 +435,29 @@
       grep -q "XHCI.*enabled" /proc/acpi/wakeup && echo XHCI > /proc/acpi/wakeup || true
       grep -q "RP09.*enabled" /proc/acpi/wakeup && echo RP09 > /proc/acpi/wakeup || true
     '';
+  };
+
+  # After the dock is authorized over Thunderbolt, its internal Goshen Ridge
+  # PCIe endpoint devices (RTL8156 ethernet, Fresco Logic xHCI, DP mux) take
+  # several seconds to power up.  By then pciehp has already initialized the
+  # hot-plug slots in interrupt-wait mode and will never see a Card Present
+  # transition.  Writing to the sysfs rescan knob forces pci_scan_slot() on
+  # every Goshen Ridge downstream bridge so the endpoints finally enumerate.
+  systemd.services.dock-pcie-rescan = {
+    description = "PCI rescan after ThinkPad TB4 Dock PCIe endpoint power-up";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "dock-pcie-rescan" ''
+        sleep 5
+        # Rescan all Goshen Ridge PCIe bridges (dock's internal TB4 controller, PCI ID 8086:0b26).
+        # Bus numbers can shift between boots, so we discover them dynamically.
+        for bridge in $(${pkgs.pciutils}/bin/lspci -d 8086:0b26 -D | ${pkgs.gawk}/bin/awk '{print $1}'); do
+          echo 1 > /sys/bus/pci/devices/"$bridge"/rescan 2>/dev/null || true
+        done
+        # Belt-and-suspenders full rescan for anything the targeted pass missed.
+        echo 1 > /sys/bus/pci/rescan
+      '';
+    };
   };
 
   # # Fix NVIDIA USB4 DP tunnel not resuming after suspend

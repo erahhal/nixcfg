@@ -232,6 +232,22 @@ in
       ## See: https://wiki.hyprland.org/Nvidia/
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
 
+      ## Enable the NVIDIA driver's S0ix (Modern Standby) coordination path.
+      ## Required on laptops whose firmware only exposes s2idle (no S3 /
+      ## `deep` in /sys/power/mem_sleep -- e.g. ThinkPad P16 Gen 2). Without
+      ## this flag the dGPU suspend path does not participate in the PMC
+      ## S0ix handshake, so `slp_s0_residency_usec` stays 0 and the SoC
+      ## never enters a low-power state during "sleep" -- the laptop just
+      ## idles at ~1.5-2 W with the lid closed. `nvidia-smi -q` will then
+      ## show:
+      ##   S0ix Power Management:
+      ##     Platform Support: Supported
+      ##     Status:           Disabled   <-- this is what we are fixing
+      ## No-op on platforms that do not advertise S0ix platform support.
+      ## See:
+      ##   https://download.nvidia.com/XFree86/Linux-x86_64/latest/README/powermanagement.html
+      "nvidia.NVreg_EnableS0ixPowerManagement=1"
+
       ## Default since driver 515+; redundant
       # "nvidia.NVreg_UsePageAttributeTable=1"
       ## Experimental CUDA streaming feature, not relevant for display

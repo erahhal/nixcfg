@@ -19,6 +19,8 @@ in
       waydroid snapcast virtual-machines macchanger printers-scanners
       flatpak
       flox
+      whisper-dictation
+      nerd-dictation
       spacenavd
       connection-sharing
     ])

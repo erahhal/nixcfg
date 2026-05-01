@@ -67,6 +67,16 @@
     ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
   '';
 
+  # ── Per-user systemd manager limits ─────────────────────────────────
+  # Upstream systemd ships DefaultLimitNOFILE=1024:524288 (soft:hard).
+  # The 1024 soft is a select(2) backward-compat decision; modern session
+  # daemons (dbus-broker, pipewire) don't bump their own soft limit and
+  # eventually hit it.  When user dbus-broker hits EMFILE, every GUI app
+  # holding a session-bus connection (chromium, electron, etc.) aborts.
+  systemd.user.extraConfig = ''
+    DefaultLimitNOFILE=524288:524288
+  '';
+
   # ── Btrfs maintenance ──────────────────────────────────────────────
   # Weekly balance reclaims unallocated device space from partially-used
   # data chunks.  Without this, a COW filesystem gradually reaches 100%

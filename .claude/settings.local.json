@@ -519,7 +519,22 @@
       "Read(//sys/devices/pci0000:00/0000:00:14.0/usb1/1-6/1-6.4/1-6.4.3/**)",
       "Bash(pstree -p 742499)",
       "Bash([ -f \"$dir/flake.nix\" ])",
-      "Bash(nix-diff /nix/store/abq2d8kfixpmgn0sm843pf6jhv5s4qhg-ripgrep-15.1.0 /nix/store/922crn2k3v8yaqk7anps80hba919lnds-ripgrep-15.1.0)"
+      "Bash(nix-diff /nix/store/abq2d8kfixpmgn0sm843pf6jhv5s4qhg-ripgrep-15.1.0 /nix/store/922crn2k3v8yaqk7anps80hba919lnds-ripgrep-15.1.0)",
+      "Read(//sys/bus/thunderbolt/devices/**)",
+      "Bash([ -f \"$d/unique_id\" ])",
+      "Bash(ip -br link show)",
+      "Bash(ip -br addr show)",
+      "Bash(nmcli -f connection.id,connection.uuid,connection.interface-name,connection.autoconnect,ipv4.method,ipv4.addresses,ipv4.never-default,ipv4.may-fail,ipv6.method,ipv6.may-fail,connection.permissions connection show \"Wired connection 1\")",
+      "Bash(nmcli -f connection.id,connection.uuid,connection.interface-name,connection.autoconnect,ipv4.method,ipv4.addresses,ipv4.never-default,ipv4.may-fail,ipv6.method,ipv6.may-fail,connection.permissions connection show \"Wired connection 2\")",
+      "Bash(awk '/10:42:0[6-9]/ || /10:42:1[0-5]/')",
+      "Read(//etc/NetworkManager/dispatcher.d/**)",
+      "Bash(find / -path /nix/store -prune -o -name \"70-wifi-wired-exclusive.sh\" -print)",
+      "Bash(awk '/10:41:5[5-9]/ || /10:42:0[0-5]/')",
+      "Bash(nmcli -t -f STATE general)",
+      "Bash(ip -4 route show default)",
+      "Bash(awk '/10:42:1[0-9]/ || /10:42:[2-5][0-9]/ || /10:43:/ || /10:44:/ || /10:45:[0-2][0-9]/ || /10:45:3[0-5]/')",
+      "Read(//run/current-system/sw/etc/**)",
+      "Read(//etc/**)"
     ],
     "deny": [],
     "ask": []

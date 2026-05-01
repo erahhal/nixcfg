@@ -138,6 +138,36 @@ in
 
       binds = {
         "Mod+G" = lib.mkForce { hotkey-overlay.title = "Switch ThinkVision Monitor Input"; allow-when-locked = true; action.spawn = "${toggle-thinkvision-input}"; };
+
+        # Dictation toggles. All three are toggle-style (press to start,
+        # press again to stop/transcribe), so they MUST have repeat=false --
+        # otherwise niri's default ~500 ms key-repeat fires the toggle again
+        # before you've released the key, yielding start/stop/start/stop
+        # chaos (empty transcripts, partial words, windows moving as
+        # mid-flight keystrokes race with the repeating hotkey).
+        # cooldown-ms is a belt-and-suspenders debounce against double-taps.
+        # mkForce is needed because modules/desktop/niri/home.nix ships
+        # defaults on these keys (consume-window-into-column etc).
+        "Mod+Comma" = lib.mkForce {
+          repeat = false;
+          cooldown-ms = 500;
+          hotkey-overlay.title = "Dictation: nerd-dictation (Vosk, streaming)";
+          action.spawn = [ "nerd-dictation-toggle" ];
+        };
+        "Mod+Period" = lib.mkForce {
+          repeat = false;
+          cooldown-ms = 500;
+          hotkey-overlay.title = "Dictation: whisper-dictate (whisper.cpp, batch)";
+          action.spawn = [ "whisper-dictate" ];
+        };
+        # Mod+Slash intentionally not overridden here. Previously bound
+        # to moonshine-dictate; moonshine was dropped in favour of
+        # nerd-dictation (streaming, Mod+Comma) + whisper-dictate (batch,
+        # Mod+Period) after moonshine's medium-streaming model proved too
+        # inaccurate for useful dictation (clipped first words due to
+        # sounddevice mic-stream startup delay + small-model hallucinations
+        # on short utterances). Keep the moonshine packaging in pkgs/ for
+        # future experiments.
       };
 
       workspaces = {

@@ -92,6 +92,7 @@
       url = "github:xddxdd/nix-cachyos-kernel";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
   };
 
   outputs = inputs:

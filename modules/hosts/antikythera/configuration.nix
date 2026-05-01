@@ -42,6 +42,26 @@
       totp.enable = true;
       flatpak.enable = true;
       flox.enable = true;
+      whisper-dictation = {
+        enable = true;
+        # Toggle-style -- bind `whisper-dictate` to a compositor hotkey.
+        # See modules/hosts/antikythera/niri.nix (Mod+Period).
+      };
+      nerd-dictation = {
+        enable = true;
+        # Full 1.8 GB US English model -- most accurate non-gigaspeech option,
+        # still realtime on this CPU. See models.nix for smaller alternatives:
+        #   small-en-us-0_15     (≈40 MB, fastest)
+        #   en-us-0_22-lgraph    (≈130 MB, balanced)
+        #   en-us-0_22           (≈1.8 GB, this one)
+        model = "en-us-0_22";
+      };
+      # moonshine dropped (2026-04): even on the largest streaming model
+      # (MEDIUM_STREAMING) it clipped first words and hallucinated on
+      # short utterances. Replaced by the combination of nerd-dictation
+      # (streaming, Mod+Comma, en-us-0_22) + whisper-dictate (batch,
+      # Mod+Period, large-v3-turbo Vulkan). Packaging kept in pkgs/ if
+      # we want to revisit.
     };
     services = {
       waydroid.enable = true;
@@ -396,6 +416,16 @@
   services.upower = {
     enable = true;
     criticalPowerAction = "Hibernate";
+  };
+
+  services.logind = {
+    lidSwitch = lib.mkForce "suspend-then-hibernate";
+    # Optional: also hibernate on external power so it doesn't cook in a bag
+    # lidSwitchExternalPower = "suspend-then-hibernate";
+  };
+
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "30m";
   };
 
   # Thinkpad power and performance management

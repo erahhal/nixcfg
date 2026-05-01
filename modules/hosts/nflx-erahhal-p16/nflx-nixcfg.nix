@@ -37,5 +37,7 @@
       disable-url-warning = true;
       disable-nm-applet-warning = true;
     };
+
+    vpn.pulse-official.enable = true;
   };
 }

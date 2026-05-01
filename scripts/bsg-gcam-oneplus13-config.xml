@@ -1,9 +1,24 @@
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
 <map>
-    <!-- ============================================ -->
-    <!-- OnePlus 13 (CPH2655) BSG MGC 9.6.080 V17    -->
-    <!-- EIS disabled to avoid interfering with OIS   -->
-    <!-- ============================================ -->
+    <!-- ============================================== -->
+    <!-- OnePlus 13 (CPH2655) BSG MGC aweme build       -->
+    <!-- (com.ss.android.ugc.aweme)                    -->
+    <!-- Tested against 9.6.080 V17 and 9.7.047 V7     -->
+    <!-- EIS disabled to avoid interfering with OIS    -->
+    <!-- ============================================== -->
+    <!--                                                -->
+    <!-- New BSG pref keys introduced in 9.7 are left   -->
+    <!-- at their in-app "Auto" defaults (safe on OP13; -->
+    <!-- change via the BSG module settings UI):       -->
+    <!--   * modules / "Model"                          -->
+    <!--   * preview_key / "Preview format"             -->
+    <!--   * raw_key / "RAW format for HDR+"            -->
+    <!--   * raw_res_key / "RAW format resolution"      -->
+    <!--   * merge_key / "MERGE"                        -->
+    <!--   * merge_processor_key / "MERGE processor"    -->
+    <!-- If HDR+ crashes when RAW output is RAW_SENSOR  -->
+    <!-- (RAW16), switch "MERGE" to "Wienner merge".    -->
+    <!-- ============================================== -->
 
     <!-- Camera ID Mapping: Index 0=Main, 1=UW, 2=Tele, 3=Front -->
     <set name="pref_camera_id_list_key">
@@ -30,10 +45,33 @@
     <string name="pref_lens_title_key_2">Tele 3x</string>
     <string name="pref_lens_title_key_3">Front</string>
 
-    <!-- VIDEO STABILIZATION: EIS OFF, Hardware OIS ON -->
-    <!-- OIS runs in firmware on main (ID 2) and tele (ID 4), not controllable via API -->
-    <!-- EIS would add software stabilization on top, causing crop and jello artifacts -->
-    <string name="pref_video_stabilization_key">0</string>
+    <!-- VIDEO STABILIZATION: EIS ON + Hardware OIS (HAL auto-engaged) -->
+    <!-- Verified via `dumpsys media.camera` while a GCam session is live: -->
+    <!--                                                                  -->
+    <!--   android.lens.opticalStabilizationMode    = ON  (HAL forces this) -->
+    <!--   android.control.videoStabilizationMode   = ON  (this pref)       -->
+    <!--                                                                  -->
+    <!-- The OP13 HAL advertises availableOpticalStabilization=[0] (i.e.,  -->
+    <!-- "OIS not controllable via API") but engages OIS automatically for -->
+    <!-- still + video on the main and tele cameras anyway. The BSG-side  -->
+    <!-- pref_ois_key / ois_api_supported flags only influence what BSG    -->
+    <!-- requests via the API; they have no effect on whether OIS actually -->
+    <!-- runs. They're left at sensible values for completeness.           -->
+    <!--                                                                  -->
+    <!-- pref_video_stabilization_key=1 enables Camera2 EIS at mode 1     -->
+    <!-- (standard "ON"). The HAL also exposes mode 2 (PREVIEW_STABILI-   -->
+    <!-- ZATION, the Pixel-style high-quality EIS) but the BSG mod only    -->
+    <!-- requests mode 1 -- there is no config key to ask for mode 2 in   -->
+    <!-- this build. OnePlus's vendor "Hyper-stabilization" mode (set via -->
+    <!-- the OEM custom tag video.stabilization.mode) is unreachable from -->
+    <!-- third-party apps; only the stock OnePlus camera can use it.      -->
+    <!--                                                                  -->
+    <!-- The historical "OIS+EIS = jello" warning applied to pre-2020 OIS -->
+    <!-- modules that hunted back to center between corrections; modern   -->
+    <!-- OIS in video mode does sub-degree micro-corrections only and is  -->
+    <!-- explicitly designed to coexist with EIS. Cost of EIS=ON: ~10%    -->
+    <!-- viewfinder crop. -->
+    <string name="pref_video_stabilization_key">1</string>
     <string name="pref_ois_key">1</string>
     <boolean name="ois_api_supported" value="true" />
     <boolean name="hybrid_ae_only_ois_jitter_for_back_camera_enabled" value="true" />
@@ -80,4 +118,68 @@
 
     <!-- Max Zoom -->
     <string name="pref_max_zoom_key">10</string>
+
+    <!-- ============================================== -->
+    <!-- Video recording stability                      -->
+    <!-- ============================================== -->
+    <!-- On long / thermally-constrained recordings the -->
+    <!-- common failure modes on non-Pixel GCam ports   -->
+    <!-- are:                                           -->
+    <!--   * encoder stalls / truncated file (looks     -->
+    <!--     like a "timelapse" on playback because the -->
+    <!--     container duration is right but frames are -->
+    <!--     missing or at the wrong pts),              -->
+    <!--   * auto-FPS dropping from 30 to 24 under      -->
+    <!--     thermal load (playback looks sped up),     -->
+    <!--   * auto-macro (taxi) re-seeking focus         -->
+    <!--     mid-clip and dropping frames,              -->
+    <!--   * dirty-lens / video-stab edu popups         -->
+    <!--     interrupting capture.                      -->
+    <!-- These settings pin everything to known-good   -->
+    <!-- values.                                        -->
+
+    <!-- Force H.264 (AVC). HEVC on non-Pixel HALs is the #1 cause of
+         long-recording corruption (ring-buffer stalls, malformed MP4).
+         (pref_video_hevc_setting_key is intentionally NOT set: it's an
+         Integer-typed pref in this build (Lmfl), and writing it as a
+         <boolean> made GCam crash with ClassCastException at launch.
+         pref_codec_format alone is sufficient to pin the codec.) -->
+    <string name="pref_codec_format">avc</string>
+
+    <!-- Frame rate: main profile at 60 fps (matches LineageOS Aperture's
+         default on OP13; SD 8 Elite handles 1080p60 with headroom, and the
+         camera HAL advertises [60 60] as a first-class AE target range).
+         Other profiles stay at 30 to keep thermal risk contained on the
+         combinations that actually trip up long recordings:
+           * 4K@60 is the main thermal offender on sustained clips,
+           * cm = cinematic, conventionally 24/30,
+           * vb = HDR/video-boost, 60 + 10-bit HDR is fragile on non-Pixel
+             HALs.
+         FPS_AUTO is explicitly avoided: it silently drops to 24 under load
+         so the clip plays back sped-up, which matches the "goes into
+         timelapse mode" symptom from 9.6. Locking to a fixed rate means
+         thermal pressure throttles uniformly rather than varying mid-clip. -->
+    <string name="pref_video_fps_p2018_key">FPS_60</string>
+    <string name="pref_video_fps_4k_key">FPS_30</string>
+    <string name="pref_video_fps_cm_key">FPS_30</string>
+    <string name="pref_video_fps_vb_key">FPS_30</string>
+
+    <!-- 1080p default. 4K is possible but drives the SoC much harder and is
+         where thermal-throttle failures start on long clips. -->
+    <string name="pref_video_resolution">RES_1080P</string>
+
+    <!-- IMAX (8K)/Mars special modes off; these are thermal nightmares on
+         non-Pixel HALs. -->
+    <string name="pref_imax_audio_enabled_key">0</string>
+    <string name="pref_mars_enabled">0</string>
+
+    <!-- Note: pref_enable_auto_taxi_key, pref_dirty_lens_detector_key, and
+         pref_first_time_video_stab_edu are NOT set here. They appear to be
+         ManagedSwitchPreference in the layout XML but the underlying prefs
+         types in this build are String/Integer (verified via smali class
+         signatures Lmfn / Lmfl), and writing them as <boolean> caused a
+         ClassCastException-on-launch crash. The defaults are tolerable; if
+         you want to override later, set pref_enable_auto_taxi_key as
+         <string>false</string> and the others as <int value="1"/>, but
+         only after re-checking against the smali. -->
 </map>

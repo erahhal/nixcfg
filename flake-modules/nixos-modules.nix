@@ -43,6 +43,11 @@
     totp = import ../modules/programs/totp;
     dell-dcc = import ../modules/programs/dell-dcc;
     flox = import ../modules/programs/flox;
+    whisper-dictation = import ../modules/programs/whisper-dictation;
+    nerd-dictation = import ../modules/programs/nerd-dictation;
+    # moonshine dropped from active use but module/pkg kept in-tree --
+    # re-register here if we ever want to re-enable it on a host.
+    # moonshine = import ../modules/programs/moonshine;
 
     # Services
     waydroid = import ../modules/services/waydroid;
