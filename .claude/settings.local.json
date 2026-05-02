@@ -536,7 +536,10 @@
       "Read(//run/current-system/sw/etc/**)",
       "Read(//etc/**)",
       "Bash(sensors)",
-      "Read(//sys/devices/system/cpu/cpufreq/policy0/**)"
+      "Read(//sys/devices/system/cpu/cpufreq/policy0/**)",
+      "Bash(tailscale version *)",
+      "Bash(ip a *)",
+      "Bash(ip -4 addr show)"
     ],
     "deny": [],
     "ask": []
