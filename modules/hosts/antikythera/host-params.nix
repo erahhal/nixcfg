@@ -15,6 +15,9 @@
           };
         };
       };
+      # Disabled: recent kernels appear to have resolved the ath11k boot/resume
+      # issue. Re-enable if WiFi fails to come up at boot or after suspend.
+      wifi.ath11kRestartFix.enable = false;
     };
 
     system = {
@@ -79,6 +82,9 @@
 
     gpu = {
       amd.enable = true;
+      ## VRAM-management boost via dmem cgroup controller. Requires the
+      ## CachyOS kernel; see modules/hardware/dmemcg.
+      amd.dmemcg.enable = true;
     };
   };
 }

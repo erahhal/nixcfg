@@ -115,6 +115,21 @@
           description = "Enable Tailscale VPN";
         };
       };
+
+      wifi = {
+        ath11kRestartFix = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = ''
+              Reload the ath11k_pci driver at boot and after resume to work
+              around WiFi failing to come up on QCNFA765 / WCN6855 adapters.
+              Only needed on older kernels where the ath11k driver is unstable
+              after suspend/resume or boot.
+            '';
+          };
+        };
+      };
     };
 
     containers = {
@@ -360,6 +375,31 @@
           type = lib.types.bool;
           default = false;
           description = "Enable AMD GPU support";
+        };
+
+        dmemcg = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = ''
+              Enable dmem cgroup VRAM-management boost (CachyOS kernel +
+              dmemcg-booster + foreground booster). Useful on hosts with
+              low-VRAM AMD GPUs to keep the focused app's VRAM resident
+              instead of being evicted to GTT by background apps.
+              See: https://pixelcluster.github.io/VRAM-Mgmt-fixed/
+            '';
+          };
+
+          foregroundBooster = lib.mkOption {
+            type = lib.types.enum [ "niri" "none" ];
+            default = "niri";
+            description = ''
+              Foreground-window tracker that promotes the focused app's
+              cgroup. "niri" runs niri-focused-booster; "none" only
+              activates the dmem controller (gamescope-launched games
+              still benefit since gamescope sets the boost itself).
+            '';
+          };
         };
       };
 

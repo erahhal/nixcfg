@@ -26,6 +26,14 @@
   };
 
   nixpkgs.overlays = [
+    # CachyOS kernels (provides pkgs.cachyosKernels.linuxPackages-cachyos-*).
+    # Used by modules/hardware/dmemcg for the dmem cgroup VRAM-management patches.
+    # Use `pinned` (not `default`) so the kernel is built against the exact
+    # nixpkgs revision xddxdd's Hydra used -- otherwise the derivation hash
+    # differs from what's in the attic.xuyh0120.win/lantian cache and the
+    # kernel rebuilds locally.
+    inputs.nix-cachyos-kernel.overlays.pinned
+
     (final: prev: {
       # Fix gamescope 3.16.22 swapchain handling for Wayland compositors:
       # 1) vulkan_remake_swapchain() re-queries surface capabilities (stale

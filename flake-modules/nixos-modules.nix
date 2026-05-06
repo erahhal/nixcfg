@@ -34,6 +34,7 @@
     keyboard-debounce = import ../modules/hardware/keyboard-debounce;
     spacenavd = import ../modules/hardware/spacenavd;
     ryzenadj = import ../modules/hardware/ryzenadj;
+    dmemcg = import ../modules/hardware/dmemcg;
 
     # Programs
     steam = import ../modules/programs/steam;

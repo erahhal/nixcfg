@@ -35,6 +35,10 @@
       thinkpad-dock-udev.enable = true;
       spacenavd.enable = true;
       ryzenadj.enable = true;
+      dmemcg = {
+        enable = config.hostParams.gpu.amd.dmemcg.enable;
+        foregroundBooster = config.hostParams.gpu.amd.dmemcg.foregroundBooster;
+      };
     };
     programs = {
       appimage.enable = true;
@@ -139,7 +143,8 @@
     };
   };
 
-  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+  # The CachyOS kernel is pulled in automatically when
+  # hostParams.gpu.amd.dmemcg.enable is true (see modules/hardware/dmemcg).
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
@@ -354,7 +359,9 @@
   '';
 
 
-  ## Fix WiFi not working after suspend - known ath11k issue
+  ## Fix WiFi not working after suspend / boot - known ath11k issue
+  ## Gated by hostParams.networking.wifi.ath11kRestartFix.enable; recent
+  ## kernels may have resolved the underlying bug, so this is opt-in.
   ## References:
   ##   https://bbs.archlinux.org/viewtopic.php?id=310363 (kernel 6.17+ issue)
   ##   https://bbs.archlinux.org/viewtopic.php?id=295356 (workaround)
@@ -363,7 +370,7 @@
   ##   https://wiki.archlinux.org/title/Dell_XPS_13_(9310)#Suspend
   ## Using powerManagement.resumeCommands instead of a systemd service
   ## to ensure it only runs once on resume, not repeatedly
-  powerManagement.resumeCommands = ''
+  powerManagement.resumeCommands = lib.mkIf config.hostParams.networking.wifi.ath11kRestartFix.enable ''
     # Give system time to stabilize after resume
     sleep 2
 
@@ -384,9 +391,7 @@
     # else: interface exists and can be brought UP - device is OK, skip reload
   '';
 
-  ## Fix WiFi not working after boot - same ath11k issue
-  ## References: See comments above for powerManagement.resumeCommands
-  systemd.services.ath11k-boot-fix = {
+  systemd.services.ath11k-boot-fix = lib.mkIf config.hostParams.networking.wifi.ath11kRestartFix.enable {
     description = "Reload ath11k_pci at boot";
     after = [ "systemd-modules-load.service" "NetworkManager.service" "iwd.service" ];
     wantedBy = [ "multi-user.target" ];

@@ -28,7 +28,7 @@ in
       homefree
       captive-portal
       exclusive-lan
-      gfx-amd laptop udev-rules ryzenadj
+      gfx-amd laptop udev-rules ryzenadj dmemcg
       thinkpad-dock-udev
       appimage
       android

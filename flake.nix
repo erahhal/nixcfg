@@ -89,8 +89,20 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0"; # Use latest stable
 
     nix-cachyos-kernel = {
-      url = "github:xddxdd/nix-cachyos-kernel";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Use the `release` branch -- it's the one xddxdd's Hydra builds and
+      # uploads to the attic.xuyh0120.win/lantian cache. The default
+      # (`master`) branch tracks the latest CachyOS source and has no
+      # pre-built artifacts, so building against it compiles the kernel
+      # locally.
+      #
+      # IMPORTANT: do NOT make this flake follow our nixpkgs. The kernel
+      # in xddxdd's binary cache is built against the *flake's own* pinned
+      # nixpkgs revision; if we override that, every input differs and we
+      # get cache misses on a 24+ MiB kernel build. The trade-off is that
+      # the cachy flake brings in a separate nixpkgs at evaluation time,
+      # but it's only used to produce the kernel derivation -- runtime
+      # impact is nil.
+      url = "github:xddxdd/nix-cachyos-kernel/release";
     };
 
   };
