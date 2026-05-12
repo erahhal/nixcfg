@@ -139,35 +139,39 @@ in
       binds = {
         "Mod+G" = lib.mkForce { hotkey-overlay.title = "Switch ThinkVision Monitor Input"; allow-when-locked = true; action.spawn = "${toggle-thinkvision-input}"; };
 
-        # Dictation toggles. All three are toggle-style (press to start,
-        # press again to stop/transcribe), so they MUST have repeat=false --
-        # otherwise niri's default ~500 ms key-repeat fires the toggle again
-        # before you've released the key, yielding start/stop/start/stop
-        # chaos (empty transcripts, partial words, windows moving as
-        # mid-flight keystrokes race with the repeating hotkey).
+        # Dictation toggles. Toggle-style (press to start, press again to
+        # stop/transcribe), so they MUST have repeat=false -- otherwise niri's
+        # default ~500 ms key-repeat fires the toggle again before you've
+        # released the key, yielding start/stop/start/stop chaos.
         # cooldown-ms is a belt-and-suspenders debounce against double-taps.
-        # mkForce is needed because modules/desktop/niri/home.nix ships
-        # defaults on these keys (consume-window-into-column etc).
-        "Mod+Comma" = lib.mkForce {
+        #
+        # Bound to Ctrl+Shift+<key> rather than Mod+<key>. The earlier Mod+
+        # binding broke when the user kept Super depressed while ydotool
+        # typed the transcribed text: niri aggregates modifier state across
+        # all input devices (physical keyboard + ydotool's virtual uinput),
+        # so every typed letter reached niri as Super+<letter> and triggered
+        # window-management binds. The scripts already issue a ydotool
+        # key-release sequence (see modules/programs/{nerd,whisper}-
+        # dictation/default.nix) but that only clears the virtual device.
+        # niri has no trigger-on-release or bind-suppression IPC (as of
+        # v25.08, discussion #2829), so the practical fix is to use a
+        # modifier combo niri doesn't bind to. Ctrl+Shift+<letter> is
+        # collision-free across the entire niri config. Trade-off: focused
+        # apps may still interpret Ctrl+Shift+<letter> as their own shortcut
+        # if the user keeps Ctrl+Shift held, but that's strictly less
+        # destructive than niri rearranging windows.
+        "Ctrl+Shift+Comma" = {
           repeat = false;
           cooldown-ms = 500;
           hotkey-overlay.title = "Dictation: nerd-dictation (Vosk, streaming)";
           action.spawn = [ "nerd-dictation-toggle" ];
         };
-        "Mod+Period" = lib.mkForce {
+        "Ctrl+Shift+Period" = {
           repeat = false;
           cooldown-ms = 500;
           hotkey-overlay.title = "Dictation: whisper-dictate (whisper.cpp, batch)";
           action.spawn = [ "whisper-dictate" ];
         };
-        # Mod+Slash intentionally not overridden here. Previously bound
-        # to moonshine-dictate; moonshine was dropped in favour of
-        # nerd-dictation (streaming, Mod+Comma) + whisper-dictate (batch,
-        # Mod+Period) after moonshine's medium-streaming model proved too
-        # inaccurate for useful dictation (clipped first words due to
-        # sounddevice mic-stream startup delay + small-model hallucinations
-        # on short utterances). Keep the moonshine packaging in pkgs/ for
-        # future experiments.
       };
 
       workspaces = {

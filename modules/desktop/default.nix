@@ -79,5 +79,26 @@ in {
       bibata-cursors
       default-mouse-cursor
     ];
+
+    nixcfg.programs.switchyard.rules = [
+      {
+        name = "Brave";
+        browser = "brave-browser.desktop";
+        logic = "any";
+        conditions = lib.concatMap (d: [
+          { type = "glob"; pattern = d; }
+          { type = "glob"; pattern = "*.${d}"; }
+        ]) [
+          "youtube.com"
+          "soundcloud.com"
+          "spotify.com"
+          "instagram.com"
+          "ra.co"
+          "reddit.com"
+          "twitter.com"
+          "facebook.com"
+        ];
+      }
+    ];
   };
 }

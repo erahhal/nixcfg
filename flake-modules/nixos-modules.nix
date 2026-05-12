@@ -44,6 +44,7 @@
     totp = import ../modules/programs/totp;
     dell-dcc = import ../modules/programs/dell-dcc;
     flox = import ../modules/programs/flox;
+    switchyard = import ../modules/programs/switchyard;
     whisper-dictation = import ../modules/programs/whisper-dictation;
     nerd-dictation = import ../modules/programs/nerd-dictation;
     # moonshine dropped from active use but module/pkg kept in-tree --

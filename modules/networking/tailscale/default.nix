@@ -85,7 +85,9 @@ in {
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStop = "${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5195 2>/dev/null || true";
+        ExecStop = pkgs.writeShellScript "tailscale-local-route-stop" ''
+          ${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5195 2>/dev/null || true
+        '';
       };
 
       script = ''
@@ -97,10 +99,37 @@ in {
           sleep 1
         done
 
-        # Add policy rule to route 10.0.0.0/24 via main table BEFORE tailscale's table 52
+        # Wait briefly for a 10.0.0.x address to appear on a real interface so
+        # we don't race DHCP. tailscaled.service can finish before wlan0 has
+        # acquired its DHCP lease; without this wait the awk check below sees
+        # no LAN address, the script decides "off LAN", and 10.0.0.0/24 stays
+        # routed through tailscale even after we land on the home network.
+        # On a genuinely off-LAN host the loop just times out and falls
+        # through to the off-LAN branch.
+        for i in {1..30}; do
+          if ${pkgs.iproute2}/bin/ip -4 -o addr show \
+              | ${pkgs.gawk}/bin/awk '$2 != "tailscale0" && /10\.0\.0\./ {found=1} END {exit !found}'; then
+            break
+          fi
+          sleep 1
+        done
+
+        # Always start clean
         ${pkgs.iproute2}/bin/ip rule del to 10.0.0.0/24 lookup main priority 5195 2>/dev/null || true
-        ${pkgs.iproute2}/bin/ip rule add to 10.0.0.0/24 lookup main priority 5195
-        echo "Added policy rule: to 10.0.0.0/24 lookup main priority 5195"
+
+        # Only pin 10.0.0.0/24 to the main table when an interface is actually
+        # addressed on that subnet. Off-LAN, the main table has no route for
+        # 10.0.0.0/24, so installing the rule blackholes traffic that should
+        # flow through Tailscale's accepted subnet route (table 52) via the
+        # home subnet router.
+        IFACE=$(${pkgs.iproute2}/bin/ip -4 -o addr show \
+          | ${pkgs.gawk}/bin/awk '$2 != "tailscale0" && /10\.0\.0\./ {print $2; exit}')
+        if [ -n "$IFACE" ]; then
+          ${pkgs.iproute2}/bin/ip rule add to 10.0.0.0/24 lookup main priority 5195
+          echo "On LAN ($IFACE) -- added policy rule: to 10.0.0.0/24 lookup main priority 5195"
+        else
+          echo "Off LAN -- skipped policy rule; 10.0.0.0/24 will route via tailscale"
+        fi
       '';
     };
 

@@ -345,13 +345,6 @@
     };
 
     programs = {
-      defaultBrowser = lib.mkOption {
-        type = lib.types.str;
-        default = "firefox";
-        # default = "chromium-browser";
-        description = "Default web browser";
-      };
-
       startupApps = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [];

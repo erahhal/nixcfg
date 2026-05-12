@@ -49,6 +49,28 @@
       # steam.enable = true;
       flatpak.enable = true;
       flox.enable = true;
+      switchyard = {
+        enable = true;
+        rules = [
+          {
+            name = "Chromium (work)";
+            browser = "chromium-browser.desktop";
+            logic = "any";
+            conditions = lib.concatMap (d: [
+              { type = "glob"; pattern = d; }
+              { type = "glob"; pattern = "*.${d}"; }
+            ]) [
+              "netflix.com"
+              "netflix.net"
+              "netflixstudios.com"
+              "nflxvideo.net"
+              "braintrust.dev"
+              "flxvpn.net"
+              "google.com"
+            ];
+          }
+        ];
+      };
       whisper-dictation = {
         enable = true;
         # Toggle-style -- bind `whisper-dictate` to a compositor hotkey.
@@ -355,6 +377,19 @@
     # 17ef:30ba) unenumerated, which breaks every HID device on the dock/monitor.
     "pci=realloc=on"
 
+    # Don't reserve any I/O port window for hot-pluggable PCIe bridges. x86 has only
+    # 64 KiB of legacy I/O port space total, and the TB4 dock's bridge tree alone
+    # asks for ~74 KiB (0xe000 + 0xd000 + 0xd000 + several smaller windows behind
+    # Maple Ridge and Goshen Ridge). With realloc on but no size cap, every plug-in
+    # is a coin flip: some bridges win I/O windows, others get "can't assign; no
+    # space" and their endpoints fail to enumerate. Empirically that surfaces as
+    # "ethernet works but the external monitor doesn't" or vice-versa, flipping on
+    # every replug.
+    # All endpoints on this dock (Fresco Logic xHCI, RTL8156 USB ethernet via the
+    # dock's USB hubs, DP mux) use MMIO; none need legacy I/O ports, so setting the
+    # hot-plug I/O size to 0 lets realloc succeed without dropping any device.
+    "pci=hpiosize=0"
+
     # IOMMU passthrough for trusted integrated devices. The Intel IOMMU on this
     # platform has a 39-bit MGAW; after pci=realloc=on, the integrated xHCI
     # (0000:00:14.0) was issued DMA addresses beyond that, producing
@@ -364,6 +399,33 @@
     # translation for integrated PCIe devices; Thunderbolt peripherals still
     # get IOMMU isolation via bolt's iommu policy.
     "iommu=pt"
+
+    # Hibernation: physical offset (in 4 KiB pages) of the first extent of
+    # /swap/swapfile on /dev/mapper/cryptroot. Paired with boot.resumeDevice
+    # below (search for "Hibernation resume target"). Recompute if the
+    # swapfile is ever recreated, resized, defragmented, or restored from
+    # btrfs send/recv:
+    #   sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+    "resume_offset=533760"
+
+    # ----- Hibernate-debug params (TEMPORARY -- remove once root cause found)
+    # The hibernate-write path hangs at "PM: hibernation: hibernation entry"
+    # with no further kernel output -- consistent with a driver suspend
+    # callback (likely NVIDIA) that never returns. These params keep
+    # diagnostic output visible/captured so the offending device shows up
+    # in the previous-boot journal.
+    #
+    # no_console_suspend: keep the framebuffer console alive across the
+    #   suspend-device phase so dpm_suspend() printk's reach the visible
+    #   console instead of disappearing into a frozen FB driver.
+    # pm_debug_messages: per-device suspend timing/result lines.
+    # initcall_debug: every driver's suspend/resume callbacks; the LAST
+    #   "calling <dev>+" line without a matching "... done" names the
+    #   driver that hung.
+    "no_console_suspend"
+    "pm_debug_messages"
+    "initcall_debug"
+    # ----- end hibernate-debug params
   ];
 
   # ------------------------------------------------------------------------
@@ -388,7 +450,11 @@
   # quick desk-to-desk roaming. After 30 minutes of sleep, it automatically
   # wakes up briefly to save the session to the SSD and fully powers off.
   services.logind = {
-    lidSwitch = lib.mkForce "suspend-then-hibernate";
+    # TEMPORARY for hibernate debug: leave lidSwitch at default so we can
+    # test `systemctl hibernate` directly from a TTY without the chained
+    # suspend-then-hibernate path interfering. Restore the line below
+    # once a clean hibernate cycle works.
+    # lidSwitch = lib.mkForce "suspend-then-hibernate";
     # Optional: also hibernate on external power so it doesn't cook in a bag
     # lidSwitchExternalPower = "suspend-then-hibernate";
   };
@@ -396,6 +462,20 @@
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "30m";
   };
+
+  # Hibernation resume target.
+  #
+  # Disko creates /swap/swapfile via `btrfs filesystem mkswapfile`
+  # (NOCOW, contiguous extents, lock-protected) -- hibernation-safe by
+  # construction. But disko does NOT wire boot.resumeDevice or
+  # resume_offset, so without these two params the kernel boots fresh
+  # after suspend-then-hibernate fires and the saved image is discarded.
+  #
+  # `resume=` is the LUKS-decrypted block device holding the btrfs FS
+  # (already opened in initrd via FIDO2, so it exists at the moment the
+  # kernel reads the resume image). `resume_offset=` lives next to the
+  # other boot.kernelParams above.
+  boot.resumeDevice = "/dev/mapper/cryptroot";
 
   # Keep the VeriMark fingerprint key (047d:8055) from pinning USB2 awake.
   # It defaults to `power/control=on` because it enumerates as an HID
@@ -445,6 +525,9 @@
   # every Goshen Ridge downstream bridge so the endpoints finally enumerate.
   systemd.services.dock-pcie-rescan = {
     description = "PCI rescan after ThinkPad TB4 Dock PCIe endpoint power-up";
+    # Chain the USB-3 controller rebind to fire after the PCI rescan completes;
+    # see dock-usb-rebind.service below.
+    wants = [ "dock-usb-rebind.service" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = pkgs.writeShellScript "dock-pcie-rescan" ''
@@ -459,6 +542,201 @@
       '';
     };
   };
+
+  # On hot replug, the dock's TB-tunneled USB 2 devices come back fine on bus 1,
+  # but the SuperSpeed (USB 3) link to the dock often fails to re-train -- bus 4
+  # ends up empty and the dock's r8152 ethernet (17ef:30b6/30b8) plus anything
+  # else that lives on USB 3 never enumerate. Cold boot works; only hot replug
+  # is broken. boltctl-forget + replug doesn't reliably fix it, neither does a
+  # plain replug -- which subsystem fails (ethernet vs DP) is roughly random.
+  #
+  # Rebinding the laptop-side TB4 USB controller (Maple Ridge, 8086:1138) forces
+  # a fresh xHCI init, which re-runs port discovery on the TB-tunneled SuperSpeed
+  # link and picks up the dock's bus-4 devices. The internal USB controller
+  # (0000:00:14.0) is a SEPARATE device and is untouched -- internal camera,
+  # Bluetooth, fingerprint reader stay up. Internal keyboard/trackpoint are
+  # i8042/PS-2, not USB, so also unaffected.
+  systemd.services.dock-usb-rebind = {
+    description = "Rebind Maple Ridge TB4 USB controller after dock authorize (recover bus-4 SuperSpeed enum)";
+    after = [ "dock-pcie-rescan.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "dock-usb-rebind" ''
+        set -u
+        # Discover by Vendor:Device ID rather than hard-coded BDF. 8086:1138 is
+        # the Maple Ridge TB4 USB Controller; on this machine it lives at
+        # 0000:48:00.0 today but discovery keeps us robust against future kernel
+        # / firmware reshuffles.
+        BDF=$(${pkgs.pciutils}/bin/lspci -d 8086:1138 -D 2>/dev/null | ${pkgs.gawk}/bin/awk '{print $1}' | head -1)
+        if [ -z "$BDF" ]; then
+          ${pkgs.util-linux}/bin/logger -t dock-usb-rebind "no Maple Ridge TB4 USB controller found; skipping"
+          exit 0
+        fi
+        ${pkgs.util-linux}/bin/logger -t dock-usb-rebind "rebinding xhci_hcd on $BDF"
+        echo "$BDF" > /sys/bus/pci/drivers/xhci_hcd/unbind 2>/dev/null || true
+        sleep 2
+        echo "$BDF" > /sys/bus/pci/drivers/xhci_hcd/bind 2>/dev/null || true
+        ${pkgs.util-linux}/bin/logger -t dock-usb-rebind "rebind complete"
+      '';
+    };
+  };
+
+  # ------------------------------------------------------------------------
+  # KNOWN ISSUE -- dock ethernet sometimes needs `systemctl restart
+  # NetworkManager` after dock plug-in to get an IPv4 lease.
+  # ------------------------------------------------------------------------
+  # A working per-device `nmcli` nudge workaround (extending the rescan
+  # service above + a sibling `dock-eth-nm-nudge.service` for resume) is
+  # block-commented below. Left disabled because we don't have ground truth
+  # on the failure mode -- enabling it would mask the broken state from
+  # forensic capture, and the right long-term fix is almost certainly a
+  # one-line NM config (autoconnect-retries / dhcp-timeout /
+  # carrier-wait-time) once we know the REASON.
+  #
+  # NEXT TIME IT FIRES, BEFORE restarting NM, capture:
+  #   nmcli device show <iface>          # state + STATE-REASON pins root cause
+  #   nmcli connection show --active
+  #   journalctl -u NetworkManager --since '-3 min' --no-pager
+  #   ip -d link show <iface>; cat /sys/class/net/<iface>/carrier
+  #   dmesg | tail -50
+  # REASON values map to fixes:
+  #   - autoconnect-retries exhausted -> raise `connection.autoconnect-retries`
+  #   - DHCP timeout                  -> raise `ipv4.dhcp-timeout`, set `ipv4.may-fail`
+  #   - no-carrier at probe           -> raise NM `[device].carrier-wait-time`
+  #   - dispatcher race               -> fix exclusive-lan dispatcher
+  /*
+  systemd.services.dock-pcie-rescan = {
+    description = "PCI rescan + NM nudge after ThinkPad TB4 Dock PCIe endpoint power-up";
+    after = [ "NetworkManager.service" ];
+    wants = [ "NetworkManager.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      StartLimitIntervalSec = 30;
+      StartLimitBurst = 3;
+      ExecStart = pkgs.writeShellScript "dock-pcie-rescan" ''
+        set -u
+        export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.pciutils pkgs.gawk pkgs.networkmanager pkgs.util-linux pkgs.gnugrep pkgs.gnused ]}:$PATH
+
+        exec 9>/run/dock-eth-nudge.lock
+        flock -n 9 || exit 0
+        log() { logger -t dock-pcie-rescan "$*"; }
+
+        sleep 5
+        for bridge in $(lspci -d 8086:0b26 -D | awk '{print $1}'); do
+          echo 1 > /sys/bus/pci/devices/"$bridge"/rescan 2>/dev/null || true
+        done
+        echo 1 > /sys/bus/pci/rescan 2>/dev/null || true
+
+        find_dock_iface() {
+          local iface drv parent_pci goshen_pci_re
+          goshen_pci_re=$(lspci -d 8086:0b26 -D | awk '{printf "%s|", $1}' | sed 's/|$//')
+          [ -z "$goshen_pci_re" ] && return 1
+          for iface_path in /sys/class/net/*; do
+            iface=$(basename "$iface_path")
+            [ "$iface" = "lo" ] && continue
+            drv=$(basename "$(readlink -f "$iface_path/device/driver" 2>/dev/null)" 2>/dev/null)
+            case "$drv" in r8169|r8152) ;; *) continue ;; esac
+            parent_pci=$(readlink -f "$iface_path/device" 2>/dev/null)
+            if echo "$parent_pci" | grep -Eq "$goshen_pci_re"; then
+              echo "$iface"
+              return 0
+            fi
+          done
+          return 1
+        }
+
+        iface=""
+        for _ in $(seq 1 50); do
+          iface=$(find_dock_iface) && [ -n "$iface" ] && break
+          sleep 0.5
+        done
+        if [ -z "$iface" ]; then
+          log "no dock ethernet netdev appeared within 25s; bailing"
+          exit 0
+        fi
+        log "found dock ethernet iface: $iface"
+
+        for _ in $(seq 1 40); do
+          [ "$(cat /sys/class/net/"$iface"/carrier 2>/dev/null || echo 0)" = "1" ] && break
+          sleep 0.5
+        done
+
+        state=$(nmcli -t -g GENERAL.STATE device show "$iface" 2>/dev/null || echo "")
+        log "iface $iface NM state before nudge: $state"
+        case "$state" in
+          *"100 (connected)"*) log "already connected; no nudge"; exit 0 ;;
+        esac
+        nmcli device set "$iface" managed yes 2>/dev/null || true
+        prof=$(nmcli -t -g GENERAL.CONNECTION device show "$iface" 2>/dev/null || echo "")
+        if [ -n "$prof" ] && [ "$prof" != "--" ]; then
+          nmcli --wait 30 connection up "$prof" ifname "$iface" 2>&1 | logger -t dock-pcie-rescan \
+            || nmcli --wait 30 device connect "$iface" 2>&1 | logger -t dock-pcie-rescan || true
+        else
+          nmcli --wait 30 device connect "$iface" 2>&1 | logger -t dock-pcie-rescan || true
+        fi
+        log "nudge complete; final state: $(nmcli -t -g GENERAL.STATE device show "$iface" 2>/dev/null)"
+      '';
+    };
+  };
+
+  systemd.services.dock-eth-nm-nudge = {
+    description = "Nudge NetworkManager for dock ethernet after resume";
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "NetworkManager.service" ];
+    wants = [ "NetworkManager.service" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "dock-eth-nm-nudge" ''
+        set -u
+        export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.pciutils pkgs.gawk pkgs.networkmanager pkgs.util-linux pkgs.gnugrep pkgs.gnused ]}:$PATH
+
+        exec 9>/run/dock-eth-nudge.lock
+        flock -n 9 || exit 0
+        log() { logger -t dock-eth-nm-nudge "$*"; }
+
+        find_dock_iface() {
+          local iface drv parent_pci goshen_pci_re
+          goshen_pci_re=$(lspci -d 8086:0b26 -D | awk '{printf "%s|", $1}' | sed 's/|$//')
+          [ -z "$goshen_pci_re" ] && return 1
+          for iface_path in /sys/class/net/*; do
+            iface=$(basename "$iface_path")
+            [ "$iface" = "lo" ] && continue
+            drv=$(basename "$(readlink -f "$iface_path/device/driver" 2>/dev/null)" 2>/dev/null)
+            case "$drv" in r8169|r8152) ;; *) continue ;; esac
+            parent_pci=$(readlink -f "$iface_path/device" 2>/dev/null)
+            if echo "$parent_pci" | grep -Eq "$goshen_pci_re"; then
+              echo "$iface"
+              return 0
+            fi
+          done
+          return 1
+        }
+
+        iface=$(find_dock_iface) || true
+        [ -z "$iface" ] && exit 0
+
+        for _ in $(seq 1 40); do
+          [ "$(cat /sys/class/net/"$iface"/carrier 2>/dev/null || echo 0)" = "1" ] && break
+          sleep 0.5
+        done
+
+        state=$(nmcli -t -g GENERAL.STATE device show "$iface" 2>/dev/null || echo "")
+        case "$state" in
+          *"100 (connected)"*) exit 0 ;;
+        esac
+        nmcli device set "$iface" managed yes 2>/dev/null || true
+        prof=$(nmcli -t -g GENERAL.CONNECTION device show "$iface" 2>/dev/null || echo "")
+        if [ -n "$prof" ] && [ "$prof" != "--" ]; then
+          nmcli --wait 30 connection up "$prof" ifname "$iface" 2>&1 | logger -t dock-eth-nm-nudge \
+            || nmcli --wait 30 device connect "$iface" 2>&1 | logger -t dock-eth-nm-nudge || true
+        else
+          nmcli --wait 30 device connect "$iface" 2>&1 | logger -t dock-eth-nm-nudge || true
+        fi
+        log "post-resume nudge complete; final state: $(nmcli -t -g GENERAL.STATE device show "$iface" 2>/dev/null)"
+      '';
+    };
+  };
+  */
 
   # # Fix NVIDIA USB4 DP tunnel not resuming after suspend
   # # The NVIDIA driver's proprietary USB4 DP tunnel implementation doesn't properly

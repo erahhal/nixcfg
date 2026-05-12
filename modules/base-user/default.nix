@@ -544,6 +544,11 @@ in
     programs.git = {
       enable = true;
       signing.format = "openpgp";
+      # Delta must be configured at programs.git.delta, NOT under settings —
+      # nesting it under `settings` only emits a raw INI `[delta] enable = true`
+      # that git ignores (delta never gets installed, core.pager never gets set,
+      # diffs fall through to plain `less` with no colorization).
+      delta.enable = true;
       settings = {
         user = {
           name = userParams.fullName;
@@ -577,9 +582,6 @@ in
         #     trustExitCode = true;
         #   };
         # };
-        delta = {
-          enable = true;
-        };
         filter = {
           lfs = {
             clean = "${pkgs.git-lfs}/bin/git-lfs clean -- %f";

@@ -46,6 +46,7 @@
       totp.enable = true;
       flatpak.enable = true;
       flox.enable = true;
+      switchyard.enable = true;
       whisper-dictation = {
         enable = true;
         # Toggle-style -- bind `whisper-dictate` to a compositor hotkey.

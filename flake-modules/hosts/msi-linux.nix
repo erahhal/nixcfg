@@ -23,6 +23,7 @@ in
       android
       flatpak
       flox
+      switchyard
       spacenavd
       connection-sharing
     ])

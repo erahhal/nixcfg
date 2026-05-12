@@ -238,22 +238,22 @@ in
       let mimeTypes = {
         "inode/directory"                                                               = [ "org.gnome.Nautilus.desktop" ];
 
-        "x-scheme-handler/http"                                                         = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "x-scheme-handler/https"                                                        = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "x-scheme-handler/about"                                                        = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "x-scheme-handler/unknown"                                                      = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "x-scheme-handler/chrome"                                                       = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "text/html"                                                                     = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/x-extension-htm"                                                   = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/x-extension-html"                                                  = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/x-extension-shtml"                                                 = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/xhtml+xml"                                                         = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/x-extension-xhtml"                                                 = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/x-extension-xht"                                                   = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/x-www-browser"                                                     = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "application/pdf"                                                               = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "x-www-browser"                                                                 = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
-        "x-scheme-handler/webcal"                                                       = [ "${config.hostParams.programs.defaultBrowser}.desktop" ];
+        "x-scheme-handler/http"                                                         = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "x-scheme-handler/https"                                                        = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "x-scheme-handler/about"                                                        = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "x-scheme-handler/unknown"                                                      = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "x-scheme-handler/chrome"                                                       = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "text/html"                                                                     = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/x-extension-htm"                                                   = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/x-extension-html"                                                  = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/x-extension-shtml"                                                 = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/xhtml+xml"                                                         = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/x-extension-xhtml"                                                 = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/x-extension-xht"                                                   = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/x-www-browser"                                                     = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "application/pdf"                                                               = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "x-www-browser"                                                                 = [ "io.github.alyraffauf.Switchyard.desktop" ];
+        "x-scheme-handler/webcal"                                                       = [ "io.github.alyraffauf.Switchyard.desktop" ];
 
         "image/png"                                                                     = [ "vimiv.desktop" ];
         "image/jpg"                                                                     = [ "vimiv.desktop" ];
@@ -362,8 +362,8 @@ in
       # ---------------------------------------------------------------------------
       # Browser
       # ---------------------------------------------------------------------------
-      BROWSER = config.hostParams.programs.defaultBrowser;
-      DEFAULT_BROWSER = config.hostParams.programs.defaultBrowser;
+      BROWSER = "switchyard";
+      DEFAULT_BROWSER = "switchyard";
 
       # ---------------------------------------------------------------------------
       # Java / Jetbrains

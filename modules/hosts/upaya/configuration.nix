@@ -43,6 +43,7 @@ in
       dell-dcc.enable = true;
       flatpak.enable = true;
       flox.enable = true;
+      switchyard.enable = true;
     };
     services = {
       waydroid.enable = true;

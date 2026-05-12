@@ -12,7 +12,6 @@ in
       enable = true;
       enable-ai = true;
       enable-startify-cowsay = true;
-      disable-indent-blankline = true;
     }
     ++ (with self.nixosModules; [
       desktop
@@ -32,6 +31,7 @@ in
       virtual-machines macchanger printers-scanners
       flatpak
       flox
+      switchyard
       spacenavd
       connection-sharing
     ])

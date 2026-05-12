@@ -6,7 +6,7 @@
       uid = 1026;
       gid = 100;
       # timeZone = "America/Denver";
-      thinkpad-battery-charge-to-full = false;
+      thinkpad-battery-charge-to-full = true;
     };
 
     networking = {
@@ -81,7 +81,6 @@
     };
 
     programs = {
-      defaultBrowser = "chromium-browser";
       # foot is launched directly from niri spawn-at-startup (see niri.nix)
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [

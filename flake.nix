@@ -47,6 +47,11 @@
 
     flox.url = "github:flox/flox";
 
+    switchyard = {
+      url = "github:alyraffauf/switchyard";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixcfg-niri = {
       url = "github:erahhal/nixcfg-niri";
       inputs.nixpkgs.follows = "nixpkgs";

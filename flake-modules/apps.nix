@@ -95,6 +95,12 @@
         };
       };
 
+      nflx-vpn-haze = mkApp "nixcfg-nflx-vpn" {
+        text = buildAndSwitch {
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg --override-input nflx-nixcfg/nm-openconnect-pulse-sso ~/Code/nm-openconnect-pulse-sso-haze";
+        };
+      };
+
       niri-local = mkApp "nixcfg-niri-local" {
         text = buildAndSwitch {
           extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nixcfg-niri ~/Code/nixcfg-niri";

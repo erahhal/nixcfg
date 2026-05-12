@@ -12,7 +12,6 @@ in
       enable = true;
       enable-ai = true;
       enable-startify-cowsay = true;
-      disable-indent-blankline = true;
       disable-notifications = true;
     }
     ++ (with self.nixosModules; [
@@ -39,6 +38,7 @@ in
       virtual-machines macchanger printers-scanners
       flatpak
       flox
+      switchyard
       whisper-dictation
       nerd-dictation
       spacenavd

@@ -35,6 +35,7 @@
       android.enable = true;
       flatpak.enable = true;
       flox.enable = true;
+      switchyard.enable = true;
     };
     services = {
       nfs-mounts.enable = true;
