@@ -99,6 +99,7 @@ let userParams = config.hostParams.user; in
     steam-run
     steampipe
     stress-ng
+    swtpm
     sysstat
     tmux
     udev

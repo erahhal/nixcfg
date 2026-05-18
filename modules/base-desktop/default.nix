@@ -61,7 +61,7 @@ in
   #       fcitx5-nord
   #       fcitx5-rime
   #       libsForQt5.fcitx5-qt
-  #       plasma5Packages.fcitx5-qt
+  #       qt6Packages.fcitx5-qt
   #       rime-data
   #     ];
   #   };
@@ -129,7 +129,7 @@ in
             fcitx5-nord
             fcitx5-rime
             libsForQt5.fcitx5-qt
-            plasma5Packages.fcitx5-qt
+            qt6Packages.fcitx5-qt
             rime-data
           ];
           ## Declarative IMEs: keyboard-us + pinyin + mozc.
@@ -511,7 +511,7 @@ in
         vesktop
         vimiv-qt
         waydroid
-        wasistlos
+        karere
         xournalpp
         zoom-us
 

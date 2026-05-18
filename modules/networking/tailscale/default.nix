@@ -74,6 +74,26 @@ in {
       wants = [ "network-online.target" ];
     };
 
+    # Re-run tailscale-local-route whenever the network changes. The service
+    # itself is oneshot and only runs at boot; without this, roaming off the
+    # home LAN (or onto it) leaves the priority-5195 policy rule in a stale
+    # state. Off-LAN that stale rule pins 10.0.0.0/24 to the main table, which
+    # has no route for it, black-holing traffic that should flow through
+    # Tailscale's accepted subnet route.
+    networking.networkmanager.dispatcherScripts = [
+      {
+        type = "basic";
+        source = pkgs.writeShellScript "tailscale-local-route-dispatch" ''
+          case "$2" in
+            up|down|vpn-up|vpn-down|dhcp4-change|dhcp6-change|connectivity-change)
+              ${pkgs.systemd}/bin/systemctl restart --no-block \
+                tailscale-local-route.service || true
+              ;;
+          esac
+        '';
+      }
+    ];
+
     # Prevent Tailscale from routing local LAN traffic (10.0.0.0/24) through
     # the tunnel, so LAN services (NFS/SMB, Snapcast, etc.) work directly.
     systemd.services.tailscale-local-route = {
