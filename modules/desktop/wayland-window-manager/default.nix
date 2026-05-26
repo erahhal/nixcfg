@@ -97,8 +97,9 @@ let userParams = config.hostParams.user; in
       # ---------------------------------------------------------------------------
       # Wayland-related
       # ---------------------------------------------------------------------------
-      ## Firefox: use Wayland renderer
-      # MOZ_ENABLE_WAYLAND = "1";
+      ## Firefox: use Wayland renderer (fixes XWayland popup-grab leak that
+      ## kills hamburger / extension / right-click menus after a while)
+      MOZ_ENABLE_WAYLAND = "1";
       ## set to 1 to always allocate planes without modifiers, this can fix certain modeset failures because of bandwidth restrictions.
       # WLR_DRM_NO_MODIFIERS = "1";
 
@@ -108,9 +109,6 @@ let userParams = config.hostParams.user; in
       ## Steam doesn't work with this enabled
       # SDL_VIDEODRIVER = "wayland";
 
-      ## !!! Non wayland?
-      ## Firefox: Use xinput2 which enables touchscreen gestures such as smooth touchpad scrolling
-      MOZ_USE_XINPUT2 = "1";
       ## Firefox: Use GPU-accelerated 2D rendering engine written in Rust
       # MOZ_WEBRENDER = "1";
 

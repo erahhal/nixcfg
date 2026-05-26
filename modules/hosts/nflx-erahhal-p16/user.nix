@@ -80,6 +80,54 @@ EOF
       fi
     '';
 
+    # Mutagen synchronization daemon
+    systemd.user.services.mutagen-daemon = {
+      Unit = {
+        Description = "Mutagen synchronization daemon";
+        After = [ "network-online.target" ];
+        Wants = [ "network-online.target" ];
+      };
+      Install.WantedBy = [ "default.target" ];
+      Service = {
+        Type = "simple";
+        Environment = [ "PATH=${lib.makeBinPath [ pkgs.openssh pkgs.mutagen ]}" ];
+        ExecStart = "${pkgs.mutagen}/bin/mutagen daemon run";
+        Restart = "on-failure";
+        RestartSec = 3;
+      };
+    };
+
+    # Create the ~/homefree <-> 10.0.0.1:~/homefree sync session once (idempotent).
+    systemd.user.services.mutagen-homefree = {
+      Unit = {
+        Description = "Mutagen sync session: ~/homefree <-> 10.0.0.1:~/homefree";
+        After = [ "mutagen-daemon.service" ];
+        Requires = [ "mutagen-daemon.service" ];
+      };
+      Install.WantedBy = [ "default.target" ];
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        Environment = [ "PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.openssh pkgs.mutagen ]}" ];
+        ExecStart = pkgs.writeShellScript "mutagen-homefree-create" ''
+          set -eu
+          mkdir -p "$HOME/homefree"
+          # wait for the daemon socket to come up
+          for _ in $(seq 1 30); do
+            mutagen sync list >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+          if ! mutagen sync list homefree >/dev/null 2>&1; then
+            mutagen sync create --name=homefree \
+              --sync-mode=two-way-resolved \
+              --ignore='/result' --ignore='/result-*' \
+              "$HOME/homefree" \
+              erahhal@10.0.0.1:/home/erahhal/homefree
+          fi
+        '';
+      };
+    };
+
     home = {
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
@@ -111,6 +159,9 @@ EOF
         arduino
         arduino-ide
         # platformio
+
+        ## Mutagen: two-way sync of ~/homefree <-> 10.0.0.1:~/homefree
+        mutagen
       ];
     };
   };

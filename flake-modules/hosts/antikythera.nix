@@ -15,7 +15,8 @@ in
       disable-notifications = true;
     }
     ++ (with self.nixosModules; [
-      desktop hyprland
+      desktop
+      hyprland
       pipewire
       fonts
       chromium-based-apps
@@ -27,7 +28,11 @@ in
       homefree
       captive-portal
       exclusive-lan
-      gfx-amd laptop udev-rules ryzenadj dmemcg
+      gfx-amd
+      laptop
+      udev-rules
+      ryzenadj
+      dmemcg
       thinkpad-dock-udev
       appimage
       android

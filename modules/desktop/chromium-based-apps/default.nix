@@ -87,7 +87,8 @@ let
           --unset __NV_PRIME_RENDER_OFFLOAD \
           --unset __VK_LAYER_NV_optimus \
           --add-flags "--enable-wayland-ime" \
-          --add-flags "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder" \
+          --add-flags "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,ScrollUnification,DropInputEventsWhilePaintHolding,ElasticOverscroll" \
+          --add-flags "--disable-smooth-scrolling" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=WebRTCPipeWireCapturer,VaapiVideoDecoder,WaylandWindowDecorations,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,UseOzonePlatform,UseMultiPlaneFormatForHardwareVideo" \
           --add-flags "--enable-gpu-rasterization" \
@@ -109,7 +110,8 @@ let
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--password-store=gnome-libsecret" \
-          --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
+          --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer" \
+          --add-flags "--disable-features=ScrollUnification"
       '';
     });
 

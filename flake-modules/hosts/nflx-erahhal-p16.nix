@@ -11,12 +11,30 @@ in
     ++ shared.nixvimModule { enable = true; enable-ai = true; }
     ++ (with self.nixosModules; [
       desktop hyprland
-      pipewire fonts chromium-based-apps
-      tailscale mullvad kdeconnect wireless wifi-qos
-      homefree captive-portal exclusive-lan
-      gfx-nvidia gfx-intel laptop udev-rules
-      appimage android totp
-      waydroid snapcast virtual-machines macchanger printers-scanners
+      pipewire
+      fonts
+      chromium-based-apps
+      tailscale
+      mullvad
+      kdeconnect
+      wireless
+      wifi-qos
+      homefree
+      captive-portal
+      exclusive-lan
+      gfx-nvidia
+      gfx-intel
+      laptop
+      udev-rules
+      appimage
+      android
+      totp
+      waydroid
+      snapcast
+      nfs-mounts
+      virtual-machines
+      macchanger
+      printers-scanners
       flatpak
       flox
       switchyard

@@ -102,6 +102,15 @@ in {
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
+      # NM dispatcher restarts this on every network event (up, dhcp4-change,
+      # connectivity-change, ...), which bursts past systemd's default
+      # StartLimitBurst=5/10s at boot. Raise the limit so legitimate event
+      # storms don't latch the unit into a failed state.
+      unitConfig = {
+        StartLimitIntervalSec = 30;
+        StartLimitBurst = 20;
+      };
+
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;

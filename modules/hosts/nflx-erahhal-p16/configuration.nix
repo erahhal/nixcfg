@@ -96,7 +96,7 @@
       waydroid.enable = true;
       snapcast.enable = true;
       printers-scanners.enable = true;
-      # nfs-mounts.enable = true;
+      nfs-mounts.enable = true;
     };
   };
 

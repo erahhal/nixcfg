@@ -749,6 +749,22 @@ in
       # };
     };
 
+    programs.jujutsu = {
+      enable = true;
+      settings = {
+        user = {
+          name = userParams.fullName;
+          email = userParams.email;
+        };
+        ui = {
+          default-command = "log";
+          editor = "nvim";
+          pager = "delta";
+          diff-formatter = ":git";
+        };
+      };
+    };
+
     programs.go.enable = true;
 
     programs.java = {
