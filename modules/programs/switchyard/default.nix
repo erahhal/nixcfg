@@ -36,7 +36,19 @@ in
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
-      inputs.switchyard.packages.${system}.default
+      # Upstream's buildPhase writes the Go binary to ./switchyard in the
+      # source dir, but buildGoModule's installPhase only installs
+      # $GOPATH/bin/*, so $out/bin ends up empty. Build into $GOPATH/bin
+      # directly. Tracked at: https://github.com/alyraffauf/switchyard
+      (inputs.switchyard.packages.${system}.switchyard.overrideAttrs (_: {
+        buildPhase = ''
+          runHook preBuild
+          mkdir -p $GOPATH/bin
+          go build -mod=vendor -trimpath -ldflags="-s -w" \
+            -o $GOPATH/bin/switchyard ./src
+          runHook postBuild
+        '';
+      }))
     ];
 
     home-manager.users.${username}.xdg.configFile."switchyard/config.toml".source =
