@@ -90,6 +90,8 @@ in {
           { type = "glob"; pattern = "*.${d}"; }
         ]) [
           "youtube.com"
+          "youtu.be"
+          "youtube-nocookie.com"
           "soundcloud.com"
           "spotify.com"
           "instagram.com"
