@@ -10,4 +10,4 @@ rsync -aP \
   --exclude=.gradle \
   --exclude=.local/share/Steam \
   --exclude-from=/var/tmp/ignorelist \
-  --progress /home/$USER /mnt/ellis/Backups/xps-home
+  --progress /home/$USER /mnt/data/Backups/xps-home

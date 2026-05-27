@@ -144,6 +144,29 @@
         '';
       };
 
+      bt-mic = mkApp "nixcfg-bt-mic" {
+        runtimeInputs = [ pkgs.pulseaudio ];
+        text = ''
+          # Switch every connected Bluetooth audio card to the headset profile
+          # so the mic engages. WirePlumber should do this automatically when
+          # an app opens a recording stream; this is the manual escape hatch.
+          mapfile -t cards < <(pactl list cards short | awk '/bluez_card/ {print $2}')
+          if [ "''${#cards[@]}" -eq 0 ]; then
+            echo "No bluez cards connected." >&2
+            exit 1
+          fi
+          for card in "''${cards[@]}"; do
+            echo "Switching $card -> headset-head-unit"
+            pactl set-card-profile "$card" headset-head-unit
+            mac="''${card#bluez_card.}"
+            src="bluez_input.$(echo "$mac" | tr '_' ':')"
+            pactl set-source-mute "$src" 0 2>/dev/null || true
+          done
+          echo "Done. Default source:"
+          pactl get-default-source
+        '';
+      };
+
       gc = mkApp "nixcfg-gc" {
         text = ''
           nix-store --gc

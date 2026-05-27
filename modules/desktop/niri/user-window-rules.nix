@@ -10,6 +10,7 @@ in
       { matches = [{ app-id = "kitty$"; }]; open-on-workspace = "two"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "foot$"; }]; open-on-workspace = "two"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "Slack$"; }]; open-on-workspace = "three"; default-column-width = { proportion = 1.0; }; }
+      { matches = [{ app-id = "slack$"; }]; open-on-workspace = "three"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "spotify$"; }]; open-on-workspace = "four"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "Spotify$"; }]; open-on-workspace = "four"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "brave-browser$"; }]; open-on-workspace = "four"; default-column-width = { proportion = 1.0; }; }

@@ -61,27 +61,10 @@ in {
       '';
     };
 
-    # fileSystems."/mnt/ellis" = {
-    #   device = "10.0.0.1:/mnt/ellis";
-    #   fsType = "nfs";
-    #   options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
-    # };
-    fileSystems."/mnt/ellis" = {
-      device = "10.0.0.1:/mnt/storage/syn-restore/@syno/ellis";
+    fileSystems."/mnt/data" = {
+      device = "10.0.0.1:/mnt/data";
       fsType = "nfs";
       options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
     };
-
-    # fileSystems."/mnt/family-files" = {
-    #   device = "10.0.0.1:/volume1/family-files";
-    #   fsType = "nfs";
-    #   options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
-    # };
-    #
-    # fileSystems."/mnt/nas-home" = {
-    #   device = "10.0.0.1:/volume1/homes";
-    #   fsType = "nfs";
-    #   options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
-    # };
   };
 }

@@ -51,6 +51,7 @@
       flox.enable = true;
       switchyard = {
         enable = true;
+        favoriteBrowser = "chromium-browser.desktop";
         rules = [
           {
             name = "Chromium (work)";
@@ -96,7 +97,7 @@
       waydroid.enable = true;
       snapcast.enable = true;
       printers-scanners.enable = true;
-      nfs-mounts.enable = true;
+      nfs-mounts.enable = false;
     };
   };
 

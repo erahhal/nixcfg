@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BASE_PATH=/mnt/ellis/Backups/x1c
+BASE_PATH=/mnt/data/Backups/x1c
 
 mkdir -p ${BASE_PATH}/home
 sudo chown ${USER}:users ${BASE_PATH}
@@ -25,4 +25,4 @@ rsync -aP \
   --exclude=.local/state/nix \
   --exclude=.local/state/home-manager \
   --exclude-from=/var/tmp/ignorelist \
-  --progress /home/$USER /mnt/ellis/Backups/x1c-home
+  --progress /home/$USER /mnt/data/Backups/x1c-home

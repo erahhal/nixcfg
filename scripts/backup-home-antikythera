@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BACKUP_PATH=/mnt/ellis/Backups/antikythera-home
+BACKUP_PATH=/mnt/data/Backups/antikythera-home
 
 sudo mkdir -p $BACKUP_PATH
 sudo chown erahhal:users $BACKUP_PATH

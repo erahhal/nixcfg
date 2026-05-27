@@ -68,6 +68,7 @@ in
         "workspace 2, silent, class:^(kitty)$"
         "workspace 2, silent, class:^(foot)$"
         "workspace 3, silent, class:^(Slack)$"
+        "workspace 3, silent, class:^(slack)$"
         "workspace 4, silent, title:^(Spotify Premium)$"
         "workspace 4, silent, class:^(brave-browser)$"
         "workspace 5, silent, class:^(firefox)$"

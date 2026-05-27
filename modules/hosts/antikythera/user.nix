@@ -64,6 +64,7 @@ in
 
       packages = with pkgs; [
         (pkgs.callPackage ../../../pkgs/curseforge {})
+        (pkgs.callPackage ../../../pkgs/hyperbackup-explorer {})
         ## terminal apps
         exercism
         awscli
