@@ -27,6 +27,7 @@ in
       { matches = [{ app-id = "@joplin/app-desktop$"; }]; open-on-workspace = "nine"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "Joplin$"; }]; open-on-workspace = "nine"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "joplin$"; }]; open-on-workspace = "nine"; default-column-width = { proportion = 1.0; }; }
+      { matches = [{ app-id = "joplin-app-desktop$"; }]; open-on-workspace = "nine"; default-column-width = { proportion = 1.0; }; }
       {
         matches = [
           { app-id = "steam"; }
