@@ -17,12 +17,12 @@
       };
       # Disabled: recent kernels appear to have resolved the ath11k boot/resume
       # issue. Re-enable if WiFi fails to come up at boot or after suspend.
-      wifi.ath11kRestartFix.enable = false;
+      wifi.ath11kRestartFix.enable = true;
     };
 
     system = {
       hostName = "antikythera";
-      uid = 1026;
+      uid = 1000;
       gid = 100;
       # timeZone = "America/Denver";
       thinkpad-battery-charge-to-full = false;

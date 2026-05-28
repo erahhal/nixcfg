@@ -23,7 +23,7 @@
       uid = lib.mkOption {
         type = lib.types.int;
         default = 1000;
-        description = "User ID of main user. Use 1026 to match UID of admin user on Synology NAS";
+        description = "User ID of main user.";
       };
 
       gid = lib.mkOption {
