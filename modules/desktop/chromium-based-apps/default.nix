@@ -129,7 +129,8 @@ let
         wrapProgram $out/bin/spotify \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
-          --add-flags "--enable-features=UseOzonePlatform,WaylandLinuxDrmSyncobj,WaylandWindowDecorations"
+          --add-flags "--enable-features=UseOzonePlatform,WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer" \
+          --add-flags "--disable-features=UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
       '';
     });
 
