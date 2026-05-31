@@ -56,9 +56,6 @@
       ../../desktop/niri/user-overrides.nix
     ];
 
-  # Disable gnome-keyring since we use autologin and don't need password storage
-  services.gnome.gnome-keyring.enable = lib.mkForce false;
-
   networking = {
     networkmanager = {
       enable = true;
@@ -136,7 +133,7 @@
   ];
 
   # boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
   # --------------------------------------------------------------------------------------
   # Hardware specific

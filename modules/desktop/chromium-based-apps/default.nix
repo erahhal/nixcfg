@@ -127,7 +127,9 @@ let
     spotify = prev.spotify.overrideAttrs (oldAttrs: {
       postInstall = oldAttrs.postInstall or "" + ''
         wrapProgram $out/bin/spotify \
-          --add-flags "--enable-wayland-ime"
+          --add-flags "--enable-wayland-ime" \
+          --add-flags "--ozone-platform=wayland" \
+          --add-flags "--enable-features=UseOzonePlatform,WaylandLinuxDrmSyncobj,WaylandWindowDecorations"
       '';
     });
 
