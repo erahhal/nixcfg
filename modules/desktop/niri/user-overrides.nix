@@ -20,6 +20,7 @@
   nixcfg-niri.desktop.themeToggleCommand = "toggle-theme";
 
   nixcfg-niri.desktop.easyeffects = {
+    enable = config.hostParams.desktop.easyeffects.enable;
     generic = true;
     headphoneProfiles = true;
     laptopSpeakers = true;

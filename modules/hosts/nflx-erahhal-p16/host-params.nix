@@ -50,6 +50,10 @@
       # dmsLockProgram = "hyprlock";
       autoLogin = false;
 
+      # EasyEffects intercepts Bluetooth headset recording on this host,
+      # breaking the A2DP->HSP autoswitch for the Bose NC 700 mic. Skip it.
+      easyeffects.enable = false;
+
       ttyFontSize = 9.0;
       ttyLineHeight = 10;
       dpi = 210;

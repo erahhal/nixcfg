@@ -245,6 +245,20 @@
         description = "Lock screen program to use with DMS (dms = built-in Quickshell lock, hyprlock = standalone)";
       };
 
+      easyeffects.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Enable EasyEffects: daemon autostart, DMS shell plugin, and preset
+          install. Set to false on hosts where EasyEffects' virtual input
+          source intercepts Bluetooth headset recording streams and breaks
+          WirePlumber's A2DP->HSP autoswitch.
+
+          Mirrors to nixcfg-niri.desktop.easyeffects.enable via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       autoLogin = lib.mkOption {
         type = lib.types.bool;
         default = false;
