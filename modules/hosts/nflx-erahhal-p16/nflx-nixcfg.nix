@@ -36,6 +36,7 @@
     vpn.pulse = {
       disable-url-warning = true;
       disable-nm-applet-warning = true;
+      disable-desktop-browser-auth = false;
     };
 
     vpn.pulse-official.enable = true;

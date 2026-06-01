@@ -97,6 +97,9 @@ let
     ## Large scrollback buffer
     set-option -g history-limit 100000
 
+    ## Disable the alternate screen so full-screen program output stays in scrollback
+    set -g alternate-screen off
+
     ## Enable mouse interactions
     # set -g mouse on
 

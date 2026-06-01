@@ -57,15 +57,14 @@ ACTIVITY="$PACKAGE/com.google.android.apps.camera.legacy.app.activity.main.Camer
 # letting users drift onto whichever release is current upstream.
 #
 # To rotate to a newer build, update all four EXPECTED_* values below.
-#  - EXPECTED_VERSION_NAME / EXPECTED_VERSION_CODE come from
+#  - EXPECTED_VERSION_NAME come from
 #      `aapt dump badging <apk>` or `dumpsys package com.ss.android.ugc.aweme`
 #  - EXPECTED_APK_URL is the celsoazevedo direct link (the
 #      "<n>-dontsharethislink.celsoazevedo.com" host rotates; any of the
 #      mirrors works)
 #  - EXPECTED_APK_SHA256 is `sha256sum` of the downloaded file
 EXPECTED_VERSION_NAME="9.7.047.702121536.18"
-EXPECTED_VERSION_CODE="68097556"
-EXPECTED_APK_FILENAME="MGC_9.7.047_V7_aweme.apk"
+EXPECTED_APK_FILENAME="MGC_9.7.047_V13_aweme.apk"
 EXPECTED_APK_URL="https://1-dontsharethislink.celsoazevedo.com/file/filesc/${EXPECTED_APK_FILENAME}"
 EXPECTED_APK_SHA256="06b788757a50aee13f7e319652396e9c1489e8aead7825cc6222a402ee0b4e51"
 EXPECTED_APK_SIZE="453214041"
