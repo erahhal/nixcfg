@@ -5,6 +5,12 @@
     config = {
       allowUnfree = true;
       allowBroken = true;
+      # obsidian, logseq, and bitwarden-desktop still pin electron_39 in
+      # nixpkgs (default electron is now electron_41), and the bump marked
+      # electron_39 EOL/insecure. nixpkgs pins it on purpose — those apps
+      # aren't compatible with newer Electron yet — so allow it rather than
+      # override (which would break them). Remove once they move to electron_41.
+      permittedInsecurePackages = [ "electron-39.8.10" ];
       packageOverrides = pkgs: {
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;

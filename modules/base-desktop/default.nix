@@ -189,7 +189,9 @@ in
         gtk-im-module = "fcitx";
       };
       gtk4 = {
-        theme = null;
+        # theme intentionally unset — Stylix owns gtk.gtk4.theme (same as it
+        # themes gtk3). Pinning it to null collides with Stylix under newer
+        # home-manager ("option defined both null and not null").
         extraConfig = {
           gtk-im-module = "fcitx";
         };

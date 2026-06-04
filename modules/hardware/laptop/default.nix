@@ -52,21 +52,30 @@ in {
     };
 
     ## after boot, use graphical console TTY that supports TrueType fonts and glyphs
+
+    # Stylix's kmscon target still sets the now-removed
+    # services.kmscon.{fonts,extraConfig} options, which hard-fails the build on
+    # current nixpkgs. Disable it until Stylix migrates upstream — this only
+    # drops the base16 console palette; re-enable when Stylix is fixed.
+    stylix.targets.kmscon.enable = false;
+
+    # font-name needs the font available system-wide (+ fontconfig, which the
+    # desktop already enables). Replaces the removed services.kmscon.fonts.
+    fonts.packages = [ pkgs.nerd-fonts.droid-sans-mono ];
+
     services.kmscon = {
       enable = true;
-      hwRender = true;
       useXkbConfig = true;
-      term = "xterm-256color";
-      fonts =  [
-        {
-          name = "DejaVu Sans Mono";
-          package = pkgs.nerd-fonts.droid-sans-mono;
-        }
-      ];
-      extraConfig = ''
-        backspace-delete
-        use-original-mode
-      '';
+      # nixpkgs removed services.kmscon.{fonts,extraConfig} and renamed
+      # hwRender/term → config.{hwaccel,term}. All kmscon.conf settings now live
+      # under `config` (bool true → bare flag, else key=value).
+      config = {
+        hwaccel = true;
+        term = "xterm-256color";
+        font-name = "DejaVu Sans Mono";
+        backspace-delete = true;
+        use-original-mode = true;
+      };
       extraOptions = "--font-size 19";
     };
 
