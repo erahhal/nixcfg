@@ -295,15 +295,19 @@
   # Hardware specific
   # --------------------------------------------------------------------------------------
 
-  ## Early OOM killer - notify when memory is low (does not kill processes per user preference)
+  ## Early OOM killer.
+  ## Note: earlyoom's `-n` enables notifications, not "notify only" — earlyoom
+  ## always kills when MemAvailable < threshold.  Thresholds raised so it
+  ## acts before sustained heavy workloads (multi-stream recording + browser
+  ## video) drive the system into swap-thrashing direct-reclaim.
   services.earlyoom = {
     enable = true;
-    freeMemThreshold = 5;     # Notify at 5% free memory
-    freeSwapThreshold = 10;   # Notify at 10% free swap
+    freeMemThreshold = 10;    # Kill at 10% MemAvailable
+    freeSwapThreshold = 20;   # Kill at 20% free swap
     enableNotifications = true;
     extraArgs = [
-      "--prefer" "^(firefox|chromium|chrome)$"  # Prefer killing browsers if killing is enabled later
-      "-n"  # Notify only, don't kill (dry-run mode)
+      "--prefer" "^(firefox|chromium|chrome|electron|Web Content)$"
+      "--avoid" "^(niri|niri-session|systemd|sshd|pipewire|wireplumber|dbus)$"
     ];
   };
 
@@ -326,9 +330,13 @@
     # Prevent spurious wakeups from a firmware bug where the EC or SMU generates spurious "heartbeat" interrupts during sleep
     "acpi.ec_no_wakeup=1"
 
-    # AMD GPU stability - fixes DMUB IRQ storms on RDNA 3 (P14s Gen 5)
-    # Reduces display hotplug interrupt overhead
-    "amdgpu.dcdebugmask=0x10"
+    # Disabled 2026-06-08: originally added for Hyprland input lag (commit
+    # ac61010), re-enabled later under a new "fixes DMUB IRQ storms"
+    # justification — but the storm + wait_for_completion_timeout still
+    # happen with this enabled on niri + current CachyOS kernel, so it
+    # isn't preventing what the comment claimed.  Re-add only if input lag
+    # returns and a specific bit can be tied to a current upstream issue.
+    # "amdgpu.dcdebugmask=0x10"
 
     "amd_pstate=active"
 

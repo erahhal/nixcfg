@@ -70,6 +70,12 @@ in {
           popups = 10;
         };
       };
+
+      # Stylix's gtksourceview target patches postFixup to inject a base16
+      # style file, diverging the derivation hash from Hydra's. inkscape
+      # depends on gtksourceview, so this cascades into a full inkscape
+      # rebuild on every nixpkgs bump. Disable to keep both cache-hit.
+      targets.gtksourceview.enable = false;
     };
 
     environment.systemPackages = with pkgs; [

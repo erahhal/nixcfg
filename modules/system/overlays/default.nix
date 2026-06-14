@@ -10,7 +10,6 @@
       # electron_39 EOL/insecure. nixpkgs pins it on purpose — those apps
       # aren't compatible with newer Electron yet — so allow it rather than
       # override (which would break them). Remove once they move to electron_41.
-      permittedInsecurePackages = [ "electron-39.8.10" ];
       packageOverrides = pkgs: {
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;

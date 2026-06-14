@@ -84,6 +84,30 @@ in
           Value = "default-theme@mozilla.org";
           Status = "default";
         };
+
+        # ── Hardware video decode (VAAPI) on Wayland ───────────────────
+        # Firefox's gfxInfo blocklist marks the AMD Phoenix iGPU (MESA
+        # device 0x1900) as FEATURE_FAILURE_BROKEN_DRIVER and blocks
+        # DMABUF_SURFACE_EXPORT, which gates the entire VAAPI path.
+        # These three prefs let the decoder run anyway.  Without them,
+        # Firefox falls back to software decode on every stream — which
+        # pegs the CPU and triggers thermal throttling on Phoenix
+        # laptops (the chronic "becomes laggy every few minutes" issue).
+        #
+        # Locked so the prefs survive about:config changes; remove when
+        # Firefox's gfxInfo correctly recognises Phoenix iGPUs.
+        "gfx.x11-egl.force-enabled" = {
+          Value = true;
+          Status = "locked";
+        };
+        "widget.dmabuf.force-enabled" = {
+          Value = true;
+          Status = "locked";
+        };
+        "gfx.work-around-driver-bugs" = {
+          Value = false;
+          Status = "locked";
+        };
       };
     };
   };
@@ -475,7 +499,7 @@ in
         ## apps
         audacity
         bambu-studio
-        bitwarden-desktop
+        (broken bitwarden-desktop) # currently insecure
         brave
         calibre
         czkawka
@@ -499,7 +523,6 @@ in
         unstable.kphotoalbum
         krita
         libreoffice-fresh
-        logseq
         mpv
         rpi-imager
         shotwell

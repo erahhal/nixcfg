@@ -84,7 +84,7 @@
       amd.enable = true;
       ## VRAM-management boost via dmem cgroup controller. Requires the
       ## CachyOS kernel; see modules/hardware/dmemcg.
-      amd.dmemcg.enable = true;
+      amd.dmemcg.enable = false;  # Currently false, seeing AMD HW video decoder crashes, might be related
     };
   };
 }

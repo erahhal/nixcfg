@@ -15,8 +15,29 @@ in
 
     hardware = {
       graphics = {
-        # Needed for Steam
-        enable32Bit = true;
+        # Without enable=true, /run/opengl-driver/lib gets mesa backends
+        # (libEGL_mesa.so, libGLX_mesa.so) but no libglvnd dispatchers
+        # (libGL.so.1, libEGL.so).  Firefox's glxtest then fails to dlopen
+        # libGL.so.1, gfxInfo records FEATURE_FAILURE_BROKEN_DRIVER, and
+        # DMA-BUF / VAAPI get blocklisted — forcing software video decode
+        # on the CPU.  On Phoenix iGPU that means multi-stream Firefox
+        # pegs the CPU into thermal throttle.
+        enable = true;
+        enable32Bit = true;  # Needed for Steam
+        extraPackages = with pkgs; [
+          # libglvnd provides the dispatcher libs (libGL.so.1, libEGL.so.1,
+          # libGLX.so.0) that Firefox's glxtest dlopens.  NixOS's mesa is
+          # built with -Dglvnd=enabled so mesa itself does NOT provide
+          # libGL.so.1 — it only provides the mesa backends (libGLX_mesa.so,
+          # libEGL_mesa.so).  Without libglvnd, glxtest errors out and
+          # gfxInfo blocklists DMA-BUF, defeating VAAPI.
+          libglvnd
+          # pciutils for libpci.so — glxtest uses it to query the GPU.
+          pciutils
+          libva
+          libva-utils
+          egl-wayland
+        ];
       };
     };
 

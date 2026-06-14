@@ -104,54 +104,91 @@ let
       inherit (originalSlack) meta;
     };
 
-    signal-desktop = prev.signal-desktop.overrideAttrs (oldAttrs: {
-      postInstall = oldAttrs.postInstall or "" + ''
-        wrapProgram $out/bin/signal-desktop \
+    # symlinkJoin-wrap (not overrideAttrs) so the underlying prebuilt Electron
+    # tarball stays cache-hit; only the tiny wrapper derivation builds locally.
+    signal-desktop = let
+      original = prev.signal-desktop;
+    in prev.symlinkJoin {
+      name = "signal-desktop-${original.version}";
+      paths = [ original ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/signal-desktop
+        makeWrapper ${original}/bin/signal-desktop $out/bin/signal-desktop \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--password-store=gnome-libsecret" \
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer" \
           --add-flags "--disable-features=ScrollUnification"
       '';
-    });
+      inherit (original) meta;
+    };
 
-    element-desktop = prev.element-desktop.overrideAttrs (oldAttrs: {
-      postFixup = oldAttrs.postFixup or "" + ''
-        wrapProgram $out/bin/element-desktop \
+    element-desktop = let
+      original = prev.element-desktop;
+    in prev.symlinkJoin {
+      name = "element-desktop-${original.version}";
+      paths = [ original ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/element-desktop
+        makeWrapper ${original}/bin/element-desktop $out/bin/element-desktop \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
       '';
-    });
+      inherit (original) meta;
+    };
 
-    spotify = prev.spotify.overrideAttrs (oldAttrs: {
-      postInstall = oldAttrs.postInstall or "" + ''
-        wrapProgram $out/bin/spotify \
+    spotify = let
+      original = prev.spotify;
+    in prev.symlinkJoin {
+      name = "spotify-${original.version}";
+      paths = [ original ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/spotify
+        makeWrapper ${original}/bin/spotify $out/bin/spotify \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=UseOzonePlatform,WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer" \
           --add-flags "--disable-features=UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
       '';
-    });
+      inherit (original) meta;
+    };
 
-    vesktop = prev.vesktop.overrideAttrs (oldAttrs: {
-      postFixup = oldAttrs.postFixup or "" + ''
-        wrapProgram $out/bin/vesktop \
+    vesktop = let
+      original = prev.vesktop;
+    in prev.symlinkJoin {
+      name = "vesktop-${original.version}";
+      paths = [ original ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/vesktop
+        makeWrapper ${original}/bin/vesktop $out/bin/vesktop \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer" \
           ${if usingIntel then ''--add-flags "--disable-gpu-compositing"'' else ""}
       '';
-    });
+      inherit (original) meta;
+    };
 
-    joplin-desktop = prev.joplin-desktop.overrideAttrs (oldAttrs: {
-      postFixup = oldAttrs.postFixup or "" + ''
-        wrapProgram $out/bin/joplin-desktop \
+    joplin-desktop = let
+      original = prev.joplin-desktop;
+    in prev.symlinkJoin {
+      name = "joplin-desktop-${original.version}";
+      paths = [ original ];
+      nativeBuildInputs = [ prev.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/joplin-desktop
+        makeWrapper ${original}/bin/joplin-desktop $out/bin/joplin-desktop \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--ozone-platform=wayland" \
           --add-flags "--enable-features=WaylandLinuxDrmSyncobj,WaylandWindowDecorations,WebRTCPipeWireCapturer"
       '';
-    });
+      inherit (original) meta;
+    };
 
     obs-studio = let
       originalObs = prev.obs-studio;

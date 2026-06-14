@@ -26,12 +26,13 @@
       { name = "niri-session"; nice = -12; ioclass = "best-effort"; sched = "other"; }
       { name = "foot"; nice = -4; ioclass = "best-effort"; sched = "other"; }
       { name = "footclient"; nice = -4; ioclass = "best-effort"; sched = "other"; }
-      # yt-dlp: CachyOS classifies as BG_CPUIO (nice 16, ioclass idle, sched idle).
-      # Stream recording is time-critical — must keep up with real-time network data.
-      { name = "yt-dlp"; nice = 0; ioclass = "best-effort"; sched = "other"; }
-      # ffmpeg: CachyOS classifies as Heavy_CPU (nice 9, ionice 7).
-      # When recording live streams, needs enough priority to avoid stalling.
-      { name = "ffmpeg"; nice = 0; ioclass = "best-effort"; sched = "other"; }
+      # yt-dlp/ffmpeg: CachyOS defaults are too restrictive (nice 16, ioclass
+      # idle) — they cause stream recording to stall under load.  But nice=0
+      # is too aggressive: under high concurrency (9+ simultaneous recordings)
+      # they compete with the compositor and tank UI latency.  nice=5 keeps
+      # recording reliable while leaving headroom for niri/Firefox.
+      { name = "yt-dlp"; nice = 5; ioclass = "best-effort"; ionice = 4; sched = "other"; }
+      { name = "ffmpeg"; nice = 5; ioclass = "best-effort"; ionice = 4; sched = "other"; }
     ];
   };
 
@@ -73,9 +74,22 @@
   # daemons (dbus-broker, pipewire) don't bump their own soft limit and
   # eventually hit it.  When user dbus-broker hits EMFILE, every GUI app
   # holding a session-bus connection (chromium, electron, etc.) aborts.
-  systemd.user.extraConfig = ''
-    DefaultLimitNOFILE=524288:524288
-  '';
+  systemd.user.settings.Manager = {
+    DefaultLimitNOFILE = "524288:524288";
+  };
+
+  # ── User-slice memory cap ───────────────────────────────────────────
+  # Without MemoryHigh on user.slice, a runaway Firefox + concurrent
+  # media-recording workload can push the whole system into
+  # synchronous direct-reclaim — the foreground task blocks waiting for
+  # pages to be freed, which is exactly what "laggy and unresponsive"
+  # feels like.  MemoryHigh triggers proactive reclaim before that
+  # happens; MemoryMax is the hard ceiling that earlyoom (and as a
+  # last resort the kernel OOM killer) will enforce.
+  systemd.slices."user".sliceConfig = {
+    MemoryHigh = "48G";
+    MemoryMax = "54G";
+  };
 
   # ── Btrfs maintenance ──────────────────────────────────────────────
   # Weekly balance reclaims unallocated device space from partially-used
