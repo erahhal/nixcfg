@@ -48,7 +48,10 @@ in {
   config = lib.mkIf cfg.enable {
     services.tailscale = {
       enable = true;
-      authKeyFile = "/run/secrets/tailscale/key";
+      # Per-host agenix secret (hosts/<host>/secrets/secrets.nix). mkIf so hosts
+      # that enable tailscale without the secret declared just get no authKeyFile.
+      authKeyFile = lib.mkIf (config.age.secrets ? "tailscale-key")
+        config.age.secrets."tailscale-key".path;
       authKeyParameters = {
         preauthorized = true;
         baseURL = "https://vpn.homefree.host";

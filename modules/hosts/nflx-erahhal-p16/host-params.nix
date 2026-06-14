@@ -1,6 +1,10 @@
 { ... }:
 {
   hostParams = {
+    # AI coding harnesses come from nflx-nixcfg on this host; skip nixcfg's own
+    # opencode + OpenRouter wiring (modules/programs/ai-coding).
+    user.nflxHost = true;
+
     system = {
       hostName = "nflx-erahhal-p16";
       uid = 1026;

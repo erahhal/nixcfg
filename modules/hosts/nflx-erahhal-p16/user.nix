@@ -155,6 +155,7 @@ EOF
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
       packages = with pkgs; [
+        (pkgs.callPackage ../../../pkgs/airport-utility {}) # Wayland driver scales via compositor
         (pkgs.callPackage ../../../pkgs/hyperbackup-explorer {})
         awscli
         blender

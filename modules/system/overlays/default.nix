@@ -40,6 +40,13 @@
     # kernel rebuilds locally.
     inputs.nix-cachyos-kernel.overlays.pinned
 
+    # Always-fresh Claude Code. nixpkgs' claude-code lags Anthropic releases
+    # by days/weeks; sadjow/claude-code-nix republishes within ~1h. This
+    # overlay redefines pkgs.claude-code (a prebuilt native Bun binary built
+    # against our nixpkgs via final.callPackage), transparently upgrading the
+    # `claude-code` entry in modules/base-user. See the input in flake.nix.
+    inputs.claude-code.overlays.default
+
     (final: prev: {
       # Fix gamescope 3.16.22 swapchain handling for Wayland compositors:
       # 1) vulkan_remake_swapchain() re-queries surface capabilities (stale

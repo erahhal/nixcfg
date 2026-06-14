@@ -548,7 +548,7 @@ in
         adwaita-icon-theme
         eog # image viewer
         evince # PDF viewer
-        openscad
+        (broken openscad)
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application

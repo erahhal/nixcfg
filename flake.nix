@@ -76,6 +76,20 @@
 
     nixd.url = "github:nix-community/nixd";
 
+    # claude-code in nixpkgs trails Anthropic releases by days/weeks (PR
+    # review + maintainer lag). sadjow/claude-code-nix republishes the
+    # prebuilt native binary within ~1h of release via an hourly updater.
+    # Its overlays.default sets pkgs.claude-code with final.callPackage, so
+    # it builds against OUR nixpkgs -- `follows` just keeps the lock from
+    # pulling in a second nixpkgs (the flake's own nixpkgs is only used by
+    # its packages/apps/devShell outputs, which we don't consume). The
+    # heavy part is a fixed-output binary fetch (content-addressed), so no
+    # extra substituter is needed. Applied in modules/system/overlays.
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nflx-nixcfg = {
       type = "git";
       url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";

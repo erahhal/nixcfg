@@ -123,7 +123,6 @@ in
         ncdu
         pdftk # for removing password from PDFs
         ripgrep
-        silver-searcher
         unzip
 
         ## needed by zsh plugins
@@ -163,7 +162,8 @@ in
 
         ## genai
         litellm
-        (llama-cpp.override { cudaSupport = true; })
+        ## I'm not using this and it takes forever to build
+        # (llama-cpp.override { cudaSupport = true; })
         python3Packages.huggingface-hub
 
         ## python

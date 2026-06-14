@@ -38,6 +38,7 @@ in {
     ../modules/system/responsiveness
     ../modules/hardware/base
     ../modules/base-user
+    ../modules/programs/ai-coding
     # Flake integrations
     inputs.flake-utils-plus.nixosModules.autoGenFromInputs
     inputs.home-manager.nixosModules.home-manager

@@ -101,6 +101,20 @@ in {
           "facebook.com"
         ];
       }
+      {
+        name = "Firefox";
+        browser = "firefox.desktop";
+        logic = "any";
+        conditions = lib.concatMap (d: [
+          { type = "glob"; pattern = d; }
+          { type = "glob"; pattern = "*.${d}"; }
+        ]) [
+          "homefree.host"
+          "slacktopia.org"
+          "polyptych.com"
+          "rahh.al"
+        ];
+      }
     ];
   };
 }

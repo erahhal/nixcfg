@@ -70,6 +70,41 @@
         default = "";
         description = "ProtonMail email address for protonmail-bridge (set in secrets)";
       };
+
+      nflxHost = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          This host pulls its AI coding harnesses from nflx-nixcfg
+          (opencode/pi/hermes/claude wired to the Netflix gateway). When true,
+          nixcfg's own opencode + OpenRouter wiring (modules/programs/ai-coding)
+          is skipped to avoid duplicate installs.
+        '';
+      };
+
+      openrouter = {
+        apiKeyFile = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = ''
+            Path to a file containing the OpenRouter API key, read at runtime by
+            the claude-openrouter / opencode-openrouter wrappers (never embedded
+            in the nix store). Optional override: if left null, the ai-coding
+            module auto-detects the shared agenix secret "openrouter-api-key"
+            (config.age.secrets."openrouter-api-key".path) when it's declared.
+          '';
+        };
+
+        model = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = ''
+            Default OpenRouter model id for claude-openrouter (exported as
+            ANTHROPIC_MODEL), e.g. "anthropic/claude-sonnet-4.5". opencode picks
+            the model in-app. Leave null to use the tool default.
+          '';
+        };
+      };
     };
 
     networking = {

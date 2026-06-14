@@ -42,8 +42,8 @@ let userParams = config.hostParams.user; in
         keep-derivations = true
         keep-outputs = true
 
-      '' + (if config.sops.secrets ? "nix-config" then ''
-        !include ${config.sops.secrets."nix-config".path}
+      '' + (if config.age.secrets ? "nix-config" then ''
+        !include ${config.age.secrets."nix-config".path}
       '' else "");
 
     registry.nixpkgs.flake = inputs.nixpkgs;
