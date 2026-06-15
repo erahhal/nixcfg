@@ -24,6 +24,8 @@ up () {
     sysctl net.ipv4.ip_forward=1
 
     # Enable NAT for leaving packets
+    nft add table ip nat
+    nft add chain ip nat POSTROUTING { type nat hook postrouting priority srcnat \; }
     nft add rule nat POSTROUTING oifname $WIFI_INTERFACE masquerade
 
     # socat UDP-LISTEN:53,fork,reuseaddr,bind=10.3.0.1 UDP:127.0.0.53:53

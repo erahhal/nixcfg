@@ -15,6 +15,7 @@ in
   home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
 
     imports = [
+      ../../services/mutagen-homefree
       ../../services/protonmail-bridge
       ../../programs/thunderbird
       ./hyprland.nix
