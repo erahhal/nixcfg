@@ -31,6 +31,23 @@ in {
       source = "${astrillvpn}/usr/local/Astrill/.asproxy-real";
     };
 
+    # aswgvpnc (WireGuard) and astrill itself hardcode absolute `/sbin/ip` and
+    # `/sbin/route` to configure interfaces/routes (e.g. `/sbin/ip address add dev
+    # wg0 ...`). NixOS has no /sbin, so WireGuard "exits unexpectedly". Provide the
+    # two symlinks the binaries expect. (OpenVPN/StealthVPN don't need this — they
+    # invoke route/ifconfig via PATH.)
+    systemd.tmpfiles.rules = [
+      "d /sbin 0755 root root -"
+      "L+ /sbin/ip - - - - ${pkgs.iproute2}/bin/ip"
+      "L+ /sbin/route - - - - ${pkgs.nettools}/bin/route"
+      # aswgvpnc (userspace WireGuard) binds its control socket at
+      # /var/run/wireguard/<iface>.sock and does NOT create the directory itself
+      # (wg-quick normally does). Without it, the bind fails and the WireGuard
+      # client "exits unexpectedly". It runs as the user (with ambient caps), so
+      # the dir must be user-writable; sticky 1777 keeps it generic across users.
+      "d /run/wireguard 1777 root root -"
+    ];
+
     # Reconnect after suspend/hibernate (ships as astrill-reconnect.service in the .deb).
     systemd.services.astrill-reconnect = {
       description = "Astrill reconnect after sleep/hibernate";

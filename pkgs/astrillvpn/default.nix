@@ -11,6 +11,7 @@
   cairo,
   atk,
   xorg,
+  libappindicator-gtk2,
   # Runtime tools astrill shells out to via /bin/sh (with a bare PATH).
   coreutils,
   bash,
@@ -132,10 +133,13 @@ stdenv.mkDerivation (finalAttrs: {
     addAutoPatchelfSearchPath $out/usr/local/Astrill
 
     # astrill dlopens its bundled libcrypto.so/libssl.so by bare name, so the
-    # Astrill dir must be on its RUNPATH. autoPatchelf would shrink that away, so
-    # queue the fix on postFixupHooks *after* autoPatchelf's own entry (registered
-    # at setup time) — this runs after the shrink and survives.
-    postFixupHooks+=("patchelf --add-rpath '$out/usr/local/Astrill' '$out/usr/local/Astrill/astrill'")
+    # Astrill dir must be on its RUNPATH. It also dlopens libappindicator.so.1 for
+    # its (preferred) StatusNotifierItem tray icon, falling back to legacy XEmbed
+    # GtkStatusIcon (which doesn't work under Wayland) when it's absent — so add
+    # the GTK2 appindicator too (it links the same gtk+-2.24.33, no double-load).
+    # autoPatchelf would shrink these away, so queue the fix on postFixupHooks
+    # *after* autoPatchelf's own entry (registered at setup time).
+    postFixupHooks+=("patchelf --add-rpath '$out/usr/local/Astrill:${libappindicator-gtk2}/lib' '$out/usr/local/Astrill/astrill'")
   '';
 
   postFixup = ''
