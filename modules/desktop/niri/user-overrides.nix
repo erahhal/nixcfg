@@ -27,4 +27,6 @@
     dolbyAtmos = true;
     thinkpadDolby = true;
   };
+
+  nixcfg-niri.desktop.persona.enable = config.hostParams.desktop.persona.enable;
 }

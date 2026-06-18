@@ -58,6 +58,11 @@
       # breaking the A2DP->HSP autoswitch for the Bose NC 700 mic. Skip it.
       easyeffects.enable = false;
 
+      # On-demand Persona-Quickshell: `persona` runs the full shell; Mod+D
+      # switches between DMS and Persona, Mod+P opens the active shell's
+      # launcher. DMS stays the session shell until you switch.
+      persona.enable = true;
+
       ttyFontSize = 9.0;
       ttyLineHeight = 10;
       dpi = 210;

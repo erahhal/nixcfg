@@ -134,6 +134,74 @@ in
   in {
     services.lact.enable = true;
 
+    # The NVIDIA dGPU drives all external display outputs on this hardware
+    # (HDMI + the Thunderbolt/USB4 dock's DisplayPort). With the open kernel
+    # modules (GSP firmware) the GPU sometimes fails its first GSP boot at
+    # startup -- "WPR2 already up" / "RmInitAdapter failed" -- which makes
+    # nvidia_drm's one-shot KMS init fail with "Failed to allocate
+    # NvKmsKapiDevice". The result is no NVIDIA DRM card node, so external
+    # monitors stay dark even though the internal (Intel) panel and the dock's
+    # USB audio/ethernet all work. The GPU's resource manager recovers on its
+    # own shortly after boot, but nvidia_drm never retries KMS -- a one-time
+    # reload of nvidia_drm once the GPU is healthy brings the card up.
+    #
+    # This service detects a missing NVIDIA DRM card, waits for the GPU to
+    # become healthy (nvidia-smi succeeds), then reloads nvidia_drm. It runs
+    # before the display manager so the external monitor is present at login.
+    # On a normal boot the card already exists, so it detects it and exits
+    # immediately -- a no-op on healthy hosts/boots.
+    systemd.services.nvidia-drm-kms-recover = {
+      description = "Recover nvidia_drm KMS device if it failed to init at boot (GSP/WPR2)";
+      wantedBy = [ "graphical.target" ];
+      after = [ "systemd-modules-load.service" ];
+      before = [ "display-manager.service" "greetd.service" ];
+      path = [ pkgs.kmod pkgs.coreutils package.bin ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        have_nvidia_card() {
+          for d in /sys/class/drm/card[0-9]; do
+            [ -e "$d" ] || continue
+            if [ "$(basename "$(readlink -f "$d/device/driver" 2>/dev/null)" 2>/dev/null)" = "nvidia" ]; then
+              return 0
+            fi
+          done
+          return 1
+        }
+
+        if have_nvidia_card; then
+          echo "NVIDIA DRM card present; nothing to do."
+          exit 0
+        fi
+
+        echo "No NVIDIA DRM card -- nvidia_drm KMS init failed at boot; attempting recovery."
+
+        # Wait for the GPU's resource manager (GSP) to come up. Reloading
+        # nvidia_drm before this would just fail the same way.
+        healthy=0
+        for ((i = 0; i < 60; i++)); do
+          if nvidia-smi >/dev/null 2>&1; then healthy=1; break; fi
+          sleep 1
+        done
+        if [ "$healthy" -ne 1 ]; then
+          echo "nvidia-smi not healthy after 60s; GPU likely needs a full power cycle. Skipping."
+          exit 0
+        fi
+
+        echo "GPU healthy; reloading nvidia_drm to re-attempt KMS init."
+        modprobe -r nvidia_drm 2>/dev/null || true
+        modprobe nvidia_drm modeset=1 fbdev=1
+
+        if have_nvidia_card; then
+          echo "nvidia_drm KMS device created; external outputs available."
+        else
+          echo "Reload did not create an NVIDIA DRM card; a reboot/power cycle may be needed."
+        fi
+      '';
+    };
+
     nixpkgs.config.allowUnfree = true;
     nixpkgs.config.nvidia.acceptLicense = true;
 

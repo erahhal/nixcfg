@@ -294,6 +294,22 @@
         '';
       };
 
+      persona.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Install Persona-Quickshell (a Persona 3 Reload-styled Quickshell
+          shell) for on-demand use: adds the `persona` command plus niri
+          keybinds — Mod+D switches between DMS and Persona (only one shell
+          runs at a time), and Mod+P opens whichever shell's launcher is active.
+          DankMaterialShell stays the session shell until you switch — nothing
+          is autostarted.
+
+          Mirrors to nixcfg-niri.desktop.persona.enable via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       autoLogin = lib.mkOption {
         type = lib.types.bool;
         default = false;

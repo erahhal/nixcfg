@@ -37,6 +37,11 @@
       disableXwaylandScaling = true;
       dmsLockProgram = "hyprlock";
 
+      # On-demand Persona-Quickshell: `persona` runs the full shell; Mod+D
+      # switches between DMS and Persona, Mod+P opens the active shell's
+      # launcher. DMS stays the session shell until you switch.
+      persona.enable = true;
+
       location = "Los Angeles, CA";
       coordinates = "34.1509, 118.4487";
       useFahrenheit = true;
