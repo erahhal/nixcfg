@@ -20,6 +20,7 @@
     networking = {
       tailscale.enable = true;
       mullvad.enable = true;
+      astrill.enable = true;
       kdeconnect.enable = true;
       wireless.enable = true;
       wifi-qos.enable = true;

@@ -15,6 +15,7 @@
     # Networking
     tailscale = import ../modules/networking/tailscale;
     mullvad = import ../modules/networking/mullvad;
+    astrill = import ../modules/networking/astrill;
     kdeconnect = import ../modules/networking/kdeconnect;
     wireless = import ../modules/networking/wireless;
     wifi-qos = import ../modules/networking/wifi-qos;

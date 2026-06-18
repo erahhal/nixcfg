@@ -22,6 +22,7 @@ in
       chromium-based-apps
       tailscale
       mullvad
+      astrill
       kdeconnect
       wireless
       wifi-qos

@@ -13,6 +13,10 @@
             endpoint = "github.com";
             method = "ping";
           };
+          tun0 = {
+            endpoint = "google.com";
+            method = "ping";
+          };
         };
       };
       # Disabled: recent kernels appear to have resolved the ath11k boot/resume

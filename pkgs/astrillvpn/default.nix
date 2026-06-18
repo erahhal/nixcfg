@@ -1,72 +1,155 @@
 {
-  stdenv,
   lib,
-  autoPatchelfHook,
+  stdenv,
+  fetchurl,
   dpkg,
-  makeWrapper,
+  autoPatchelfHook,
   glib,
   gtk2-x11,
-  libX11,
-  openssl,
-}: let
-  version = "3.9.0.2180";
+  gdk-pixbuf,
+  pango,
+  cairo,
+  atk,
+  xorg,
+  # Runtime tools astrill shells out to via /bin/sh (with a bare PATH).
+  coreutils,
+  bash,
+  gnugrep,
+  gnused,
+  nettools,
+  iproute2,
+  e2fsprogs,
+  procps,
+  psmisc,
+  dnsmasq,
+  iptables,
+  xdg-utils,
+}:
+let
+  # Placed on the launcher's PATH so astrill's shell-outs resolve: chattr/lsattr
+  # (resolv.conf immutability), route/ifconfig + ip (routing/detection), sysctl,
+  # killall (`killall -HUP dnsmasq`), dnsmasq, iptables, cat/cp/rm, grep/sed,
+  # xdg-open. (asovpnc's incompatible `--iproute` is stripped by asovpnc-wrapper.sh,
+  # not by withholding `ip` — the launcher inherits the session PATH which has it.)
+  runtimeTools = [
+    coreutils
+    bash
+    gnugrep
+    gnused
+    nettools
+    iproute2
+    e2fsprogs
+    procps
+    psmisc
+    dnsmasq
+    iptables
+    xdg-utils
+  ];
 in
-  stdenv.mkDerivation {
-    pname = "astrillvpn";
-    inherit version;
+stdenv.mkDerivation (finalAttrs: {
+  pname = "astrillvpn";
+  version = "3.10.0-3073";
 
-    src = ./astrill-setup-linux64_3.9.0.2180.deb;
+  # Astrill only serves the latest build at this URL, so the hash must be bumped
+  # when they publish a new version (the build fails loudly on mismatch). Same
+  # rolling-URL + pinned-hash approach as pkgs/curseforge.
+  src = fetchurl {
+    url = "https://www.astrilldownloads.com/astrill-setup-linux64.deb";
+    hash = "sha256-pxAAkyRN/j0g4hMenuR/4/eThkxjXrth/Q86BfNAN8g="; # 3.10.0-3073
+  };
 
-    runtimeDependencies = [];
+  nativeBuildInputs = [
+    dpkg
+    autoPatchelfHook
+  ];
 
-    nativeBuildInputs = [
-      autoPatchelfHook
-      dpkg
-      makeWrapper
-    ];
+  # astrill is a GTK2 binary; the helper connectors (asovpnc/aswgvpnc/openweb) and
+  # the bundled libcrypto/libssl (OpenSSL 1.0, kept as-is) need only glibc. The
+  # theme is PNG-only and uses GTK2's built-in "pixmap" engine, so gdk-pixbuf's
+  # default PNG loader and gtk2's bundled engines are found without env wrapping.
+  buildInputs = [
+    glib
+    gtk2-x11
+    gdk-pixbuf
+    pango
+    cairo
+    atk
+    xorg.libX11
+  ];
 
-    buildInputs = [
-      glib
-      gtk2-x11
-      libX11
-      openssl
-    ];
+  dontConfigure = true;
+  dontBuild = true;
 
-    dontBuild = true;
-    dontConfigure = true;
+  unpackPhase = "dpkg-deb -x $src .";
 
-    unpackPhase = "dpkg-deb -x $src .";
+  installPhase = ''
+    runHook preInstall
 
-    installPhase = ''
-      runHook preInstall
+    mkdir -p $out/usr/local $out/share/applications $out/bin
+    cp -r usr/local/Astrill $out/usr/local/
+    install -Dm644 usr/share/applications/Astrill.desktop \
+      $out/share/applications/Astrill.desktop
 
-      mkdir -p $out/etc $out/usr $out/share $out/bin
+    # PATH/desktop entrypoint. astrill needs three things the raw binary lacks:
+    #   1. cap_net_admin/cap_net_raw -> exec the NixOS capability wrapper.
+    #   2. a populated PATH -> it shells out to chattr/route/ifconfig/sysctl/
+    #      killall/dnsmasq/ip/cp/cat via /bin/sh, otherwise with a bare PATH.
+    #   3. --noasproxycheck -> its startup check tries to re-privilege asproxy by
+    #      rewriting the on-disk binary, impossible from the read-only Nix store
+    #      (the asproxy wrapper already grants caps), so the check is a false
+    #      negative and pops "ASProxy component has insufficient privilege".
+    # Hand-written (not makeWrapper) because the wrapper target only exists at
+    # runtime under /run/wrappers and makeBinaryWrapper asserts it exists.
+    {
+      echo '#!/bin/sh'
+      echo 'export PATH=/run/wrappers/bin:${lib.makeBinPath runtimeTools}''${PATH:+:''$PATH}'
+      echo 'exec /run/wrappers/bin/astrill --noasproxycheck "''$@"'
+    } > $out/bin/astrill
+    chmod +x $out/bin/astrill
 
-      mv etc/* $out/etc/
-      mv usr/local $out/usr/
-      mv usr/share $out/
+    # asproxy is Astrill's privileged network helper. astrill spawns the sibling
+    # "<dir>/asproxy"; point it at the capability wrapper the NixOS module creates,
+    # keeping the real (static) binary for the wrapper to source. The wrapper
+    # preserves argv and execs .asproxy-real, which finds liblsp via /proc/self/exe.
+    mv $out/usr/local/Astrill/asproxy $out/usr/local/Astrill/.asproxy-real
+    ln -s /run/wrappers/bin/asproxy $out/usr/local/Astrill/asproxy
 
-      wrapProgram $out/usr/local/Astrill/astrill
-      rm $out/usr/local/Astrill/astrill
-      ln -s /run/wrappers/bin/astrill $out/bin/
+    # Wrap asovpnc (the bundled OpenVPN) to strip the unsupported `--iproute`
+    # option astrill passes; otherwise OpenVPN aborts before opening its management
+    # socket. See asovpnc-wrapper.sh. astrill execs the sibling, which execs the
+    # real binary kept alongside as .asovpnc-real.
+    mv $out/usr/local/Astrill/asovpnc $out/usr/local/Astrill/.asovpnc-real
+    install -Dm755 ${./asovpnc-wrapper.sh} $out/usr/local/Astrill/asovpnc
+    substituteInPlace $out/usr/local/Astrill/asovpnc \
+      --replace-fail @REAL@ $out/usr/local/Astrill/.asovpnc-real
 
-      wrapProgram $out/usr/local/Astrill/asproxy
-      rm $out/usr/local/Astrill/asproxy
-      ln -s /run/wrappers/bin/asproxy $out/usr/local/Astrill/
+    runHook postInstall
+  '';
 
-      ln -s ${lib.getLib openssl}/lib/libcrypto.so $out/usr/local/Astrill/libcrypto.so.1.0.0
+  preFixup = ''
+    # Let autoPatchelf resolve Astrill's bundled .so siblings (the OpenSSL 1.0 ABI
+    # it dlopens) instead of dragging in nixpkgs openssl. Must run before autoPatchelf.
+    addAutoPatchelfSearchPath $out/usr/local/Astrill
 
-      sed -i "s|Exec=.*|Exec=$out/bin/astrill|" $out/share/applications/Astrill.desktop
-      sed -i "s|Icon=.*|Icon=$out/usr/local/Astrill/astrillon.png|" $out/share/applications/Astrill.desktop
+    # astrill dlopens its bundled libcrypto.so/libssl.so by bare name, so the
+    # Astrill dir must be on its RUNPATH. autoPatchelf would shrink that away, so
+    # queue the fix on postFixupHooks *after* autoPatchelf's own entry (registered
+    # at setup time) — this runs after the shrink and survives.
+    postFixupHooks+=("patchelf --add-rpath '$out/usr/local/Astrill' '$out/usr/local/Astrill/astrill'")
+  '';
 
-      runHook postInstall
-    '';
+  postFixup = ''
+    substituteInPlace $out/share/applications/Astrill.desktop \
+      --replace-fail Exec=/usr/local/Astrill/astrill Exec=$out/bin/astrill \
+      --replace-fail Icon=/usr/local/Astrill/astrillon.png Icon=$out/usr/local/Astrill/astrillon.png
+  '';
 
-    meta = with lib; {
-      homepage = "https://www.astrill.com/";
-      description = "Client for AstrillVPN";
-      license = licenses.unfree;
-      platforms = ["x86_64-linux"];
-      maintainers = with maintainers; [ErrorNoInternet];
-    };
-  }
+  meta = {
+    description = "Astrill VPN client";
+    homepage = "https://www.astrill.com/";
+    license = lib.licenses.unfree; # already allowed repo-wide
+    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    platforms = [ "x86_64-linux" ];
+    mainProgram = "astrill";
+  };
+})
