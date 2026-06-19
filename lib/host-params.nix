@@ -310,6 +310,20 @@
         '';
       };
 
+      hyprComp.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Install the ilyamiro "hypr-comp" Quickshell shell (vendored + ported
+          toward niri) as a third on-demand session shell: adds the `hypr-comp`
+          command. DankMaterialShell stays the session shell — nothing is
+          autostarted. Several subsystems are degraded/disabled under niri.
+
+          Mirrors to nixcfg-niri.desktop.hyprComp.enable via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       autoLogin = lib.mkOption {
         type = lib.types.bool;
         default = false;

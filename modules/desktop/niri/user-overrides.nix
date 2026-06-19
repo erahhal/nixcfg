@@ -29,4 +29,6 @@
   };
 
   nixcfg-niri.desktop.persona.enable = config.hostParams.desktop.persona.enable;
+
+  nixcfg-niri.desktop.hyprComp.enable = config.hostParams.desktop.hyprComp.enable;
 }

@@ -63,6 +63,10 @@
       # launcher. DMS stays the session shell until you switch.
       persona.enable = true;
 
+      # On-demand hypr-comp shell (vendored + being ported to niri). Stage 0:
+      # installs the `hypr-comp` command for foreground testing; no autostart.
+      hyprComp.enable = true;
+
       ttyFontSize = 9.0;
       ttyLineHeight = 10;
       dpi = 210;
