@@ -46,6 +46,10 @@
       # launcher. DMS stays the session shell until you switch.
       persona.enable = true;
 
+      # On-demand hypr-comp shell (vendored + being ported to niri). Stage 0:
+      # installs the `hypr-comp` command for foreground testing; no autostart.
+      hyprComp.enable = true;
+
       location = "Los Angeles, CA";
       coordinates = "34.1509, 118.4487";
       useFahrenheit = true;

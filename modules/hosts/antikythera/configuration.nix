@@ -439,8 +439,19 @@
     # lidSwitchExternalPower = "suspend-then-hibernate";
   };
 
+  # suspend-then-hibernate behavior (systemd >= 257):
+  # - On battery: the kernel low-battery alarm (ACPI _BTP, ~5%) wakes the
+  #   system and hibernates it, so it only hibernates when the battery is
+  #   actually getting low rather than on a fixed timer. HibernateDelaySec is
+  #   kept long purely as a fallback cap in case the _BTP alarm / discharge
+  #   estimation is unavailable.
+  # - On AC: HibernateOnACPower = false keeps it in plain suspend. The
+  #   HibernateDelaySec countdown only starts once AC is unplugged, so closing
+  #   the lid while plugged in never hibernates. (This option only takes effect
+  #   when HibernateDelaySec is also set.)
   systemd.sleep.settings.Sleep = {
-    HibernateDelaySec = "30m";
+    HibernateDelaySec = "3h";
+    HibernateOnACPower = false;
   };
 
   # Thinkpad power and performance management
