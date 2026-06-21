@@ -14,6 +14,7 @@
 
     # Networking
     tailscale = import ../modules/networking/tailscale;
+    netbird = import ../modules/networking/netbird;
     mullvad = import ../modules/networking/mullvad;
     astrill = import ../modules/networking/astrill;
     kdeconnect = import ../modules/networking/kdeconnect;

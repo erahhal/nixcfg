@@ -35,8 +35,11 @@ let
     exit $EXIT_CODE
   '';
 
-  # Build the tsup script from existing config
+  # Build the tsup script from existing config. Tailscale does not auto-start
+  # at boot (one VPN at a time), so bring the daemon up first, then connect.
+  # systemctl needs root -- run `sudo tsup`.
   tsupScript = pkgs.writeShellScriptBin "tsup" ''
+    ${pkgs.systemd}/bin/systemctl start tailscaled.service
     exec ${pkgs.tailscale}/bin/tailscale up \
       ${lib.concatStringsSep " \\\n      " tsCfg.extraUpFlags} \
       "$@"
@@ -71,8 +74,16 @@ in {
     # Add wrapped tailscale and tsup to system packages
     environment.systemPackages = [ tailscaleWrapped tsupScript ];
 
-    # Ensure tailscaled-autoconnect waits for network/DNS to be ready
+    # Do not start Tailscale at boot. The user runs one VPN at a time and
+    # brings Tailscale up on demand with `tsup`. Keeping the daemon (and its
+    # DNS/route helpers, which are lifecycle-bound to it below) from
+    # auto-starting means an idle/logged-out Tailscale never touches resolved
+    # or the routing tables at boot -- which is also what previously baked in
+    # the DNS bootstrap deadlock (split-DNS pinning *.homefree.host, including
+    # the control server vpn.homefree.host, to dead MagicDNS while logged out).
+    systemd.services.tailscaled.wantedBy = lib.mkForce [];
     systemd.services.tailscaled-autoconnect = {
+      wantedBy = lib.mkForce [];
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
     };
@@ -87,6 +98,9 @@ in {
       {
         type = "basic";
         source = pkgs.writeShellScript "tailscale-local-route-dispatch" ''
+          # Only manage Tailscale routing while Tailscale is actually up;
+          # otherwise this churns a 30s-waiting oneshot on every network event.
+          ${pkgs.systemd}/bin/systemctl is-active --quiet tailscaled.service || exit 0
           case "$2" in
             up|down|vpn-up|vpn-down|dhcp4-change|dhcp6-change|connectivity-change)
               ${pkgs.systemd}/bin/systemctl restart --no-block \
@@ -103,7 +117,11 @@ in {
       description = "Exclude local network from Tailscale routing";
       after = [ "tailscaled.service" "network-online.target" ];
       wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
+      # Lifecycle-bound to tailscaled (not multi-user.target): runs only when
+      # Tailscale is actually up, and stops/reverts when it stops. Tailscale
+      # does not auto-start at boot.
+      wantedBy = [ "tailscaled.service" ];
+      partOf = [ "tailscaled.service" ];
 
       # NM dispatcher restarts this on every network event (up, dhcp4-change,
       # connectivity-change, ...), which bursts past systemd's default
@@ -169,11 +187,18 @@ in {
       description = "Configure split DNS routing for Tailscale domains";
       after = [ "tailscaled.service" "network-online.target" "tailscale-local-route.service" ];
       wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
+      # Lifecycle-bound to tailscaled so it never pins *.homefree.host into
+      # MagicDNS while Tailscale is down/logged-out (the deadlock source).
+      wantedBy = [ "tailscaled.service" ];
+      partOf = [ "tailscaled.service" ];
 
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
+        # Revert the split-DNS pin when Tailscale stops, so a later re-auth
+        # resolves the control server (vpn.homefree.host) via public DNS rather
+        # than dead MagicDNS. '-' ignores failure when tailscale0 is already gone.
+        ExecStop = "-${pkgs.systemd}/bin/resolvectl revert tailscale0";
       };
 
       script = ''

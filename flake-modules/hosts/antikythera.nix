@@ -21,6 +21,7 @@ in
       fonts
       chromium-based-apps
       tailscale
+      netbird
       mullvad
       astrill
       kdeconnect

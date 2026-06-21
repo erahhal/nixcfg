@@ -19,6 +19,7 @@
     };
     networking = {
       tailscale.enable = true;
+      netbird.enable = true;
       mullvad.enable = true;
       astrill.enable = true;
       kdeconnect.enable = true;
@@ -961,14 +962,8 @@
       # Note: also use for batteries BATC, BATT and CMB0
       # Default: <none>
 
-      # Battery charge level below which charging will begin.
-      START_CHARGE_THRESH_BAT0 = 79;
-      # Battery charge level above which charging will stop.
-      STOP_CHARGE_THRESH_BAT0 = 81;
-
-      # ## High charge
-      # START_CHARGE_THRESH_BAT0 = 98;
-      # STOP_CHARGE_THRESH_BAT0 = 99;
+      # Charge thresholds for BAT0 are set below, gated on the
+      # `thinkpad-battery-charge-to-full` host param.
 
       # BAT1: Secondary / Ultrabay / Slice / Replaceable battery
       # Note: primary on some laptops
@@ -1019,7 +1014,23 @@
 
       #DEVICES_TO_ENABLE_ON_UNDOCK = "wifi";
       #DEVICES_TO_DISABLE_ON_UNDOCK = "";
-    };
+
+      # Restore charge thresholds when AC is unplugged, ensuring any
+      # temporary overrides (e.g. from `tlp fullcharge`) get reverted.
+      RESTORE_THRESHOLDS_ON_BAT = 1;
+
+      # The following prevents the battery from charging fully to
+      # preserve lifetime. Run `tlp fullcharge` to temporarily force
+      # full charge.
+      # https://linrunner.de/tlp/faq/battery.html#how-to-choose-good-battery-charge-thresholds
+    } // (if config.hostParams.system.thinkpad-battery-charge-to-full then {
+      ## START can't be above 99
+      START_CHARGE_THRESH_BAT0 = 99;
+      STOP_CHARGE_THRESH_BAT0 = 100;
+    } else {
+      START_CHARGE_THRESH_BAT0 = 79;
+      STOP_CHARGE_THRESH_BAT0 = 81;
+    });
   };
 }
 

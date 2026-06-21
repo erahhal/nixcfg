@@ -29,7 +29,7 @@
       uid = 1000;
       gid = 100;
       # timeZone = "America/Denver";
-      thinkpad-battery-charge-to-full = false;
+      thinkpad-battery-charge-to-full = true;
     };
 
     desktop = {
