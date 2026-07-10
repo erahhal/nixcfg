@@ -18,7 +18,13 @@
       chromium-based-apps.enable = true;
     };
     networking = {
-      tailscale.enable = true;
+      tailscale = {
+        enable = true;
+        extraTailnets.slacktopia = {
+          loginServer = "https://vpn.slacktopia.org";
+          splitDnsDomains = [ "slacktopia.org" "slacktopia.lan" ];
+        };
+      };
       netbird.enable = true;
       mullvad.enable = true;
       astrill.enable = true;
@@ -328,6 +334,12 @@
   # boot.initrd.kernelModules = [ "thinkpad-acpi" "acpi_call" ];
   boot.kernelParams = [
     "mem_sleep_default=s2idle"
+
+    # Long-running AI compute kernels (e.g. 20B diffusion models via
+    # stable-diffusion.cpp Vulkan) exceed the default 60s compute-ring
+    # watchdog on the 780M iGPU, causing DeviceLost + GPU reset. Raise
+    # compute to 10 min; keep gfx at 10s so display hangs still recover.
+    "amdgpu.lockup_timeout=10000,600000"
 
     # Prevent spurious wakeups from a firmware bug where the EC or SMU generates spurious "heartbeat" interrupts during sleep
     "acpi.ec_no_wakeup=1"

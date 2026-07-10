@@ -29,19 +29,18 @@
 #   --user <id>   Install config for a specific Android user ID only.
 #   --apk PATH    Use a local APK file instead of downloading.
 #   --no-apk      Skip the APK install/upgrade check entirely.
-#   --reinstall   Reinstall the APK even if the target version is already
-#                 installed.
+#   --reinstall   Reinstall the latest APK even if it is already installed.
 #
 #   By default, installs config for all users that have the app's data
-#   directory. Also checks the installed BSG MGC version and, if it does not
-#   match the bundled target (see EXPECTED_VERSION_NAME below), downloads the
-#   APK from celsoazevedo.com (cached under ~/.cache/gcam-installer/) and
-#   installs it for user 0 via 'adb install -r'.
+#   directory. Also resolves the latest BSG MGC "aweme" build from
+#   celsoazevedo.com (see "APK auto-tracking" below) and, if the device is not
+#   already on it, downloads the APK (cached under ~/.cache/gcam-installer/) and
+#   installs it via 'adb install -r'.
 #
 # Requirements:
 #   - ADB installed and device connected via USB
 #   - Root access on device (su must work via adb shell)
-#   - curl + sha256sum on the host (only needed when downloading the APK)
+#   - curl on the host (only needed when resolving/downloading the APK)
 
 set -euo pipefail
 
@@ -49,26 +48,34 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/bsg-gcam-oneplus13-config.xml"
 PACKAGE="com.ss.android.ugc.aweme"
 PREFS_FILENAME="${PACKAGE}_preferences.xml"
-ACTIVITY="$PACKAGE/com.google.android.apps.camera.legacy.app.activity.main.CameraActivity"
+# Launcher entry point (verified on-device; the legacy CameraActivity name is
+# not exported as the launcher and `am start` against it silently fails).
+ACTIVITY="$PACKAGE/com.android.camera.CameraLauncher"
 
-# --- Target APK pin --------------------------------------------------------
-# This is the BSG MGC build the config has been validated against. Bumping
-# this is intentional: re-run the install on a known-good APK rather than
-# letting users drift onto whichever release is current upstream.
+# --- APK auto-tracking -----------------------------------------------------
+# Rather than pinning one build, resolve the newest BSG MGC "aweme" APK from
+# the celsoazevedo listing at runtime and install it if the device isn't
+# already on it. Selection rule: highest base version, then highest V-number
+# (e.g. MGC_9.7.047_V19_aweme.apk beats both _V18 and 9.6.080_V38).
 #
-# To rotate to a newer build, update all four EXPECTED_* values below.
-#  - EXPECTED_VERSION_NAME come from
-#      `aapt dump badging <apk>` or `dumpsys package com.ss.android.ugc.aweme`
-#  - EXPECTED_APK_URL is the celsoazevedo direct link (the
-#      "<n>-dontsharethislink.celsoazevedo.com" host rotates; any of the
-#      mirrors works)
-#  - EXPECTED_APK_SHA256 is `sha256sum` of the downloaded file
-EXPECTED_VERSION_NAME="9.7.047.702121536.18"
-EXPECTED_APK_FILENAME="MGC_9.7.047_V13_aweme.apk"
-EXPECTED_APK_URL="https://1-dontsharethislink.celsoazevedo.com/file/filesc/${EXPECTED_APK_FILENAME}"
-EXPECTED_APK_SHA256="06b788757a50aee13f7e319652396e9c1489e8aead7825cc6222a402ee0b4e51"
-EXPECTED_APK_SIZE="453214041"
+#  - LISTING_URL is scraped for MGC_<base>_V<n>_aweme.apk filenames.
+#  - MIRROR_BASE is the celsoazevedo direct-download host. The leading
+#      "<n>-dontsharethislink" subdomain rotates but any mirror serves the
+#      same files; "1-" is used here.
+#  - BUILD_MARKER records the last-installed filename so repeat runs don't
+#      re-download ~450 MB when already current (BSG mod revisions often share
+#      the same Android versionName, so the marker -- not versionName -- is
+#      what distinguishes V-builds).
+#
+# NOTE: there is no SHA256 verification here (auto-tracking trades the pinned
+# integrity check for always-latest). A basic size sanity check guards against
+# saving an HTML error page as an .apk.
+LISTING_URL="https://www.celsoazevedo.com/files/android/google-camera/dev-bsg/"
+MIRROR_BASE="https://1-dontsharethislink.celsoazevedo.com/file/filesc"
 APK_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/gcam-installer"
+BUILD_MARKER="$APK_CACHE_DIR/installed-build.txt"
+MIN_APK_BYTES=$((50 * 1024 * 1024))   # sanity floor: a real MGC APK is ~450 MB
+LATEST_APK_FILENAME=""                 # memoized by resolve_latest_apk
 
 # Parse arguments
 TARGET_USER=""
@@ -143,9 +150,9 @@ if ! adb shell "su -c 'id'" 2>/dev/null | grep -q "uid=0"; then
 fi
 
 # --- APK install / upgrade -------------------------------------------------
-# Helpers below are responsible for getting the device onto the pinned APK
-# version before we touch shared_prefs. They no-op if the right version is
-# already installed (or if --no-apk is passed).
+# Helpers below are responsible for getting the device onto the latest MGC
+# aweme build before we touch shared_prefs. They no-op if the latest build is
+# already installed (per the build marker) or if --no-apk is passed.
 
 get_installed_version() {
     adb shell "dumpsys package $PACKAGE 2>/dev/null" 2>/dev/null \
@@ -155,73 +162,96 @@ get_installed_version() {
         | tr -d '\r'
 }
 
-fetch_apk() {
-    # Resolves $APK_PATH to a local file matching $EXPECTED_APK_SHA256, either
-    # by validating a user-provided --apk, by reusing a cached download, or by
-    # downloading from $EXPECTED_APK_URL.
-    local target="$APK_CACHE_DIR/$EXPECTED_APK_FILENAME"
-
-    if [[ -n "$APK_PATH" ]]; then
-        if [[ ! -f "$APK_PATH" ]]; then
-            echo "ERROR: --apk path does not exist: $APK_PATH" >&2
-            return 1
-        fi
-        target="$APK_PATH"
-    fi
-
-    mkdir -p "$APK_CACHE_DIR"
-
-    if [[ -f "$target" ]]; then
-        local actual
-        actual=$(sha256sum "$target" | awk '{print $1}')
-        if [[ "$actual" == "$EXPECTED_APK_SHA256" ]]; then
-            APK_PATH="$target"
-            return 0
-        fi
-        if [[ -n "$APK_PATH" ]]; then
-            echo "ERROR: --apk file SHA256 mismatch." >&2
-            echo "  expected: $EXPECTED_APK_SHA256" >&2
-            echo "  actual:   $actual" >&2
-            return 1
-        fi
-        echo "  Cached APK has wrong SHA256 ($actual); redownloading."
-        rm -f "$target"
-    fi
+resolve_latest_apk() {
+    # Scrape the BSG listing for MGC_<base>_V<n> build names and pick the newest
+    # (highest base version, then highest V); the aweme variant filename is
+    # "<base>_aweme.apk". Memoized into the global LATEST_APK_FILENAME.
+    [[ -n "$LATEST_APK_FILENAME" ]] && return 0
 
     if ! command -v curl &>/dev/null; then
         echo "ERROR: curl not found; install curl or pass --apk PATH." >&2
         return 1
     fi
 
-    echo "  Downloading APK ($((EXPECTED_APK_SIZE / 1024 / 1024)) MB) from celsoazevedo.com..."
+    local html
+    if ! html=$(curl --fail --silent --location --max-time 60 \
+            -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" \
+            -H "Referer: https://www.celsoazevedo.com/files/android/google-camera/" \
+            "$LISTING_URL"); then
+        echo "ERROR: could not fetch the BSG listing ($LISTING_URL)." >&2
+        echo "  Check connectivity, or download manually and pass --apk PATH." >&2
+        return 1
+    fi
+
+    # The listing shows base build names (e.g. "MGC_9.7.047_V19"); the aweme
+    # variant is "<base>_aweme.apk". sort -V on field 2 (base version) then
+    # field 3 (V<n>) puts the newest last.
+    local base
+    base=$(printf '%s\n' "$html" \
+        | grep -oE 'MGC_[0-9]+\.[0-9]+\.[0-9]+_V[0-9]+' \
+        | sort -u -t_ -k2,2V -k3,3V \
+        | tail -1)
+
+    if [[ -z "$base" ]]; then
+        echo "ERROR: no MGC_<ver>_V<n> build found on the listing page." >&2
+        echo "  The site layout may have changed; download manually from" >&2
+        echo "  celsoazevedo.com and re-run with --apk PATH." >&2
+        return 1
+    fi
+    LATEST_APK_FILENAME="${base}_aweme.apk"
+    return 0
+}
+
+fetch_apk() {
+    # Resolves $APK_PATH to a local APK: a user-provided --apk, a cached copy of
+    # the latest build, or a fresh download of the latest build.
+    if [[ -n "$APK_PATH" ]]; then
+        if [[ ! -f "$APK_PATH" ]]; then
+            echo "ERROR: --apk path does not exist: $APK_PATH" >&2
+            return 1
+        fi
+        return 0
+    fi
+
+    resolve_latest_apk || return 1
+    local target="$APK_CACHE_DIR/$LATEST_APK_FILENAME"
+    mkdir -p "$APK_CACHE_DIR"
+
+    if [[ -f "$target" ]]; then
+        echo "  Using cached $LATEST_APK_FILENAME"
+        APK_PATH="$target"
+        return 0
+    fi
+
+    local url="$MIRROR_BASE/$LATEST_APK_FILENAME"
+    echo "  Downloading $LATEST_APK_FILENAME from celsoazevedo.com..."
     echo "  -> $target"
     if ! curl --fail --location --progress-bar \
             --max-time 1800 \
             -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" \
             -H "Referer: https://www.celsoazevedo.com/files/android/google-camera/" \
             -o "$target.partial" \
-            "$EXPECTED_APK_URL"; then
+            "$url"; then
         rm -f "$target.partial"
         echo "" >&2
-        echo "ERROR: download failed." >&2
-        echo "  Try downloading manually from celsoazevedo.com (the" >&2
-        echo "  '<n>-dontsharethislink' subdomain rotates) and re-run with" >&2
-        echo "  --apk PATH." >&2
+        echo "ERROR: download failed ($url)." >&2
+        echo "  The '<n>-dontsharethislink' subdomain rotates; download manually" >&2
+        echo "  from celsoazevedo.com and re-run with --apk PATH." >&2
         return 1
     fi
+
+    # Guard against a saved HTML error page (dropped SHA256 check means we lean
+    # on a size floor to detect a bogus download).
+    local bytes
+    bytes=$(stat -c %s "$target.partial" 2>/dev/null || echo 0)
+    if [[ "$bytes" -lt "$MIN_APK_BYTES" ]]; then
+        rm -f "$target.partial"
+        echo "ERROR: downloaded file is only $((bytes / 1024)) KB -- likely not a" >&2
+        echo "  real APK (expired mirror link?). Try again or pass --apk PATH." >&2
+        return 1
+    fi
+
     mv "$target.partial" "$target"
-
-    local actual
-    actual=$(sha256sum "$target" | awk '{print $1}')
-    if [[ "$actual" != "$EXPECTED_APK_SHA256" ]]; then
-        echo "ERROR: downloaded APK SHA256 mismatch." >&2
-        echo "  expected: $EXPECTED_APK_SHA256" >&2
-        echo "  actual:   $actual" >&2
-        echo "  The upstream build may have been replaced; verify against" >&2
-        echo "  celsoazevedo.com and update EXPECTED_APK_SHA256 in this script." >&2
-        return 1
-    fi
-
     APK_PATH="$target"
     return 0
 }
@@ -232,33 +262,42 @@ ensure_apk_installed() {
         return 0
     fi
 
-    local installed
+    local pkg_present=false installed=""
     if adb shell "pm list packages" 2>/dev/null | grep -q "^package:$PACKAGE\$"; then
+        pkg_present=true
         installed=$(get_installed_version)
         echo "GCam package found: $PACKAGE  (version $installed)"
     else
-        installed=""
         echo "GCam package $PACKAGE is NOT installed on the device."
     fi
 
-    if [[ "$installed" == "$EXPECTED_VERSION_NAME" && "$FORCE_REINSTALL" != true ]]; then
-        echo "  Already on target build $EXPECTED_VERSION_NAME; skipping APK install."
-        return 0
-    fi
+    # In auto-track mode (no --apk), resolve the latest build and skip the
+    # install when the marker says we're already on it.
+    if [[ -z "$APK_PATH" ]]; then
+        resolve_latest_apk || return 1
+        echo "  Latest upstream build: $LATEST_APK_FILENAME"
 
-    if [[ -z "$installed" ]]; then
-        echo "  Will install $EXPECTED_VERSION_NAME ($EXPECTED_APK_FILENAME)."
-    elif [[ "$FORCE_REINSTALL" == true ]]; then
-        echo "  --reinstall: forcing reinstall of $EXPECTED_VERSION_NAME."
-    else
-        echo "  Installed $installed != target $EXPECTED_VERSION_NAME; will install target."
+        local marker=""
+        [[ -f "$BUILD_MARKER" ]] && marker=$(tr -d '\r\n' < "$BUILD_MARKER" 2>/dev/null)
+
+        if [[ "$pkg_present" == true && "$FORCE_REINSTALL" != true ]]; then
+            if [[ "$marker" == "$LATEST_APK_FILENAME" ]]; then
+                echo "  Already on latest build (per $BUILD_MARKER); skipping APK install."
+                return 0
+            fi
+            if [[ -z "$marker" ]]; then
+                echo "  Installed build unknown (no marker); (re)installing latest to be safe."
+            else
+                echo "  Installed build ($marker) != latest; will upgrade."
+            fi
+        fi
     fi
 
     fetch_apk || return 1
 
     echo "  Pushing APK to device and installing (this preserves app data)..."
     # -r: reinstall, keeping data
-    # -d: allow downgrade (in case installed > expected)
+    # -d: allow downgrade (in case installed > candidate)
     # -g: grant runtime permissions on install (Android 6+)
     if ! adb install -r -d -g "$APK_PATH"; then
         echo "ERROR: adb install failed." >&2
@@ -267,18 +306,22 @@ ensure_apk_installed() {
 
     local now
     now=$(get_installed_version)
-    if [[ "$now" != "$EXPECTED_VERSION_NAME" ]]; then
-        echo "ERROR: post-install version is '$now', expected '$EXPECTED_VERSION_NAME'." >&2
-        return 1
-    fi
-    echo "  Installed: $now"
+    echo "  Installed versionName: $now"
+    case "$now" in
+        9.6.*|9.7.*) ;;
+        *) echo "  WARNING: unexpected versionName '$now' (expected 9.6.x / 9.7.x)." >&2 ;;
+    esac
+
+    # Record which build we installed so future runs can skip redundant
+    # downloads. basename() covers both auto-track and --apk paths.
+    echo "$(basename "$APK_PATH")" > "$BUILD_MARKER" 2>/dev/null || true
 }
 
 ensure_apk_installed
 
 # Installed version is informational from here on; the APK step above already
-# enforces the pinned target. The config is also schema-compatible with the
-# 9.6.x / 9.7.x aweme BSG lineage in case --no-apk is in use.
+# put the device on the latest build (or was skipped via --no-apk). The config
+# is schema-compatible with the 9.6.x / 9.7.x aweme BSG lineage.
 VERSION_NAME=$(get_installed_version)
 if [[ -z "$VERSION_NAME" ]]; then
     echo ""
@@ -478,8 +521,9 @@ PYEOF
         fi
     }
 
-    check_setting 'name="pref_video_stabilization_key">1<'        "EIS enabled (mode 1) -- OIS auto-runs in HAL"
-    check_setting 'name="pref_ois_key">1<'                         "OIS enabled"
+    check_setting 'name="pref_video_stabilization_key">1<'         "EIS video stabilization enabled"
+    check_setting 'name="pref_video_stabilization_ois_key">1<'     "OIS video stabilization enabled"
+    check_setting 'name="pref_video_amethyst_key">AMETHYST_OFF<'   "HDR10/10-bit video off (green-snapshot fix)"
     check_setting 'name="device_key">husky<'                       "Pixel 8 Pro spoof"
     check_setting 'name="device_hdrplus_key_1">blueline<'          "HDR+ model (blueline)"
     check_setting 'name="pref_camera_id_list_key"'                 "Camera ID mapping"
@@ -527,7 +571,7 @@ read -rp "Launch GCam now? (Y/n) " answer
 if [[ ! "$answer" =~ ^[Nn]$ ]]; then
     echo "Launching GCam..."
     adb shell "am start -n $ACTIVITY" > /dev/null 2>&1
-    echo "Done. Check that all lenses work and video stabilization is off."
+    echo "Done. Check that all lenses work and EIS video stabilization is on."
 else
     echo "Done. Launch GCam manually to apply the settings."
 fi

@@ -29,7 +29,9 @@
       uid = 1000;
       gid = 100;
       # timeZone = "America/Denver";
-      thinkpad-battery-charge-to-full = true;
+      # timeZone = "Asia/Shanghai";
+      timeZone = "Asia/Tokyo";
+      thinkpad-battery-charge-to-full = false;
     };
 
     desktop = {
@@ -51,7 +53,7 @@
       hyprComp.enable = true;
 
       location = "Los Angeles, CA";
-      coordinates = "34.1509, 118.4487";
+      coordinates = "34.1509, -118.4487";
       useFahrenheit = true;
 
       killOnExit = [

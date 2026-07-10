@@ -90,6 +90,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Claude Code statusline showing 5h/7d rate-limit usage. Non-flake
+    # source input so `nix flake update` tracks upstream; packaged in
+    # pkgs/claude-statusbar, wired up in modules/programs/ai-coding.
+    claude-statusbar = {
+      url = "github:leeguooooo/claude-code-usage-bar";
+      flake = false;
+    };
+
     nflx-nixcfg = {
       type = "git";
       url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";

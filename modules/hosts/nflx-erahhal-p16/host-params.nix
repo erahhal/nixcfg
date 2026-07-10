@@ -74,7 +74,7 @@
       wallpaper = ../../../wallpapers/tokyo-park.jpeg;
 
       location = "Los Angeles, CA";
-      coordinates = "34.1509, 118.4487";
+      coordinates = "34.1509, -118.4487";
       useFahrenheit = true;
 
       killOnExit = [

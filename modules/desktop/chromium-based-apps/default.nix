@@ -3,6 +3,17 @@ let
   userParams = config.hostParams.user;
   cfg = config.nixcfg.desktop.chromium-based-apps;
   usingIntel = config.hostParams.gpu.intel.enable;
+  # Pin apps to the Intel iGPU on hybrid Intel+NVIDIA hosts. Must not apply on
+  # AMD hosts: LIBVA_DRIVER_NAME=iHD breaks libva init there, which knocks out
+  # VAAPI (e.g. OBS falls back to x264 software encoding and drops frames).
+  forceIgpuFlags = lib.optionalString usingIntel (lib.concatStringsSep " " [
+    "--set DRI_PRIME 0"
+    "--set GBM_BACKEND mesa"
+    "--set LIBVA_DRIVER_NAME iHD"
+    "--set __GLX_VENDOR_LIBRARY_NAME mesa"
+    "--unset __NV_PRIME_RENDER_OFFLOAD"
+    "--unset __VK_LAYER_NV_optimus"
+  ]);
   chromium-overlays = final: prev: {
     chromium = let
       originalChromium = prev.chromium.override {
@@ -23,13 +34,7 @@ let
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/chromium $out/bin/chromium-browser
-        makeWrapper ${originalChromium}/bin/chromium $out/bin/chromium \
-          --set DRI_PRIME 0 \
-          --set GBM_BACKEND mesa \
-          --set LIBVA_DRIVER_NAME iHD \
-          --set __GLX_VENDOR_LIBRARY_NAME mesa \
-          --unset __NV_PRIME_RENDER_OFFLOAD \
-          --unset __VK_LAYER_NV_optimus
+        makeWrapper ${originalChromium}/bin/chromium $out/bin/chromium ${forceIgpuFlags}
         ln -s $out/bin/chromium $out/bin/chromium-browser
       '';
       passthru = originalChromium.passthru // {
@@ -59,13 +64,7 @@ let
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/brave
-        makeWrapper ${originalBrave}/bin/brave $out/bin/brave \
-          --set DRI_PRIME 0 \
-          --set GBM_BACKEND mesa \
-          --set LIBVA_DRIVER_NAME iHD \
-          --set __GLX_VENDOR_LIBRARY_NAME mesa \
-          --unset __NV_PRIME_RENDER_OFFLOAD \
-          --unset __VK_LAYER_NV_optimus
+        makeWrapper ${originalBrave}/bin/brave $out/bin/brave ${forceIgpuFlags}
       '';
       passthru = originalBrave.passthru;
       inherit (originalBrave) meta;
@@ -79,13 +78,7 @@ let
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/slack
-        makeWrapper ${originalSlack}/bin/slack $out/bin/slack \
-          --set DRI_PRIME 0 \
-          --set GBM_BACKEND mesa \
-          --set LIBVA_DRIVER_NAME iHD \
-          --set __GLX_VENDOR_LIBRARY_NAME mesa \
-          --unset __NV_PRIME_RENDER_OFFLOAD \
-          --unset __VK_LAYER_NV_optimus \
+        makeWrapper ${originalSlack}/bin/slack $out/bin/slack ${forceIgpuFlags} \
           --add-flags "--enable-wayland-ime" \
           --add-flags "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,ScrollUnification,DropInputEventsWhilePaintHolding,ElasticOverscroll" \
           --add-flags "--disable-smooth-scrolling" \
@@ -198,13 +191,7 @@ let
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/obs
-        makeWrapper ${originalObs}/bin/obs $out/bin/obs \
-          --set DRI_PRIME 0 \
-          --set GBM_BACKEND mesa \
-          --set LIBVA_DRIVER_NAME iHD \
-          --set __GLX_VENDOR_LIBRARY_NAME mesa \
-          --unset __NV_PRIME_RENDER_OFFLOAD \
-          --unset __VK_LAYER_NV_optimus
+        makeWrapper ${originalObs}/bin/obs $out/bin/obs ${forceIgpuFlags}
       '';
       inherit (originalObs) meta;
     };

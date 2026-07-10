@@ -13,7 +13,7 @@
 # every host. The default `opencode` package is installed here only on
 # non-Netflix hosts; on Netflix nflx-nixcfg provides it (and its `*-vanilla`
 # personal-login variants).
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 let
   userParams = config.hostParams.user;
@@ -59,12 +59,44 @@ let
     ${openrouterExportKey "OPENROUTER_API_KEY"}
     exec ${pkgs.opencode}/bin/opencode "$@"
   '';
+
+  # Statusline for Claude Code showing 5h/7d rate-limit usage. Built from
+  # the claude-statusbar flake input, so `nix flake update` pulls latest.
+  claude-statusbar = pkgs.callPackage ../../../pkgs/claude-statusbar {
+    src = inputs.claude-statusbar;
+  };
+
+  # Claude Code only reads statusLine from the mutable ~/.claude/settings.json
+  # (no managed/system scope carries it), so declare it by merging the key in
+  # at activation time and leaving the rest of the file to Claude Code.
+  claudeStatusLine = builtins.toJSON {
+    type = "command";
+    command = "/etc/profiles/per-user/${username}/bin/cs render";
+    refreshInterval = 1;
+  };
+
+  mergeClaudeStatusLine = pkgs.writeShellScript "claude-statusline-merge" ''
+    set -eu
+    settings="$HOME/.claude/settings.json"
+    mkdir -p "$HOME/.claude"
+    [ -s "$settings" ] || echo '{}' > "$settings"
+    tmp=$(mktemp)
+    ${pkgs.jq}/bin/jq --argjson sl ${lib.escapeShellArg claudeStatusLine} \
+      '.statusLine = $sl' "$settings" > "$tmp"
+    mv "$tmp" "$settings"
+  '';
 in
 {
-  home-manager.users.${username} = {
+  # Function form so `lib` is home-manager's extended lib (lib.hm.*).
+  home-manager.users.${username} = { lib, ... }: {
     home.packages = [
       claude-openrouter
       opencode-openrouter
+      claude-statusbar
     ] ++ lib.optional (!userParams.nflxHost) pkgs.opencode;
+
+    home.activation.claudeStatusLine = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeClaudeStatusLine}
+    '';
   };
 }
