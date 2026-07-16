@@ -508,7 +508,7 @@ in
         element-desktop
         evolutionWithPlugins
         feh
-        freecad
+        (broken freecad) # pdal 2.9.3 fails against gdal 3.13; fix pending in nixpkgs#541146
         git-sync
         gimp3-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins

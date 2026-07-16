@@ -19,9 +19,13 @@
           };
         };
       };
-      # Disabled: recent kernels appear to have resolved the ath11k boot/resume
-      # issue. Re-enable if WiFi fails to come up at boot or after suspend.
-      wifi.ath11kRestartFix.enable = true;
+      # Disabled: verified 2026-07-15 on kernel 7.0.12 — across ~80
+      # suspend/resume cycles the conditional resume check never found the
+      # device in a bad state; every driver reload in the logs was caused by
+      # the workaround itself (ath11k-boot-fix re-runs on every rebuild
+      # switch, restarting NetworkManager and desyncing the DMS wifi icon).
+      # Re-enable if WiFi fails to come up at boot or after suspend.
+      wifi.ath11kRestartFix.enable = false;
     };
 
     system = {

@@ -78,6 +78,7 @@ in
 
         ## Games
         atlauncher
+        eden
         glfw3-minecraft
         hmcl
         # lutris
