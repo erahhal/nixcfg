@@ -34,7 +34,7 @@
       gid = 100;
       # timeZone = "America/Denver";
       # timeZone = "Asia/Shanghai";
-      timeZone = "Asia/Tokyo";
+      # timeZone = "Asia/Tokyo";
       thinkpad-battery-charge-to-full = false;
     };
 

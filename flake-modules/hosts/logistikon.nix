@@ -6,7 +6,7 @@ in
   flake.nixosConfigurations.logistikon = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     specialArgs = shared.specialArgs;
-    modules = shared.baseModules "locortex"
+    modules = shared.baseModules "logistikon"
     ++ [ shared.homeManagerConfig ]
     ++ shared.nixvimModule {}
     ++ (with self.nixosModules; [

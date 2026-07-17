@@ -3,7 +3,7 @@
   disko.devices = {
     disk = {
       main = {
-        device = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_4000GB_24521J802608";
+        device = "/dev/disk/by-id/nvme-Samsung_SSD_990_PRO_2TB_S7L9NJ0L306845Z";
         type = "disk";
         content = {
           type = "gpt";
@@ -50,7 +50,7 @@
                   "/swap" = {
                     mountpoint = "/swap";
                     swap = {
-                      swapfile.size = "64G";
+                      swapfile.size = "96G";
                     };
                   };
                 };
@@ -58,7 +58,7 @@
                 mountpoint = "/partition-root";
                 swap = {
                   swapfile = {
-                    size = "64G";
+                    size = "96G";
                   };
                 };
               };

@@ -15,6 +15,14 @@ let
         *) exit 0 ;;
     esac
 
+    # When invoked from the boot reconcile service (not by nm-dispatcher),
+    # wait for NM to finish activating autoconnect profiles first, so the
+    # ethernet check below reflects settled state rather than a mid-DHCP
+    # "connecting" device.
+    if [ "$1" = "boot" ]; then
+        ${pkgs.networkmanager}/bin/nm-online -s -q --timeout 30 || true
+    fi
+
     # Single-instance lock. Both `nmcli radio wifi off` and `nmcli device
     # reapply` themselves emit dispatcher events (down, connectivity-change)
     # that re-fire this script. Without a lock, those re-entries race the
@@ -75,6 +83,25 @@ in {
       networkmanager.dispatcherScripts = [
         { source = "${exclusive-lan}/bin/70-wifi-wired-exclusive.sh"; }
       ];
+    };
+
+    # NM persists `nmcli radio wifi off` (WirelessEnabled=false in
+    # /var/lib/NetworkManager/NetworkManager.state) across reboots. After a
+    # docked shutdown followed by an undocked boot, no dispatcher event ever
+    # fires (wifi is off, no ethernet carrier), so the script above never
+    # gets a chance to re-enable wifi. Reconcile once at boot instead.
+    # RemainAfterExit keeps `nixos-rebuild switch` from re-running it
+    # mid-session (see ath11k-boot-fix history for why that matters).
+    systemd.services.exclusive-lan-reconcile = {
+      description = "Reconcile WiFi radio state with wired connectivity at boot";
+      after = [ "NetworkManager.service" ];
+      wants = [ "NetworkManager.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${exclusive-lan}/bin/70-wifi-wired-exclusive.sh boot up";
+      };
     };
   };
 }
