@@ -40,20 +40,14 @@ in
 {
   programs.niri.settings = {
     outputs = {
-      "eDP-1" = {
-        mode = { width = 2880; height = 1800; refresh = 120.0; };
-        scale = 1.8;
-        variable-refresh-rate = true;
-      };
       "Lenovo Group Limited P40w-20 V90DFGMV" = {
         mode = { width = 5120; height = 2160; refresh = 60.0; };
         scale = 1.333333;
         variable-refresh-rate = true;
       };
-      "LG Electronics 16MQ70 20NKZ005285" = {
+      "LG Electronics 16MQ70 204NZKZ005285" = {
         mode = { width = 2560; height = 1600; refresh = 60.0; };
         scale = 1.6;
-        variable-refresh-rate = true;
       };
       "LG Electronics LG Ultra HD 0x00043EAD" = {
         mode = { width = 3840; height = 2160; refresh = 60.0; };
@@ -79,10 +73,6 @@ in
 
     environment = {
       STEAM_FORCE_DESKTOPUI_SCALING = "2.0";
-      __NV_PRIME_RENDER_OFFLOAD = "1";
-      __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      __VK_LAYER_NV_optimus = "NVIDIA_only";
     };
 
     spawn-at-startup = [
@@ -95,16 +85,16 @@ in
     };
 
     workspaces = {
-      "01-one" = { open-on-output = "eDP-1"; };
-      "02-two" = { open-on-output = "eDP-1"; };
-      "03-three" = { open-on-output = "eDP-1"; };
-      "04-four" = { open-on-output = "eDP-1"; };
-      "05-five" = { open-on-output = "eDP-1"; };
-      "06-six" = { open-on-output = "eDP-1"; };
-      "07-seven" = { open-on-output = "eDP-1"; };
-      "08-eight" = { open-on-output = "eDP-1"; };
-      "09-nine" = { open-on-output = "eDP-1"; };
-      "10-ten" = { open-on-output = "eDP-1"; };
+      "01-one" = { };
+      "02-two" = { };
+      "03-three" = { };
+      "04-four" = { };
+      "05-five" = { };
+      "06-six" = { };
+      "07-seven" = { };
+      "08-eight" = { };
+      "09-nine" = { };
+      "10-ten" = { };
     };
   };
 }

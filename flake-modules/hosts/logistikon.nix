@@ -16,7 +16,7 @@ in
       chromium-based-apps
       mullvad
       kdeconnect
-      gfx-nvidia gfx-intel laptop udev-rules
+      gfx-nvidia gfx-amd udev-rules
       openrgb
       keyboard-debounce
       nfs-mounts

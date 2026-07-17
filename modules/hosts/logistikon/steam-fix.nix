@@ -1,7 +1,4 @@
-## Since the steam path is written to by the windows
-## installation, ownership is sometimes incorrect. This
-## script fixes permissions on startup.
-{ config, pkgs, ... }:
+{ config, ... }:
 let userParams = config.hostParams.user; in
 {
   ## Override the flatpak Steam desktop file to add -cef-force-gpu flag.
@@ -17,23 +14,5 @@ let userParams = config.hostParams.user; in
           "$FLATPAK_DESKTOP" > "$LOCAL_DESKTOP"
       fi
     '';
-  };
-
-  systemd.services.steam-fix-permissions = {
-    description = "Fix Steam directory permissions";
-    after = [ "local-fs.target" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "fix-steam-permissions" ''
-        STEAM_DIR="/home/${userParams.username}/.local/share/Steam"
-
-        # Fix ownership on shared Steam directory (Windows dual-boot changes ownership)
-        if [ -d "$STEAM_DIR" ]; then
-          ${pkgs.coreutils}/bin/chown -R ${userParams.username}:users "$STEAM_DIR"
-        fi
-      '';
-    };
   };
 }

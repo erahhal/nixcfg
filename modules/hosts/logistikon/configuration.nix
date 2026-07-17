@@ -24,8 +24,7 @@
     };
     hardware = {
       gfx-nvidia.enable = true;
-      gfx-intel.enable = true;
-      laptop.enable = true;
+      gfx-amd.enable = true;
       udev-rules.enable = true;
       openrgb.enable = true;
       keyboard-debounce.enable = true;
@@ -67,30 +66,12 @@
   # --------------------------------------------------------------------------------------
 
   boot.loader = {
-    timeout = 75;
+    timeout = 5;
 
     systemd-boot = {
       enable = true;
       configurationLimit = 4;
       consoleMode = "max";
-
-      windows = {
-        "windows" =
-          let
-            # To determine the name of the windows boot drive, boot into edk2 first, then run
-            # `map -c` to get drive aliases, and try out running `FS1:`, then `ls EFI` to check
-            # which alias corresponds to which EFI partition.
-            boot-drive = "FS1";
-          in
-          {
-            title = "Windows";
-            efiDeviceHandle = boot-drive;
-            sortKey = "y_windows";
-          };
-      };
-
-      edk2-uefi-shell.enable = true;
-      edk2-uefi-shell.sortKey = "z_edk2";
     };
 
     efi = {
@@ -143,9 +124,14 @@
   # OpenRGB
   # -------
 
-  boot.kernelModules = [ "i2c-dev" "snd-hda-intel" "kvm-intel" ];
+  boot.kernelModules = [ "i2c-dev" "snd-hda-intel" "kvm-amd" ];
 
   hardware.i2c.enable = true;
+
+  ## Onboard Bluetooth and ASMedia ASM4242 USB4 (previously provided by the laptop module)
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+  services.hardware.bolt.enable = true;
 
   ## Experimental
 
@@ -153,15 +139,5 @@
   nix.settings.sandbox = true;
   boot.binfmt.emulatedSystems = [ "i686-linux" ];
   # boot.kernel.sysctl."abi.vsyscall32" = 1;
-
-  systemd.services.fix-console-fb = {
-    description = "Set frambuffer resolution";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "getty@tty1.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.fbset}/bin/fbset -g 3840 2160 3840 2160 32";
-    };
-  };
 }
 
