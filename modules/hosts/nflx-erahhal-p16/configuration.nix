@@ -401,6 +401,14 @@
     # get IOMMU isolation via bolt's iommu policy.
     "iommu=pt"
 
+    # EXPERIMENTAL -- Thunderbolt defaults to host_reset=Y, which resets the TB
+    # host controller (NHI) on probe/resume. On this Maple Ridge host that reset
+    # correlates with the dock's SuperSpeed devices dropping off mid-session
+    # (r8152 "-108"/ESHUTDOWN storms + hub resume failures) -- a state that only
+    # a full reboot recovers. Disabling it aims to keep the tunnel stable; revert
+    # this one line if cold boot/plug enumeration regresses.
+    "thunderbolt.host_reset=0"
+
     # Hibernation: physical offset (in 4 KiB pages) of the first extent of
     # /swap/swapfile on /dev/mapper/cryptroot. Paired with boot.resumeDevice
     # below (search for "Hibernation resume target"). Recompute if the
@@ -408,25 +416,6 @@
     # btrfs send/recv:
     #   sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
     "resume_offset=533760"
-
-    # ----- Hibernate-debug params (TEMPORARY -- remove once root cause found)
-    # The hibernate-write path hangs at "PM: hibernation: hibernation entry"
-    # with no further kernel output -- consistent with a driver suspend
-    # callback (likely NVIDIA) that never returns. These params keep
-    # diagnostic output visible/captured so the offending device shows up
-    # in the previous-boot journal.
-    #
-    # no_console_suspend: keep the framebuffer console alive across the
-    #   suspend-device phase so dpm_suspend() printk's reach the visible
-    #   console instead of disappearing into a frozen FB driver.
-    # pm_debug_messages: per-device suspend timing/result lines.
-    # initcall_debug: every driver's suspend/resume callbacks; the LAST
-    #   "calling <dev>+" line without a matching "... done" names the
-    #   driver that hung.
-    "no_console_suspend"
-    "pm_debug_messages"
-    "initcall_debug"
-    # ----- end hibernate-debug params
   ];
 
   # ------------------------------------------------------------------------
@@ -518,31 +507,11 @@
     '';
   };
 
-  # After the dock is authorized over Thunderbolt, its internal Goshen Ridge
-  # PCIe endpoint devices (RTL8156 ethernet, Fresco Logic xHCI, DP mux) take
-  # several seconds to power up.  By then pciehp has already initialized the
-  # hot-plug slots in interrupt-wait mode and will never see a Card Present
-  # transition.  Writing to the sysfs rescan knob forces pci_scan_slot() on
-  # every Goshen Ridge downstream bridge so the endpoints finally enumerate.
-  systemd.services.dock-pcie-rescan = {
-    description = "PCI rescan after ThinkPad TB4 Dock PCIe endpoint power-up";
-    # Chain the USB-3 controller rebind to fire after the PCI rescan completes;
-    # see dock-usb-rebind.service below.
-    wants = [ "dock-usb-rebind.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = pkgs.writeShellScript "dock-pcie-rescan" ''
-        sleep 5
-        # Rescan all Goshen Ridge PCIe bridges (dock's internal TB4 controller, PCI ID 8086:0b26).
-        # Bus numbers can shift between boots, so we discover them dynamically.
-        for bridge in $(${pkgs.pciutils}/bin/lspci -d 8086:0b26 -D | ${pkgs.gawk}/bin/awk '{print $1}'); do
-          echo 1 > /sys/bus/pci/devices/"$bridge"/rescan 2>/dev/null || true
-        done
-        # Belt-and-suspenders full rescan for anything the targeted pass missed.
-        echo 1 > /sys/bus/pci/rescan
-      '';
-    };
-  };
+  # dock-pcie-rescan is defined below as the NM-nudge variant. After the dock is
+  # authorized over Thunderbolt, its internal Goshen Ridge PCIe endpoints
+  # (RTL8156 ethernet, Fresco Logic xHCI, DP mux) power up several seconds later,
+  # by which point pciehp has stopped watching its hot-plug slots -- so we force a
+  # sysfs PCI rescan, then reconnect the dock NIC in NetworkManager.
 
   # On hot replug, the dock's TB-tunneled USB 2 devices come back fine on bus 1,
   # but the SuperSpeed (USB 3) link to the dock often fails to re-train -- bus 4
@@ -573,6 +542,15 @@
           ${pkgs.util-linux}/bin/logger -t dock-usb-rebind "no Maple Ridge TB4 USB controller found; skipping"
           exit 0
         fi
+        # Only rebind if bus-4 SuperSpeed enumeration actually FAILED. If an
+        # r8152 NIC already enumerated, the SuperSpeed tunnel trained fine and a
+        # rebind would just tear down a working link (observed to kill the dock
+        # NIC with -108/ESHUTDOWN, needing a reboot to recover). The dock NIC
+        # enumerates even when its carrier is down, so presence == link OK.
+        if ls -d /sys/bus/usb/drivers/r8152/*-* >/dev/null 2>&1; then
+          ${pkgs.util-linux}/bin/logger -t dock-usb-rebind "r8152 present; SuperSpeed OK, skipping rebind"
+          exit 0
+        fi
         ${pkgs.util-linux}/bin/logger -t dock-usb-rebind "rebinding xhci_hcd on $BDF"
         echo "$BDF" > /sys/bus/pci/drivers/xhci_hcd/unbind 2>/dev/null || true
         sleep 2
@@ -586,13 +564,12 @@
   # KNOWN ISSUE -- dock ethernet sometimes needs `systemctl restart
   # NetworkManager` after dock plug-in to get an IPv4 lease.
   # ------------------------------------------------------------------------
-  # A working per-device `nmcli` nudge workaround (extending the rescan
-  # service above + a sibling `dock-eth-nm-nudge.service` for resume) is
-  # block-commented below. Left disabled because we don't have ground truth
-  # on the failure mode -- enabling it would mask the broken state from
-  # forensic capture, and the right long-term fix is almost certainly a
-  # one-line NM config (autoconnect-retries / dhcp-timeout /
-  # carrier-wait-time) once we know the REASON.
+  # ENABLED: the per-device `nmcli` nudge below (the NM-nudge dock-pcie-rescan
+  # plus a sibling `dock-eth-nm-nudge.service` for resume) reconnects the dock
+  # NIC once it re-enumerates and regains carrier. It is a no-op when the NIC is
+  # already connected, so it is safe to leave on. If a lease still fails, the
+  # long-term fix is likely a one-line NM config (autoconnect-retries /
+  # dhcp-timeout / carrier-wait-time) per the REASON mapping below.
   #
   # NEXT TIME IT FIRES, BEFORE restarting NM, capture:
   #   nmcli device show <iface>          # state + STATE-REASON pins root cause
@@ -605,15 +582,16 @@
   #   - DHCP timeout                  -> raise `ipv4.dhcp-timeout`, set `ipv4.may-fail`
   #   - no-carrier at probe           -> raise NM `[device].carrier-wait-time`
   #   - dispatcher race               -> fix exclusive-lan dispatcher
-  /*
   systemd.services.dock-pcie-rescan = {
     description = "PCI rescan + NM nudge after ThinkPad TB4 Dock PCIe endpoint power-up";
     after = [ "NetworkManager.service" ];
-    wants = [ "NetworkManager.service" ];
+    wants = [ "NetworkManager.service" "dock-usb-rebind.service" ];
+    # StartLimit* are only honored in the [Unit] section; NixOS renders
+    # serviceConfig into [Service], so set them at unit level here.
+    startLimitIntervalSec = 30;
+    startLimitBurst = 3;
     serviceConfig = {
       Type = "oneshot";
-      StartLimitIntervalSec = 30;
-      StartLimitBurst = 3;
       ExecStart = pkgs.writeShellScript "dock-pcie-rescan" ''
         set -u
         export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.pciutils pkgs.gawk pkgs.networkmanager pkgs.util-linux pkgs.gnugrep pkgs.gnused ]}:$PATH
@@ -737,7 +715,6 @@
       '';
     };
   };
-  */
 
   # # Fix NVIDIA USB4 DP tunnel not resuming after suspend
   # # The NVIDIA driver's proprietary USB4 DP tunnel implementation doesn't properly
@@ -789,9 +766,19 @@
       # TPACPI_ENABLE = 1;
       # TPSMAPI_ENABLE = 1;
 
-      # # Sometimes dock doesn't unuspend, causing USB to stop working
+      # Keep the TB4 dock's USB hubs + NICs from runtime-suspending. Their
+      # autosuspend_delay is 0 ms, so they suspend the instant they idle; on this
+      # dock's flaky SuperSpeed link a failed hub resume takes every downstream
+      # port with it ("nothing USB works"). We deliberately do NOT set
+      # usbcore.autosuspend=-1 (globally blocks S0ix -- see the kernelParams note)
+      # nor USB_AUTOSUSPEND=0 (global). These devices exist only while docked
+      # (~always on AC, where S0ix is already firmware-blocked on this P16), so
+      # pinning just them costs nothing undocked/on-battery.
+      #   17ef:1042 17ef:1043  GenesysLogic SuperSpeed hubs (dock NIC hangs behind these)
+      #   17ef:30b4..30bb      VIA / Fresco dock-internal hubs + USB2 tunnels
+      #   0bda:8153            Realtek RTL8153 dock + monitor NICs
       # USB_AUTOSUSPEND = 0;
-      # USB_DENYLIST = "17ef:30b4 17ef:30b5 17ef:30b6 17ef:30b7 17ef:30b8 17ef:30b9 17ef:30ba 17ef:30bb";
+      USB_DENYLIST = "17ef:1042 17ef:1043 17ef:30b4 17ef:30b5 17ef:30b6 17ef:30b7 17ef:30b8 17ef:30b9 17ef:30ba 17ef:30bb 0bda:8153";
 
       ## "performance" severely degrades IO performance on X1C. Leave as default ("powersave").
       ## Options are "performance" and "powersave" when intel_pstate is active

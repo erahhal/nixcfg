@@ -575,7 +575,10 @@
       "Bash(timeout 10 avahi-browse -apt)",
       "Bash(command -v avahi-resolve)",
       "Bash(timeout 6 avahi-resolve -4 -n Rubber-Duck.local)",
-      "Bash(ip neigh *)"
+      "Bash(ip neigh *)",
+      "Bash(mkdir -p /tmp/dms-before)",
+      "Bash(cp ~/.config/DankMaterialShell/settings.json ~/.config/DankMaterialShell/plugin_settings.json ~/.local/state/DankMaterialShell/session.json /tmp/dms-before/)",
+      "Bash(awk '{ *)"
     ],
     "deny": [],
     "ask": []

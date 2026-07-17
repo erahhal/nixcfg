@@ -1973,11 +1973,11 @@
     },
     "nixpkgs_12": {
       "locked": {
-        "lastModified": 1784007870,
-        "narHash": "sha256-djcLt/JJphyNt4eDY9XTly+/WbCK5lqWq9lSgCmJkkQ=",
+        "lastModified": 1784120854,
+        "narHash": "sha256-KesHgItiZPgGX740axSiQLcIQ8D24MDqNpkKYWIek8k=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "18b9261cb3294b6d2a06d03f96872827b8fe2698",
+        "rev": "753cc8a3a87467296ddd1fa93f0cc3e81120ee46",
         "type": "github"
       },
       "original": {
@@ -2658,11 +2658,11 @@
         "nixpkgs": "nixpkgs_12"
       },
       "locked": {
-        "lastModified": 1781395971,
-        "narHash": "sha256-4eR006DMeHVV2GdiFqzpfKGXfrTmOwZouFWGjrxBVjg=",
+        "lastModified": 1784251879,
+        "narHash": "sha256-r0w9DM+qM4xPKMOw8/UKzzk8G8my/m2dwHvMzlURR1g=",
         "ref": "refs/heads/master",
-        "rev": "417771b6f37b8cd0a128eeb05b1e1f02860fc900",
-        "revCount": 37,
+        "rev": "4812f957b6061c8fe701f72e553e9dc418ad4943",
+        "revCount": 38,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },
