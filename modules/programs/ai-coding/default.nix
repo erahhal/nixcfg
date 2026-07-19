@@ -85,6 +85,36 @@ let
       '.statusLine = $sl' "$settings" > "$tmp"
     mv "$tmp" "$settings"
   '';
+
+  # opencode provider for the local genai-server (logistikon). Reachable on
+  # the home LAN as logistikon.lan; port 8897 is the dashboard filter proxy
+  # (ready+enabled models only, streaming). apiKey is required by the AI SDK
+  # client but ignored server-side. The local server is made the default
+  # model only ON logistikon, so opencode's default isn't hijacked on other
+  # (possibly off-LAN) hosts where logistikon.lan wouldn't resolve.
+  opencodeConfig = {
+    "$schema" = "https://opencode.ai/config.json";
+    provider.logistikon = {
+      npm = "@ai-sdk/openai-compatible";
+      name = "Logistikon";
+      options = {
+        baseURL = "http://logistikon.lan:8897/v1";
+        apiKey = "dummy";
+      };
+      models = {
+        qwen-dense = { name = "Qwen3.6-27B (best)"; };
+        qwen-dense-uc = { name = "Qwen3.6-27B (best) UC"; };
+        qwen-dense-uc-bal = { name = "Qwen3.6-27B (best) UC Balanced"; };
+        qwen = { name = "Qwen3.6-35B-A3B (fast)"; };
+        coder = { name = "Qwen3-Coder-30B"; };
+        coder-pro = { name = "Qwen3-Coder-Next-80B"; };
+        research = { name = "gpt-oss-120b"; };
+        qwen-uc = { name = "Qwen3.6-35B UC"; };
+      };
+    };
+  } // lib.optionalAttrs (config.networking.hostName == "logistikon") {
+    model = "logistikon/qwen-dense";
+  };
 in
 {
   # Function form so `lib` is home-manager's extended lib (lib.hm.*).
@@ -98,5 +128,12 @@ in
     home.activation.claudeStatusLine = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run ${mergeClaudeStatusLine}
     '';
+
+    # Declaratively manage the default opencode config with the local
+    # genai-server provider. Non-Netflix hosts only (Netflix's opencode has
+    # its own corp config); the default `opencode` above is likewise gated.
+    xdg.configFile."opencode/opencode.json" = lib.mkIf (!userParams.nflxHost) {
+      text = builtins.toJSON opencodeConfig;
+    };
   };
 }

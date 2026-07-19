@@ -41,6 +41,18 @@
     };
   };
 
+  ## AI model-serving stack (external flake: ~/Code/genai-server)
+  services.genai-server.enable = true;
+  ## Serve on all interfaces (WiFi now, Ethernet later). NOTE: the WebUI and
+  ## APIs are unauthenticated — the whole LAN gets full access.
+  services.genai-server.openFirewallGlobally = true;
+  ## Name that resolves for every LAN client (bare "logistikon" doesn't).
+  services.genai-server.mediaPublicUrl = "http://logistikon.lan:8894";
+  ## LAN access in addition to the (not-yet-enabled) tailnet. NOTE: Open
+  ## WebUI runs with auth disabled — every device on the LAN gets full
+  ## access to the UI and APIs.
+  services.genai-server.firewallInterfaces = [ "tailscale0" "wlan0" ];
+
   imports =
     [
       ./disk-config-btrfs.nix

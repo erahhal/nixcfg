@@ -57,6 +57,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # AI model-serving stack (llama-swap, whisper, Open WebUI, ComfyUI).
+    genai-server.url = "git+https://git.homefree.host/homefree/genai-server";
+
     steam-loader = {
       url = "path:./modules/programs/steam-loader";
     };

@@ -83,6 +83,12 @@
         };
       };
 
+      genai-server-local = mkApp "genai-server-local" {
+        text = buildAndSwitch {
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input genai-server ~/Code/genai-server";
+        };
+      };
+
       nflx-local = mkApp "nixcfg-nflx-local" {
         text = buildAndSwitch {
           extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input nflx-nixcfg ~/Code/nflx-nixcfg";

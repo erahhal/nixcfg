@@ -29,6 +29,7 @@ in
     ])
     ++ [
       inputs.nixcfg-niri.nixosModules.default
+      inputs.genai-server.nixosModules.default
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.logistikon
