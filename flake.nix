@@ -58,7 +58,11 @@
     };
 
     # AI model-serving stack (llama-swap, whisper, Open WebUI, ComfyUI).
-    genai-server.url = "git+https://git.homefree.host/homefree/genai-server";
+    genai-server = {
+      type = "git";
+      url = "ssh://git@git.homefree.host:3022/homefree/genai-server.git";
+      ref = "main";
+    };
 
     steam-loader = {
       url = "path:./modules/programs/steam-loader";

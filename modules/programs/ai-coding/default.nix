@@ -8,6 +8,8 @@
 #
 #   - claude-openrouter    -> Claude Code via OpenRouter (~/.claude-openrouter)
 #   - opencode-openrouter  -> opencode via OpenRouter (isolated XDG dirs)
+#   - claude-logistikon    -> Claude Code via the local genai-server bridge
+#                             (~/.claude-logistikon; pre-tuned env, see below)
 #
 # The default `claude` (subscription) comes from base-user's claude-code on
 # every host. The default `opencode` package is installed here only on
@@ -60,60 +62,125 @@ let
     exec ${pkgs.opencode}/bin/opencode "$@"
   '';
 
+  # Claude Code against the local genai-server (logistikon's LiteLLM
+  # Anthropic bridge). Own config dir so the dummy-token session never
+  # clobbers the subscription OAuth login. Env block mirrors the tuning in
+  # genai-server's README:
+  #  - haiku/background + subagent traffic pinned to the SAME warm model
+  #    (anything else 404s on llama-swap or thrashes swaps)
+  #  - attribution header off: it mutates the prompt prefix and silently
+  #    defeats llama-server's prefix cache (full re-prefill every turn)
+  #  - nonessential traffic off: parallel background calls serialize on the
+  #    single slot and evict the prompt cache
+  #  - NEVER point this at the thinking models (qwen/qwen-dense): the
+  #    Anthropic bridge drops reasoning_content.
+  claude-logistikon = pkgs.writeShellScriptBin "claude-logistikon" ''
+    #!${pkgs.bash}/bin/bash
+    export CLAUDE_CONFIG_DIR="$HOME/.claude-logistikon"
+    export ANTHROPIC_BASE_URL="http://logistikon.lan:4000"
+    export ANTHROPIC_AUTH_TOKEN=dummy
+    export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-coder-pro}
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$ANTHROPIC_MODEL"
+    export ANTHROPIC_SMALL_FAST_MODEL="$ANTHROPIC_MODEL"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
+    export CLAUDE_CODE_ATTRIBUTION_HEADER=0
+    export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+    export CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384
+    exec ${pkgs.claude-code}/bin/claude "$@"
+  '';
+
   # Statusline for Claude Code showing 5h/7d rate-limit usage. Built from
   # the claude-statusbar flake input, so `nix flake update` pulls latest.
   claude-statusbar = pkgs.callPackage ../../../pkgs/claude-statusbar {
     src = inputs.claude-statusbar;
   };
 
-  # Claude Code only reads statusLine from the mutable ~/.claude/settings.json
-  # (no managed/system scope carries it), so declare it by merging the key in
-  # at activation time and leaving the rest of the file to Claude Code.
-  claudeStatusLine = builtins.toJSON {
-    type = "command";
-    command = "/etc/profiles/per-user/${username}/bin/cs render";
-    refreshInterval = 1;
+  # Claude Code reads these only from the mutable ~/.claude/settings.json
+  # (no managed/system scope carries them), so declare them by merging the
+  # keys in at activation time and leaving the rest of the file to Claude
+  # Code. includeCoAuthoredBy=false: no "Co-Authored-By: Claude" trailers in
+  # commit messages.
+  claudeManagedSettings = builtins.toJSON {
+    statusLine = {
+      type = "command";
+      command = "/etc/profiles/per-user/${username}/bin/cs render";
+      refreshInterval = 1;
+    };
+    includeCoAuthoredBy = false;
   };
 
-  mergeClaudeStatusLine = pkgs.writeShellScript "claude-statusline-merge" ''
+  mergeClaudeSettings = pkgs.writeShellScript "claude-settings-merge" ''
     set -eu
     settings="$HOME/.claude/settings.json"
     mkdir -p "$HOME/.claude"
     [ -s "$settings" ] || echo '{}' > "$settings"
     tmp=$(mktemp)
-    ${pkgs.jq}/bin/jq --argjson sl ${lib.escapeShellArg claudeStatusLine} \
-      '.statusLine = $sl' "$settings" > "$tmp"
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeManagedSettings} \
+      '. + $managed' "$settings" > "$tmp"
     mv "$tmp" "$settings"
   '';
 
   # opencode provider for the local genai-server (logistikon). Reachable on
-  # the home LAN as logistikon.lan; port 8897 is the dashboard filter proxy
-  # (ready+enabled models only, streaming). apiKey is required by the AI SDK
-  # client but ignored server-side. The local server is made the default
-  # model only ON logistikon, so opencode's default isn't hijacked on other
-  # (possibly off-LAN) hosts where logistikon.lan wouldn't resolve.
+  # the home LAN as logistikon.lan; port 4000 is the LiteLLM bridge, whose
+  # context_window_fallbacks silently continue an overflowing session on a
+  # larger-window model (it forwards to the 8897 dashboard filter proxy, so
+  # not-ready models still 503 cleanly). apiKey is required by the AI SDK
+  # client but ignored server-side.
+  #
+  # limit.context MUST match each model's real `-c` in genai-server's
+  # module.nix — opencode otherwise assumes a huge window, blows past the
+  # server's cap mid-session, and the session dies instead of compacting.
+  # limit.output bounds a single response, not the window.
+  #
+  # Per-model `options` are spread raw into the request body (source-
+  # verified in opencode 1.17/1.18 + @ai-sdk/openai-compatible), and they
+  # matter: opencode sends NO temperature for custom models, but it DOES
+  # force top_p=1.0 for any model id containing "qwen" — the explicit
+  # options pin vendor sampling and neutralize that. temp 0.6/top_p 0.95 =
+  # official Qwen3.6 "precise coding" mode (server default stays 1.0 for
+  # chat). Deliberately NOT set: small_model (titles already run on the
+  # session's model; pinning one would *create* llama-swap churn),
+  # interleaved (the SDK already round-trips reasoning_content, which
+  # llama.cpp's preserve_thinking consumes), top_k/min_p (server-side
+  # flags; LiteLLM may drop top_k).
+  #
+  # The local server is made the default model only ON logistikon, so
+  # opencode's default isn't hijacked on other (possibly off-LAN) hosts
+  # where logistikon.lan wouldn't resolve. coder-pro stays the default
+  # (non-thinking, agent-RL-trained, battle-tested tool parser);
+  # qwen-dense is the A/B challenger — better benchmarks (77.2 vs 70.6
+  # SWE-V) but thinking-mode, so it stays opt-in until proven in real
+  # sessions. NEVER point Claude Code (Anthropic bridge) at the thinking
+  # models — the bridge drops reasoning_content.
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
+    # Binary is nix-managed; opencode must not self-update.
+    autoupdate = false;
+    # Drop old tool outputs before compacting — defers compaction, which
+    # costs a full re-prefill on the single-slot local server.
+    compaction.prune = true;
+    # The title agent fires a concurrent request at session start that
+    # evicts the single slot's prefix cache (titles become timestamps).
+    agent.title.disable = true;
     provider.logistikon = {
       npm = "@ai-sdk/openai-compatible";
       name = "Logistikon";
       options = {
-        baseURL = "http://logistikon.lan:8897/v1";
+        baseURL = "http://logistikon.lan:4000/v1";
         apiKey = "dummy";
       };
       models = {
-        qwen-dense = { name = "Qwen3.6-27B (best)"; };
-        qwen-dense-uc = { name = "Qwen3.6-27B (best) UC"; };
-        qwen-dense-uc-bal = { name = "Qwen3.6-27B (best) UC Balanced"; };
-        qwen = { name = "Qwen3.6-35B-A3B (fast)"; };
-        coder = { name = "Qwen3-Coder-30B"; };
-        coder-pro = { name = "Qwen3-Coder-Next-80B"; };
-        research = { name = "gpt-oss-120b"; };
-        qwen-uc = { name = "Qwen3.6-35B UC"; };
+        coder-pro = { name = "Qwen3-Coder-Next-80B (256k, agentic)"; limit = { context = 262144; output = 32768; }; options = { temperature = 1.0; top_p = 0.95; }; };
+        qwen-dense = { name = "Qwen3.6-27B MTP (80k, top coder, thinking)"; limit = { context = 81920; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
+        glm-flash = { name = "GLM-4.7-Flash (128k, fast agentic)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.7; top_p = 1.0; }; };
+        qwen = { name = "Qwen3.6-35B-A3B (256k, fast)"; limit = { context = 262144; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
+        qwen-uc = { name = "Qwen3.6-35B UC huihui (256k)"; limit = { context = 262144; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
+        qwen-dense-uc = { name = "Qwen3.6-27B UC huihui (128k)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
+        research = { name = "gpt-oss-120b (64k)"; limit = { context = 65536; output = 16384; }; options = { temperature = 1.0; top_p = 1.0; }; };
       };
     };
   } // lib.optionalAttrs (config.networking.hostName == "logistikon") {
-    model = "logistikon/qwen-dense";
+    model = "logistikon/coder-pro";
   };
 in
 {
@@ -122,11 +189,12 @@ in
     home.packages = [
       claude-openrouter
       opencode-openrouter
+      claude-logistikon
       claude-statusbar
     ] ++ lib.optional (!userParams.nflxHost) pkgs.opencode;
 
-    home.activation.claudeStatusLine = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      run ${mergeClaudeStatusLine}
+    home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeClaudeSettings}
     '';
 
     # Declaratively manage the default opencode config with the local

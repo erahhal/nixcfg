@@ -27,7 +27,11 @@
       gfx-intel.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
-      openrgb.enable = true;
+      openrgb = {
+        enable = true;
+        motherboard = "intel";
+        profile = ./Aquamarine.orp;
+      };
       keyboard-debounce.enable = true;
       spacenavd.enable = true;
     };

@@ -578,7 +578,8 @@
       "Bash(ip neigh *)",
       "Bash(mkdir -p /tmp/dms-before)",
       "Bash(cp ~/.config/DankMaterialShell/settings.json ~/.config/DankMaterialShell/plugin_settings.json ~/.local/state/DankMaterialShell/session.json /tmp/dms-before/)",
-      "Bash(awk '{ *)"
+      "Bash(awk '{ *)",
+      "Bash(vulkaninfo --summary)"
     ],
     "deny": [],
     "ask": []

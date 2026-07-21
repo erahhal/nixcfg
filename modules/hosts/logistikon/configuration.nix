@@ -26,7 +26,11 @@
       gfx-nvidia.enable = true;
       gfx-amd.enable = true;
       udev-rules.enable = true;
-      openrgb.enable = true;
+      openrgb = {
+        enable = true;
+        motherboard = "amd";
+        profile = ./Red.orp;
+      };
       keyboard-debounce.enable = true;
       spacenavd.enable = true;
     };
@@ -52,6 +56,26 @@
   ## WebUI runs with auth disabled — every device on the LAN gets full
   ## access to the UI and APIs.
   services.genai-server.firewallInterfaces = [ "tailscale0" "wlan0" ];
+  ## Civitai API token (shared agenix secret): lets image-server download
+  ## the token-gated flux_nsfw checkpoint at startup. Without it those
+  ## requests 503 ("checkpoint not downloaded").
+  services.genai-server.civitaiTokenFile = config.age.secrets."civitai-token".path;
+
+  ## GPU-inference box: the desktop stack enables power-profiles-daemon,
+  ## which defaulted to "balanced" — community-measured ~15% llama.cpp
+  ## throughput loss vs performance (found set to balanced 2026-07-20).
+  ## ppd persists the profile in /var/lib, but pin it at boot so a fresh
+  ## state dir or DE change can't silently regress inference speed.
+  systemd.services.power-profile-performance = {
+    description = "Pin power-profiles-daemon profile to performance";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "power-profiles-daemon.service" ];
+    requires = [ "power-profiles-daemon.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.power-profiles-daemon}/bin/powerprofilesctl set performance";
+    };
+  };
 
   imports =
     [
@@ -132,13 +156,7 @@
   # Hardware specific
   # --------------------------------------------------------------------------------------
 
-  # -------
-  # OpenRGB
-  # -------
-
-  boot.kernelModules = [ "i2c-dev" "snd-hda-intel" "kvm-amd" ];
-
-  hardware.i2c.enable = true;
+  boot.kernelModules = [ "snd-hda-intel" "kvm-amd" ];
 
   ## Onboard Bluetooth and ASMedia ASM4242 USB4 (previously provided by the laptop module)
   hardware.bluetooth.enable = true;
