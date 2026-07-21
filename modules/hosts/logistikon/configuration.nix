@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -47,6 +47,10 @@
 
   ## AI model-serving stack (external flake: ~/Code/genai-server)
   services.genai-server.enable = true;
+  ## genai group: write access to the shared model store
+  ## (/var/lib/genai-models), LoRA store, and training jobs — no sudo needed
+  ## for lora-train / lora-add / genai-fetch-media.
+  users.users.${config.hostParams.user.username}.extraGroups = [ "genai" ];
   ## Serve on all interfaces (WiFi now, Ethernet later). NOTE: the WebUI and
   ## APIs are unauthenticated — the whole LAN gets full access.
   services.genai-server.openFirewallGlobally = true;
