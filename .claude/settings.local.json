@@ -579,7 +579,11 @@
       "Bash(mkdir -p /tmp/dms-before)",
       "Bash(cp ~/.config/DankMaterialShell/settings.json ~/.config/DankMaterialShell/plugin_settings.json ~/.local/state/DankMaterialShell/session.json /tmp/dms-before/)",
       "Bash(awk '{ *)",
-      "Bash(vulkaninfo --summary)"
+      "Bash(vulkaninfo --summary)",
+      "Bash(awk '/claude-wrapper = pkgs.writeShellScriptBin/{f=1} f{print NR\": \"$0} f&&/^  '\"'\"''\"'\"';/{exit}' ~/Code/nflx-nixcfg/modules/ai.nix)",
+      "Bash(timeout 15 cs render)",
+      "Bash(timeout 15 cs --inline)",
+      "Bash(command -v cs)"
     ],
     "deny": [],
     "ask": []

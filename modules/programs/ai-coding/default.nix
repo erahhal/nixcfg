@@ -99,7 +99,9 @@ let
   # (no managed/system scope carries them), so declare them by merging the
   # keys in at activation time and leaving the rest of the file to Claude
   # Code. includeCoAuthoredBy=false: no "Co-Authored-By: Claude" trailers in
-  # commit messages.
+  # commit messages. statusLine points at the claude-statusbar flake's `cs`
+  # binary (see home.packages); on Netflix hosts nflx-nixcfg merges the same
+  # `cs render` into ~/.claude and ~/.claude-vanilla.
   claudeManagedSettings = builtins.toJSON {
     statusLine = {
       type = "command";

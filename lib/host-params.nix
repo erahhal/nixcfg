@@ -324,6 +324,25 @@
         '';
       };
 
+      greyline.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Install greyline, a live world-time desktop wallpaper (a modern
+          recreation of the ThinkPad "World Time" Active Desktop). Renders a
+          world map with clocks + a day/night terminator once per minute and
+          paints it via its own swww daemon.
+
+          Note: DankMaterialShell also manages the wallpaper. To actually see
+          greyline, disable the DMS wallpaper on the host (e.g. set
+          hostParams.desktop.wallpaper = null); otherwise the two background
+          layers conflict.
+
+          Mirrors to nixcfg-niri.desktop.greyline.enable via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       autoLogin = lib.mkOption {
         type = lib.types.bool;
         default = false;

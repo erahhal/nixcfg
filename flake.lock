@@ -1044,6 +1044,27 @@
         "type": "gitlab"
       }
     },
+    "greyline": {
+      "inputs": {
+        "nixpkgs": [
+          "nixcfg-niri",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784683349,
+        "narHash": "sha256-RiECBd4gji3u6Hgc7N+iPPDEA+rm5E/c6SAHUnuxkRM=",
+        "owner": "cothinking-dev",
+        "repo": "greyline",
+        "rev": "258a21c2eb62a4d0038782daf7910272141e6ee3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cothinking-dev",
+        "repo": "greyline",
+        "type": "github"
+      }
+    },
     "hermes-agent": {
       "inputs": {
         "flake-parts": "flake-parts_4",
@@ -1560,11 +1581,11 @@
         "uv2nix": "uv2nix_3"
       },
       "locked": {
-        "lastModified": 1783651524,
-        "narHash": "sha256-gqTvjAfHEVFsSgknk+YIiAInQrGnVJ9zL5D8ToLuQeY=",
+        "lastModified": 1784692136,
+        "narHash": "sha256-4Ou8qAhkMZOKvmDC8FA92x9E5PwdXCExzHlSL1mriM0=",
         "ref": "main",
-        "rev": "dc4e471def5412f6d8b6a4712c5c2f5257b82604",
-        "revCount": 179,
+        "rev": "569b412e1322e09e289f47c9801fcf984511790c",
+        "revCount": 180,
         "type": "git",
         "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -1694,17 +1715,18 @@
     "nixcfg-niri": {
       "inputs": {
         "dms-shell": "dms-shell",
+        "greyline": "greyline",
         "niri-flake": "niri-flake",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1784679309,
-        "narHash": "sha256-tHSi/vCDjA+Hj9fhQ16TTep6locevGmAl3oq1Red5O8=",
+        "lastModified": 1784697499,
+        "narHash": "sha256-ThCqpi+EjBbFrvoZz55SJa9N/Lo0n7S3i6WpX4YJv9I=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "fed91bd8f17b4e36cdcf28835546b293db4463f0",
+        "rev": "134e13f62fe9550d05c04a7a607514bed6f21a5d",
         "type": "github"
       },
       "original": {
@@ -2237,11 +2259,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780342659,
-        "narHash": "sha256-y+RMsYXdXPYUbAn85mfaxeyvDJ2G0Zz9+2Ac5wZnSU4=",
+        "lastModified": 1784692080,
+        "narHash": "sha256-HWPqgvz0iWqnTb0qWvSyUINqXToqFDu46OP2AeUk2bI=",
         "owner": "erahhal",
         "repo": "nm-openconnect-pulse-sso",
-        "rev": "5e779d06d54929628b0a48d9d4be9b43dd1cef04",
+        "rev": "4bfbaee1ff83e8c47148a0a4b061502dac6a8e13",
         "type": "github"
       },
       "original": {

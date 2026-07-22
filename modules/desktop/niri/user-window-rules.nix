@@ -22,6 +22,7 @@ in
       { matches = [{ app-id = "discord$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "vesktop$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "Element$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
+      { matches = [{ app-id = "element$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "^electron$"; title = "^Element"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "zoom$"; }]; open-on-workspace = "eight"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "@joplin/app-desktop$"; }]; open-on-workspace = "nine"; default-column-width = { proportion = 1.0; }; }
