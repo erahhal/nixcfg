@@ -382,17 +382,34 @@
   '';
 
 
-  ## Fix WiFi not working after suspend / boot - known ath11k issue
-  ## Gated by hostParams.networking.wifi.ath11kRestartFix.enable; recent
-  ## kernels may have resolved the underlying bug, so this is opt-in.
-  ## References:
+  ## WiFi recovery for the ath11k adapter (Qualcomm QCNFA765 / WCN6855).
+  ## Gated by hostParams.networking.wifi.ath11kRestartFix.enable. Both hooks
+  ## are conditional: they reload the driver only when the device is actually
+  ## broken, so healthy boots/resumes are no-ops.
+  ##
+  ## Hook 1 -- resume (below): the original 6.17-era "dead after suspend"
+  ## driver bug. Not seen since kernel 7.0.12 (~80 clean resume cycles as of
+  ## 2026-07-15) but the check is cheap. References:
   ##   https://bbs.archlinux.org/viewtopic.php?id=310363 (kernel 6.17+ issue)
   ##   https://bbs.archlinux.org/viewtopic.php?id=295356 (workaround)
   ##   https://bugs.archlinux.org/task/76068 (freeze after suspend/resume)
   ##   https://bugzilla.redhat.com/show_bug.cgi?id=2262577 (QCNFA765 suspend bug)
   ##   https://wiki.archlinux.org/title/Dell_XPS_13_(9310)#Suspend
   ## Using powerManagement.resumeCommands instead of a systemd service
-  ## to ensure it only runs once on resume, not repeatedly
+  ## to ensure it only runs once on resume, not repeatedly.
+  ##
+  ## Hook 2 -- ath11k-boot-recovery service (further below): wlan0 stuck
+  ## "unavailable" at boot. Incident 2026-07-21 (journal boot b0c1a5b3):
+  ## ath11k attaches its regulatory domain asynchronously after registering
+  ## the radio; iwd's initial GET_REG query landed inside that window (kernel
+  ## WARN at nl80211.c:10285, returns -EINVAL) and iwd permanently abandoned
+  ## the phy -- no retry, no log line -- leaving NM showing "unavailable"
+  ## until a manual module reload created a fresh phy that iwd adopted. The
+  ## reload needs no NetworkManager restart. NOTE: the retired
+  ## ath11k-boot-fix variant reloaded unconditionally and lacked
+  ## RemainAfterExit, so `nixos-rebuild switch` re-ran it mid-session,
+  ## restarting NM and desyncing the DMS wifi icon -- keep the boot service
+  ## conditional and RemainAfterExit.
   powerManagement.resumeCommands = lib.mkIf config.hostParams.networking.wifi.ath11kRestartFix.enable ''
     # Give system time to stabilize after resume
     sleep 2
@@ -414,14 +431,41 @@
     # else: interface exists and can be brought UP - device is OK, skip reload
   '';
 
-  systemd.services.ath11k-boot-fix = lib.mkIf config.hostParams.networking.wifi.ath11kRestartFix.enable {
-    description = "Reload ath11k_pci at boot";
-    after = [ "systemd-modules-load.service" "NetworkManager.service" "iwd.service" ];
+  systemd.services.ath11k-boot-recovery = lib.mkIf config.hostParams.networking.wifi.ath11kRestartFix.enable {
+    description = "Reload ath11k_pci if WiFi is stuck unavailable after boot";
+    # exclusive-lan-reconcile settles the radio state first; systemd ignores
+    # ordering against units that don't exist on a host.
+    after = [ "NetworkManager.service" "iwd.service" "exclusive-lan-reconcile.service" ];
     wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.networkmanager pkgs.kmod pkgs.gnugrep pkgs.coreutils ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 5 && ${pkgs.kmod}/bin/modprobe -r ath11k_pci && sleep 1 && ${pkgs.kmod}/bin/modprobe ath11k_pci && sleep 3 && ${pkgs.systemd}/bin/systemctl restart NetworkManager'";
+      # Boot-only: stays "active (exited)" so `nixos-rebuild switch` never
+      # starts it again mid-session.
+      RemainAfterExit = true;
+      TimeoutStartSec = "90s";
     };
+    script = ''
+      # Healthy boots exit within a couple of seconds: iwd adopts wlan0 and
+      # NM reports disconnected/connecting/connected. Only the broken state
+      # (radio on, wlan0 stuck "unavailable" or missing) survives the loop.
+      for _ in $(seq 25); do
+        state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep '^wlan0:' | cut -d: -f2)
+
+        # Wifi intentionally off (e.g. exclusive-lan docked boot): nothing to fix.
+        [ "$(nmcli radio wifi 2>/dev/null)" = "enabled" ] || exit 0
+
+        case "$state" in
+          ""|unavailable) sleep 1 ;;
+          *) exit 0 ;;
+        esac
+      done
+
+      echo "wlan0 stuck ''${state:-missing} with radio enabled; reloading ath11k_pci"
+      modprobe -r ath11k_pci || true
+      sleep 1
+      modprobe ath11k_pci
+    '';
   };
 
   # Enable power management

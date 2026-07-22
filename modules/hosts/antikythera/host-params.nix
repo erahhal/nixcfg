@@ -19,13 +19,15 @@
           };
         };
       };
-      # Disabled: verified 2026-07-15 on kernel 7.0.12 — across ~80
-      # suspend/resume cycles the conditional resume check never found the
-      # device in a bad state; every driver reload in the logs was caused by
-      # the workaround itself (ath11k-boot-fix re-runs on every rebuild
-      # switch, restarting NetworkManager and desyncing the DMS wifi icon).
-      # Re-enable if WiFi fails to come up at boot or after suspend.
-      wifi.ath11kRestartFix.enable = false;
+      # Re-enabled 2026-07-21: at boot iwd can race ath11k's asynchronous
+      # regulatory-domain attach (nl80211 GET_REG WARN -> -EINVAL) and then
+      # permanently abandon the device, leaving wlan0 "unavailable" until
+      # the module is reloaded. The hooks this enables (see "WiFi recovery"
+      # in configuration.nix) are conditional -- they reload only when the
+      # device is actually broken -- and the boot service has
+      # RemainAfterExit, so rebuild switches no longer restart NM or desync
+      # the DMS wifi icon (the failure mode of the retired ath11k-boot-fix).
+      wifi.ath11kRestartFix.enable = true;
     };
 
     system = {
