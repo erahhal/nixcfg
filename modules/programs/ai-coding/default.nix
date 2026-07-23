@@ -11,6 +11,12 @@
 #   - claude-logistikon    -> Claude Code via the local genai-server bridge
 #                             (~/.claude-logistikon; pre-tuned env, see below)
 #
+# Hermes AI agent from Nous Research. Configured to use the local genai-server
+# on logistikon; provides isolated config dirs on other hosts:
+#
+#   - hermes               -> Hermes CLI with default OpenRouter provider
+#   - hermes-logistikon    -> Hermes with local genai-server pre-configured
+#
 # The default `claude` (subscription) comes from base-user's claude-code on
 # every host. The default `opencode` package is installed here only on
 # non-Netflix hosts; on Netflix nflx-nixcfg provides it (and its `*-vanilla`
@@ -93,6 +99,63 @@ let
   # the claude-statusbar flake input, so `nix flake update` pulls latest.
   claude-statusbar = pkgs.callPackage ../../../pkgs/claude-statusbar {
     src = inputs.claude-statusbar;
+  };
+
+  # Hermes AI agent from Nous Research. Uses stdenv.mkDerivation to
+  # pip-install hermes into a venv (bypasses pythonImportsCheck issues
+  # since hermes manages its own dependencies via uv).
+  hermes = pkgs.callPackage ../../../pkgs/hermes { };
+
+  # Hermes CLI wrapper that configures it to use the local genai-server
+  # by default. This provides a hermes command that's pre-configured to
+  # use logistikon.lan:4000 as the provider endpoint.
+  hermes-logistikon = pkgs.writeShellScriptBin "hermes-logistikon" ''
+    #!${pkgs.bash}/bin/bash
+    export HERMES_CONFIG_DIR="$HOME/.hermes-logistikon"
+    export HERMES_DATA_DIR="$HOME/.hermes-logistikon/data"
+    mkdir -p "$HERMES_CONFIG_DIR" "$HERMES_DATA_DIR"
+    exec ${hermes}/bin/hermes "$@"
+  '';
+
+  # Declaratively manage hermes config for the local genai-server provider.
+  # Similar to opencode's provider.logistikon, this sets up hermes to use
+  # the local genai-server (logistikon.lan:4000) as its default provider.
+  # The hermes CLI reads its config from ~/.hermes/config.yaml, so we manage
+  # that file declaratively.
+  hermesConfig = {
+    provider = {
+      name = "litellm";
+      base_url = "http://logistikon.lan:4000/v1";
+      api_key = "dummy";
+    };
+    model = "logistikon/coder-pro";
+    models = [
+      {
+        name = "coder-pro";
+        model = "Qwen3-Coder-Next-80B (256k, agentic)";
+        context_window = 262144;
+      }
+      {
+        name = "qwen-dense";
+        model = "Qwen3.6-27B MTP (80k, top coder, thinking)";
+        context_window = 81920;
+      }
+      {
+        name = "glm-flash";
+        model = "GLM-4.7-Flash (128k, fast agentic)";
+        context_window = 131072;
+      }
+      {
+        name = "qwen";
+        model = "Qwen3.6-35B-A3B (256k, fast)";
+        context_window = 262144;
+      }
+      {
+        name = "research";
+        model = "gpt-oss-120b (64k)";
+        context_window = 65536;
+      }
+    ];
   };
 
   # Claude Code reads these only from the mutable ~/.claude/settings.json
@@ -184,6 +247,7 @@ let
   } // lib.optionalAttrs (config.networking.hostName == "logistikon") {
     model = "logistikon/coder-pro";
   };
+
 in
 {
   # Function form so `lib` is home-manager's extended lib (lib.hm.*).
@@ -193,6 +257,8 @@ in
       opencode-openrouter
       claude-logistikon
       claude-statusbar
+      hermes
+      hermes-logistikon
     ] ++ lib.optional (!userParams.nflxHost) pkgs.opencode;
 
     home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -205,5 +271,11 @@ in
     xdg.configFile."opencode/opencode.json" = lib.mkIf (!userParams.nflxHost) {
       text = builtins.toJSON opencodeConfig;
     };
+
+    # Declaratively manage hermes config for the local genai-server provider.
+    xdg.configFile."hermes/config.yaml" = {
+      text = lib.generators.toYAML { } hermesConfig;
+    };
+
   };
 }
