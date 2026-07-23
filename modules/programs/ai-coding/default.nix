@@ -111,9 +111,8 @@ let
   # use logistikon.lan:4000 as the provider endpoint.
   hermes-logistikon = pkgs.writeShellScriptBin "hermes-logistikon" ''
     #!${pkgs.bash}/bin/bash
-    export HERMES_CONFIG_DIR="$HOME/.hermes-logistikon"
-    export HERMES_DATA_DIR="$HOME/.hermes-logistikon/data"
-    mkdir -p "$HERMES_CONFIG_DIR" "$HERMES_DATA_DIR"
+    export HERMES_HOME="$HOME/.hermes-logistikon"
+    mkdir -p "$HERMES_HOME"
     exec ${hermes}/bin/hermes "$@"
   '';
 
@@ -123,39 +122,17 @@ let
   # The hermes CLI reads its config from ~/.hermes/config.yaml, so we manage
   # that file declaratively.
   hermesConfig = {
-    provider = {
-      name = "litellm";
-      base_url = "http://logistikon.lan:4000/v1";
-      api_key = "dummy";
+    model = {
+      default = "coder-pro";
+      provider = "logistikon";
     };
-    model = "logistikon/coder-pro";
-    models = [
-      {
-        name = "coder-pro";
-        model = "Qwen3-Coder-Next-80B (256k, agentic)";
-        context_window = 262144;
-      }
-      {
-        name = "qwen-dense";
-        model = "Qwen3.6-27B MTP (80k, top coder, thinking)";
-        context_window = 81920;
-      }
-      {
-        name = "glm-flash";
-        model = "GLM-4.7-Flash (128k, fast agentic)";
-        context_window = 131072;
-      }
-      {
-        name = "qwen";
-        model = "Qwen3.6-35B-A3B (256k, fast)";
-        context_window = 262144;
-      }
-      {
-        name = "research";
-        model = "gpt-oss-120b (64k)";
-        context_window = 65536;
-      }
-    ];
+    providers = {
+      logistikon = {
+        name = "litellm";
+        base_url = "http://logistikon.lan:4000/v1";
+        api_key = "dummy";
+      };
+    };
   };
 
   # Claude Code reads these only from the mutable ~/.claude/settings.json
@@ -273,7 +250,13 @@ in
     };
 
     # Declaratively manage hermes config for the local genai-server provider.
-    xdg.configFile."hermes/config.yaml" = {
+    # Default config for the plain `hermes` command (reads ~/.hermes/config.yaml).
+    home.file.".hermes/config.yaml" = {
+      text = lib.generators.toYAML { } hermesConfig;
+    };
+
+    # Separate config for hermes-logistikon wrapper (isolated config dir).
+    home.file.".hermes-logistikon/config.yaml" = {
       text = lib.generators.toYAML { } hermesConfig;
     };
 
