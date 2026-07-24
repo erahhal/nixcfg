@@ -1052,11 +1052,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784683349,
-        "narHash": "sha256-RiECBd4gji3u6Hgc7N+iPPDEA+rm5E/c6SAHUnuxkRM=",
+        "lastModified": 1784871979,
+        "narHash": "sha256-IOuG93T11jj6F5x/NSYXb330EUAne1gQ+ZAW2QcxxeI=",
         "owner": "cothinking-dev",
         "repo": "greyline",
-        "rev": "258a21c2eb62a4d0038782daf7910272141e6ee3",
+        "rev": "96ba55f75c7de07a2c530f8be1650beda9828e55",
         "type": "github"
       },
       "original": {
@@ -1722,11 +1722,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784697499,
-        "narHash": "sha256-ThCqpi+EjBbFrvoZz55SJa9N/Lo0n7S3i6WpX4YJv9I=",
+        "lastModified": 1784881003,
+        "narHash": "sha256-xHY4booEz1dneXxIsBA+Oh4Xah2RvOmhUewhla1F2E0=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "134e13f62fe9550d05c04a7a607514bed6f21a5d",
+        "rev": "3cc1c40267eaee279630fc5c0b388fb40ef06c2e",
         "type": "github"
       },
       "original": {
