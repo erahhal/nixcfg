@@ -131,6 +131,16 @@ let
         name = "litellm";
         base_url = "http://logistikon.lan:4000/v1";
         api_key = "dummy";
+        discover_models = false;
+        models = {
+          coder-pro = {};
+          qwen-dense = {};
+          glm-flash = {};
+          qwen = {};
+          qwen-uc = {};
+          qwen-dense-uc = {};
+          research = {};
+        };
       };
     };
   };

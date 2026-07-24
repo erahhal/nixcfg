@@ -56,6 +56,9 @@
   services.genai-server.openFirewallGlobally = true;
   ## Name that resolves for every LAN client (bare "logistikon" doesn't).
   services.genai-server.mediaPublicUrl = "http://logistikon.lan:8894";
+  ## MagenticLite (:8895) rejects non-localhost Host headers unless listed
+  ## (upstream DNS-rebinding defense; the launcher extends the allowlist).
+  services.genai-server.magenticUi.allowedHosts = [ "logistikon.lan" ];
   ## LAN access in addition to the (not-yet-enabled) tailnet. NOTE: Open
   ## WebUI runs with auth disabled — every device on the LAN gets full
   ## access to the UI and APIs.
