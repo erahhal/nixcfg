@@ -922,11 +922,11 @@
     },
     "genai-server": {
       "locked": {
-        "lastModified": 1784670218,
-        "narHash": "sha256-6W6y3gfMNcwXdMz4I727gFV8osiRV4mUJOm4vjkpR2g=",
+        "lastModified": 1784862539,
+        "narHash": "sha256-WO88pvopi6F4EkGkkur7Yrb1Zxf9vBToCA8EST6WYlw=",
         "ref": "main",
-        "rev": "439145c0f9c5b51ed4bd1621c8afe0e605d89d56",
-        "revCount": 64,
+        "rev": "e6b68953cb5cd4235002b3be303b710135e85895",
+        "revCount": 65,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },

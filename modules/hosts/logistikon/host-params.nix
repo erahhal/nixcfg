@@ -65,9 +65,9 @@
       # foot is launched directly from niri spawn-at-startup (see niri.nix)
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [
-        "spotify"
-        "brave"
-        "firefox"
+        # "spotify"
+        # "brave"
+        # "firefox"
         # "flatpak run com.valvesoftware.Steam -cef-force-gpu -no-cef-sandbox steam://open/bigpicture"
       ];
     };
