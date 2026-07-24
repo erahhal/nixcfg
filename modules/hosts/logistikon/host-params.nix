@@ -32,7 +32,7 @@
       multipleSessions = true;
       ttyFontSize = 9.5;
       dpi = 192;
-      autoLogin = true;
+      autoLogin = false;
       wallpaper = ../../../wallpapers/hawaii-dylan-theo.jpg;
       waybarSimple = true;
       dmsLockProgram = "hyprlock";
