@@ -922,11 +922,11 @@
     },
     "genai-server": {
       "locked": {
-        "lastModified": 1784862539,
-        "narHash": "sha256-WO88pvopi6F4EkGkkur7Yrb1Zxf9vBToCA8EST6WYlw=",
+        "lastModified": 1784966146,
+        "narHash": "sha256-PXf8VLkB+XLbe6WIxhXXRD/oeB7q5m6rpn5G+PM6ugc=",
         "ref": "main",
-        "rev": "e6b68953cb5cd4235002b3be303b710135e85895",
-        "revCount": 65,
+        "rev": "66afdec779b181006f9d0a8d1fe77ea1e50e1307",
+        "revCount": 67,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
@@ -2013,11 +2013,11 @@
     },
     "nixpkgs_12": {
       "locked": {
-        "lastModified": 1784497964,
-        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
+        "lastModified": 1784796856,
+        "narHash": "sha256-wWFrV5/Qbm+lyt5x20E/bSbfJiGKMo4RCxZV8cl/WZI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
+        "rev": "e2587caef70cea85dd97d7daab492899902dbf5d",
         "type": "github"
       },
       "original": {
@@ -2699,11 +2699,11 @@
         "nixpkgs": "nixpkgs_12"
       },
       "locked": {
-        "lastModified": 1784626126,
-        "narHash": "sha256-upl1cWWS2gIEbH/xW1RrEM/sjI6kVWIsrNqTQxpxPuY=",
+        "lastModified": 1784953159,
+        "narHash": "sha256-M6ffRQAy1UvnO2lA2JVTrBXFIp1Qd3ur9cVdKbNTrJE=",
         "ref": "refs/heads/master",
-        "rev": "14b83f9a011b863f22c433a2172e56d62696f544",
-        "revCount": 41,
+        "rev": "20e11b2d6012c6b305fc6e9d05f46c726aa2bf1f",
+        "revCount": 42,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

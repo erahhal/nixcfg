@@ -17,6 +17,11 @@
 #   - hermes               -> Hermes CLI with default OpenRouter provider
 #   - hermes-logistikon    -> Hermes with local genai-server pre-configured
 #
+# Qwen Code (Alibaba's gemini-cli fork):
+#
+#   - qwen                 -> pre-configured against the local genai-server
+#                             via a modelProviders catalog in ~/.qwen
+#
 # The default `claude` (subscription) comes from base-user's claude-code on
 # every host. The default `opencode` package is installed here only on
 # non-Netflix hosts; on Netflix nflx-nixcfg provides it (and its `*-vanilla`
@@ -235,6 +240,73 @@ let
     model = "logistikon/coder-pro";
   };
 
+  # Qwen Code (Alibaba's gemini-cli fork) against the local genai-server,
+  # declared through its modelProviders catalog (the /model picker). Every
+  # entry pins the LiteLLM bridge as baseUrl and reads the (server-ignored)
+  # key from LOGISTIKON_API_KEY, which settings-level `env` exports at
+  # startup — no secret, no wrapper script needed. The Qwen OAuth free tier
+  # was discontinued 2026-04, so there's no login to protect and the plain
+  # `qwen` command can default to logistikon outright.
+  #
+  # contextWindowSize / max_tokens mirror opencodeConfig above and MUST
+  # likewise match each model's real `-c` in genai-server's module.nix;
+  # samplingParams pin the same vendor sampling (a provider entry's
+  # generationConfig is atomic — unset fields don't inherit, so sampling
+  # and limits both live here). The OpenAI pipeline round-trips
+  # reasoning_content, so the thinking models are safe from qwen-code
+  # (unlike the Anthropic bridge). timeout is generous: a llama-swap model
+  # load plus a single-slot 256k prefill can take minutes.
+  #
+  # Followup suggestions are disabled — they fire extra concurrent requests
+  # that evict the single slot's prefix cache (same reason opencode's title
+  # agent is off). fastModel stays unset so side calls run on the session's
+  # model instead of forcing llama-swap churn (tool-use summaries then
+  # no-op). gitCoAuthor off: no AI-attribution trailers, ever.
+  qwenSettings = {
+    general.enableAutoUpdate = false; # binary is nix-managed
+    general.gitCoAuthor = { commit = false; pr = false; };
+    privacy.usageStatisticsEnabled = false;
+    ui.enableFollowupSuggestions = false;
+    security.auth.selectedType = "openai";
+    env.LOGISTIKON_API_KEY = "dummy";
+    modelProviders.openai = map (m: {
+      inherit (m) id name;
+      envKey = "LOGISTIKON_API_KEY";
+      baseUrl = "http://logistikon.lan:4000/v1";
+      generationConfig = {
+        timeout = 600000;
+        contextWindowSize = m.context;
+        samplingParams = { temperature = m.temperature; top_p = m.top_p; max_tokens = m.output; };
+      };
+    }) [
+      { id = "coder-pro"; name = "Qwen3-Coder-Next-80B (256k, agentic)"; context = 262144; output = 32768; temperature = 1.0; top_p = 0.95; }
+      { id = "qwen-dense"; name = "Qwen3.6-27B MTP (80k, top coder, thinking)"; context = 81920; output = 32768; temperature = 0.6; top_p = 0.95; }
+      { id = "glm-flash"; name = "GLM-4.7-Flash (128k, fast agentic)"; context = 131072; output = 32768; temperature = 0.7; top_p = 1.0; }
+      { id = "qwen"; name = "Qwen3.6-35B-A3B (256k, fast)"; context = 262144; output = 32768; temperature = 0.6; top_p = 0.95; }
+      { id = "qwen-uc"; name = "Qwen3.6-35B UC huihui (256k)"; context = 262144; output = 32768; temperature = 0.6; top_p = 0.95; }
+      { id = "qwen-dense-uc"; name = "Qwen3.6-27B UC huihui (128k)"; context = 131072; output = 32768; temperature = 0.6; top_p = 0.95; }
+      { id = "research"; name = "gpt-oss-120b (64k)"; context = 65536; output = 16384; temperature = 1.0; top_p = 1.0; }
+    ];
+  };
+
+  # ~/.qwen/settings.json must stay mutable (/model and /auth persist the
+  # active selection back into it), so like the Claude settings above the
+  # managed keys are jq-merged in at activation instead of symlinked from
+  # the store. `*` deep-merges objects but replaces arrays, keeping our
+  # modelProviders list authoritative while preserving anything else
+  # qwen-code has written. model.name is only defaulted when absent so a
+  # /model switch survives rebuilds.
+  mergeQwenSettings = pkgs.writeShellScript "qwen-settings-merge" ''
+    set -eu
+    settings="$HOME/.qwen/settings.json"
+    mkdir -p "$HOME/.qwen"
+    [ -s "$settings" ] || echo '{}' > "$settings"
+    tmp=$(mktemp)
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg (builtins.toJSON qwenSettings)} \
+      '. * $managed | .model.name //= "coder-pro"' "$settings" > "$tmp"
+    mv "$tmp" "$settings"
+  '';
+
 in
 {
   # Function form so `lib` is home-manager's extended lib (lib.hm.*).
@@ -246,10 +318,15 @@ in
       claude-statusbar
       hermes
       hermes-logistikon
+      pkgs.qwen-code
     ] ++ lib.optional (!userParams.nflxHost) pkgs.opencode;
 
     home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run ${mergeClaudeSettings}
+    '';
+
+    home.activation.qwenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeQwenSettings}
     '';
 
     # Declaratively manage the default opencode config with the local

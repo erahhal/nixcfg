@@ -67,6 +67,11 @@
   ## the token-gated flux_nsfw checkpoint at startup. Without it those
   ## requests 503 ("checkpoint not downloaded").
   services.genai-server.civitaiTokenFile = config.age.secrets."civitai-token".path;
+  ## Hugging Face read token (shared agenix secret): unlocks the
+  ## license-gated SAM 3 weights (segment-server / smart_edit). The
+  ## token's account must have accepted the license at
+  ## huggingface.co/facebook/sam3, or the fetch 403s and skips.
+  services.genai-server.hfTokenFile = config.age.secrets."hf-token".path;
 
   ## GPU-inference box: the desktop stack enables power-profiles-daemon,
   ## which defaulted to "balanced" — community-measured ~15% llama.cpp
