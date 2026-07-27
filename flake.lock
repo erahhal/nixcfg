@@ -24,11 +24,11 @@
     "aimee": {
       "flake": false,
       "locked": {
-        "lastModified": 1783637097,
-        "narHash": "sha256-EDC5XApOuhAIU7KdNi7pFtD00BEz2OfJU034ztWFPc0=",
+        "lastModified": 1784736515,
+        "narHash": "sha256-iFE5Uv8D+TP8YQ0YlUalApnZiic/5//lOYmyvY0qboU=",
         "ref": "main",
-        "rev": "4e6b0360c37dccef3c2a5c98b4f7f7b786d3409d",
-        "revCount": 449,
+        "rev": "63a00a1c8785f0fb4b9594dc965ecae49170785a",
+        "revCount": 638,
         "type": "git",
         "url": "ssh://git@github.netflix.net/corp/aimee"
       },
@@ -158,11 +158,11 @@
     "cachyos-kernel": {
       "flake": false,
       "locked": {
-        "lastModified": 1783566754,
-        "narHash": "sha256-EyVTx67qTNB2utnXRUgOWnaZxV6c07XE2rVCq/qgWxI=",
+        "lastModified": 1785001338,
+        "narHash": "sha256-iX0iia6K1Z8k5ptg9zW/5Ar5AN0JbWcoM4KgW8+G1bI=",
         "owner": "CachyOS",
         "repo": "linux-cachyos",
-        "rev": "4065d7e175fb182a2e30b982b0d8121c97c8d46b",
+        "rev": "fc29f6a9d1e48e0d5db29b4d53e0dbfadd0d75b0",
         "type": "github"
       },
       "original": {
@@ -174,11 +174,11 @@
     "cachyos-kernel-patches": {
       "flake": false,
       "locked": {
-        "lastModified": 1783564544,
-        "narHash": "sha256-oOgjJXRLkTDfOcgPQpHF7MwIBPOf1pHT77EC/YVfkm4=",
+        "lastModified": 1785003520,
+        "narHash": "sha256-wArbhgKHjF1oJOzFVaHlz5rTxKPreb7ezbGbwQXTXJg=",
         "owner": "CachyOS",
         "repo": "kernel-patches",
-        "rev": "c624c9c8cffc11dd619a7d37f903556c60d24e9c",
+        "rev": "0fbc4adfec58c056d07adfc78d0e09bd32162853",
         "type": "github"
       },
       "original": {
@@ -195,11 +195,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784672208,
-        "narHash": "sha256-uH2AjIbB9EZFfwMknJWUjj9znAweykBpymgY4YWlEwo=",
+        "lastModified": 1784948311,
+        "narHash": "sha256-zXmyx6HuIjH0RQPV4VjVAXQttLyLDk55x9c3NmDke8c=",
         "owner": "sadjow",
         "repo": "claude-code-nix",
-        "rev": "98c8ee457e35aeb051585bea46a0d5366f03b46b",
+        "rev": "0d3cd1d6260b6f0ed232224c274c565407446fa1",
         "type": "github"
       },
       "original": {
@@ -256,11 +256,11 @@
     "claude-statusbar": {
       "flake": false,
       "locked": {
-        "lastModified": 1784651401,
-        "narHash": "sha256-+cXFhKdg1QHSdLlX3sBgkoHYpFFFz56hRExRTYt83f0=",
+        "lastModified": 1784711986,
+        "narHash": "sha256-A8jh84rCAjQ42Iydy1GsLXLB9SVqDNmozxpWeKVvxAU=",
         "owner": "leeguooooo",
         "repo": "claude-code-usage-bar",
-        "rev": "c02126285aa71969654a968cfa56e9bb03e21b11",
+        "rev": "b33bb9e3c2ed0448d048e5a2c6f87e5701745fa4",
         "type": "github"
       },
       "original": {
@@ -891,11 +891,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1784664618,
-        "narHash": "sha256-0b3DQQ5dXS1T1AhUVm8c2+vY0E+HQLF1dF7xHuRodqY=",
+        "lastModified": 1784894876,
+        "narHash": "sha256-IenYXS0K/xsQwYftLqocX7tteiUQHQZ59Ed6brsSORo=",
         "owner": "flox",
         "repo": "flox",
-        "rev": "e60e0b7bc1f231f200f4c3ce7db98fe6f19e6278",
+        "rev": "3173af4a44de9e94a7e3060b997d0f5767be1102",
         "type": "github"
       },
       "original": {
@@ -1074,20 +1074,20 @@
         ],
         "npm-lockfile-fix": "npm-lockfile-fix",
         "pyproject-build-systems": "pyproject-build-systems",
-        "pyproject-nix": "pyproject-nix_2",
-        "uv2nix": "uv2nix_2"
+        "pyproject-nix": "pyproject-nix",
+        "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1780707343,
-        "narHash": "sha256-ngpkopVczNrT0bfCXHm38QjgrZT96Bm/rO89NA/ls3Y=",
+        "lastModified": 1784572521,
+        "narHash": "sha256-QJEiBOLAVGeYBym4EUtnDgeIyJyDQWgmat70/yujiz4=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "3c231eb3979ab9c57d5cd6d02f1d577a3b718b43",
+        "rev": "3ef6bbd201263d354fd83ec55b3c306ded2eb72a",
         "type": "github"
       },
       "original": {
         "owner": "NousResearch",
-        "ref": "v2026.6.5",
+        "ref": "v2026.7.20",
         "repo": "hermes-agent",
         "type": "github"
       }
@@ -1099,11 +1099,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784588016,
-        "narHash": "sha256-ouZe80aWEhMLVMkqICFDN+JUw+0FJtCr/bh+hHtRtMg=",
+        "lastModified": 1784913159,
+        "narHash": "sha256-JWq0BfjO4ktpH5USfQNQzdvHpIDT8fSKD5K7LvdMRFs=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "deeb6b7eb7e0c44ae1819c051ce175bd92a85100",
+        "rev": "079a3b5d1aa6a719920a51316253b7d6dd22738d",
         "type": "github"
       },
       "original": {
@@ -1230,11 +1230,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1784641930,
-        "narHash": "sha256-iGlYGBYsSTAaIsSUTQEhQVyP68FIvHBT9Te0Mrog8Vk=",
+        "lastModified": 1784980432,
+        "narHash": "sha256-dM1LeX2BEKSZ60JfOJpq0gbUpmoM1Igynd0VOTafcdI=",
         "ref": "refs/heads/main",
-        "rev": "1a3606234c59842340ad9a42baeeffe44a9d6cda",
-        "revCount": 7633,
+        "rev": "453d96e92739a2a0b865cf9166d48ba14ec14b7b",
+        "revCount": 7646,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -1577,15 +1577,15 @@
         "openconnect-pulse-launcher": "openconnect-pulse-launcher",
         "pi-agent": "pi-agent",
         "pyproject-build-systems": "pyproject-build-systems_2",
-        "pyproject-nix": "pyproject-nix_4",
-        "uv2nix": "uv2nix_3"
+        "pyproject-nix": "pyproject-nix_2",
+        "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1784692136,
-        "narHash": "sha256-4Ou8qAhkMZOKvmDC8FA92x9E5PwdXCExzHlSL1mriM0=",
+        "lastModified": 1784881966,
+        "narHash": "sha256-2DZ5LDuu5fOuHfSUb5+4Jc23/Trc0JDa02NOtIQWeD8=",
         "ref": "main",
-        "rev": "569b412e1322e09e289f47c9801fcf984511790c",
-        "revCount": 180,
+        "rev": "afa8503923bcd1a1b769520b5f855f6e737f0ade",
+        "revCount": 182,
         "type": "git",
         "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
       },
@@ -1663,11 +1663,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1783794640,
-        "narHash": "sha256-SgzzS5GtMFv323ritWP8A3rwhjphB7AYTfHLNSXGX3c=",
+        "lastModified": 1785004507,
+        "narHash": "sha256-z6uYlDlOqJOl4vfOr5jGeF90UR90hhQrRsAOtSqSq7g=",
         "owner": "xddxdd",
         "repo": "nix-cachyos-kernel",
-        "rev": "6472f543b68e0b874603ad944419747815cfeb7a",
+        "rev": "6669b7b5f6b468e2be07711fe65d9e6c30560975",
         "type": "github"
       },
       "original": {
@@ -1760,11 +1760,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1784310968,
-        "narHash": "sha256-rkSPTePrKqs4dg+i7ZFCq93+HrClac6oSwXX927SVjA=",
+        "lastModified": 1784723954,
+        "narHash": "sha256-1CfD8ZUjCkTgjsneLZ/lxCHhgDfqxxE7/GX0MmsgiqA=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "779c32a00155994c86cde8213a8dd4df139d4355",
+        "rev": "a017f5b72210026af5b3ac5949f08d94380a6fbd",
         "type": "github"
       },
       "original": {
@@ -1950,11 +1950,11 @@
     },
     "nixpkgs-trunk": {
       "locked": {
-        "lastModified": 1784675549,
-        "narHash": "sha256-n4t2d5mMACUuWtarb0y2Xz0CUXEoftWz5Q6pHpQbFAI=",
+        "lastModified": 1785038967,
+        "narHash": "sha256-ihWU1/VdTKDEj9rEf2mQ08YSNP6rY8QpPfzh/v/L5tE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c354405a06415151bd4cdad5dd6dbf45a1cec0c0",
+        "rev": "b0c16e302373776eb33c219e454ae6718b401560",
         "type": "github"
       },
       "original": {
@@ -1965,11 +1965,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1784497964,
-        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
+        "lastModified": 1784796856,
+        "narHash": "sha256-wWFrV5/Qbm+lyt5x20E/bSbfJiGKMo4RCxZV8cl/WZI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
+        "rev": "e2587caef70cea85dd97d7daab492899902dbf5d",
         "type": "github"
       },
       "original": {
@@ -2029,11 +2029,11 @@
     },
     "nixpkgs_13": {
       "locked": {
-        "lastModified": 1784497964,
-        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
+        "lastModified": 1784796856,
+        "narHash": "sha256-wWFrV5/Qbm+lyt5x20E/bSbfJiGKMo4RCxZV8cl/WZI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
+        "rev": "e2587caef70cea85dd97d7daab492899902dbf5d",
         "type": "github"
       },
       "original": {
@@ -2093,11 +2093,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1783760736,
-        "narHash": "sha256-PEXS6z/zIvH+O7J3Ua3N2OUE7IvMhhghwtKxZhVfm5U=",
+        "lastModified": 1784966893,
+        "narHash": "sha256-WCrs/9bdH+gzSZit3UrSa4sWdyZ8+uC5x5bymPgBHMg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "bbb4df715cb62e53cd329090c2b69eb07f2bddac",
+        "rev": "328e42b4f861ae88cf3643962ed5c4ff918f2ba8",
         "type": "github"
       },
       "original": {
@@ -2151,11 +2151,11 @@
     },
     "nixpkgs_9": {
       "locked": {
-        "lastModified": 1784497964,
-        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
+        "lastModified": 1784796856,
+        "narHash": "sha256-wWFrV5/Qbm+lyt5x20E/bSbfJiGKMo4RCxZV8cl/WZI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
+        "rev": "e2587caef70cea85dd97d7daab492899902dbf5d",
         "type": "github"
       },
       "original": {
@@ -2259,11 +2259,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784692080,
-        "narHash": "sha256-HWPqgvz0iWqnTb0qWvSyUINqXToqFDu46OP2AeUk2bI=",
+        "lastModified": 1784868748,
+        "narHash": "sha256-8oAtnK/pTzrrtQJbynXQGgm+PYRjU33lVP4chFqNcjU=",
         "owner": "erahhal",
         "repo": "nm-openconnect-pulse-sso",
-        "rev": "4bfbaee1ff83e8c47148a0a4b061502dac6a8e13",
+        "rev": "abd9d0a6d06bf3e9bab42f3f5762066a8d72b237",
         "type": "github"
       },
       "original": {
@@ -2343,11 +2343,11 @@
     "pi-agent": {
       "flake": false,
       "locked": {
-        "lastModified": 1783636097,
-        "narHash": "sha256-kjsnBirzZORL6EMdjcLdPWe8DZokTCID/Af5EbL990A=",
+        "lastModified": 1784580060,
+        "narHash": "sha256-yO3qmXYc9ae7vXskA+jxSlWzBfFRzV4yk5m9wr/L8Bk=",
         "ref": "main",
-        "rev": "cf0c024a97c00963df111ac34b48f47fe9d0d084",
-        "revCount": 531,
+        "rev": "f15b8a1a9bcc078d6c9303069667473d12ae9a4c",
+        "revCount": 609,
         "type": "git",
         "url": "ssh://git@github.netflix.net/corp/pi-agent"
       },
@@ -2459,8 +2459,16 @@
           "hermes-agent",
           "nixpkgs"
         ],
-        "pyproject-nix": "pyproject-nix",
-        "uv2nix": "uv2nix"
+        "pyproject-nix": [
+          "nflx-nixcfg",
+          "hermes-agent",
+          "pyproject-nix"
+        ],
+        "uv2nix": [
+          "nflx-nixcfg",
+          "hermes-agent",
+          "uv2nix"
+        ]
       },
       "locked": {
         "lastModified": 1772555609,
@@ -2510,29 +2518,6 @@
         "nixpkgs": [
           "nflx-nixcfg",
           "hermes-agent",
-          "pyproject-build-systems",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1769936401,
-        "narHash": "sha256-kwCOegKLZJM9v/e/7cqwg1p/YjjTAukKPqmxKnAZRgA=",
-        "owner": "nix-community",
-        "repo": "pyproject.nix",
-        "rev": "b0d513eeeebed6d45b4f2e874f9afba2021f7812",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "pyproject.nix",
-        "type": "github"
-      }
-    },
-    "pyproject-nix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nflx-nixcfg",
-          "hermes-agent",
           "nixpkgs"
         ]
       },
@@ -2550,30 +2535,7 @@
         "type": "github"
       }
     },
-    "pyproject-nix_3": {
-      "inputs": {
-        "nixpkgs": [
-          "nflx-nixcfg",
-          "hermes-agent",
-          "uv2nix",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1771518446,
-        "narHash": "sha256-nFJSfD89vWTu92KyuJWDoTQJuoDuddkJV3TlOl1cOic=",
-        "owner": "pyproject-nix",
-        "repo": "pyproject.nix",
-        "rev": "eb204c6b3335698dec6c7fc1da0ebc3c6df05937",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pyproject-nix",
-        "repo": "pyproject.nix",
-        "type": "github"
-      }
-    },
-    "pyproject-nix_4": {
+    "pyproject-nix_2": {
       "inputs": {
         "nixpkgs": [
           "nflx-nixcfg",
@@ -3074,38 +3036,13 @@
         "nixpkgs": [
           "nflx-nixcfg",
           "hermes-agent",
-          "pyproject-build-systems",
           "nixpkgs"
         ],
         "pyproject-nix": [
           "nflx-nixcfg",
           "hermes-agent",
-          "pyproject-build-systems",
           "pyproject-nix"
         ]
-      },
-      "locked": {
-        "lastModified": 1770770348,
-        "narHash": "sha256-A2GzkmzdYvdgmMEu5yxW+xhossP+txrYb7RuzRaqhlg=",
-        "owner": "pyproject-nix",
-        "repo": "uv2nix",
-        "rev": "5d1b2cb4fe3158043fbafbbe2e46238abbc954b0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pyproject-nix",
-        "repo": "uv2nix",
-        "type": "github"
-      }
-    },
-    "uv2nix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nflx-nixcfg",
-          "hermes-agent",
-          "nixpkgs"
-        ],
-        "pyproject-nix": "pyproject-nix_3"
       },
       "locked": {
         "lastModified": 1773039484,
@@ -3121,7 +3058,7 @@
         "type": "github"
       }
     },
-    "uv2nix_3": {
+    "uv2nix_2": {
       "inputs": {
         "nixpkgs": [
           "nflx-nixcfg",

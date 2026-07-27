@@ -53,7 +53,7 @@ in
         wesnoth
 
         ## dev
-        android-studio
+        # android-studio  # adb/fastboot come from android-tools (nixcfg.programs.android); unfree so never cached, re-unpacks GBs every nixpkgs bump
 
         ## arduino
         platformio

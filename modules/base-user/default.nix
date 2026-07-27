@@ -153,7 +153,9 @@ in
         go
         cargo
         cmake
-        deno
+        ## Unused, and pulls in rusty-v8 (all of V8 from source, ~1hr) whenever
+        ## the locked nixpkgs rev isn't fully built on Hydra yet
+        # deno
         maven
         nodejs
         tokei

@@ -72,7 +72,7 @@ in
         postgresql
 
         ## Dev and tools
-        android-studio
+        # android-studio  # adb/fastboot come from android-tools (nixcfg.programs.android); unfree so never cached, re-unpacks GBs every nixpkgs bump
         bitwig-studio
         blender
 

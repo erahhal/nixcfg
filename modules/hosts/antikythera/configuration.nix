@@ -244,6 +244,18 @@
 
   hardware.wirelessRegulatoryDatabase = true;
 
+  # The Elan trackpoint in this P14s Gen 5 AMD drifts constantly at the
+  # default gain (128): the sensor's constant offset produces visible cursor
+  # motion, triggering firmware drift-recalibration every couple of minutes.
+  # Lowering sensitivity pushes the offset below one motion count. Note the
+  # module's default device name is "TPPS/2 IBM TrackPoint", which matches
+  # nothing on this machine, so tuning silently never applied.
+  hardware.trackpoint = {
+    enable = true;
+    device = "TPPS/2 Elan TrackPoint";
+    sensitivity = 100;
+  };
+
   # Enable fingerprint reading daemon.
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = true;
@@ -494,6 +506,13 @@
     lidSwitch = lib.mkForce "suspend-then-hibernate";
     # Optional: also hibernate on external power so it doesn't cook in a bag
     # lidSwitchExternalPower = "suspend-then-hibernate";
+
+    # ThinkPad Fn+4 emits the ACPI sleep key and gets hit accidentally.
+    # Ignore short presses; require a long press to suspend.
+    settings.Login = {
+      HandleSuspendKey = "ignore";
+      HandleSuspendKeyLongPress = "suspend";
+    };
   };
 
   # suspend-then-hibernate behavior (systemd >= 257):

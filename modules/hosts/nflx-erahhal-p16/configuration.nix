@@ -447,6 +447,13 @@
     # lidSwitch = lib.mkForce "suspend-then-hibernate";
     # Optional: also hibernate on external power so it doesn't cook in a bag
     # lidSwitchExternalPower = "suspend-then-hibernate";
+
+    # ThinkPad Fn+4 emits the ACPI sleep key and gets hit accidentally.
+    # Ignore short presses; require a long press to suspend.
+    settings.Login = {
+      HandleSuspendKey = "ignore";
+      HandleSuspendKeyLongPress = "suspend";
+    };
   };
 
   systemd.sleep.settings.Sleep = {

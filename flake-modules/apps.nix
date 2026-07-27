@@ -150,6 +150,49 @@
         '';
       };
 
+      # Dry-run the system build and show what would compile locally vs come
+      # from a binary cache. Anything under "will be built" is not cached:
+      # either unfree/custom (expected) or something Hydra hasn't built (or
+      # failed) for the locked nixpkgs rev. Heavy compiles there usually mean
+      # flake.lock landed ahead of the cache — wait a day or roll it back.
+      preflight = mkApp "nixcfg-preflight" {
+        text = ''
+          echo "==> Dry-run evaluating host $(hostname) (takes a minute)..."
+          log=$(nix build --dry-run .#nixosConfigurations.${hostname}.config.system.build.toplevel 2>&1) || {
+            echo "$log"
+            exit 1
+          }
+
+          mapfile -t builds < <(echo "$log" \
+            | awk '/derivations? will be built:/{s=1;next} /paths? will be fetched/{s=0} s' \
+            | grep -oE '[a-z0-9]{32}-\S+\.drv' \
+            | sed -E 's/^[a-z0-9]{32}-//; s/\.drv$//' \
+            | sort -u)
+
+          nfetch=$(echo "$log" | awk '/paths? will be fetched/{s=1;next} s && /\/nix\/store\//{n++} END{print n+0}')
+          dl=$(echo "$log" | grep -oE '[0-9.]+ [KMG]iB download' | head -1 || true)
+
+          echo
+          if [ "''${#builds[@]}" -eq 0 ]; then
+            echo "Nothing to build locally."
+          else
+            echo "Will build locally (''${#builds[@]}):"
+            printf '  %s\n' "''${builds[@]}"
+            big=$(printf '%s\n' "''${builds[@]}" \
+              | grep -iE 'rusty-v8|chromium|electron-unwrapped|webkit|qtwebengine|llvm|-gcc-|rustc|ghc-[0-9]|firefox|thunderbird|libreoffice|blender|cuda|tensorflow|linux-[0-9]' || true)
+            if [ -n "$big" ]; then
+              echo
+              echo "WARNING: heavy builds missing from the binary cache:"
+              echo "$big" | sed 's/^/  !! /'
+              echo "Hydra likely hasn't finished this nixpkgs rev. Consider waiting"
+              echo "a day, or: git checkout flake.lock"
+            fi
+          fi
+          echo
+          echo "Substitutable from caches: $nfetch paths ''${dl:+($dl)}"
+        '';
+      };
+
       bt-mic = mkApp "nixcfg-bt-mic" {
         runtimeInputs = [ pkgs.pulseaudio ];
         text = ''

@@ -170,7 +170,17 @@ bool vulkan_remake_and_acquire( void );'
         };
       };
 
-
+      # langfuse 4.0.2 declares wrapt<2.0 but nixpkgs now ships wrapt 2.2.2,
+      # which fails the runtime-deps check and breaks litellm. Fixed on nixpkgs
+      # master (45368b0, 2026-07-23) but not yet on nixos-unstable. Remove once
+      # a flake update pulls a nixpkgs rev containing that fix.
+      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+        (pyfinal: pyprev: {
+          langfuse = pyprev.langfuse.overridePythonAttrs (old: {
+            pythonRelaxDeps = (old.pythonRelaxDeps or [ ]) ++ [ "wrapt" ];
+          });
+        })
+      ];
     })
   ];
 }
