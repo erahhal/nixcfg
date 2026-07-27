@@ -316,10 +316,15 @@ in
       opencode-openrouter
       claude-logistikon
       claude-statusbar
-      hermes
       hermes-logistikon
       pkgs.qwen-code
-    ] ++ lib.optional (!userParams.nflxHost) pkgs.opencode;
+    ]
+    # `hermes` (default, OpenRouter provider) collides with nflx-nixcfg's
+    # Netflix-gateway `hermes` on Netflix hosts, so ship it only elsewhere —
+    # same treatment as the default `opencode`. hermes-logistikon (local
+    # genai-server, isolated ~/.hermes-logistikon, unique bin name) has no
+    # collision and stays on every host, like claude-logistikon.
+    ++ lib.optionals (!userParams.nflxHost) [ pkgs.opencode hermes ];
 
     home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run ${mergeClaudeSettings}
@@ -336,9 +341,10 @@ in
       text = builtins.toJSON opencodeConfig;
     };
 
-    # Declaratively manage hermes config for the local genai-server provider.
     # Default config for the plain `hermes` command (reads ~/.hermes/config.yaml).
-    home.file.".hermes/config.yaml" = {
+    # Non-Netflix hosts only: on Netflix, nflx-nixcfg owns `hermes` and writes
+    # ~/.hermes/config.yaml itself, so we must not also manage it here.
+    home.file.".hermes/config.yaml" = lib.mkIf (!userParams.nflxHost) {
       text = lib.generators.toYAML { } hermesConfig;
     };
 

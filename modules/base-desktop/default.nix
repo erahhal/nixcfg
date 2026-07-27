@@ -122,6 +122,7 @@ in
       ../desktop/kitty
 
       ../desktop/gthumb
+      ../desktop/jellyfin-mpv-shim
       ../desktop/qt4-hidpi
       ../desktop/vscode-settings
       ../desktop/kdeconnect-home
