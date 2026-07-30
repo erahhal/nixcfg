@@ -45,9 +45,19 @@ let
       inherit (prev.chromium) override;
     };
 
+    # nixpkgs 2026-07-29 (0954f7ee) changed brave to
+    # `(callPackage ../.../brave { }).brave` — an attribute selected out of the
+    # callPackage result, so the derivation no longer carries `override` and
+    # `prev.brave.override { commandLineArgs = ...; }` fails with
+    # "attribute 'override' missing". `overrideAttrs` survives but can't take
+    # commandLineArgs (an argument, not an attribute). We already wrap the
+    # binary here, so pass the flags through makeWrapper instead — the same
+    # shape the `slack` block below uses. Unlike brave, `chromium` upstream
+    # still exposes `override`, so the block above is untouched.
     brave = let
-      originalBrave = prev.brave.override {
-        commandLineArgs = [
+      originalBrave = prev.brave;
+      braveFlags = lib.concatMapStringsSep " "
+        (f: "--add-flags ${lib.escapeShellArg f}") [
           "--enable-wayland-ime"
           "--password-store=basic"
           "--ozone-platform=wayland"
@@ -57,14 +67,13 @@ let
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"
         ];
-      };
     in (prev.symlinkJoin {
       name = "brave-${originalBrave.version}";
       paths = [ originalBrave ];
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/brave
-        makeWrapper ${originalBrave}/bin/brave $out/bin/brave ${forceIgpuFlags}
+        makeWrapper ${originalBrave}/bin/brave $out/bin/brave ${forceIgpuFlags} ${braveFlags}
       '';
       passthru = originalBrave.passthru;
       inherit (originalBrave) meta;

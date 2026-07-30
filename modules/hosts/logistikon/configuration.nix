@@ -72,6 +72,9 @@
   ## token's account must have accepted the license at
   ## huggingface.co/facebook/sam3, or the fetch 403s and skips.
   services.genai-server.hfTokenFile = config.age.secrets."hf-token".path;
+  ## Model choices themselves live in the genai-server-private flake, which
+  ## genai-server imports — nothing about them is host-specific, so nothing
+  ## about them belongs here.
 
   ## GPU-inference box: the desktop stack enables power-profiles-daemon,
   ## which defaulted to "balanced" — community-measured ~15% llama.cpp
