@@ -26,6 +26,7 @@ in
       gfx-intel
       laptop
       udev-rules
+      keyboard-unwedge
       appimage
       android
       totp

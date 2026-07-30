@@ -34,6 +34,7 @@
     thinkpad-dock-udev = import ../modules/hardware/thinkpad-dock-udev;
     openrgb = import ../modules/hardware/openrgb;
     keyboard-debounce = import ../modules/hardware/keyboard-debounce;
+    keyboard-unwedge = import ../modules/hardware/keyboard-unwedge;
     spacenavd = import ../modules/hardware/spacenavd;
     ryzenadj = import ../modules/hardware/ryzenadj;
     dmemcg = import ../modules/hardware/dmemcg;

@@ -40,6 +40,7 @@
       gfx-intel.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
+      keyboard-unwedge.enable = true;
       spacenavd.enable = true;
     };
     programs = {
