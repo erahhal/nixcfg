@@ -49,6 +49,14 @@
       disableXwaylandScaling = true;
       dmsLockProgram = "hyprlock";
 
+      # Hand the lid to logind so it can suspend-then-hibernate (see
+      # systemd.sleep.settings.Sleep in configuration.nix). This also unbinds
+      # niri's lid-close handler -- with both armed, the compositor's suspend
+      # request was frozen at lid close and replayed on resume, putting the
+      # machine back to sleep right after the lock screen appeared.
+      # hypridle's before_sleep_cmd still locks with hyprlock on the way down.
+      lidCloseAction = "suspend-then-hibernate";
+
       # On-demand Persona-Quickshell: `persona` runs the full shell; Mod+D
       # switches between DMS and Persona, Mod+P opens the active shell's
       # launcher. DMS stays the session shell until you switch.

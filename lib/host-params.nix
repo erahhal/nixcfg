@@ -280,6 +280,31 @@
         description = "Lock screen program to use with DMS (dms = built-in Quickshell lock, hyprlock = standalone)";
       };
 
+      lidCloseAction = lib.mkOption {
+        type = lib.types.enum [
+          "compositor" "ignore" "lock" "suspend" "hibernate" "hybrid-sleep"
+          "suspend-then-hibernate" "poweroff"
+        ];
+        default = "compositor";
+        description = ''
+          Who handles lid close under niri. "compositor" (default) leaves
+          logind's HandleLidSwitch at "ignore" and lets niri's lid-close
+          binding lock + suspend; any other value is passed to logind's
+          HandleLidSwitch and drops the niri binding.
+
+          Set this instead of overriding services.logind.lidSwitch directly —
+          forcing that option leaves both handlers armed, and the compositor's
+          suspend request gets frozen mid-flight and replayed on the next
+          resume, immediately re-suspending the machine.
+
+          "suspend-then-hibernate" also needs systemd.sleep.settings.Sleep
+          (HibernateDelaySec / HibernateOnACPower) set on the host.
+
+          Mirrors to nixcfg-niri.desktop.lidCloseAction via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       easyeffects.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;

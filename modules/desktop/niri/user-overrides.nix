@@ -19,6 +19,8 @@
   nixcfg-niri.desktop.terminal = config.hostParams.user.tty;
   nixcfg-niri.desktop.themeToggleCommand = "toggle-theme";
 
+  nixcfg-niri.desktop.lidCloseAction = config.hostParams.desktop.lidCloseAction;
+
   nixcfg-niri.desktop.easyeffects = {
     enable = config.hostParams.desktop.easyeffects.enable;
     generic = true;

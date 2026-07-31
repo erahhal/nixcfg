@@ -503,7 +503,10 @@
   };
 
   services.logind = {
-    lidSwitch = lib.mkForce "suspend-then-hibernate";
+    # Lid action lives in host-params.nix as hostParams.desktop.lidCloseAction,
+    # which drives both logind's HandleLidSwitch and niri's lid-close binding so
+    # only one of them is ever armed. Setting lidSwitch here would need mkForce
+    # to beat the niri module and would silently re-arm both handlers.
     # Optional: also hibernate on external power so it doesn't cook in a bag
     # lidSwitchExternalPower = "suspend-then-hibernate";
 
