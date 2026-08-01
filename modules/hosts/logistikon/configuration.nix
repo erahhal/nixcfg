@@ -104,6 +104,52 @@
   networking.extraHosts = ''
     127.0.0.1 logistikon.lan
   '';
+  ## Where each service is actually published now that the stack is fronted
+  ## by HomeFree. Without this the portal links to
+  ## `http://<host you loaded the portal from>:<port>` — right on a LAN box,
+  ## and wrong through the proxy, where it produces ai.homefree.host:3000:
+  ## a port nothing listens on there, over a scheme the vhost does not speak.
+  ##
+  ## Three cases, and the difference is real rather than cosmetic:
+  ##   * its own subdomain — the browser-facing UIs
+  ##   * behind the portal at /svc/<name> — the stdlib APIs it proxies
+  ##   * no public route — LAN only, so the honest link is the LAN address.
+  ##     A plain-http LINK from an https page is fine; only subresources
+  ##     are blocked (which is what bit mediaPublicUrl above).
+  ##
+  ## Links only. Health probes keep using the real local address, because
+  ## "can I reach it" and "where do I send a browser" stop being the same
+  ## question behind a proxy.
+  services.genai-server.portal.serviceUrls =
+    let
+      sub = s: "https://${s}.homefree.host";
+      svc = s: "https://ai.homefree.host/svc/${s}";
+      lan = p: "http://logistikon.lan:${toString p}";
+    in {
+      "Open WebUI"      = sub "webui";
+      "ComfyUI"         = sub "comfy";
+      "SearXNG"         = sub "search";
+      "Magentic-UI"     = sub "magentic";
+      "Realtime voice"  = sub "voice";
+
+      "Image server"    = svc "image";
+      "Media tools"     = svc "media";
+      "Search tool"     = svc "search";
+      "MCP gateway"     = svc "mcp";
+      "Knowledge (RAG)" = svc "rag";
+      "Memory"          = svc "memory";
+      "Code sandbox"    = svc "code";
+      "TTS"             = svc "tts";
+      "Segment server"  = svc "segment";
+
+      ## Not proxied by the portal and no subdomain of their own: the
+      ## OpenAI-dialect endpoints and Kokoro. Reachable on the LAN only.
+      "llama-swap"      = lan 8080;
+      "LiteLLM"         = lan 4000;
+      "Ollama dialect"  = lan 11434;
+      "TTS-HQ"          = lan 8896;
+    };
+
   ## Name that resolves for every LAN client (bare "logistikon" doesn't).
   ## Tool-returned images are embedded in chats as ABSOLUTE urls, so this
   ## value has to be fetchable by the browser — not merely by this box.
