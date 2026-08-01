@@ -71,21 +71,17 @@
   services.genai-server.webui.auth = {
     mode = "trusted-header";
     trustedProxies = [ "10.0.0.1" "100.64.0.2" ];
+    ## Role comes from Zitadel on every sign-in: the router's gate calls
+    ## admin-api's /api/auth/role and copies the verdict onto the request,
+    ## so holding homefree-admin grants the Open WebUI admin panel and
+    ## losing it takes the panel away at the next login.
+    roleHeader = "X-Homefree-Role";
     ## The identity is `erahhal`, NOT an email: HomeFree's oauth2-proxy
     ## sets OAUTH2_PROXY_USER_ID_CLAIM = "preferred_username", and that
     ## claim is what lands in X-Auth-Request-Email. The header name says
-    ## email; the value is the Zitadel username.
-    ##
-    ## The pre-auth chats were handed to `ellis@rahh.al` on the first pass
-    ## — a guess taken from homefree-config.json's system.adminEmail,
-    ## which is not what the gate asserts — so that is the account they
-    ## are moving off. Once this has run, both lines are inert.
-    legacyAccount = "ellis@rahh.al";
-    claimLegacyChats = "erahhal";
-    ## Nobody can promote themselves: it is an admin-only endpoint. The
-    ## operator has to be named here or the box has no way back into its
-    ## own admin panel.
-    admins = [ "erahhal" ];
+    ## email; the value is the Zitadel username. The seeder has to sign in
+    ## as an admin, so it uses the same identity.
+    seedIdentity = "erahhal";
   };
   ## Resolve our own LAN name to loopback, so nothing on this box depends on
   ## the network to reach services running on this box. Unpinned,
