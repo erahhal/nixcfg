@@ -76,12 +76,19 @@
     ## so holding homefree-admin grants the Open WebUI admin panel and
     ## losing it takes the panel away at the next login.
     roleHeader = "X-Homefree-Role";
-    ## The identity is `erahhal`, NOT an email: HomeFree's oauth2-proxy
-    ## sets OAUTH2_PROXY_USER_ID_CLAIM = "preferred_username", and that
-    ## claim is what lands in X-Auth-Request-Email. The header name says
-    ## email; the value is the Zitadel username. The seeder has to sign in
-    ## as an admin, so it uses the same identity.
-    seedIdentity = "erahhal";
+    ## Identity and display name come from the directory, not from
+    ## oauth2-proxy. Its X-Auth-Request-Email carries whatever
+    ## USER_ID_CLAIM picked — `preferred_username` here, so the header
+    ## named "email" holds a login handle — and it has no display-name
+    ## header at all. admin-api reports both from Zitadel alongside the
+    ## role, so accounts here are keyed on a real address and show a real
+    ## name.
+    emailHeader = "X-Homefree-Email";
+    nameHeader = "X-Homefree-Name";
+    ## The seeder signs in over loopback with no proxy to label it, so it
+    ## asserts this identity itself. Must match what the gate sends, and
+    ## must be an admin.
+    seedIdentity = "ellis@rahh.al";
   };
   ## Resolve our own LAN name to loopback, so nothing on this box depends on
   ## the network to reach services running on this box. Unpinned,
