@@ -105,7 +105,19 @@
     127.0.0.1 logistikon.lan
   '';
   ## Name that resolves for every LAN client (bare "logistikon" doesn't).
-  services.genai-server.mediaPublicUrl = "http://logistikon.lan:8894";
+  ## Tool-returned images are embedded in chats as ABSOLUTE urls, so this
+  ## value has to be fetchable by the browser — not merely by this box.
+  ## Pointing it at http://logistikon.lan:8894 stopped working the moment
+  ## the chat UI moved behind TLS: a browser refuses http subresources on
+  ## an https page (mixed content), so every generated image silently
+  ## vanished while uploads kept working, those being served same-origin
+  ## through Open WebUI's own /api/v1/files.
+  ##
+  ## The portal already proxies media at /svc/media, so this is the same
+  ## bytes over TLS on a name that resolves anywhere. Cross-subdomain from
+  ## webui.homefree.host is fine: the SSO cookie is scoped to
+  ## .homefree.host, so the image requests carry it.
+  services.genai-server.mediaPublicUrl = "https://ai.homefree.host/svc/media";
   ## MagenticLite (:8895) rejects non-localhost Host headers unless listed
   ## (upstream DNS-rebinding defense; the launcher extends the allowlist).
   services.genai-server.magenticUi.allowedHosts = [ "logistikon.lan" ];
