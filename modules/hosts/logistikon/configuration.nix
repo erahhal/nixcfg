@@ -54,6 +54,20 @@
   ## Serve on all interfaces (WiFi now, Ethernet later). NOTE: the WebUI and
   ## APIs are unauthenticated — the whole LAN gets full access.
   services.genai-server.openFirewallGlobally = true;
+  ## Resolve our own LAN name to loopback, so nothing on this box depends on
+  ## the network to reach services running on this box. Unpinned,
+  ## "logistikon.lan" is answered only by the router's DNS and resolves to the
+  ## wlan0 address — so a Wi-Fi drop, or a VPN that hijacks DNS and blocks LAN
+  ## traffic (Mullvad switched on unconfigured, 2026-07-31), cuts the machine
+  ## off from its own portal and models. Same trick the homefree module uses
+  ## for *.homefree.lan. Local-only: this file is /etc/hosts on logistikon, so
+  ## LAN clients (and the mediaPublicUrl links below) are unaffected.
+  ## The CLI harnesses do not rely on this — they address :4000 as 127.0.0.1
+  ## directly on this host (modules/programs/ai-coding), which survives even a
+  ## wedged resolver, since nsswitch consults systemd-resolved before `files`.
+  networking.extraHosts = ''
+    127.0.0.1 logistikon.lan
+  '';
   ## Name that resolves for every LAN client (bare "logistikon" doesn't).
   services.genai-server.mediaPublicUrl = "http://logistikon.lan:8894";
   ## MagenticLite (:8895) rejects non-localhost Host headers unless listed
@@ -72,6 +86,15 @@
   ## token's account must have accepted the license at
   ## huggingface.co/facebook/sam3, or the fetch 403s and skips.
   services.genai-server.hfTokenFile = config.age.secrets."hf-token".path;
+  ## Build llama-swap from upstream (v245) instead of the nixpkgs v240.
+  ## Stage 2 of the roadmap needs >= v242 for selectors (virtual model IDs
+  ## that flip a champion/challenger A/B without touching clients),
+  ## SQLite-persisted activity metrics and static apiKeys. Config
+  ## compatibility was checked against v245's schema and the built binary
+  ## starts on this host's config unchanged. The flake warns when nixpkgs
+  ## catches up, at which point delete this line.
+  services.genai-server.llamaSwap.useNewerBuild = true;
+
   ## Model choices themselves live in the genai-server-private flake, which
   ## genai-server imports — nothing about them is host-specific, so nothing
   ## about them belongs here.

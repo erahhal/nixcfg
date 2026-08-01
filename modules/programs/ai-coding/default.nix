@@ -33,6 +33,29 @@ let
   orCfg = userParams.openrouter;
   username = userParams.username;
 
+  # Endpoint for the local genai-server bridge (:4000). ON logistikon this
+  # MUST be loopback, never the LAN name: nothing about `logistikon.lan`
+  # survives a dead network, even though the server is on the same box. The
+  # name resolves only via the router's DNS (it is not in /etc/hosts by
+  # default, and no public resolver answers a `.lan` name), and it resolves to
+  # the *wlan0* address — so one failure takes out both the lookup and the
+  # route to an address that is 6 inches away. A VPN does exactly that:
+  # switching Mullvad on with no configuration hijacks DNS and, with its
+  # default "Local network sharing: block", drops traffic to 10.0.0.x —
+  # stranding every harness on the machine that hosts the models, with no
+  # working LLM left to debug the network with (2026-07-31 outage). Loopback
+  # needs no resolver and no interface, and VPN kill-switches always permit
+  # `lo`, so this path has nothing left to break.
+  #
+  # Other hosts keep the LAN name — it is the only way to reach the box from
+  # them. On logistikon that name is *also* pinned to 127.0.0.1 in /etc/hosts,
+  # which covers the browser/portal URLs this file does not own (see
+  # modules/hosts/logistikon/configuration.nix).
+  onLogistikon = config.networking.hostName == "logistikon";
+  genaiHost = if onLogistikon then "127.0.0.1" else "logistikon.lan";
+  genaiBaseUrl = "http://${genaiHost}:4000";
+  genaiApiUrl = "${genaiBaseUrl}/v1";
+
   # Key file: explicit option wins; otherwise auto-detect the conventional
   # shared agenix secret `openrouter-api-key` if it's declared.
   apiKeyFile =
@@ -88,7 +111,7 @@ let
   claude-logistikon = pkgs.writeShellScriptBin "claude-logistikon" ''
     #!${pkgs.bash}/bin/bash
     export CLAUDE_CONFIG_DIR="$HOME/.claude-logistikon"
-    export ANTHROPIC_BASE_URL="http://logistikon.lan:4000"
+    export ANTHROPIC_BASE_URL="${genaiBaseUrl}"
     export ANTHROPIC_AUTH_TOKEN=dummy
     export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-coder-pro}
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="$ANTHROPIC_MODEL"
@@ -113,7 +136,7 @@ let
 
   # Hermes CLI wrapper that configures it to use the local genai-server
   # by default. This provides a hermes command that's pre-configured to
-  # use logistikon.lan:4000 as the provider endpoint.
+  # use `genaiApiUrl` (the :4000 bridge) as the provider endpoint.
   hermes-logistikon = pkgs.writeShellScriptBin "hermes-logistikon" ''
     #!${pkgs.bash}/bin/bash
     export HERMES_HOME="$HOME/.hermes-logistikon"
@@ -123,7 +146,7 @@ let
 
   # Declaratively manage hermes config for the local genai-server provider.
   # Similar to opencode's provider.logistikon, this sets up hermes to use
-  # the local genai-server (logistikon.lan:4000) as its default provider.
+  # the local genai-server (`genaiApiUrl`) as its default provider.
   # The hermes CLI reads its config from ~/.hermes/config.yaml, so we manage
   # that file declaratively.
   hermesConfig = {
@@ -134,7 +157,7 @@ let
     providers = {
       logistikon = {
         name = "litellm";
-        base_url = "http://logistikon.lan:4000/v1";
+        base_url = genaiApiUrl;
         api_key = "dummy";
         discover_models = false;
         models = {
@@ -177,8 +200,8 @@ let
     mv "$tmp" "$settings"
   '';
 
-  # opencode provider for the local genai-server (logistikon). Reachable on
-  # the home LAN as logistikon.lan; port 4000 is the LiteLLM bridge, whose
+  # opencode provider for the local genai-server (logistikon), at
+  # `genaiApiUrl`. Port 4000 is the LiteLLM bridge, whose
   # context_window_fallbacks silently continue an overflowing session on a
   # larger-window model (it forwards to the 8897 dashboard filter proxy, so
   # not-ready models still 503 cleanly). apiKey is required by the AI SDK
@@ -203,7 +226,7 @@ let
   #
   # The local server is made the default model only ON logistikon, so
   # opencode's default isn't hijacked on other (possibly off-LAN) hosts
-  # where logistikon.lan wouldn't resolve. coder-pro stays the default
+  # that can't reach the box at all. coder-pro stays the default
   # (non-thinking, agent-RL-trained, battle-tested tool parser);
   # qwen-dense is the A/B challenger — better benchmarks (77.2 vs 70.6
   # SWE-V) but thinking-mode, so it stays opt-in until proven in real
@@ -223,7 +246,7 @@ let
       npm = "@ai-sdk/openai-compatible";
       name = "Logistikon";
       options = {
-        baseURL = "http://logistikon.lan:4000/v1";
+        baseURL = genaiApiUrl;
         apiKey = "dummy";
       };
       models = {
@@ -236,7 +259,7 @@ let
         research = { name = "gpt-oss-120b (64k)"; limit = { context = 65536; output = 16384; }; options = { temperature = 1.0; top_p = 1.0; }; };
       };
     };
-  } // lib.optionalAttrs (config.networking.hostName == "logistikon") {
+  } // lib.optionalAttrs onLogistikon {
     model = "logistikon/coder-pro";
   };
 
@@ -272,7 +295,7 @@ let
     modelProviders.openai = map (m: {
       inherit (m) id name;
       envKey = "LOGISTIKON_API_KEY";
-      baseUrl = "http://logistikon.lan:4000/v1";
+      baseUrl = genaiApiUrl;
       generationConfig = {
         timeout = 600000;
         contextWindowSize = m.context;
