@@ -86,9 +86,9 @@
     emailHeader = "X-Homefree-Email";
     nameHeader = "X-Homefree-Name";
     ## The seeder signs in over loopback with no proxy to label it, so it
-    ## asserts this identity itself. Must match what the gate sends, and
-    ## must be an admin.
-    seedIdentity = "ellis@rahh.al";
+    ## asserts this identity itself. Must match what the gate sends —
+    ## which is the directory's email — and must be an admin.
+    seedIdentity = config.hostParams.user.email;
   };
   ## Resolve our own LAN name to loopback, so nothing on this box depends on
   ## the network to reach services running on this box. Unpinned,
