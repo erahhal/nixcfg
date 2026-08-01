@@ -113,10 +113,6 @@
   ## Three cases, and the difference is real rather than cosmetic:
   ##   * its own subdomain — the browser-facing UIs
   ##   * behind the portal at /svc/<name> — the stdlib APIs it proxies
-  ##   * no public route — LAN only, so the honest link is the LAN address.
-  ##     A plain-http LINK from an https page is fine; only subresources
-  ##     are blocked (which is what bit mediaPublicUrl above).
-  ##
   ## Links only. Health probes keep using the real local address, because
   ## "can I reach it" and "where do I send a browser" stop being the same
   ## question behind a proxy.
@@ -124,7 +120,6 @@
     let
       sub = s: "https://${s}.homefree.host";
       svc = s: "https://ai.homefree.host/svc/${s}";
-      lan = p: "http://logistikon.lan:${toString p}";
     in {
       "Open WebUI"      = sub "webui";
       "ComfyUI"         = sub "comfy";
@@ -142,12 +137,13 @@
       "TTS"             = svc "tts";
       "Segment server"  = svc "segment";
 
-      ## Not proxied by the portal and no subdomain of their own: the
-      ## OpenAI-dialect endpoints and Kokoro. Reachable on the LAN only.
-      "llama-swap"      = lan 8080;
-      "LiteLLM"         = lan 4000;
-      "Ollama dialect"  = lan 11434;
-      "TTS-HQ"          = lan 8896;
+      ## The portal proxies neither the OpenAI-dialect endpoints nor
+      ## Kokoro, so these get subdomains of their own rather than a LAN
+      ## link the proxy cannot serve.
+      "llama-swap"      = sub "swap";
+      "LiteLLM"         = sub "litellm";
+      "Ollama dialect"  = sub "ollama-api";
+      "TTS-HQ"          = sub "ttshq";
     };
 
   ## Name that resolves for every LAN client (bare "logistikon" doesn't).
@@ -166,7 +162,12 @@
   services.genai-server.mediaPublicUrl = "https://ai.homefree.host/svc/media";
   ## MagenticLite (:8895) rejects non-localhost Host headers unless listed
   ## (upstream DNS-rebinding defense; the launcher extends the allowlist).
-  services.genai-server.magenticUi.allowedHosts = [ "logistikon.lan" ];
+  ## Behind the proxy the Host header is the public name, not this box's,
+  ## and MagenticLite rejects anything unlisted with "bad host header".
+  services.genai-server.magenticUi.allowedHosts = [
+    "logistikon.lan"
+    "magentic.homefree.host"
+  ];
   ## LAN access in addition to the (not-yet-enabled) tailnet. NOTE: the
   ## other services are still unauthenticated — every device on the LAN
   ## gets full access to them. Open WebUI no longer is (webui.auth above).
