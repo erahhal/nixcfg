@@ -51,9 +51,32 @@
   ## (/var/lib/genai-models), LoRA store, and training jobs — no sudo needed
   ## for lora-train / lora-add / genai-fetch-media.
   users.users.${config.hostParams.user.username}.extraGroups = [ "genai" ];
-  ## Serve on all interfaces (WiFi now, Ethernet later). NOTE: the WebUI and
-  ## APIs are unauthenticated — the whole LAN gets full access.
+  ## Serve on all interfaces (WiFi now, Ethernet later). NOTE: the APIs are
+  ## unauthenticated — the whole LAN gets full access. Open WebUI is the
+  ## exception since it went up on webui.homefree.host (see webui.auth
+  ## below): its port is withheld from this blanket opening and admitted
+  ## only from the router.
   services.genai-server.openFirewallGlobally = true;
+
+  ## Open WebUI identifies users by the header the router's oauth2-proxy
+  ## injects, so each SSO account gets its own chats. Before this it ran
+  ## WEBUI_AUTH=False — one implicit `admin@localhost` that every visitor
+  ## landed in, which was fine while only this LAN could reach it and
+  ## stopped being fine the moment it was published behind SSO.
+  ##
+  ## trustedProxies is the security boundary, not a nicety: the header is a
+  ## bearer token, so this list is exactly who may claim to be anyone. Both
+  ## router addresses, because which one Caddy sources from depends on
+  ## whether logistikon.lan resolves over the LAN or the tailnet.
+  services.genai-server.webui.auth = {
+    mode = "trusted-header";
+    trustedProxies = [ "10.0.0.1" "100.64.0.2" ];
+    ## The 178 chats made before auth existed belong to `admin@localhost`,
+    ## which no SSO identity matches. Renaming that account once hands them
+    ## to the operator's real identity instead of stranding them on a user
+    ## nobody can log in as. Idempotent; a no-op once it has run.
+    claimLegacyChats = "ellis@rahh.al";
+  };
   ## Resolve our own LAN name to loopback, so nothing on this box depends on
   ## the network to reach services running on this box. Unpinned,
   ## "logistikon.lan" is answered only by the router's DNS and resolves to the
@@ -73,9 +96,9 @@
   ## MagenticLite (:8895) rejects non-localhost Host headers unless listed
   ## (upstream DNS-rebinding defense; the launcher extends the allowlist).
   services.genai-server.magenticUi.allowedHosts = [ "logistikon.lan" ];
-  ## LAN access in addition to the (not-yet-enabled) tailnet. NOTE: Open
-  ## WebUI runs with auth disabled — every device on the LAN gets full
-  ## access to the UI and APIs.
+  ## LAN access in addition to the (not-yet-enabled) tailnet. NOTE: the
+  ## other services are still unauthenticated — every device on the LAN
+  ## gets full access to them. Open WebUI no longer is (webui.auth above).
   services.genai-server.firewallInterfaces = [ "tailscale0" "wlan0" ];
   ## Civitai API token (shared agenix secret): lets image-server download
   ## the token-gated flux_nsfw checkpoint at startup. Without it those
@@ -94,6 +117,12 @@
   ## starts on this host's config unchanged. The flake warns when nixpkgs
   ## catches up, at which point delete this line.
   services.genai-server.llamaSwap.useNewerBuild = true;
+  ## Realtime voice on :8901 (portal page at :8897/voice). The chat model
+  ## runs on the CPU, so this costs system RAM rather than VRAM and does not
+  ## compete with the card. Transcription still uses the GPU-resident `asr`.
+  ## NOTE: the browser only grants microphone access in a secure context —
+  ## use http://localhost:8897/voice on this box, not the LAN name.
+  services.genai-server.voice.enable = true;
 
   ## Model choices themselves live in the genai-server-private flake, which
   ## genai-server imports — nothing about them is host-specific, so nothing
