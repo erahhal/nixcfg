@@ -142,7 +142,7 @@
       ## link the proxy cannot serve.
       "llama-swap"      = sub "swap";
       "LiteLLM"         = sub "litellm";
-      "Ollama dialect"  = sub "ollama-api";
+      "Ollama dialect"  = sub "ollama";
       "TTS-HQ"          = sub "ttshq";
     };
 
