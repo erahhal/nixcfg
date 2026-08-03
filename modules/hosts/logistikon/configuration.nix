@@ -47,6 +47,24 @@
 
   ## AI model-serving stack (external flake: ~/Code/genai-server)
   services.genai-server.enable = true;
+  ## Stop ComfyUI when no client has been connected for 30 minutes, and let
+  ## the activation socket start it again (~7s) on the next request.
+  ## Measured 2026-08-02: idle for two days after its last render it still
+  ## held 3.9GB of VRAM and 13GB of RAM — the CUDA context and its kernel
+  ## images, which `/free` cannot reach and only process exit releases. On
+  ## a box where both the card and RAM are contended (minimax alone wants
+  ## ~65GB) that is worth a 7s wait. 30min is deliberately longer than any
+  ## hand-started render, since idleness is measured by connections.
+  services.genai-server.comfyui.idleStopMinutes = 30;
+  ## qwen-dense ships disabled: at 25744MiB it cannot coexist with the
+  ## resident set (asr + embed + rerank), so it and voice/RAG/memory lock
+  ## each other out — whichever loads second dies. Kept available here for
+  ## its MTP speed (~80 vs ~47 tok/s), but nothing DEFAULTS to it any more:
+  ## `qwen-dense-long` holds the `dense` alias and is what opencode and
+  ## Claude Code point at. So this only loads when named explicitly — and
+  ## when it does, transcription stops working until it ages out. Drop this
+  ## line if that trade is not worth it.
+  services.genai-server.llmModels.qwen-dense.serve.enable = true;
   ## genai group: write access to the shared model store
   ## (/var/lib/genai-models), LoRA store, and training jobs — no sudo needed
   ## for lora-train / lora-add / genai-fetch-media.

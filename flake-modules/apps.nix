@@ -83,9 +83,12 @@
         };
       };
 
+      # genai-server resolves genai-server-private from the URL in its own
+      # flake.nix, so overriding genai-server alone still builds the pinned
+      # private catalog. Both or neither.
       genai-server-local = mkApp "genai-server-local" {
         text = buildAndSwitch {
-          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input genai-server ~/Code/genai-server";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input genai-server ~/Code/genai-server --override-input genai-server/genai-server-private ~/Code/genai-server-private";
         };
       };
 

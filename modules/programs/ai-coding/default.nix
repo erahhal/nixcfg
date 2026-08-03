@@ -106,8 +106,12 @@ let
   #    defeats llama-server's prefix cache (full re-prefill every turn)
   #  - nonessential traffic off: parallel background calls serialize on the
   #    single slot and evict the prompt cache
-  #  - NEVER point this at the thinking models (qwen/qwen-dense): the
-  #    Anthropic bridge drops reasoning_content.
+  #  - thinking models are now SAFE here. The Anthropic bridge used to
+  #    drop reasoning_content entirely (it routed /v1/messages through the
+  #    OpenAI Responses API); as of 2026-08-03 it routes through
+  #    chat-completions and LiteLLM is patched so the streaming adapter
+  #    stops dropping each content block's first delta. Verified end to
+  #    end against qwen-dense-long.
   claude-logistikon = pkgs.writeShellScriptBin "claude-logistikon" ''
     #!${pkgs.bash}/bin/bash
     export CLAUDE_CONFIG_DIR="$HOME/.claude-logistikon"
@@ -162,7 +166,7 @@ let
         discover_models = false;
         models = {
           coder-pro = {};
-          qwen-dense = {};
+          qwen-dense-long = {};
           glm-flash = {};
           qwen = {};
           qwen-uc = {};
@@ -228,10 +232,14 @@ let
   # opencode's default isn't hijacked on other (possibly off-LAN) hosts
   # that can't reach the box at all. coder-pro stays the default
   # (non-thinking, agent-RL-trained, battle-tested tool parser);
-  # qwen-dense is the A/B challenger — better benchmarks (77.2 vs 70.6
-  # SWE-V) but thinking-mode, so it stays opt-in until proven in real
-  # sessions. NEVER point Claude Code (Anthropic bridge) at the thinking
-  # models — the bridge drops reasoning_content.
+  # qwen-dense-long is the A/B challenger — same 77.2 vs 70.6 SWE-V
+  # advantage, but thinking-mode, so it stays opt-in until proven in real
+  # sessions. It is the LONG variant rather than qwen-dense because that
+  # one (25744MiB) cannot coexist with the resident set and takes
+  # transcription down with it; the long variant is the same weights at
+  # 128k for MTP's ~1.7x speed, which speculative decoding makes a pure
+  # throughput difference. Claude Code can drive thinking models now — the
+  # bridge preserves reasoning_content as of 2026-08-03.
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     # Binary is nix-managed; opencode must not self-update.
@@ -251,7 +259,7 @@ let
       };
       models = {
         coder-pro = { name = "Qwen3-Coder-Next-80B (256k, agentic)"; limit = { context = 262144; output = 32768; }; options = { temperature = 1.0; top_p = 0.95; }; };
-        qwen-dense = { name = "Qwen3.6-27B MTP (80k, top coder, thinking)"; limit = { context = 81920; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
+        qwen-dense-long = { name = "Qwen3.6-27B (128k, top coder, thinking)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
         glm-flash = { name = "GLM-4.7-Flash (128k, fast agentic)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.7; top_p = 1.0; }; };
         qwen = { name = "Qwen3.6-35B-A3B (256k, fast)"; limit = { context = 262144; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
         qwen-uc = { name = "Qwen3.6-35B UC huihui (256k)"; limit = { context = 262144; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
@@ -303,7 +311,7 @@ let
       };
     }) [
       { id = "coder-pro"; name = "Qwen3-Coder-Next-80B (256k, agentic)"; context = 262144; output = 32768; temperature = 1.0; top_p = 0.95; }
-      { id = "qwen-dense"; name = "Qwen3.6-27B MTP (80k, top coder, thinking)"; context = 81920; output = 32768; temperature = 0.6; top_p = 0.95; }
+      { id = "qwen-dense-long"; name = "Qwen3.6-27B (128k, top coder, thinking)"; context = 131072; output = 32768; temperature = 0.6; top_p = 0.95; }
       { id = "glm-flash"; name = "GLM-4.7-Flash (128k, fast agentic)"; context = 131072; output = 32768; temperature = 0.7; top_p = 1.0; }
       { id = "qwen"; name = "Qwen3.6-35B-A3B (256k, fast)"; context = 262144; output = 32768; temperature = 0.6; top_p = 0.95; }
       { id = "qwen-uc"; name = "Qwen3.6-35B UC huihui (256k)"; context = 262144; output = 32768; temperature = 0.6; top_p = 0.95; }
