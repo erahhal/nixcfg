@@ -30,6 +30,30 @@
 
 let
   userParams = config.hostParams.user;
+
+  ## Claude Code's BACKGROUND slot (titles, small classification calls).
+  ## Empty pins it to the session's main model, which is the historical
+  ## behaviour. Named for Claude Code specifically because qwen-code has an
+  ## unrelated `fastModel` setting of its own further down.
+  claudeBackgroundModel = config.hostParams.aiCoding.claudeBackgroundModel;
+
+  ## The model list comes from the genai-server flake, not from a copy here.
+  ##
+  ## It used to be written out three times — opencode, qwen-code, hermes —
+  ## and adding a model to the server did not add it to any of them. MiniMax
+  ## sat unreachable in all three that way. genai-server now publishes
+  ## `services.genai-server.harnessModels`, computed from what llama-swap is
+  ## actually configured to serve (which is why the hand-tuned entries count
+  ## and a disabled one does not), with the sampling each model is served
+  ## with. Updating the flake input is now the whole update.
+  ##
+  ## `or { }` because this module ships on every host and only logistikon
+  ## imports the genai-server module; elsewhere the local provider simply
+  ## has no models, which is the truth.
+  genaiModels = config.services.genai-server.harnessModels or { };
+  ## 262144 -> "256k". Written the way people say a context window.
+  ctxLabel = n: if n >= 1024 then "${toString (n / 1024)}k" else toString n;
+  modelLabel = m: "${m.label} (${ctxLabel m.context})";
   orCfg = userParams.openrouter;
   username = userParams.username;
 
@@ -112,18 +136,86 @@ let
   #    chat-completions and LiteLLM is patched so the streaming adapter
   #    stops dropping each content block's first delta. Verified end to
   #    end against qwen-dense-long.
+  # WHY THERE IS NO MODEL PICKER. Claude Code's /model list is not a query
+  # against the endpoint — it is three alias slots (opus/sonnet/haiku) plus
+  # whatever you type. Pointing those at DIFFERENT models breaks on this box:
+  # the haiku/background/subagent traffic runs CONCURRENTLY with the main
+  # model, so a single-slot llama-swap ends up trying to hold two models at
+  # once. On a 32GB card with a 23GB dense model that is not a slowdown, it
+  # is a failure to start. Hence all four pinned to one value.
+  #
+  # So the model is chosen per SESSION instead: `claude-logistikon -m <id>`,
+  # or ANTHROPIC_MODEL in the environment. `-l` lists what this box actually
+  # serves — generated from genai-server's published catalog, so it cannot
+  # drift from the server the way a hand-written list would.
+  claudeModelIds = lib.attrNames genaiModels;
+  claudeModelHelp = lib.concatMapStringsSep "\n" (n:
+    let m = genaiModels.${n}; in
+    "  ${n}${lib.fixedWidthString (lib.max 1 (18 - lib.stringLength n)) " " ""}${modelLabel m}")
+    claudeModelIds;
+  # id -> context, as a shell case. Claude Code has no idea how big a window
+  # `qwen-dense-long` has: its table covers Anthropic model ids, and for
+  # anything else it assumes the stock 200k. That is not cosmetic — it is why
+  # a 128k model overflows instead of compacting, because auto-compaction
+  # fires against the window Claude Code THINKS it has.
+  claudeCtxCase = lib.concatMapStringsSep "\n" (n:
+    "      ${n}) CTX=${toString genaiModels.${n}.context} ;;") claudeModelIds;
   claude-logistikon = pkgs.writeShellScriptBin "claude-logistikon" ''
     #!${pkgs.bash}/bin/bash
     export CLAUDE_CONFIG_DIR="$HOME/.claude-logistikon"
     export ANTHROPIC_BASE_URL="${genaiBaseUrl}"
     export ANTHROPIC_AUTH_TOKEN=dummy
-    export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-coder-pro}
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$ANTHROPIC_MODEL"
-    export ANTHROPIC_SMALL_FAST_MODEL="$ANTHROPIC_MODEL"
+    export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-${config.hostParams.aiCoding.claudeModel}}
+
+    # -m/--model picks the model for this session; -l/--list shows them.
+    # Consumed here rather than passed through, so they never reach claude.
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        -m|--model) ANTHROPIC_MODEL="$2"; shift 2 ;;
+        -l|--list)
+          echo "models served by ${genaiBaseUrl}:"
+          echo "${claudeModelHelp}"
+          echo
+          echo "current: $ANTHROPIC_MODEL   (claude-logistikon -m <id>)"
+          echo "note: only coder-pro, qwen and qwen-uc have >=200k context;"
+          echo "      shorter windows overflow instead of compacting."
+          exit 0 ;;
+        *) break ;;
+      esac
+    done
+
+    # Tell Claude Code the real window for the model it is about to use.
+    # CLAUDE_CODE_AUTO_COMPACT_WINDOW is what auto-compaction measures
+    # against, and the statusline percentage is re-derived from it too.
+    # Unknown ids are left alone rather than guessed at.
+    CTX=""
+    case "$ANTHROPIC_MODEL" in
+${claudeCtxCase}
+    esac
+    # Compact with room for the REPLY. The window holds prompt plus
+    # generation, so compacting at the full context leaves nowhere to put
+    # the answer — llama.cpp clamps rather than erroring, so the symptom
+    # would be quietly truncated responses near the limit.
+    export CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384
+    [ -n "$CTX" ] && export CLAUDE_CODE_AUTO_COMPACT_WINDOW="$((CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS))"
+
+    # Pinned together by default — see the comment above this wrapper. Two
+    # GPU models resident at once is what this card cannot do, and
+    # background traffic runs concurrently with the conversation.
+    #
+    # hostParams.aiCoding.claudeBackgroundModel moves ONLY the background
+    # slot, and is only safe pointed at a model that costs no VRAM.
+    # CLAUDE_CODE_SUBAGENT_MODEL stays on the main model regardless:
+    # subagents do real work.
+    BG="${claudeBackgroundModel}"
+    [ -z "$BG" ] && BG="$ANTHROPIC_MODEL"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$BG"
+    export ANTHROPIC_SMALL_FAST_MODEL="$BG"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="$ANTHROPIC_MODEL"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="$ANTHROPIC_MODEL"
     export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     export CLAUDE_CODE_ATTRIBUTION_HEADER=0
     export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
-    export CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384
     exec ${pkgs.claude-code}/bin/claude "$@"
   '';
 
@@ -131,6 +223,15 @@ let
   # the claude-statusbar flake input, so `nix flake update` pulls latest.
   claude-statusbar = pkgs.callPackage ../../../pkgs/claude-statusbar {
     src = inputs.claude-statusbar;
+  };
+
+  # StatusLine config shared by both claude and claude-logistikon.
+  claudeStatusBarSettings = builtins.toJSON {
+    statusLine = {
+      type = "command";
+      command = "/etc/profiles/per-user/${username}/bin/cs render";
+      refreshInterval = 1;
+    };
   };
 
   # Hermes AI agent from Nous Research. Uses stdenv.mkDerivation to
@@ -164,15 +265,7 @@ let
         base_url = genaiApiUrl;
         api_key = "dummy";
         discover_models = false;
-        models = {
-          coder-pro = {};
-          qwen-dense-long = {};
-          glm-flash = {};
-          qwen = {};
-          qwen-uc = {};
-          qwen-dense-uc = {};
-          research = {};
-        };
+        models = lib.mapAttrs (_: _: { }) genaiModels;
       };
     };
   };
@@ -185,12 +278,8 @@ let
   # binary (see home.packages); on Netflix hosts nflx-nixcfg merges the same
   # `cs render` into ~/.claude and ~/.claude-vanilla.
   claudeManagedSettings = builtins.toJSON {
-    statusLine = {
-      type = "command";
-      command = "/etc/profiles/per-user/${username}/bin/cs render";
-      refreshInterval = 1;
-    };
     includeCoAuthoredBy = false;
+    statusLine = (builtins.fromJSON claudeStatusBarSettings).statusLine;
   };
 
   mergeClaudeSettings = pkgs.writeShellScript "claude-settings-merge" ''
@@ -200,6 +289,17 @@ let
     [ -s "$settings" ] || echo '{}' > "$settings"
     tmp=$(mktemp)
     ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeManagedSettings} \
+      '. + $managed' "$settings" > "$tmp"
+    mv "$tmp" "$settings"
+  '';
+
+  mergeClaudeLogistikonSettings = pkgs.writeShellScript "claude-logistikon-settings-merge" ''
+    set -eu
+    settings="$HOME/.claude-logistikon/settings.json"
+    mkdir -p "$HOME/.claude-logistikon"
+    [ -s "$settings" ] || echo '{}' > "$settings"
+    tmp=$(mktemp)
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeStatusBarSettings} \
       '. + $managed' "$settings" > "$tmp"
     mv "$tmp" "$settings"
   '';
@@ -257,15 +357,14 @@ let
         baseURL = genaiApiUrl;
         apiKey = "dummy";
       };
-      models = {
-        coder-pro = { name = "Qwen3-Coder-Next-80B (256k, agentic)"; limit = { context = 262144; output = 32768; }; options = { temperature = 1.0; top_p = 0.95; }; };
-        qwen-dense-long = { name = "Qwen3.6-27B (128k, top coder, thinking)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
-        glm-flash = { name = "GLM-4.7-Flash (128k, fast agentic)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.7; top_p = 1.0; }; };
-        qwen = { name = "Qwen3.6-35B-A3B (256k, fast)"; limit = { context = 262144; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
-        qwen-uc = { name = "Qwen3.6-35B UC huihui (256k)"; limit = { context = 262144; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
-        qwen-dense-uc = { name = "Qwen3.6-27B UC huihui (128k)"; limit = { context = 131072; output = 32768; }; options = { temperature = 0.6; top_p = 0.95; }; };
-        research = { name = "gpt-oss-120b (64k)"; limit = { context = 65536; output = 16384; }; options = { temperature = 1.0; top_p = 1.0; }; };
-      };
+      models = lib.mapAttrs (_: m: {
+        name = modelLabel m;
+        limit = { inherit (m) context output; };
+        # Sampling mirrors each model's serve.preset on the box, so picking a
+        # model here cannot silently sample it differently from every other
+        # client talking to the same server.
+        options = { temperature = m.temperature; top_p = m.topP; };
+      }) genaiModels;
     };
   } // lib.optionalAttrs onLogistikon {
     model = "logistikon/coder-pro";
@@ -309,15 +408,11 @@ let
         contextWindowSize = m.context;
         samplingParams = { temperature = m.temperature; top_p = m.top_p; max_tokens = m.output; };
       };
-    }) [
-      { id = "coder-pro"; name = "Qwen3-Coder-Next-80B (256k, agentic)"; context = 262144; output = 32768; temperature = 1.0; top_p = 0.95; }
-      { id = "qwen-dense-long"; name = "Qwen3.6-27B (128k, top coder, thinking)"; context = 131072; output = 32768; temperature = 0.6; top_p = 0.95; }
-      { id = "glm-flash"; name = "GLM-4.7-Flash (128k, fast agentic)"; context = 131072; output = 32768; temperature = 0.7; top_p = 1.0; }
-      { id = "qwen"; name = "Qwen3.6-35B-A3B (256k, fast)"; context = 262144; output = 32768; temperature = 0.6; top_p = 0.95; }
-      { id = "qwen-uc"; name = "Qwen3.6-35B UC huihui (256k)"; context = 262144; output = 32768; temperature = 0.6; top_p = 0.95; }
-      { id = "qwen-dense-uc"; name = "Qwen3.6-27B UC huihui (128k)"; context = 131072; output = 32768; temperature = 0.6; top_p = 0.95; }
-      { id = "research"; name = "gpt-oss-120b (64k)"; context = 65536; output = 16384; temperature = 1.0; top_p = 1.0; }
-    ];
+    }) (lib.mapAttrsToList (_: m: {
+      inherit (m) id context output temperature;
+      name = modelLabel m;
+      top_p = m.topP;
+    }) genaiModels);
   };
 
   # ~/.qwen/settings.json must stay mutable (/model and /auth persist the
@@ -359,6 +454,10 @@ in
 
     home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run ${mergeClaudeSettings}
+    '';
+
+    home.activation.claudeLogistikonSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeClaudeLogistikonSettings}
     '';
 
     home.activation.qwenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

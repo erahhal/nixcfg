@@ -56,6 +56,19 @@
   ## ~65GB) that is worth a 7s wait. 30min is deliberately longer than any
   ## hand-started render, since idleness is measured by connections.
   services.genai-server.comfyui.idleStopMinutes = 30;
+  ## The bulk media sets this box runs, DECLARED rather than fetched by
+  ## hand. Everything else in mediaModels is downloaded because it is
+  ## declared; these two are held back by comfyui.optInModelSets purely on
+  ## size (`comfy` ~90GB: Wan 2.2, LTX 2.3, FLUX.2, ACE-Step; `h3` ~63GB:
+  ## MiniMax H3, video with native audio), so a host that wants them says
+  ## so here and the comfyui unit fetches them before it serves.
+  ##
+  ## The `comfy` weights were already on disk with nothing declaring them —
+  ## i.e. this machine's store was not a function of its config, and a
+  ## rebuild from scratch would have come up missing the models its
+  ## workflow templates reference. Fetches are idempotent, so listing them
+  ## costs nothing when the files are present.
+  services.genai-server.comfyui.modelSets = [ "comfy" "h3" ];
   ## qwen-dense ships disabled: at 25744MiB it cannot coexist with the
   ## resident set (asr + embed + rerank), so it and voice/RAG/memory lock
   ## each other out — whichever loads second dies. Kept available here for
@@ -65,6 +78,41 @@
   ## when it does, transcription stops working until it ages out. Drop this
   ## line if that trade is not worth it.
   services.genai-server.llmModels.qwen-dense.serve.enable = true;
+  ## Claude Code's background slot (titles, small classification calls) on
+  ## the CPU instead of pinned to whatever the session is using. Two things
+  ## come of it: that traffic stops queueing behind the conversation on
+  ## llama-swap's single GPU slot, and it becomes distinguishable from the
+  ## conversation, which is what makes a context readout stop jumping.
+  ##
+  ## Costs ~2.5GB of host RAM and no VRAM, and downloads nothing — it is the
+  ## same GGUF `voice` serves. Measured on this box: tool calls work, a
+  ## ~600-token prompt takes 3.8s, a 4000-token one takes 26s. That last
+  ## number is the thing to watch: if Claude Code turns out to send long
+  ## prompts to this slot, set claudeBackgroundModel back to "" and it
+  ## returns to the main model.
+  ## Claude Code defaults to the better coder rather than the bigger window.
+  ## Safe now that the wrapper exports the model's REAL context: the reason
+  ## coder-pro held this slot was that Claude Code assumed 200k for every
+  ## model and a 128k one would overflow instead of compacting.
+  ##
+  ## Set it here rather than reaching for `/model` in a session: that only
+  ## moves the main slot, leaving subagents on the old model, and two 25GB
+  ## models alternating makes llama-swap thrash the card (observed
+  ## 2026-08-03 — qwen-dense and qwen swapping every few seconds).
+  hostParams.aiCoding.claudeModel = "qwen-dense-long";
+
+  ## MEASURED INERT, 2026-08-03, and left off for that reason. Claude Code
+  ## never called the slot: over three turns llama-swap logged exactly one
+  ## line for fast-cpu, its startup health check, and every request the
+  ## status line reported — including the small ones — was attributed to
+  ## the MAIN model. So the background traffic this was meant to move does
+  ## not go through ANTHROPIC_DEFAULT_HAIKU_MODEL at all, and enabling it
+  ## only pinned 2.5GB of RAM for a model nothing talks to.
+  ##
+  ## The entry is still in the catalog and still works; re-enable both
+  ## lines if a future Claude Code starts using that slot.
+  # services.genai-server.llmModels.fast-cpu.serve.enable = true;
+  # hostParams.aiCoding.claudeBackgroundModel = "fast-cpu";
   ## genai group: write access to the shared model store
   ## (/var/lib/genai-models), LoRA store, and training jobs — no sudo needed
   ## for lora-train / lora-add / genai-fetch-media.

@@ -547,5 +547,46 @@
         };
       };
     };
+
+    aiCoding = {
+      claudeModel = lib.mkOption {
+        type = lib.types.str;
+        default = "coder-pro";
+        example = "qwen-dense-long";
+        description = ''
+          Model claude-logistikon uses when none is given on the command
+          line. Sets the main, sonnet/opus and SUBAGENT slots together —
+          which is the point: picking a model with `/model` inside a session
+          moves only the main one, leaving the others on this value, and two
+          large models alternating is what makes llama-swap thrash.
+
+          `coder-pro` is the conservative choice for its 256k window.
+          `qwen-dense-long` scores higher on coding (77.2/59.3 SWE-bench
+          Verified / Terminal-Bench vs 70.6/36.2) with half the window,
+          which is safe now that the wrapper tells Claude Code the real
+          context instead of letting it assume 200k.
+        '';
+      };
+      claudeBackgroundModel = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        example = "fast-cpu";
+        description = ''
+          Model id claude-logistikon points its BACKGROUND slot at — the one
+          Claude Code uses for conversation titles and small classification
+          calls. Empty (the default) pins it to the session's main model,
+          which is the historical behaviour.
+
+          Only safe to change to a model that costs NO VRAM. Two GPU models
+          resident at once is what "upstream command exited prematurely"
+          means on a 32GB card, and background traffic runs concurrently
+          with the conversation. genai-server's `fast-cpu` is the intended
+          value: the same 4B weights as `voice`, on the CPU, with tool calls.
+
+          Subagents are deliberately unaffected — they do real work, and a 4B
+          is the wrong place to send it.
+        '';
+      };
+    };
   };
 }
