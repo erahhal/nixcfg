@@ -153,6 +153,14 @@
   ## the lock happening at all, and the unlock path is only needed for a job
   ## that starts after the box had already locked itself.
   services.genai-server.kiosk.idleSeconds = 240;
+  ## Plus `inference`, which the default set leaves out. That default is
+  ## right for a desktop, where inference means a chat turn and a monitor
+  ## waking for each one is a nuisance — but the LLM work on this box is an
+  ## agentic coding harness running for many minutes, and without this the
+  ## display comes up to show the weights loading and then goes away for
+  ## the actual work.
+  services.genai-server.kiosk.activities =
+    [ "generating-media" "gpu-busy" "loading-model" "inference" ];
   services.genai-server.kiosk.unlockCommand = "dms ipc call lock unlock";
   services.genai-server.kiosk.relockCommand = "dms ipc call lock lock";
   services.genai-server.kiosk.lockedCommand =
