@@ -305,6 +305,56 @@
         '';
       };
 
+      startupWorkspace = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = ''
+          Named workspace the session lands on at login (one .. ten). null
+          leaves niri on its first workspace.
+
+          Mirrors to nixcfg-niri.desktop.startupWorkspace via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
+      workspaceOutput = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = ''
+          Output the ten named workspaces are pinned to (connector name or
+          make/model/serial). Keeps the named workspaces on the built-in panel
+          of a laptop that docks to varying monitors. null lets niri place them
+          on whatever output is active.
+
+          Mirrors to nixcfg-niri.desktop.workspaceOutput via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
+      ddcInputToggle = lib.mkOption {
+        type = lib.types.attrs;
+        default = {};
+        example = lib.literalExpression ''
+          {
+            enable = true;
+            monitor = "P40w-20";
+            inputs = [
+              { code = "0x0f"; label = "DisplayPort-1"; }
+              { code = "0x31"; label = "HDMI-2"; }
+            ];
+          }
+        '';
+        description = ''
+          Keybind that cycles an external monitor through its inputs over
+          DDC/CI, for a display shared with another machine. Needs the monitor
+          identifier and its VCP 0x60 input codes — see `ddcutil detect` and
+          `ddcutil getvcp 60`. Requires modules/desktop/i2c.
+
+          Passed through to nixcfg-niri.desktop.ddcInputToggle (which types the
+          attributes) via modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       easyeffects.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;

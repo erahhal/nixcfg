@@ -37,6 +37,21 @@
       waybarSimple = true;
       dmsLockProgram = "hyprlock";
 
+      startupWorkspace = "ten";
+      # No workspaceOutput: this host has no built-in panel to pin them to.
+
+      # Mod+G cycles the ThinkVision between this machine and whatever is on
+      # its other input.
+      ddcInputToggle = {
+        enable = true;
+        title = "Switch ThinkVision Monitor Input";
+        monitor = "P40w-20";
+        inputs = [
+          { code = "0x0f"; label = "DisplayPort-1"; }
+          { code = "0x31"; label = "HDMI-2"; }
+        ];
+      };
+
       location = "Los Angeles, CA";
       coordinates = "34.1509, -118.4487";
       useFahrenheit = true;

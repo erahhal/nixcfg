@@ -54,6 +54,22 @@
       # dmsLockProgram = "hyprlock";
       autoLogin = false;
 
+      startupWorkspace = "one";
+      # Keep the named workspaces on the laptop panel regardless of what's docked.
+      workspaceOutput = "eDP-1";
+
+      # Mod+G cycles the ThinkVision between this machine and whatever is on
+      # its other input.
+      ddcInputToggle = {
+        enable = true;
+        title = "Switch ThinkVision Monitor Input";
+        monitor = "P40w-20";
+        inputs = [
+          { code = "0x0f"; label = "DisplayPort-1"; }
+          { code = "0x31"; label = "HDMI-2"; }
+        ];
+      };
+
       # EasyEffects intercepts Bluetooth headset recording on this host,
       # breaking the A2DP->HSP autoswitch for the Bose NC 700 mic. Skip it.
       easyeffects.enable = false;

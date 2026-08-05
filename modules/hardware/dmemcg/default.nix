@@ -14,7 +14,6 @@
 let
   cfg = config.nixcfg.hardware.dmemcg;
   dmemcg-booster = pkgs.callPackage ../../../pkgs/dmemcg-booster {};
-  niri-focused-booster = pkgs.callPackage ../../../pkgs/niri-focused-booster {};
 in
 {
   key = "nixcfg/hardware/dmemcg";
@@ -27,7 +26,8 @@ in
       default = "niri";
       description = ''
         Foreground-window tracker that promotes the focused app's cgroup.
-        "niri" runs niri-focused-booster as a user service.
+        "niri" enables nixcfg-niri's focusedBooster (niri-focused-booster as a
+        user service, ordered behind dmemcg-booster-user).
         "none" only activates the dmem controller (still useful for
         gamescope-launched games, which set the boost themselves).
       '';
@@ -37,8 +37,7 @@ in
   config = lib.mkIf cfg.enable {
     boot.kernelPackages = lib.mkForce pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
-    environment.systemPackages = [ dmemcg-booster ]
-      ++ lib.optional (cfg.foregroundBooster == "niri") niri-focused-booster;
+    environment.systemPackages = [ dmemcg-booster ];
 
     # Ship the upstream unit files (dmemcg-booster-system.service +
     # dmemcg-booster-user.service) and enable them.
@@ -52,17 +51,12 @@ in
       wantedBy = [ "graphical-session-pre.target" ];
     };
 
-    systemd.user.services.niri-focused-booster = lib.mkIf (cfg.foregroundBooster == "niri") {
-      description = "Boost dmem.low for the Niri-focused window";
-      after = [ "graphical-session.target" "dmemcg-booster-user.service" ];
-      wants = [ "dmemcg-booster-user.service" ];
-      partOf = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
-      serviceConfig = {
-        ExecStart = lib.getExe niri-focused-booster;
-        Restart = "on-failure";
-        RestartSec = 2;
-      };
+    # The niri half (package + user service) lives in nixcfg-niri; this module
+    # only says "run it, ordered behind the controller activation".
+    nixcfg-niri.desktop.focusedBooster = lib.mkIf (cfg.foregroundBooster == "niri") {
+      enable = true;
+      afterUnits = [ "dmemcg-booster-user.service" ];
+      wantsUnits = [ "dmemcg-booster-user.service" ];
     };
   };
 }

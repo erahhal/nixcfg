@@ -49,6 +49,22 @@
       disableXwaylandScaling = true;
       dmsLockProgram = "hyprlock";
 
+      startupWorkspace = "five";
+      # Keep the named workspaces on the laptop panel regardless of what's docked.
+      workspaceOutput = "eDP-1";
+
+      # Mod+G cycles the ThinkVision between this machine and whatever is on
+      # its other input.
+      ddcInputToggle = {
+        enable = true;
+        title = "Switch ThinkVision Monitor Input";
+        monitor = "P40w-20";
+        inputs = [
+          { code = "0x0f"; label = "DisplayPort-1"; }
+          { code = "0x31"; label = "HDMI-2"; }
+        ];
+      };
+
       # Hand the lid to logind so it can suspend-then-hibernate (see
       # systemd.sleep.settings.Sleep in configuration.nix). This also unbinds
       # niri's lid-close handler -- with both armed, the compositor's suspend

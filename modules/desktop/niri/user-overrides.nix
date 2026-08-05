@@ -11,6 +11,13 @@
   nixcfg-niri.desktop.cycleColumnsOnRepeatedWorkspaceFocus =
     config.hostParams.desktop.cycleColumnsOnRepeatedWorkspaceFocus;
 
+  nixcfg-niri.desktop.startupWorkspace = config.hostParams.desktop.startupWorkspace;
+  nixcfg-niri.desktop.workspaceOutput = config.hostParams.desktop.workspaceOutput;
+
+  # hostParams carries this as freeform attrs; nixcfg-niri's option supplies the
+  # schema (monitor pattern + list of {code, label} inputs).
+  nixcfg-niri.desktop.ddcInputToggle = config.hostParams.desktop.ddcInputToggle;
+
   # Hybrid Intel+NVIDIA laptops: force startup-apps onto the Intel iGPU so screen
   # sharing works. AMD-only or single-GPU hosts skip this (sets wrong driver).
   nixcfg-niri.desktop.startupAppsForceIntelGpu =
