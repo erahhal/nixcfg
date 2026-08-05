@@ -601,8 +601,8 @@
     aiCoding = {
       claudeModel = lib.mkOption {
         type = lib.types.str;
-        default = "coder-pro";
-        example = "qwen-dense-long";
+        default = "qwen-dense-long";
+        example = "coder-pro";
         description = ''
           Model claude-logistikon uses when none is given on the command
           line. Sets the main, sonnet/opus and SUBAGENT slots together —
@@ -610,11 +610,18 @@
           moves only the main one, leaving the others on this value, and two
           large models alternating is what makes llama-swap thrash.
 
-          `coder-pro` is the conservative choice for its 256k window.
+          Defaulted here rather than set per host: every host runs the same
+          wrapper against the same server, so a model chosen on one of them
+          is a model chosen for all of them. It lived in logistikon's
+          configuration.nix until 2026-08-04, which meant the laptops kept
+          quietly getting `coder-pro` while the box that needed the setting
+          least was the only one with it.
+
           `qwen-dense-long` scores higher on coding (77.2/59.3 SWE-bench
-          Verified / Terminal-Bench vs 70.6/36.2) with half the window,
-          which is safe now that the wrapper tells Claude Code the real
-          context instead of letting it assume 200k.
+          Verified / Terminal-Bench vs `coder-pro`'s 70.6/36.2) with half
+          the window, which is safe now that the wrapper tells Claude Code
+          the real context instead of letting it assume 200k.
+          `coder-pro` is the conservative choice for its 256k window.
         '';
       };
       claudeBackgroundModel = lib.mkOption {

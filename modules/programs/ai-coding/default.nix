@@ -41,16 +41,28 @@ let
   ##
   ## It used to be written out three times — opencode, qwen-code, hermes —
   ## and adding a model to the server did not add it to any of them. MiniMax
-  ## sat unreachable in all three that way. genai-server now publishes
-  ## `services.genai-server.harnessModels`, computed from what llama-swap is
-  ## actually configured to serve (which is why the hand-tuned entries count
-  ## and a disabled one does not), with the sampling each model is served
-  ## with. Updating the flake input is now the whole update.
+  ## sat unreachable in all three that way. genai-server publishes the list
+  ## instead, with the sampling and window each model is served with, and
+  ## updating the flake input is now the whole update.
   ##
-  ## `or { }` because this module ships on every host and only logistikon
-  ## imports the genai-server module; elsewhere the local provider simply
-  ## has no models, which is the truth.
-  genaiModels = config.services.genai-server.harnessModels or { };
+  ## Read it from the FLAKE INPUT, which every host has. It used to read
+  ## `config.services.genai-server.harnessModels`, and that is a NixOS
+  ## option — it exists only on the one host that imports and enables the
+  ## module. Everywhere else it silently evaluated to `{ }`, which is not
+  ## "no models" in any useful sense: this module ships the harnesses on
+  ## every host and they all point at logistikon over the LAN. The damage
+  ## was worst in claude-logistikon, where an empty list means no context
+  ## table, so CLAUDE_CODE_AUTO_COMPACT_WINDOW went unset and Claude Code
+  ## fell back to assuming 200k against a 128k model.
+  ##
+  ## The option still wins where it exists: on the box that runs the fleet
+  ## it is the exact served set, including models that host enables for
+  ## itself (logistikon's `qwen-dense`) and excluding any its hardware
+  ## floors skip. Off that box the flake's shipped catalog is the truth.
+  hostGenaiModels = config.services.genai-server.harnessModels or { };
+  genaiModels =
+    if hostGenaiModels != { } then hostGenaiModels
+    else inputs.genai-server.lib.harnessModels;
   ## 262144 -> "256k". Written the way people say a context window.
   ctxLabel = n: if n >= 1024 then "${toString (n / 1024)}k" else toString n;
   modelLabel = m: "${m.label} (${ctxLabel m.context})";
@@ -145,9 +157,9 @@ let
   # is a failure to start. Hence all four pinned to one value.
   #
   # So the model is chosen per SESSION instead: `claude-logistikon -m <id>`,
-  # or ANTHROPIC_MODEL in the environment. `-l` lists what this box actually
-  # serves — generated from genai-server's published catalog, so it cannot
-  # drift from the server the way a hand-written list would.
+  # or ANTHROPIC_MODEL in the environment. `-l` lists the fleet — generated
+  # from genai-server's published catalog, so it cannot drift from the
+  # server the way a hand-written list would.
   claudeModelIds = lib.attrNames genaiModels;
   claudeModelHelp = lib.concatMapStringsSep "\n" (n:
     let m = genaiModels.${n}; in
@@ -177,8 +189,9 @@ let
           echo "${claudeModelHelp}"
           echo
           echo "current: $ANTHROPIC_MODEL   (claude-logistikon -m <id>)"
-          echo "note: only coder-pro, qwen and qwen-uc have >=200k context;"
-          echo "      shorter windows overflow instead of compacting."
+          echo "note: auto-compaction is set from each model's REAL window"
+          echo "      (below), so a shorter one compacts sooner rather"
+          echo "      than overflowing."
           exit 0 ;;
         *) break ;;
       esac

@@ -90,16 +90,19 @@
   ## number is the thing to watch: if Claude Code turns out to send long
   ## prompts to this slot, set claudeBackgroundModel back to "" and it
   ## returns to the main model.
-  ## Claude Code defaults to the better coder rather than the bigger window.
-  ## Safe now that the wrapper exports the model's REAL context: the reason
-  ## coder-pro held this slot was that Claude Code assumed 200k for every
-  ## model and a 128k one would overflow instead of compacting.
+
+  ## Claude Code's default model is NOT set here — see
+  ## hostParams.aiCoding.claudeModel in lib/host-params.nix. It was, and
+  ## that made it a logistikon-only setting: every laptop runs the same
+  ## claude-logistikon against this same server, and they all kept the old
+  ## default. Anything about which model the harnesses use belongs to the
+  ## option, not to the host that happens to hold the card.
   ##
-  ## Set it here rather than reaching for `/model` in a session: that only
-  ## moves the main slot, leaving subagents on the old model, and two 25GB
-  ## models alternating makes llama-swap thrash the card (observed
-  ## 2026-08-03 — qwen-dense and qwen swapping every few seconds).
-  hostParams.aiCoding.claudeModel = "qwen-dense-long";
+  ## (Whatever it is, set it there rather than reaching for `/model` in a
+  ## session: that only moves the main slot, leaving subagents on the old
+  ## model, and two 25GB models alternating makes llama-swap thrash the
+  ## card — observed 2026-08-03, qwen-dense and qwen swapping every few
+  ## seconds.)
 
   ## MEASURED INERT, 2026-08-03, and left off for that reason. Claude Code
   ## never called the slot: over three turns llama-swap logged exactly one
