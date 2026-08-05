@@ -35,7 +35,15 @@
       autoLogin = false;
       wallpaper = ../../../wallpapers/hawaii-dylan-theo.jpg;
       waybarSimple = true;
-      dmsLockProgram = "hyprlock";
+      ## DMS's own lock, not hyprlock, and the reason is the 3D view: a
+      ## Wayland session lock is exclusive, so a locked screen can only show
+      ## something if the LOCKER shows it — and hyprlock cannot be opened by
+      ## anything but a typed password (PAM only; no D-Bus unlock, checked in
+      ## the binary). DMS's lock has `dms ipc call lock unlock`, which lets
+      ## genai-server's kiosk let itself in while nobody is here and re-lock
+      ## the moment anyone is. See services.genai-server.kiosk in
+      ## configuration.nix.
+      dmsLockProgram = "dms";
 
       startupWorkspace = "ten";
       # No workspaceOutput: this host has no built-in panel to pin them to.

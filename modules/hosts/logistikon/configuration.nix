@@ -124,6 +124,51 @@
   ## only from the router.
   services.genai-server.openFirewallGlobally = true;
 
+  ## This box has a monitor on it, so let it use it: when a render or a
+  ## model load starts and nobody has touched the desk for five minutes,
+  ## the screen wakes and shows the 3D view until the work finishes.
+  ## Touching the keyboard hands it straight back.
+  ##
+  ## Nothing to configure beyond `enable` here: presence comes from
+  ## swayidle over ext-idle-notify-v1, and the daemon probes for niri's own
+  ## CLI to drive DPMS — both of which this session provides. `inference`
+  ## is deliberately not in the default activity set; with the whole house
+  ## chatting to this machine the screen would never be off.
+  services.genai-server.kiosk.enable = true;
+  ## ...including when the box has locked itself. Nothing can be drawn over
+  ## a Wayland session lock, so the only way a locked screen shows the view
+  ## is to open the lock: with DMS as the locker (see host-params.nix) the
+  ## daemon unlocks when work starts on a machine nobody is at, and re-locks
+  ## the instant either the work stops or somebody touches the keyboard.
+  ##
+  ## THE TRADE: while a render runs unattended this box is unlocked. Anyone
+  ## walking up gets the lock screen back on the first keypress, but they
+  ## can see the screen until then. That is the right trade for a machine in
+  ## a house and the wrong one for a laptop in a café.
+  ## Below DMS's own lock timeout (300s), so the screen is claimed a minute
+  ## before the shell would lock it: with work running the hold then stops
+  ## the lock happening at all, and the unlock path is only needed for a job
+  ## that starts after the box had already locked itself.
+  services.genai-server.kiosk.idleSeconds = 240;
+  services.genai-server.kiosk.unlockCommand = "dms ipc call lock unlock";
+  services.genai-server.kiosk.relockCommand = "dms ipc call lock lock";
+  services.genai-server.kiosk.lockedCommand =
+    "test \"$(dms ipc call lock isLocked)\" = true";
+  ## DMS's own idle inhibit rather than systemd's: DMS is the thing that
+  ## locks now, and this is the switch it listens to. Measured earlier —
+  ## it stops DMS locking without suppressing the compositor's idle
+  ## notifications, so the daemon can still tell when somebody comes back.
+  # DMS's inhibit is also its caffeine switch: enabling it wakes the display.
+  # That is fine because genai-server only takes this hold while it has the
+  # screen — but it is why the hold must never be taken merely because a job
+  # is running. Disable on EXIT only; TERM re-raises into it, so trapping
+  # both would call the disable twice.
+  services.genai-server.kiosk.holdCommand =
+    "sh -c 'dms ipc call inhibit enable; "
+    + "trap \"dms ipc call inhibit disable\" EXIT; "
+    + "trap \"exit 0\" TERM INT; "
+    + "sleep infinity & wait'";
+
   ## Open WebUI identifies users by the header the router's oauth2-proxy
   ## injects, so each SSO account gets its own chats. Before this it ran
   ## WEBUI_AUTH=False — one implicit `admin@localhost` that every visitor
@@ -362,6 +407,24 @@
   # --------------------------------------------------------------------------------------
 
   boot.kernelModules = [ "snd-hda-intel" "kvm-amd" ];
+
+  ## The case power button must only ever power the machine ON. A press on a
+  ## running system does nothing: niri hands the key back to logind (see
+  ## niri.nix, input.power-key-handling), and logind drops it here rather than
+  ## running its default poweroff. Both halves are required — disabling one
+  ## just moves the shutdown/suspend to the other handler.
+  ## Note this cannot disable the firmware's ~4s force-off override, which
+  ## never reaches the OS; that one is a BIOS setting if it bothers you.
+  ## The Telink wireless receiver exposes a System Control collection, so the
+  ## keyboard can send KEY_POWER/KEY_SLEEP too — the same stray press could
+  ## arrive as a suspend key and sail past HandlePowerKey. Drop those as well;
+  ## deliberate suspends still go through the Mod+Shift+S dialog.
+  services.logind.settings.Login = {
+    HandlePowerKey = "ignore";
+    HandlePowerKeyLongPress = "ignore";
+    HandleSuspendKey = "ignore";
+    HandleHibernateKey = "ignore";
+  };
 
   ## Onboard Bluetooth and ASMedia ASM4242 USB4 (previously provided by the laptop module)
   hardware.bluetooth.enable = true;

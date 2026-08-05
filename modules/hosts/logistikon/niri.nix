@@ -37,6 +37,14 @@
       STEAM_FORCE_DESKTOPUI_SCALING = "2.0";
     };
 
+    # niri takes an inhibitor on logind's handle-power-key and turns a short
+    # press of the case button into a suspend -- which is how this box went to
+    # sleep unattended on 2026-08-04. This is a server that should never
+    # suspend from a bumped button, so hand the key back to logind, which
+    # configuration.nix sets to ignore it. Powering ON is a firmware function
+    # and is unaffected.
+    input.power-key-handling.enable = false;
+
     # Startup workspace comes from hostParams.desktop.startupWorkspace; the ten
     # named workspaces are declared by nixcfg-niri.
     spawn-at-startup = [
