@@ -32,7 +32,16 @@
       multipleSessions = true;
       ttyFontSize = 9.5;
       dpi = 192;
-      autoLogin = false;
+      ## On so the 3D view survives a reboot. genai-server's kiosk is a USER
+      ## service, so with a greeter on the console there is no session for it
+      ## to run in and a rebooted box shows nothing until somebody logs in —
+      ## which on a headless-most-of-the-time GPU box can be days. This is
+      ## not an open desktop: dmsLockProgram is "dms", so the session locks
+      ## itself the instant it starts (lockAtStartup, wired to this flag in
+      ## nixcfg-niri), and what is on screen is the same lock as before. The
+      ## difference is that a session now exists behind it, which is all the
+      ## kiosk needed.
+      autoLogin = true;
       wallpaper = ../../../wallpapers/hawaii-dylan-theo.jpg;
       waybarSimple = true;
       ## DMS's own lock, not hyprlock, and the reason is the 3D view: a
