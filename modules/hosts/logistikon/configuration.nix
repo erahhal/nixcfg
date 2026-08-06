@@ -180,6 +180,18 @@
     + "trap \"exit 0\" TERM INT; "
     + "sleep infinity & wait'";
 
+  ## ...and because of everything above, the 3D view names no adult model.
+  ## The kiosk is what makes this necessary rather than tidy: this screen
+  ## wakes itself, in a house, for work nobody is sitting in front of, and
+  ## whoever walks past reads whatever caption is on the travelling tray.
+  ##
+  ## Names only. A marked model keeps its tray, its size and its place in
+  ## the scene and is captioned "image model" or "finetune" instead —
+  ## including the per-file records behind the SSD bay, the travelling
+  ## tray's label and the narrative under it. The substitution happens in
+  ## the portal, so the real name is not in the JSON either.
+  services.genai-server.nsfw.anonymizeViz = true;
+
   ## Open WebUI identifies users by the header the router's oauth2-proxy
   ## injects, so each SSO account gets its own chats. Before this it ran
   ## WEBUI_AUTH=False — one implicit `admin@localhost` that every visitor

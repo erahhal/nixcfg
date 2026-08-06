@@ -29,7 +29,13 @@ in
     ])
     ++ [
       inputs.nixcfg-niri.nixosModules.default
+      # The stack, and the private half of its model catalog. Two modules
+      # because the catalog is this host's choice, not the stack's: the
+      # second only adds entries, and they merge because the shipped
+      # catalog ships at mkDefault priority. Drop the second line and this
+      # box runs the same stack with the published models only.
       inputs.genai-server.nixosModules.default
+      inputs.genai-server-private.nixosModules.default
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.secrets.nixosModules.logistikon

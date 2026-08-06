@@ -890,15 +890,14 @@
     },
     "genai-server": {
       "inputs": {
-        "genai-server-private": "genai-server-private",
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1786005675,
-        "narHash": "sha256-cF6cG3ZfOVcXt4Z+Lomcq9JwKfn9n5GAaVqlav90DG8=",
+        "lastModified": 1786057626,
+        "narHash": "sha256-uq1JWBIdR0fSTUa3qvGYTQKL45i7FBKo9f4lPdoeclQ=",
         "ref": "main",
-        "rev": "f4d4c492004706228c3c900aaf9a133157a4d4b5",
-        "revCount": 120,
+        "rev": "4852175565d258593ea4b0a7c25b5078b36b1192",
+        "revCount": 123,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
@@ -910,11 +909,11 @@
     },
     "genai-server-private": {
       "locked": {
-        "lastModified": 1786005651,
-        "narHash": "sha256-7AWskL1l51U4x7FqJMo6QcmBOo0Y7h8vN8mVN0wCZAM=",
+        "lastModified": 1786052645,
+        "narHash": "sha256-v1lz3q9Mwk1/zAm6gGdq+aKUCwysBVgqcrBUJgwcNKo=",
         "ref": "main",
-        "rev": "3cbc6c62f1bb3396b90ef3e45ed172b2a5551e51",
-        "revCount": 14,
+        "rev": "e7d4314a06b69f4fa8520b769ab487016e9e0174",
+        "revCount": 15,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git"
       },
@@ -2569,6 +2568,7 @@
         "flake-utils-plus": "flake-utils-plus",
         "flox": "flox",
         "genai-server": "genai-server",
+        "genai-server-private": "genai-server-private",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "import-tree": "import-tree",
