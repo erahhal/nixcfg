@@ -1,5 +1,24 @@
 # Package config: allowUnfree, unstable/trunk channels, overlays
-{ config, inputs, system, ... }:
+{ config, inputs, lib, system, ... }:
+let
+  ## genai-server's `ds4-flash` (DeepSeek-V4-Flash-0731) needs llama.cpp
+  ## >= b10254: the arch landed in June, but the 0731 checkpoint's chat
+  ## template and the DSML tool-call separator fix are commit 0ef6e55e
+  ## (2026-08-04). Below that the model loads and ANSWERS — it just
+  ## re-prefills the whole context on every agentic turn — so the failure
+  ## reads as "slow model" rather than "wrong build". genai-server declares
+  ## the floor as `serve.minLlamaCpp` and drops the model below it.
+  ds4FlashFloor = "10254";
+
+  trunkPkgs = import inputs.nixpkgs-trunk {
+    inherit system;
+    # Mirrors nixpkgs.config below. Written out rather than referencing
+    # config.nixpkgs.config, which would be a module-eval cycle from here.
+    # allowUnfree is load-bearing: genai-server builds this with
+    # cudaSupport = true, which pulls unfree CUDA deps.
+    config = { allowUnfree = true; allowBroken = true; };
+  };
+in
 {
   nixpkgs = {
     config = {
@@ -169,6 +188,56 @@ bool vulkan_remake_and_acquire( void );'
           scripts = with prev.weechatScripts; [];
         };
       };
+
+      # TEMPORARY: llama.cpp from trunk, for genai-server's ds4-flash. Same
+      # shape as the langfuse pin below — fixed on master, not yet on
+      # nixos-unstable (which as of 2026-08-06 still ships b10133 even after
+      # a flake update; the bump missed this channel's branch point).
+      #
+      # This override is SELF-RETIRING: warnIf fires at eval time the moment
+      # nixos-unstable's own llama-cpp reaches the floor, so the reminder
+      # arrives on a rebuild instead of depending on somebody remembering.
+      # When it fires, delete this binding and the trunkPkgs import above —
+      # leaving it would silently pin llama.cpp to trunk forever, which is
+      # how a temporary override becomes a permanent, unnoticed one.
+      llama-cpp = lib.warnIf
+        (lib.versionAtLeast prev.llama-cpp.version ds4FlashFloor)
+        ("nixcfg: nixos-unstable's llama-cpp is now b${prev.llama-cpp.version}"
+          + " (>= b${ds4FlashFloor}), so the nixpkgs-trunk override in"
+          + " modules/system/overlays/default.nix is redundant. Remove the"
+          + " llama-cpp binding and the trunkPkgs import.")
+        trunkPkgs.llama-cpp;
+
+      # TEMPORARY: nixos-unstable moved glaze to 8.0.0, but the hyprland it
+      # still ships (0.56.1) does `find_package(glaze 7...<8 QUIET)` and, when
+      # that finds nothing, falls back to a FetchContent git clone of
+      # glaze v7.2.0 — which the build sandbox has no network for, so
+      # configure dies with "could not find git for clone of glaze". Hand it
+      # the 7.x it actually asks for. Upstream dropped the version bound after
+      # the 0.56.1 tag (main is now plain `find_package(glaze QUIET)`), so the
+      # next hyprland bump in nixpkgs makes this unnecessary.
+      #
+      # SELF-RETIRING like the llama-cpp pin above: warnIf fires at eval time
+      # once nixpkgs' hyprland moves past 0.56.1. Hosts with
+      # hostParams.desktop.useHyprlandFlake = true replace pkgs.hyprland from
+      # their own overlay and never see this one.
+      hyprland = lib.warnIf
+        (lib.versionOlder "0.56.1" prev.hyprland.version)
+        ("nixcfg: nixpkgs' hyprland is now ${prev.hyprland.version} (> 0.56.1),"
+          + " which builds against glaze 8, so the glaze 7.x override in"
+          + " modules/system/overlays/default.nix is redundant. Remove the"
+          + " hyprland binding.")
+        (prev.hyprland.override {
+          glaze = prev.glaze.overrideAttrs (old: rec {
+            version = "7.2.0";
+            src = prev.fetchFromGitHub {
+              owner = "stephenberry";
+              repo = "glaze";
+              tag = "v${version}";
+              hash = "sha256-f3NVRi3SXKo42hn0WCw7JsOK3EkdOVJIcuzhPorKjFY=";
+            };
+          });
+        });
 
       # langfuse 4.0.2 declares wrapt<2.0 but nixpkgs now ships wrapt 2.2.2,
       # which fails the runtime-deps check and breaks litellm. Fixed on nixpkgs

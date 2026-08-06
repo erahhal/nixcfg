@@ -46,21 +46,28 @@
                     mountpoint = "/nix";
                     mountOptions = [ "subvol=nix" "compress=zstd" "discard=async" "noatime" ];
                   };
-                  # Subvolume for the swapfile
+                  # Subvolume for the swapfile.
+                  # 16G on a 64GB-RAM host: overflow only. This machine does
+                  # not hibernate, so swap does not need to be >= RAM (and
+                  # boot.resumeDevice / resume_offset are deliberately unset).
+                  #
+                  # NOTE: disko only creates this file if it does not already
+                  # exist, so changing the size here does NOT resize a live
+                  # swapfile — it only applies to a fresh format/reinstall.
+                  # Resize an existing one by hand:
+                  #   systemctl stop swap-swapfile.swap
+                  #   rm /swap/swapfile
+                  #   btrfs filesystem mkswapfile --size 16g /swap/swapfile
+                  #   systemctl start swap-swapfile.swap
                   "/swap" = {
                     mountpoint = "/swap";
                     swap = {
-                      swapfile.size = "64G";
+                      swapfile.size = "16G";
                     };
                   };
                 };
 
                 mountpoint = "/partition-root";
-                swap = {
-                  swapfile = {
-                    size = "64G";
-                  };
-                };
               };
             };
           };
