@@ -198,17 +198,25 @@
     + "trap \"exit 0\" TERM INT; "
     + "sleep infinity & wait'";
 
-  ## ...and because of everything above, the 3D view names no adult model.
-  ## The kiosk is what makes this necessary rather than tidy: this screen
-  ## wakes itself, in a house, for work nobody is sitting in front of, and
-  ## whoever walks past reads whatever caption is on the travelling tray.
+  ## The box ships every adult-content control off, and each is now only a
+  ## DEFAULT: a person who has been given an explicit setting on /people
+  ## keeps it whatever these say, and changing one here still moves
+  ## everybody who has not.
   ##
-  ## Names only. A marked model keeps its tray, its size and its place in
-  ## the scene and is captioned "image model" or "finetune" instead —
-  ## including the per-file records behind the SSD bay, the travelling
-  ## tray's label and the narrative under it. The substitution happens in
-  ## the portal, so the real name is not in the JSON either.
-  services.genai-server.nsfw.anonymizeViz = true;
+  ## The kiosk is the reason to reconsider `anonymizeVizDefault`, and the
+  ## reason it is called out rather than left implicit. That screen wakes
+  ## itself, in a house, for work nobody is sitting in front of, and
+  ## whoever walks past reads whatever caption is on the travelling tray —
+  ## and it renders as no one, so no per-user override reaches it. Turning
+  ## it back on costs names only: a marked model keeps its tray, its size
+  ## and its place in the scene and is captioned "image model" or
+  ## "finetune" instead, in the portal, so the real name is not in the JSON
+  ## either.
+  services.genai-server.nsfw = {
+    hideDefault         = false;
+    blurGalleryDefault  = false;
+    anonymizeVizDefault = false;
+  };
 
   ## Open WebUI identifies users by the header the router's oauth2-proxy
   ## injects, so each SSO account gets its own chats. Before this it ran
