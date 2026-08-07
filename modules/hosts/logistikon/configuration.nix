@@ -220,6 +220,29 @@
   ## bearer token, so this list is exactly who may claim to be anyone. Both
   ## router addresses, because which one Caddy sources from depends on
   ## whether logistikon.lan resolves over the LAN or the tailnet.
+  ## Multi-user. The portal reads the identity the router's gate injects,
+  ## and scopes renders, deletes and the gallery to it. Same header Open
+  ## WebUI uses, from the same source, so one person is one identity across
+  ## both.
+  ##
+  ## trustedProxies is the security boundary: the header is a bearer token,
+  ## so this is exactly who may claim to be anyone. Loopback is always
+  ## trusted — the box's own services call the portal and have no proxy in
+  ## front of them to be labelled by.
+  services.genai-server.identity = {
+    mode = "trusted-header";
+    userHeader = "X-Homefree-Email";
+    trustedProxies = [ "10.0.0.1" "100.64.0.2" ];
+    ## Everything made before identity existed is stamped with this, once,
+    ## on the first start in this mode. It has to be the string the gate
+    ## sends, or the whole back catalogue belongs to nobody who logs in.
+    owner = config.hostParams.user.email;
+    ## May see and delete anyone's, and is the only account that can prune
+    ## the store — that walks everything, so it cannot belong to someone
+    ## who can only see their own.
+    admins = [ config.hostParams.user.email ];
+  };
+
   services.genai-server.webui.auth = {
     mode = "trusted-header";
     trustedProxies = [ "10.0.0.1" "100.64.0.2" ];
