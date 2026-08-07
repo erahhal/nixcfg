@@ -54,6 +54,17 @@
       ## configuration.nix.
       dmsLockProgram = "dms";
 
+      ## ...and with nothing to look at behind that lock, turn the panel off
+      ## rather than lighting an empty room for the five minutes DMS's own
+      ## monitor timeout takes. This box boots to nobody: the session exists
+      ## for the kiosk and the services, not for a person, and the kiosk
+      ## wakes the screen itself (kiosk.wakeCommand) when there is finally
+      ## something on it. Ten seconds because input inside the window cancels
+      ## it — a reboot somebody is sitting through stays lit — and because it
+      ## outlasts the output configuration and kanshi restart that a session
+      ## start does anyway, either of which powers a monitor straight back on.
+      blankAtStartupSeconds = 10;
+
       startupWorkspace = "ten";
       # No workspaceOutput: this host has no built-in panel to pin them to.
 

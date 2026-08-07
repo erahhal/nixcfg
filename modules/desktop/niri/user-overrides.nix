@@ -13,6 +13,8 @@
 
   nixcfg-niri.desktop.startupWorkspace = config.hostParams.desktop.startupWorkspace;
   nixcfg-niri.desktop.workspaceOutput = config.hostParams.desktop.workspaceOutput;
+  nixcfg-niri.desktop.blankAtStartupSeconds =
+    config.hostParams.desktop.blankAtStartupSeconds;
 
   # hostParams carries this as freeform attrs; nixcfg-niri's option supplies the
   # schema (monitor pattern + list of {code, label} inputs).

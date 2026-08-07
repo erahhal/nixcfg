@@ -331,6 +331,24 @@
         '';
       };
 
+      blankAtStartupSeconds = lib.mkOption {
+        type = lib.types.nullOr lib.types.ints.positive;
+        default = null;
+        description = ''
+          Power the monitors off this many seconds into a session nobody has
+          touched yet. null (default) leaves the screen lit until the shell's
+          normal monitor timeout.
+
+          For an autologin host that comes up locked: the session is already
+          behind a lock screen, so there is nothing to look at until somebody
+          arrives, and any input brings the screen back. Input inside the
+          window cancels it, so a boot you sat through does not go dark.
+
+          Mirrors to nixcfg-niri.desktop.blankAtStartupSeconds via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       ddcInputToggle = lib.mkOption {
         type = lib.types.attrs;
         default = {};

@@ -29,7 +29,25 @@
       openrgb = {
         enable = true;
         motherboard = "amd";
-        profile = ./Red.orp;
+        ## No static profile: the usage daemon rewrites both controllers
+        ## several times a second, so a startup profile would only ever be
+        ## seen for the moment before it connects — and it was what left the
+        ## card and the front panel sitting red.
+        usage.enable = true;
+        ## Red throughout, with utilisation as brightness: lit but only just
+        ## at rest, full red flat out. To go back to a colour sweep instead,
+        ## give the two ends different hues — `idle.hue = 120` with these
+        ## values makes it run green to red.
+        ##
+        ## `value` here is perceived brightness, not duty cycle, so 0.08 is
+        ## genuinely faint rather than the quarter-brightness a raw 0.08 duty
+        ## would give on the front panel's strip.
+        usage.idle = { hue = 0; saturation = 1.0; value = 0.08; };
+        usage.busy = { hue = 0; saturation = 1.0; value = 1.0; };
+        ## A GPU under sustained load reports utilisation that flickers around
+        ## the high nineties rather than pinning at 100, so top the ramp out
+        ## early enough that a card that is genuinely maxed goes fully bright.
+        usage.ceiling = 0.9;
       };
       keyboard-debounce.enable = true;
       spacenavd.enable = true;
