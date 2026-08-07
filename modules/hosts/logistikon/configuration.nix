@@ -198,6 +198,12 @@
     + "trap \"exit 0\" TERM INT; "
     + "sleep infinity & wait'";
 
+  ## The gallery's adult-content scan. Worth the closure on this host: the
+  ## store predates most of its own provenance, so a third of it is hidden
+  ## by the unknown-counts-as-adult fallback rather than by evidence, and
+  ## the scan's other direction is the only thing that can give those back.
+  services.genai-server.portal.classifier.enable = true;
+
   ## Nothing about `services.genai-server.nsfw` here on purpose. All three
   ## controls default on upstream, which is what this host wants, and each
   ## is only a DEFAULT now — the per-person settings on /people are where
