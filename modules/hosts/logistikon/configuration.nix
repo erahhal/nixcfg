@@ -209,9 +209,13 @@
   ## is only a DEFAULT now — the per-person settings on /people are where
   ## an exception belongs, not a line here that would quietly decide for
   ## everybody. `anonymizeVizDefault` in particular is load-bearing on this
-  ## host: the kiosk renders as no one, so no per-user setting reaches it,
-  ## and it is a screen that wakes itself in a house for work nobody is
-  ## sitting in front of.
+  ## host: the kiosk opens http://127.0.0.1:8897/viz with no identity
+  ## header, and the portal answers such a request with the BOX default
+  ## rather than the owner's own setting — deliberately, so that relaxing
+  ## anonymisation for yourself cannot relax it on a screen that wakes
+  ## itself in a house for work nobody is sitting in front of. (It said
+  ## "renders as no one" here, which was wrong: loopback resolves to the
+  ## owner for ownership, and only the POLICY is taken from the box.)
 
   ## Open WebUI identifies users by the header the router's oauth2-proxy
   ## injects, so each SSO account gets its own chats. Before this it ran
