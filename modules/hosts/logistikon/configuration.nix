@@ -204,6 +204,14 @@
   ## the scan's other direction is the only thing that can give those back.
   services.genai-server.portal.classifier.enable = true;
 
+  ## The gallery's content search, for the same reason and then some: this
+  ## store predates most of its own provenance, so the prompt search — which
+  ## is all there was — cannot reach the entries that recorded no prompt at
+  ## all. Those are exactly the oldest ones, and the ones hardest to page
+  ## back to. The closure is already paid for by the scan above; this adds
+  ## the encoder's 1.5GB of weights and nothing else.
+  services.genai-server.portal.semantic.enable = true;
+
   ## Nothing about `services.genai-server.nsfw` here on purpose. All three
   ## controls default on upstream, which is what this host wants, and each
   ## is only a DEFAULT now — the per-person settings on /people are where
