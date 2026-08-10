@@ -207,23 +207,37 @@
     + "trap \"exit 0\" TERM INT; "
     + "sleep infinity & wait'";
 
-  ## The gallery's adult-content scan. Worth the closure on this host: the
-  ## store predates most of its own provenance, so a third of it is hidden
-  ## by the unknown-counts-as-adult fallback rather than by evidence, and
-  ## the scan's other direction is the only thing that can give those back.
-  services.genai-server.portal.classifier.enable = true;
+  ## The gallery's adult-content scan (genai-server-nsfw, which arrives
+  ## with the private catalog — see the import list in flake-modules).
+  ## Worth the closure on this host: the store predates most of its own
+  ## provenance, so a third of it is hidden by the unknown-counts-as-adult
+  ## fallback rather than by evidence, and the scan's other direction is
+  ## the only thing that can give those back.
+  ##
+  ## Under `plugins.` because that module owns it. If this host ever stops
+  ## importing the module, this line becomes a value nothing reads rather
+  ## than an evaluation error — which is what makes trying the box without
+  ## it a one-line change instead of an edit across this file.
+  services.genai-server.plugins.nsfw.scan = true;
 
   ## The gallery's content search, for the same reason and then some: this
   ## store predates most of its own provenance, so the prompt search — which
   ## is all there was — cannot reach the entries that recorded no prompt at
   ## all. Those are exactly the oldest ones, and the ones hardest to page
-  ## back to. The closure is already paid for by the scan above; this adds
+  ## back to. The torch closure is shared with the scan above; this adds
   ## the encoder's 1.5GB of weights and nothing else.
   services.genai-server.portal.semantic.enable = true;
 
-  ## Nothing about `services.genai-server.nsfw` here on purpose. All three
-  ## controls default on upstream, which is what this host wants, and each
-  ## is only a DEFAULT now — the per-person settings on /people are where
+  ## ReActor's own gate over the input photos of a face swap, off — it
+  ## fires on ordinary photos of adults here, and `swap_face_fast` can only
+  ## report the black frame it returns, never work around it. A declared,
+  ## reversible patch: drop this line and the next comfyui start puts the
+  ## file back.
+  services.genai-server.plugins.nsfw.disableReactorGate = true;
+
+  ## Nothing about the other `plugins.nsfw` controls here on purpose. All
+  ## three default on in that module, which is what this host wants, and
+  ## each is only a DEFAULT — the per-person settings on /people are where
   ## an exception belongs, not a line here that would quietly decide for
   ## everybody. `anonymizeVizDefault` in particular is load-bearing on this
   ## host: the kiosk opens http://127.0.0.1:8897/viz with no identity

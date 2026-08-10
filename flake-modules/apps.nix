@@ -83,14 +83,20 @@
         };
       };
 
-      # Both inputs are OURS now — genai-server no longer resolves the
-      # private catalog from a URL inside its own flake — so each is
-      # overridden directly. Still both or neither: testing a stack change
-      # against a stale catalog (or the reverse) is a build that proves
-      # nothing about the pair you are actually about to deploy.
+      # All three are OURS — genai-server no longer resolves anything
+      # personal from a URL inside its own flake — so each is overridden
+      # directly. ALL OR NONE: testing a stack change against a stale
+      # catalog (or the reverse) is a build that proves nothing about the
+      # set you are actually about to deploy.
+      #
+      # The third is nested, because genai-server-nsfw is an input of
+      # genai-server-private rather than of this flake: a host that wants
+      # those models wants the module that marks them, and the two arrive
+      # together or the entries land in every picker with nothing to say
+      # about them.
       genai-server-local = mkApp "genai-server-local" {
         text = buildAndSwitch {
-          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input genai-server ~/Code/genai-server --override-input genai-server-private ~/Code/genai-server-private";
+          extraArgs = "--show-trace --override-input debug-mode github:boolean-option/true --override-input genai-server ~/Code/genai-server --override-input genai-server-private ~/Code/genai-server-private --override-input genai-server-private/genai-server-nsfw ~/Code/genai-server-nsfw";
         };
       };
 
