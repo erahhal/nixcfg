@@ -236,10 +236,11 @@
   services.genai-server.plugins.nsfw.disableReactorGate = true;
 
   ## Nothing about the other `plugins.nsfw` controls here on purpose. All
-  ## three default on in that module, which is what this host wants, and
-  ## each is only a DEFAULT — the per-person settings on /people are where
-  ## an exception belongs, not a line here that would quietly decide for
-  ## everybody. `anonymizeVizDefault` in particular is load-bearing on this
+  ## three default to the cautious answer in that module — `showDefault`
+  ## off, the other two on — which is what this host wants, and each is only
+  ## a DEFAULT: the per-person settings on /people are where an exception
+  ## belongs, not a line here that would quietly decide for everybody.
+  ## `anonymizeVizDefault` in particular is load-bearing on this
   ## host: the kiosk opens http://127.0.0.1:8897/viz with no identity
   ## header, and the portal answers such a request with the BOX default
   ## rather than the owner's own setting — deliberately, so that relaxing
