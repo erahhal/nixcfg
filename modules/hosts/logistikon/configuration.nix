@@ -87,6 +87,15 @@
   ## workflow templates reference. Fetches are idempotent, so listing them
   ## costs nothing when the files are present.
   services.genai-server.comfyui.modelSets = [ "comfy" "h3" ];
+  ## SeedVR2, the video restorer, ships disabled in the flake for the same
+  ## reason `comfy` and `h3` are opt-in: enabling the node pack is what
+  ## fetches its weights, and that is 12GB (a 7B and a 3B restorer plus
+  ## their shared VAE) on a box that might never upscale anything. This one
+  ## does — it is the finishing pass for clips the LTX and Wan tools make,
+  ## and the card has room for the 7B once the generator has let go of it.
+  ## Drop this line and the download, the node and its tool all go away
+  ## together.
+  services.genai-server.comfyui.customNodes."ComfyUI-SeedVR2_VideoUpscaler".enable = true;
   ## qwen-dense ships disabled: at 25744MiB it cannot coexist with the
   ## resident set (asr + embed + rerank), so it and voice/RAG/memory lock
   ## each other out — whichever loads second dies. Kept available here for

@@ -100,6 +100,23 @@ let
     ## Disable the alternate screen so full-screen program output stays in scrollback
     set -g alternate-screen off
 
+    ## Latency tolerance for remote sessions (eternal terminal / ssh)
+    ##
+    ## With extended-keys + csi-u (set below), C-h/j/k/l arrive as the 8-byte
+    ## sequence "ESC [ 104 ; 5 u" rather than a single control byte. Locally the
+    ## terminal writes that in one go, but over a network link it can straddle a
+    ## packet boundary. gpakosz's escape-time of 10ms is then too short to
+    ## reassemble it, and tmux emits the partial sequence into the pane as
+    ## literal text.
+    set -sg escape-time 100
+
+    ## Likewise, tmux's paste heuristic treats input arriving <1ms apart as a
+    ## paste and skips key-binding lookup entirely. A remote link delivers a
+    ## whole packet of keystrokes at once, so real keypresses get misclassified
+    ## and passed through raw. 0 disables the heuristic; bracketed paste (which
+    ## foot supports) handles genuine pastes correctly on its own.
+    set -g assume-paste-time 0
+
     ## Enable mouse interactions
     # set -g mouse on
 
