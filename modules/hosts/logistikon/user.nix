@@ -49,9 +49,15 @@ let userParams = config.hostParams.user; in
       ];
     };
 
-    ## nvidiaOffload because DP-2 scans out on the AMD iGPU (71:00.0) while the
-    ## RTX 5090 sits at 01:00.0 -- the same split documented at length in
-    ## ./configuration.nix. Without it the game renders on the iGPU.
+    ## nvidiaOffload pins rendering to the RTX 5090 (01:00.0). Measured: GL
+    ## already resolves there by default, since libglvnd reads 10_nvidia.json
+    ## before 50_mesa.json -- see the inverse problem in ./configuration.nix,
+    ## where chromium had to be forced ONTO the iGPU. So this makes the choice
+    ## explicit and pins the Vulkan ICD, rather than fixing a live misdetection.
+    ##
+    ## DP-2 still scans out on the AMD iGPU (71:00.0), so frames cross vendors
+    ## regardless of which card draws them. Plugging the monitor into the 5090
+    ## is the only thing that removes that hop.
     ##
     ## The 5090 is shared with llama-swap: a resident model and a shader pack
     ## at high LOD distance will contend for VRAM, so stop the models before a

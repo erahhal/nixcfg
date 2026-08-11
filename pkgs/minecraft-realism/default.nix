@@ -93,6 +93,17 @@ let
       { name = "tectonic-3.0.13-fabric-1.21.8.jar";
         url  = "https://cdn.modrinth.com/data/lWDHr9jE/versions/G6Ed4Wsp/tectonic-3.0.13-fabric-1.21.8.jar";
         hash = "sha512-IU68H+i3c19kIRg1wUFhzQzsnE8Eu1nlmf5/fw/bAOqgXonsA3Bp+3wrKAKlajWWpobla5G06IDKpb62UKT+Pw=="; }
+      ## Hard dependency of tectonic (>=1.4.11). Tectonic's Modrinth
+      ## `dependencies` field is EMPTY -- the requirement exists only inside its
+      ## fabric.mod.json -- so resolving deps from the API alone silently
+      ## produces a mod set that fails at Knot init. Verify additions by reading
+      ## every jar's fabric.mod.json (including the modules nested inside
+      ## fabric-api), not by trusting Modrinth metadata.
+      #
+      # lithostitched          1.4.11-fabric-1.21.6  (declares mc >=1.21)
+      { name = "lithostitched-fabric-1.21.6-1.4.11.jar";
+        url  = "https://cdn.modrinth.com/data/XaDC71GB/versions/ROo8a9VV/lithostitched-fabric-1.21.6-1.4.11.jar";
+        hash = "sha512-HWMZLbotzBbxVlLzEoo5DaWC+1vgmkqhrTgFyAXaD/87FfvK3h676dUD6uwb2ko+BjkCq6PW7soOuLzm/N24WQ=="; }
       # modmenu                15.0.2
       { name = "modmenu-15.0.2.jar";
         url  = "https://cdn.modrinth.com/data/mOgUt4GM/versions/ku5NivOP/modmenu-15.0.2.jar";

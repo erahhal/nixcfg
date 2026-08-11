@@ -57,18 +57,51 @@ let
     ];
   });
 
-  ## Aikar's G1GC set. -Xmx/-Xms come from Prism's own memory fields, so they
-  ## are deliberately absent here -- specifying both makes Prism's setting the
-  ## one that loses, which is confusing when tuning later.
+  ## Generational ZGC, NOT Aikar's flags.
+  ##
+  ## Aikar's set is tuned for Paper/Spigot SERVERS and is the wrong shape here:
+  ## Distant Horizons warns about both of its headline flags at world load.
+  ##
+  ##   -XX:+UseG1GC          -> "G1 Garbage collector detected. This can cause
+  ##                            FPS stuttering. Recommended: ZGC (Java 21+)"
+  ##   -XX:+DisableExplicitGC -> "Explicit Garbage Collection Disabled. This can
+  ##                            cause out of memory crashes."
+  ##
+  ## The second one is not cosmetic. DH holds LOD data in large off-heap direct
+  ## ByteBuffers, and those are only reclaimed when a GC runs over their Cleaner
+  ## references -- which is exactly what System.gc() is for. Suppressing those
+  ## calls at a 256-chunk radius trades a stutter for an eventual OOM. DH offers
+  ## to silence the warning in its own config; silencing it would be treating
+  ## the smoke detector.
+  ##
+  ## ZGC's pauses are sub-millisecond and independent of heap size, so the whole
+  ## pile of G1 generation-sizing knobs has nothing to tune and is dropped.
+  ##
+  ## -Xmx/-Xms deliberately absent: they come from Prism's own memory fields,
+  ## and specifying both makes Prism's setting the one that loses.
+  ##
+  ## ZGenerational is correct for JDK 21. It became the default in 23 and was
+  ## removed in 24, so bumping javaPackage past 21 means dropping this flag --
+  ## another reason the JDK is pinned rather than tracking latest.
   jvmArgs = lib.concatStringsSep " " [
-    "-XX:+UseG1GC" "-XX:+ParallelRefProcEnabled" "-XX:MaxGCPauseMillis=200"
-    "-XX:+UnlockExperimentalVMOptions" "-XX:+DisableExplicitGC" "-XX:+AlwaysPreTouch"
-    "-XX:G1NewSizePercent=30" "-XX:G1MaxNewSizePercent=40" "-XX:G1HeapRegionSize=8M"
-    "-XX:G1ReservePercent=20" "-XX:G1HeapWastePercent=5" "-XX:G1MixedGCCountTarget=4"
-    "-XX:InitiatingHeapOccupancyPercent=15" "-XX:G1MixedGCLiveThresholdPercent=90"
-    "-XX:G1RSetUpdatingPauseTimePercent=5" "-XX:SurvivorRatio=32"
-    "-XX:+PerfDisableSharedMem" "-XX:MaxTenuringThreshold=1"
+    "-XX:+UseZGC"
+    "-XX:+ZGenerational"
+    "-XX:+AlwaysPreTouch"
+    "-XX:+PerfDisableSharedMem"
   ];
+
+  ## Prism's Java auto-detection scans the host and picks whatever it likes --
+  ## on logistikon that was JDK 25, while 1.21.8 targets 21. JDK 24+ tightened
+  ## sun.misc.Unsafe and restricted native access, which several Fabric mods
+  ## still trip over, so leaving the choice to auto-detection makes the mod set
+  ## work or not depending on which JDKs happen to be installed. Pin it.
+  ##
+  ## Referenced through a home-managed symlink rather than a raw store path:
+  ## instance.cfg is seeded once and then owned by Prism, so a store path
+  ## written into it would never be updated and would break the first time that
+  ## JDK was garbage-collected. The symlink is re-pointed on every rebuild
+  ## while the path inside instance.cfg stays constant.
+  jdkLink = "${config.home.homeDirectory}/.local/share/PrismLauncher/jdk";
 
   instanceCfg = pkgs.writeText "instance.cfg" ''
     InstanceType=OneSix
@@ -79,6 +112,8 @@ let
     MaxMemAlloc=${toString cfg.maxMemoryMiB}
     OverrideJavaArgs=true
     JvmArgs=${jvmArgs}
+    OverrideJavaLocation=true
+    JavaPath=${jdkLink}/bin/java
     OverrideWindow=true
     LaunchMaximized=true
   '';
@@ -128,13 +163,20 @@ in
       type = lib.types.bool;
       default = false;
       description = ''
-        Render on the discrete NVIDIA GPU via PRIME offload.
+        Pin rendering to the discrete NVIDIA GPU.
 
-        Needed on hosts where the display hangs off an iGPU but a faster NVIDIA
-        card is present -- logistikon scans out on the AMD iGPU while the RTX
-        5090 sits on the PCIe slot, so without this the game silently renders on
-        the iGPU. Harmless where the NVIDIA card already drives the display: the
-        offload flag simply has nothing to offload from.
+        MEASURED ON LOGISTIKON: glxinfo already reports the RTX 5090 with none
+        of these variables set, because libglvnd reads 10_nvidia.json before
+        50_mesa.json and so resolves to NVIDIA by default. This option is
+        therefore not rescuing the game from the iGPU -- it is making an
+        implicit choice explicit, and additionally pinning the Vulkan ICD and
+        EGL vendor so a change in that file ordering cannot silently move
+        rendering to the iGPU later.
+
+        Note what it does NOT fix: on a host whose display hangs off the iGPU
+        (logistikon scans out on the AMD at 71:00.0), frames still cross vendors
+        to reach the screen no matter which GPU draws them. The only fix for
+        that is plugging the monitor into the NVIDIA card.
 
         Leave false on AMD/Intel-only hosts.
       '';
@@ -159,20 +201,44 @@ in
       '';
     };
 
+    javaPackage = lib.mkOption {
+      type = lib.types.package;
+      default = pkgs.jdk21;
+      defaultText = lib.literalExpression "pkgs.jdk21";
+      description = ''
+        JDK the instance runs on. Must match what the Minecraft version targets
+        -- 1.21.x wants 21. Raising this is not a free upgrade: JDK 24+ blocks
+        the native-access patterns some Fabric mods rely on.
+      '';
+    };
+
     renderDistance = lib.mkOption {
       type = lib.types.ints.positive;
-      default = 32;
+      default = 8;
       description = ''
-        Vanilla render distance seeded into options.txt. Distant Horizons draws
-        everything beyond this as LOD terrain and is configured in-game, not
-        here -- its config schema is version-specific enough that generating it
-        would break on a DH bump.
+        Vanilla render distance seeded into options.txt.
+
+        Deliberately LOW, which is backwards from how this dial normally works.
+        Distant Horizons draws everything past this radius as LOD terrain, so
+        vanilla render distance only decides where the expensive real chunks
+        stop and the cheap LODs take over. Raising it does not extend the view
+        -- DH already covers that out to lodChunkRenderDistanceRadius -- it just
+        makes the same terrain get drawn twice. DH warns on startup when this is
+        set too high; 8 is the value that silences it here.
+
+        The LOD radius itself is set in-game rather than seeded, because DH's
+        config schema is version-specific enough that generating it would break
+        on a DH bump.
       '';
     };
   };
 
   config = lib.mkIf cfg.enable {
     home.packages = [ launcher ];
+
+    ## Stable path for instance.cfg's JavaPath to point at. Re-pointed on every
+    ## rebuild, so a JDK bump does not strand the seeded instance.cfg.
+    home.file.".local/share/PrismLauncher/jdk".source = cfg.javaPackage;
 
     home.activation.minecraft-realism =
       lib.hm.dag.entryAfter [ "installPackages" ] ''
