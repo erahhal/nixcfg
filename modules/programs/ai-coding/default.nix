@@ -9,7 +9,8 @@
 #   - claude-openrouter    -> Claude Code via OpenRouter (~/.claude-openrouter)
 #   - opencode-openrouter  -> opencode via OpenRouter (isolated XDG dirs)
 #   - claude-logistikon    -> Claude Code via the local genai-server bridge
-#                             (~/.claude-logistikon; pre-tuned env, see below)
+#                             (~/.claude-logistikon; pre-tuned env, plus the
+#                             stack's tools over MCP — see below)
 #
 # Hermes AI agent from Nous Research. Configured to use the local genai-server
 # on logistikon; provides isolated config dirs on other hosts:
@@ -91,6 +92,11 @@ let
   genaiHost = if onLogistikon then "127.0.0.1" else "logistikon.lan";
   genaiBaseUrl = "http://${genaiHost}:4000";
   genaiApiUrl = "${genaiBaseUrl}/v1";
+  # The stack's MCP gateway (genai-server's `ports.mcpGateway`), a generic
+  # OpenAPI->MCP bridge over its tool servers. It is in `servicePorts`, so
+  # logistikon's openFirewallGlobally admits it from the LAN and the
+  # off-box harnesses reach it by the same name they reach :4000 by.
+  genaiMcpUrl = "http://${genaiHost}:8899/mcp";
 
   # Key file: explicit option wins; otherwise auto-detect the conventional
   # shared agenix secret `openrouter-api-key` if it's declared.
@@ -281,6 +287,33 @@ ${claudeCtxCase}
         models = lib.mapAttrs (_: _: { }) genaiModels;
       };
     };
+    # The stack's tools, from the same gateway claude-logistikon and opencode
+    # read. hermes speaks Streamable HTTP when a server entry carries a `url`
+    # (stdio is `command`/`args`), and the gateway's `GET /mcp` -> 405 does
+    # not trip hermes' content-type preflight — that probe rejects only a 2xx
+    # carrying a definitely-non-MCP type, so `skip_preflight` is not needed
+    # here.
+    #
+    # `timeout` is the PER-TOOL-CALL budget IN SECONDS and defaults to 300.
+    # That is not enough: a generation tool can unload the chat model and
+    # hold the card for longer, which is why the gateway's own ceiling is
+    # 900s. Matched to it, so the two agree on when a call has failed rather
+    # than hermes giving up on one still running.
+    #
+    # NOTE — no video exclusion here, unlike the other two harnesses. hermes
+    # can disable a whole MCP server but has no per-tool filter in 0.19.0
+    # (`mcp_servers.<name>.tools` is `{resources, prompts}`, not a name list).
+    # It gets whatever the gateway publishes, which today is the chat-facing
+    # spec with the ComfyUI graphs already left out; turning on
+    # `mediaTools.chatWorkflows` would reach this harness with nothing here
+    # to stop it.
+    mcp_servers = {
+      genai = {
+        url = genaiMcpUrl;
+        timeout = 900;
+        connect_timeout = 60;
+      };
+    };
   };
 
   # Claude Code reads these only from the mutable ~/.claude/settings.json
@@ -306,15 +339,86 @@ ${claudeCtxCase}
     mv "$tmp" "$settings"
   '';
 
+  # Everything claude-logistikon gets that plain `claude` does not, beyond
+  # the wrapper's env: the statusline (shared) plus the tool exclusions
+  # below.
+  #
+  # WHY VIDEO IS DENIED HERE WHEN THE SERVER ALREADY DROPS IT. genai-server
+  # decides this once, in `mediaTools.chatWorkflows` (off): the MCP gateway
+  # reads media-tools' chat-facing spec, which leaves the eleven curated
+  # ComfyUI graphs out, so today the gateway hands over 27 tools (~11k
+  # tokens) and not one of them is a `workflow_`. This rule changes nothing
+  # against that default and is not a second opinion about it — the server's
+  # reasoning (a video graph is a minutes-long exclusive GPU hold assembled
+  # from a form, which is Studio's job) is the same one that applies here,
+  # only more so.
+  #
+  # It is here because that knob is global and its constituency is Open
+  # WebUI: turning it on to give CHAT models video would also hand them to
+  # a coding harness, ~12k tokens of schema for a capability no coding
+  # session reaches for. This keeps the harness's set independent of that
+  # decision. Drop the rule if the two should move together.
+  #
+  # A deny rule whose tool name is a bare glob REMOVES the tool from the
+  # model's context rather than merely refusing the call, which is what
+  # makes it worth writing at the client at all (verified on Claude Code
+  # 2.1.223 against a stub endpoint, back when the gateway still served the
+  # complete spec: 38 MCP tools handed to the model without the rule, 27
+  # with it, and no `workflow_` among them). A glob matching nothing is not
+  # a startup warning — names containing `_` or `*` are exempt from that
+  # check — so it costs nothing while it is redundant.
+  #
+  # The glob is the whole video surface only because every graph
+  # genai-server's `comfyui.workflows` ships today is a video graph — the
+  # option is generic and its own example is a poster render. A non-video
+  # graph added there would come through as `workflow_<name>` and be
+  # excluded with them, so it would need naming here.
+  claudeLogistikonManagedSettings = builtins.toJSON {
+    inherit (builtins.fromJSON claudeStatusBarSettings) statusLine;
+    permissions.deny = [ "mcp__genai__workflow_*" ];
+  };
+
+  # `*` rather than `+`: `+` replaces a whole top-level object, which would
+  # drop any allow rules Claude Code has written next to our deny list.
   mergeClaudeLogistikonSettings = pkgs.writeShellScript "claude-logistikon-settings-merge" ''
     set -eu
     settings="$HOME/.claude-logistikon/settings.json"
     mkdir -p "$HOME/.claude-logistikon"
     [ -s "$settings" ] || echo '{}' > "$settings"
     tmp=$(mktemp)
-    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeStatusBarSettings} \
-      '. + $managed' "$settings" > "$tmp"
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLogistikonManagedSettings} \
+      '. * $managed' "$settings" > "$tmp"
     mv "$tmp" "$settings"
+  '';
+
+  # The genai stack's tools, over MCP. The gateway turns each tool server's
+  # OpenAPI into MCP tools, so web search, image generation and editing,
+  # segmentation, speech, the knowledge collections, the memory store and
+  # the code sandbox all arrive without a second copy of any tool logic —
+  # and a tool added to a tool server appears here on the gateway's next
+  # refresh, with nothing to update on this side.
+  #
+  # WHY THIS IS MERGED IN RATHER THAN PASSED ON THE COMMAND LINE. Claude
+  # Code reads MCP servers only from its config dir's `.claude.json`;
+  # `settings.json` has no `mcpServers` key (checked on 2.1.223 — a server
+  # declared there is silently ignored). The `--mcp-config` flag does work,
+  # but it is VARIADIC: `claude --mcp-config f "$@"` eats the wrapper's
+  # arguments, and appending it instead breaks every subcommand
+  # (`claude-logistikon mcp list`). So it goes in the file, the same way the
+  # settings above do, and `*` keeps any server added with `claude mcp add`.
+  claudeLogistikonMcp = builtins.toJSON {
+    mcpServers.genai = { type = "http"; url = genaiMcpUrl; };
+  };
+
+  mergeClaudeLogistikonMcp = pkgs.writeShellScript "claude-logistikon-mcp-merge" ''
+    set -eu
+    cfg="$HOME/.claude-logistikon/.claude.json"
+    mkdir -p "$HOME/.claude-logistikon"
+    [ -s "$cfg" ] || echo '{}' > "$cfg"
+    tmp=$(mktemp)
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLogistikonMcp} \
+      '. * $managed' "$cfg" > "$tmp"
+    mv "$tmp" "$cfg"
   '';
 
   # opencode provider for the local genai-server (logistikon), at
@@ -379,6 +483,28 @@ ${claudeCtxCase}
         options = { temperature = m.temperature; top_p = m.topP; };
       }) genaiModels;
     };
+    # The same tools claude-logistikon gets, from the same gateway. opencode
+    # registers an MCP server's tools as `<server>_<tool>`, so these arrive
+    # as `genai_web_search`, `genai_generate_image` and so on.
+    #
+    # TIMEOUT IS NOT OPTIONAL HERE. opencode's default for an MCP request is
+    # 5 SECONDS. Every generation tool on this box is slower than that
+    # cold — the gateway's own ceiling is 900s because a tool call can
+    # unload the chat model and hold the card for minutes — so at the
+    # default `genai_generate_image` cannot succeed, and the failure looks
+    # like a broken tool rather than a clock.
+    mcp.genai = {
+      type = "remote";
+      url = genaiMcpUrl;
+      enabled = true;
+      timeout = 900000;
+    };
+    # Video, for the reason spelled out at claudeLogistikonManagedSettings:
+    # already absent while `mediaTools.chatWorkflows` is off, kept out of the
+    # harness if that is ever turned on for Open WebUI's sake. opencode's
+    # `tools` map takes globs and is evaluated against the same
+    # `<server>_<tool>` names.
+    tools = { "genai_workflow_*" = false; };
   } // lib.optionalAttrs onLogistikon {
     model = "logistikon/coder-pro";
   };
@@ -471,6 +597,10 @@ in
 
     home.activation.claudeLogistikonSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run ${mergeClaudeLogistikonSettings}
+    '';
+
+    home.activation.claudeLogistikonMcp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeClaudeLogistikonMcp}
     '';
 
     home.activation.qwenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

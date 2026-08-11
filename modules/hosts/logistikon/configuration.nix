@@ -63,6 +63,34 @@
     };
   };
 
+  ## `network-online.target` has to MEAN something on this box.
+  ##
+  ## modules/system/networking masks NetworkManager-wait-online by default to
+  ## stop boot hanging on a link that never comes up — right for the laptops,
+  ## and for antikythera and nflx-erahhal-p16, where a managed wg0 keeps the
+  ## service from completing at all. With nothing backing the target, though,
+  ## systemd reaches it instantly regardless of connectivity, and every unit
+  ## ordered after it starts anyway. Measured 2026-08-10: target reached at
+  ## 23:45:50, genai-models-prefetch started 23:45:51 and every HF lookup
+  ## returned "cannot resolve repo"; mnt-data.mount got "Network is
+  ## unreachable". Both had been failing that way for at least three boots,
+  ## and both are fine once the network is actually up — the ordering they
+  ## declare is correct, the target was lying to them.
+  ##
+  ## This host has no wireguard interface, so the reason for the default does
+  ## not apply. The upstream unit is `nm-online -s --timeout=30`, so the worst
+  ## case is a bounded 30s wait rather than a hang; with enp8s0 wired it costs
+  ## a second or two.
+  systemd.services.NetworkManager-wait-online.enable = true;
+
+  ## Make the scratch disk (see disk-config-btrfs.nix) writable the way the
+  ## model store is: owned by root, group `genai`, setgid so anything created
+  ## under it inherits the group instead of the creator's primary one. A bare
+  ## mountpoint is root-owned 0755, which would make it useless to the very
+  ## services it exists for — they run as DynamicUser or `genai`, and humans
+  ## get write access by being in that group.
+  systemd.tmpfiles.rules = [ "d /mnt/scratch 2775 root genai -" ];
+
   ## AI model-serving stack (external flake: ~/Code/genai-server)
   services.genai-server.enable = true;
   ## Stop ComfyUI when no client has been connected for 30 minutes, and let
@@ -206,6 +234,32 @@
     + "trap \"dms ipc call inhibit disable\" EXIT; "
     + "trap \"exit 0\" TERM INT; "
     + "sleep infinity & wait'";
+
+  ## THE KIOSK BROWSER RENDERS ON THE GPU THAT SCANS OUT, NOT THE FAST ONE.
+  ## Two cards here: the RTX 5090 (pci 01:00.0, renderD129) and the Radeon
+  ## iGPU (pci 71:00.0, renderD128). DP-2 hangs off the AMD, so that is
+  ## where niri composites and scans out — but libglvnd reads
+  ## 10_nvidia.json before 50_mesa.json, so chromium's EGL landed on the
+  ## NVIDIA card and every viz frame crossed vendors to reach the screen.
+  ## Measured on a live kiosk instance: its GPU process held fds on BOTH
+  ## render nodes (7 on renderD128, 3 on renderD129) with libnvidia-glcore
+  ## and libgallium both mapped in. A cross-vendor dma-buf hop with
+  ## mismatched format modifiers is the standard way to get corruption and
+  ## tearing laid over an otherwise-correct image, which is the symptom.
+  ##
+  ## /run/opengl-driver is the indirection to whatever the CURRENT system's
+  ## drivers are, so this does not pin a store path that a rebuild moves.
+  ##
+  ## To test the other direction instead — everything on the NVIDIA card,
+  ## still crossing to the AMD for scanout — swap the two exports for
+  ##   export __NV_PRIME_RENDER_OFFLOAD=1
+  ##   export __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json
+  services.genai-server.kiosk.browser =
+    pkgs.writeShellScriptBin "chromium-kiosk-igpu" ''
+      export DRI_PRIME=pci-0000_71_00_0
+      export __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json
+      exec ${pkgs.lib.getExe pkgs.chromium} "$@"
+    '';
 
   ## The gallery's adult-content scan (genai-server-nsfw, which arrives
   ## with the private catalog — see the import list in flake-modules).
@@ -374,6 +428,19 @@
   ## webui.homefree.host is fine: the SSO cookie is scoped to
   ## .homefree.host, so the image requests carry it.
   services.genai-server.mediaPublicUrl = "https://ai.homefree.host/svc/media";
+  ## LibreChat runs on the HomeFree box, not here — see the librechat app in
+  ## homefree-genai. It is the one surface in the stack that wants no GPU and
+  ## cannot take an identity from the gate in front of it: its strategies are
+  ## openid, saml, ldap and local, so behind SSO it asked for a second login.
+  ## Speaking OIDC to Zitadel is the fix, and an OIDC client's id and secret
+  ## are minted into the router's own secrets dir — values this machine cannot
+  ## be told at evaluation time and that nothing should be hand-copied here.
+  ## Run beside the provider, there is nothing to deliver.
+  ##
+  ## The DEFINITION is still this flake's (`lib.librechat`); only the machine
+  ## that renders it changed. Turning this back on would run a second one
+  ## against the same fleet.
+  services.genai-server.librechat.enable = false;
   ## MagenticLite (:8895) rejects non-localhost Host headers unless listed
   ## (upstream DNS-rebinding defense; the launcher extends the allowlist).
   ## Behind the proxy the Host header is the public name, not this box's,

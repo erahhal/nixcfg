@@ -40,6 +40,15 @@ let
     ptyprocess
     pillow
     python-dotenv
+    # MCP client SDK. hermes calls this an OPTIONAL dependency and means it:
+    # tools/mcp_tool.py wraps `from mcp import ClientSession` in a try/except
+    # and, on ImportError, sets _MCP_AVAILABLE = False and becomes a no-op
+    # that logs at DEBUG. So without this the `mcp_servers` block in
+    # config.yaml is read, validated, and silently does nothing — hermes
+    # starts clean and simply has no tools, which is the failure mode that
+    # takes longest to notice. It also wants >= 1.24.0 for the
+    # non-deprecated streamable_http_client (nixpkgs has 1.27.1).
+    mcp
     # Build dependencies
     setuptools
     wheel

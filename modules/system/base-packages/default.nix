@@ -35,6 +35,7 @@ let userParams = config.hostParams.user; in
     dmidecode
     dos2unix
     ed
+    efibootmgr
     elixir
     eternal-terminal
     exfat
@@ -53,6 +54,7 @@ let userParams = config.hostParams.user; in
     gnumake
     gnupg
     gparted
+    gptfdisk
     htop
     hwinfo
     iftop
@@ -85,9 +87,11 @@ let userParams = config.hostParams.user; in
     nil
     nix-index
     nvd
+    nvme-cli
     nvtopPackages.full
     openssl
     p7zip
+    parted
     pciutils
     powertop
     pstree
