@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 {
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -93,6 +93,26 @@
 
   ## AI model-serving stack (external flake: ~/Code/genai-server)
   services.genai-server.enable = true;
+
+  ## A NODE: this machine is the card and the engines that touch it, and
+  ## the singletons -- portal, Open WebUI, the tool servers, identity --
+  ## live once on the router, which fronts them.
+  ##
+  ## The role FORCES the controller-scoped services off here rather than
+  ## defaulting them off, so a second Open WebUI cannot come back because
+  ## some option elsewhere still says `enable = true`. That is the whole
+  ## reason it is a role and not another switch: the failures it replaces
+  ## were all units acting on a subsystem that lived on the other machine.
+  services.genai-server.role = "node";
+
+  ## media-tools moved node-side (it is the engine's front desk: its op
+  ## list IS this machine's capability surface), and it needs the TTS
+  ## facade for text_to_speech. That facade is NOT a thin router — Piper
+  ## runs in it, on the CPU — so it stays on the controller, and this node
+  ## reaches back for it. The mirror image of ttsHq, which the controller
+  ## already reaches for over here: CPU voices there, GPU voices here, and
+  ## each side points at the half it does not host.
+  services.genai-server.backends.tts = "http://10.0.0.1:8892";
   ## Stop ComfyUI when no client has been connected for 30 minutes, and let
   ## the activation socket start it again (~7s) on the next request.
   ## Measured 2026-08-02: idle for two days after its last render it still
@@ -181,6 +201,16 @@
   ## below): its port is withheld from this blanket opening and admitted
   ## only from the router.
   services.genai-server.openFirewallGlobally = true;
+
+  ## RSSMonster, ON TRIAL. Built from a local checkout rather than the
+  ## published tag: the trusted-header login that lets it sit behind the SSO
+  ## gate without a second password is a patch submitted upstream and not yet
+  ## released, and the whole point of running it here is to find out whether
+  ## that flow — and the reader itself — is worth keeping.
+  services.genai-server.rssmonster = {
+    enable = true;
+    src = "/tmp/claude-1000/-home-erahhal-Code-genai-server/54713dbe-145d-4b9d-8160-2e7bd77e71f6/scratchpad/rssmonster";
+  };
 
   ## This box has a monitor on it, so let it use it: when a render or a
   ## model load starts and nobody has touched the desk for five minutes,
@@ -384,17 +414,24 @@
   ## Links only. Health probes keep using the real local address, because
   ## "can I reach it" and "where do I send a browser" stop being the same
   ## question behind a proxy.
+  ## THE SUBDOMAINS ARE DERIVED, not listed. Which surface is published at
+  ## which subdomain is decided by the ingress plugin's `surfaces.nix`, on
+  ## the OTHER machine — so a hand-written copy here goes stale the moment
+  ## a surface is added, and does it silently: `serviceUrls` is keyed by
+  ## card name, a missing key is the fallback rather than an error, and the
+  ## health probe keeps using the local address so the card stays green
+  ## while its link points at a port nothing serves. That is exactly what
+  ## happened to RSSMonster and LibreChat, which were published correctly
+  ## and linked to https://ai.homefree.host:8904/.
+  ##
+  ## The `/svc/*` entries stay written out: those are paths this portal
+  ## proxies itself, not subdomains the plugin knows about.
   services.genai-server.portal.serviceUrls =
     let
-      sub = s: "https://${s}.homefree.host";
       svc = s: "https://ai.homefree.host/svc/${s}";
-    in {
-      "Open WebUI"      = sub "webui";
-      "ComfyUI"         = sub "comfy";
-      "SearXNG"         = sub "search";
-      "Magentic-UI"     = sub "magentic";
-      "Realtime voice"  = sub "voice";
-
+    in
+    inputs.genai-server.lib.portalServiceUrls { domain = "homefree.host"; }
+    // {
       "Image server"    = svc "image";
       "Media tools"     = svc "media";
       "Search tool"     = svc "search";
@@ -404,14 +441,11 @@
       "Code sandbox"    = svc "code";
       "TTS"             = svc "tts";
       "Segment server"  = svc "segment";
-
-      ## The portal proxies neither the OpenAI-dialect endpoints nor
-      ## Kokoro, so these get subdomains of their own rather than a LAN
-      ## link the proxy cannot serve.
-      "llama-swap"      = sub "swap";
-      "LiteLLM"         = sub "litellm";
-      "Ollama dialect"  = sub "ollama";
-      "TTS-HQ"          = sub "ttshq";
+      ## llama-swap, LiteLLM, the Ollama dialect and TTS-HQ used to be
+      ## listed here with subdomains of their own, because the portal
+      ## proxies neither the OpenAI-dialect endpoints nor Kokoro. They
+      ## still have those subdomains — the plugin publishes them, so the
+      ## derived map above already carries all four.
     };
 
   ## Name that resolves for every LAN client (bare "logistikon" doesn't).
