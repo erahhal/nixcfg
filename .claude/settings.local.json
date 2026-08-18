@@ -583,7 +583,18 @@
       "Bash(awk '/claude-wrapper = pkgs.writeShellScriptBin/{f=1} f{print NR\": \"$0} f&&/^  '\"'\"''\"'\"';/{exit}' ~/Code/nflx-nixcfg/modules/ai.nix)",
       "Bash(timeout 15 cs render)",
       "Bash(timeout 15 cs --inline)",
-      "Bash(command -v cs)"
+      "Bash(command -v cs)",
+      "Bash(command -v pdftotext pdftk qpdf mutool)",
+      "WebFetch(domain:www.msi.com)",
+      "WebFetch(domain:download-2.msi.com)",
+      "Bash(/nix/store/gbwx196q0ahwd59napmf4n7qj06is5w6-poppler-utils-26.06.0/bin/pdfinfo MAGX870TOMAHAWKWIFI_English.pdf)",
+      "Bash(/nix/store/gbwx196q0ahwd59napmf4n7qj06is5w6-poppler-utils-26.06.0/bin/pdftoppm -f 73 -l 73 -r 300 -png MAGX870TOMAHAWKWIFI_English.pdf blockdiag)",
+      "WebFetch(domain:us.msi.com)",
+      "WebFetch(domain:www.crucial.com)",
+      "Bash(bash /tmp/msi-research/sweep.sh)",
+      "Bash(tee changelogs.txt)",
+      "Bash(bash /tmp/msi-research/prices.sh)",
+      "WebFetch(domain:support.microsoft.com)"
     ],
     "deny": [],
     "ask": []
