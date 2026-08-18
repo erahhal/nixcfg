@@ -503,7 +503,10 @@ in
         (broken bitwarden-desktop) # currently insecure
         brave
         calibre
-        czkawka
+        # czkawka-full = czkawka + krokiet + czkawka_cli, wrapped with ffmpeg on PATH.
+        # Plain `czkawka` finds no similar VIDEOS without it, and says
+        # "Not found any similar videos" while doing so.
+        czkawka-full
         # digikam
         discord
         element-desktop

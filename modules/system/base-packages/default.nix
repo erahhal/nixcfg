@@ -28,6 +28,7 @@ let userParams = config.hostParams.user; in
     cabextract
     ccze
     cdrkit
+    chromaprint      # fpcalc: audio fingerprint — the cheap half of "is this the same video re-encoded"
     cowsay
     cpufrequtils
     cyme
@@ -41,6 +42,7 @@ let userParams = config.hostParams.user; in
     exfat
     exiftool
     fbset
+    fclones          # exact-content dedup (blake3 + reflink/hardlink); the pass to run before any perceptual one
     ffmpeg
     file
     fio

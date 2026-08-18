@@ -313,6 +313,15 @@
   ## the encoder's 1.5GB of weights and nothing else.
   services.genai-server.portal.semantic.enable = true;
 
+  ## And the other half of "is this already here": the copy scan. Neither
+  ## of the two things above reaches it — the gallery pairs renders that
+  ## are byte-identical, the search ranks by resemblance, and this store's
+  ## duplication is neither, being re-encodes, resizes and remuxes left
+  ## behind by tools that rewrote a file on the way past. Costs no weights
+  ## and no card: ffmpeg and arithmetic, on the CPU, and a sweep over an
+  ## already-fingerprinted store is 30ms.
+  services.genai-server.portal.duplicates.enable = true;
+
   ## ReActor's own gate over the input photos of a face swap, off — it
   ## fires on ordinary photos of adults here, and `swap_face_fast` can only
   ## report the black frame it returns, never work around it. A declared,
