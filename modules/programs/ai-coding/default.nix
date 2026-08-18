@@ -8,15 +8,16 @@
 #
 #   - claude-openrouter    -> Claude Code via OpenRouter (~/.claude-openrouter)
 #   - opencode-openrouter  -> opencode via OpenRouter (isolated XDG dirs)
-#   - claude-logistikon    -> Claude Code via the local genai-server bridge
-#                             (~/.claude-logistikon; pre-tuned env, plus the
-#                             stack's tools over MCP — see below)
+#   - claude-local         -> Claude Code via the genai-server control
+#                             plane (~/.claude-local; pre-tuned env, plus
+#                             the stack's tools over MCP — see below)
 #
-# Hermes AI agent from Nous Research. Configured to use the local genai-server
-# on logistikon; provides isolated config dirs on other hosts:
+# Hermes AI agent from Nous Research. Configured against the genai-server
+# control plane; provides isolated config dirs on other hosts:
 #
 #   - hermes               -> Hermes CLI with default OpenRouter provider
-#   - hermes-logistikon    -> Hermes with local genai-server pre-configured
+#   - hermes-local         -> Hermes with the genai-server control plane
+#                             pre-configured
 #
 # Qwen Code (Alibaba's gemini-cli fork):
 #
@@ -51,8 +52,8 @@ let
   ## option — it exists only on the one host that imports and enables the
   ## module. Everywhere else it silently evaluated to `{ }`, which is not
   ## "no models" in any useful sense: this module ships the harnesses on
-  ## every host and they all point at logistikon over the LAN. The damage
-  ## was worst in claude-logistikon, where an empty list means no context
+  ## every host and they all point at the same fleet. The damage
+  ## was worst in claude-local, where an empty list means no context
   ## table, so CLAUDE_CODE_AUTO_COMPACT_WINDOW went unset and Claude Code
   ## fell back to assuming 200k against a 128k model.
   ##
@@ -70,32 +71,44 @@ let
   orCfg = userParams.openrouter;
   username = userParams.username;
 
-  # Endpoint for the local genai-server bridge (:4000). ON logistikon this
-  # MUST be loopback, never the LAN name: nothing about `logistikon.lan`
-  # survives a dead network, even though the server is on the same box. The
-  # name resolves only via the router's DNS (it is not in /etc/hosts by
-  # default, and no public resolver answers a `.lan` name), and it resolves to
-  # the *wlan0* address — so one failure takes out both the lookup and the
-  # route to an address that is 6 inches away. A VPN does exactly that:
-  # switching Mullvad on with no configuration hijacks DNS and, with its
-  # default "Local network sharing: block", drops traffic to 10.0.0.x —
-  # stranding every harness on the machine that hosts the models, with no
-  # working LLM left to debug the network with (2026-07-31 outage). Loopback
-  # needs no resolver and no interface, and VPN kill-switches always permit
-  # `lo`, so this path has nothing left to break.
+  # THE CONTROL PLANE, not a node. Both endpoints below are
+  # controller-scoped in genai-server's `serviceScope`, so this is the only
+  # address either of them has ever had an answer at.
   #
-  # Other hosts keep the LAN name — it is the only way to reach the box from
-  # them. On logistikon that name is *also* pinned to 127.0.0.1 in /etc/hosts,
-  # which covers the browser/portal URLs this file does not own (see
-  # modules/hosts/logistikon/configuration.nix).
+  # It used to be `logistikon.lan`, from when that box was the whole
+  # deployment, and the move to a control plane did not take these with it.
+  # The models kept working, which is why nobody looked: genai-server ran a
+  # LiteLLM on every machine (it was the one service missing from the role
+  # table) so the node answered :4000 anyway. The MCP half did not and never
+  # had — no node listens on the gateway's port — so all three harnesses
+  # here spent weeks configured with a tool endpoint that refused every
+  # connection, while the sessions themselves looked perfectly healthy.
+  # genai-server scopes LiteLLM to the controller as of 2026-08-18, which
+  # removes the copy that was covering for the stale address.
+  #
+  # WHAT THIS GIVES UP, said plainly because it was won by an outage. The
+  # old arrangement pinned logistikon to loopback so that a hijacked
+  # resolver or a VPN kill-switch could not strand the machine that hosted
+  # the models (Mullvad's default "block local network sharing" did exactly
+  # that on 2026-07-31). Loopback is not available any more — a node runs no
+  # bridge to loop back to — so the route to the controller is now on the
+  # path for every host including this one. An ADDRESS rather than a name
+  # keeps the resolver off it, which is the half that can still be removed;
+  # see hostParams.aiCoding.controllerHost.
+  # Still asked, and still about the same thing: which hosts are certainly
+  # adjacent to the fleet. It sets opencode's DEFAULT model, and a default
+  # pointed at a server the machine may be nowhere near is a broken editor
+  # rather than a broken option. logistikon is on the controller's LAN by
+  # construction; a laptop is not.
   onLogistikon = config.networking.hostName == "logistikon";
-  genaiHost = if onLogistikon then "127.0.0.1" else "logistikon.lan";
-  genaiBaseUrl = "http://${genaiHost}:4000";
+  genaiHost = config.hostParams.aiCoding.controllerHost;
+  genaiBaseUrl =
+    "http://${genaiHost}:${toString config.hostParams.aiCoding.controllerLitellmPort}";
   genaiApiUrl = "${genaiBaseUrl}/v1";
   # The stack's MCP gateway (genai-server's `ports.mcpGateway`), a generic
-  # OpenAPI->MCP bridge over its tool servers. It is in `servicePorts`, so
-  # logistikon's openFirewallGlobally admits it from the LAN and the
-  # off-box harnesses reach it by the same name they reach :4000 by.
+  # OpenAPI->MCP bridge over its tool servers. Not remapped by the platform
+  # hosting the controller, so unlike the bridge's port this is the stack's
+  # own number.
   genaiMcpUrl = "http://${genaiHost}:8899/mcp";
 
   # Key file: explicit option wins; otherwise auto-detect the conventional
@@ -138,7 +151,7 @@ let
     exec ${pkgs.opencode}/bin/opencode "$@"
   '';
 
-  # Claude Code against the local genai-server (logistikon's LiteLLM
+  # Claude Code against the genai-server control plane (its LiteLLM
   # Anthropic bridge). Own config dir so the dummy-token session never
   # clobbers the subscription OAuth login. Env block mirrors the tuning in
   # genai-server's README:
@@ -162,7 +175,7 @@ let
   # once. On a 32GB card with a 23GB dense model that is not a slowdown, it
   # is a failure to start. Hence all four pinned to one value.
   #
-  # So the model is chosen per SESSION instead: `claude-logistikon -m <id>`,
+  # So the model is chosen per SESSION instead: `claude-local -m <id>`,
   # or ANTHROPIC_MODEL in the environment. `-l` lists the fleet — generated
   # from genai-server's published catalog, so it cannot drift from the
   # server the way a hand-written list would.
@@ -178,9 +191,9 @@ let
   # fires against the window Claude Code THINKS it has.
   claudeCtxCase = lib.concatMapStringsSep "\n" (n:
     "      ${n}) CTX=${toString genaiModels.${n}.context} ;;") claudeModelIds;
-  claude-logistikon = pkgs.writeShellScriptBin "claude-logistikon" ''
+  claude-local = pkgs.writeShellScriptBin "claude-local" ''
     #!${pkgs.bash}/bin/bash
-    export CLAUDE_CONFIG_DIR="$HOME/.claude-logistikon"
+    export CLAUDE_CONFIG_DIR="$HOME/.claude-local"
     export ANTHROPIC_BASE_URL="${genaiBaseUrl}"
     export ANTHROPIC_AUTH_TOKEN=dummy
     export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-${config.hostParams.aiCoding.claudeModel}}
@@ -194,7 +207,7 @@ let
           echo "models served by ${genaiBaseUrl}:"
           echo "${claudeModelHelp}"
           echo
-          echo "current: $ANTHROPIC_MODEL   (claude-logistikon -m <id>)"
+          echo "current: $ANTHROPIC_MODEL   (claude-local -m <id>)"
           echo "note: auto-compaction is set from each model's REAL window"
           echo "      (below), so a shorter one compacts sooner rather"
           echo "      than overflowing."
@@ -244,7 +257,7 @@ ${claudeCtxCase}
     src = inputs.claude-statusbar;
   };
 
-  # StatusLine config shared by both claude and claude-logistikon.
+  # StatusLine config shared by both claude and claude-local.
   claudeStatusBarSettings = builtins.toJSON {
     statusLine = {
       type = "command";
@@ -260,16 +273,16 @@ ${claudeCtxCase}
 
   # Hermes CLI wrapper that configures it to use the local genai-server
   # by default. This provides a hermes command that's pre-configured to
-  # use `genaiApiUrl` (the :4000 bridge) as the provider endpoint.
-  hermes-logistikon = pkgs.writeShellScriptBin "hermes-logistikon" ''
+  # use `genaiApiUrl` (the controller's bridge) as the provider endpoint.
+  hermes-local = pkgs.writeShellScriptBin "hermes-local" ''
     #!${pkgs.bash}/bin/bash
-    export HERMES_HOME="$HOME/.hermes-logistikon"
+    export HERMES_HOME="$HOME/.hermes-local"
     mkdir -p "$HERMES_HOME"
     exec ${hermes}/bin/hermes "$@"
   '';
 
   # Declaratively manage hermes config for the local genai-server provider.
-  # Similar to opencode's provider.logistikon, this sets up hermes to use
+  # Similar to opencode's provider below, this sets up hermes to use
   # the local genai-server (`genaiApiUrl`) as its default provider.
   # The hermes CLI reads its config from ~/.hermes/config.yaml, so we manage
   # that file declaratively.
@@ -287,7 +300,7 @@ ${claudeCtxCase}
         models = lib.mapAttrs (_: _: { }) genaiModels;
       };
     };
-    # The stack's tools, from the same gateway claude-logistikon and opencode
+    # The stack's tools, from the same gateway claude-local and opencode
     # read. hermes speaks Streamable HTTP when a server entry carries a `url`
     # (stdio is `command`/`args`), and the gateway's `GET /mcp` -> 405 does
     # not trip hermes' content-type preflight — that probe rejects only a 2xx
@@ -339,7 +352,7 @@ ${claudeCtxCase}
     mv "$tmp" "$settings"
   '';
 
-  # Everything claude-logistikon gets that plain `claude` does not, beyond
+  # Everything claude-local gets that plain `claude` does not, beyond
   # the wrapper's env: the statusline (shared) plus the tool exclusions
   # below.
   #
@@ -373,20 +386,20 @@ ${claudeCtxCase}
   # option is generic and its own example is a poster render. A non-video
   # graph added there would come through as `workflow_<name>` and be
   # excluded with them, so it would need naming here.
-  claudeLogistikonManagedSettings = builtins.toJSON {
+  claudeLocalManagedSettings = builtins.toJSON {
     inherit (builtins.fromJSON claudeStatusBarSettings) statusLine;
     permissions.deny = [ "mcp__genai__workflow_*" ];
   };
 
   # `*` rather than `+`: `+` replaces a whole top-level object, which would
   # drop any allow rules Claude Code has written next to our deny list.
-  mergeClaudeLogistikonSettings = pkgs.writeShellScript "claude-logistikon-settings-merge" ''
+  mergeClaudeLocalSettings = pkgs.writeShellScript "claude-local-settings-merge" ''
     set -eu
-    settings="$HOME/.claude-logistikon/settings.json"
-    mkdir -p "$HOME/.claude-logistikon"
+    settings="$HOME/.claude-local/settings.json"
+    mkdir -p "$HOME/.claude-local"
     [ -s "$settings" ] || echo '{}' > "$settings"
     tmp=$(mktemp)
-    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLogistikonManagedSettings} \
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLocalManagedSettings} \
       '. * $managed' "$settings" > "$tmp"
     mv "$tmp" "$settings"
   '';
@@ -404,29 +417,40 @@ ${claudeCtxCase}
   # declared there is silently ignored). The `--mcp-config` flag does work,
   # but it is VARIADIC: `claude --mcp-config f "$@"` eats the wrapper's
   # arguments, and appending it instead breaks every subcommand
-  # (`claude-logistikon mcp list`). So it goes in the file, the same way the
+  # (`claude-local mcp list`). So it goes in the file, the same way the
   # settings above do, and `*` keeps any server added with `claude mcp add`.
-  claudeLogistikonMcp = builtins.toJSON {
+  claudeLocalMcp = builtins.toJSON {
     mcpServers.genai = { type = "http"; url = genaiMcpUrl; };
   };
 
-  mergeClaudeLogistikonMcp = pkgs.writeShellScript "claude-logistikon-mcp-merge" ''
+  mergeClaudeLocalMcp = pkgs.writeShellScript "claude-local-mcp-merge" ''
     set -eu
-    cfg="$HOME/.claude-logistikon/.claude.json"
-    mkdir -p "$HOME/.claude-logistikon"
+    cfg="$HOME/.claude-local/.claude.json"
+    mkdir -p "$HOME/.claude-local"
     [ -s "$cfg" ] || echo '{}' > "$cfg"
     tmp=$(mktemp)
-    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLogistikonMcp} \
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLocalMcp} \
       '. * $managed' "$cfg" > "$tmp"
     mv "$tmp" "$cfg"
   '';
 
-  # opencode provider for the local genai-server (logistikon), at
-  # `genaiApiUrl`. Port 4000 is the LiteLLM bridge, whose
+  # opencode provider for the genai-server control plane, at
+  # `genaiApiUrl`.
+  #
+  # THE PROVIDER IS STILL CALLED `logistikon` while the URL is the
+  # controller's, and that is a deliberate hold rather than an oversight.
+  # The id is half of a model name people type and opencode saves
+  # (`logistikon/coder-pro`), so renaming it invalidates a selection rather
+  # than a comment — and it is not simply wrong: the bridge moved, the
+  # weights did not, and every bare name here still executes on that box.
+  # Rename it when there is a second node to make it ambiguous.
+  #
+  # That is the LiteLLM bridge (`controllerLitellmPort`), whose
   # context_window_fallbacks silently continue an overflowing session on a
-  # larger-window model (it forwards to the 8897 dashboard filter proxy, so
-  # not-ready models still 503 cleanly). apiKey is required by the AI SDK
-  # client but ignored server-side.
+  # larger-window model — and which now forwards to each NODE's portal by
+  # name, so `<model>@<node>` addresses one machine and the bare name falls
+  # through the fleet. apiKey is required by the AI SDK client but ignored
+  # server-side.
   #
   # limit.context MUST match each model's real `-c` in genai-server's
   # module.nix — opencode otherwise assumes a huge window, blows past the
@@ -450,7 +474,7 @@ ${claudeCtxCase}
   # that can't reach the box at all. coder-pro stays the default
   # (non-thinking, agent-RL-trained, battle-tested tool parser, 256k);
   # `qwen38` is the A/B challenger, and as of 2026-08-17 it is also what
-  # claude-logistikon defaults to (hostParams.aiCoding.claudeModel) — so the
+  # claude-local defaults to (hostParams.aiCoding.claudeModel) — so the
   # A/B is now running by itself, on the harness that has the eval suite
   # behind it, with opencode holding the control. It is the 96k half of the
   # 3.8 pair because that is what the `dense` alias resolves to; a session
@@ -483,7 +507,7 @@ ${claudeCtxCase}
         options = { temperature = m.temperature; top_p = m.topP; };
       }) genaiModels;
     };
-    # The same tools claude-logistikon gets, from the same gateway. opencode
+    # The same tools claude-local gets, from the same gateway. opencode
     # registers an MCP server's tools as `<server>_<tool>`, so these arrive
     # as `genai_web_search`, `genai_generate_image` and so on.
     #
@@ -499,7 +523,7 @@ ${claudeCtxCase}
       enabled = true;
       timeout = 900000;
     };
-    # Video, for the reason spelled out at claudeLogistikonManagedSettings:
+    # Video, for the reason spelled out at claudeLocalManagedSettings:
     # already absent while `mediaTools.chatWorkflows` is off, kept out of the
     # harness if that is ever turned on for Open WebUI's sake. opencode's
     # `tools` map takes globs and is evaluated against the same
@@ -515,7 +539,7 @@ ${claudeCtxCase}
   # key from LOGISTIKON_API_KEY, which settings-level `env` exports at
   # startup — no secret, no wrapper script needed. The Qwen OAuth free tier
   # was discontinued 2026-04, so there's no login to protect and the plain
-  # `qwen` command can default to logistikon outright.
+  # `qwen` command can default to the local fleet outright.
   #
   # contextWindowSize / max_tokens mirror opencodeConfig above and MUST
   # likewise match each model's real `-c` in genai-server's module.nix;
@@ -572,6 +596,63 @@ ${claudeCtxCase}
     mv "$tmp" "$settings"
   '';
 
+  # ~/.claude-logistikon -> ~/.claude-local, and the same for hermes.
+  #
+  # A RENAME OF A DIRECTORY THAT HOLDS DATA IS A MIGRATION, never a new
+  # default. These hold session history, MCP approvals and whatever Claude
+  # Code has written next to the keys this module manages; a wrapper that
+  # simply started pointing somewhere else would come up looking healthy
+  # with an empty history, which is the failure that reports nothing.
+  #
+  # ENTRY BY ENTRY rather than `mv` of the whole directory, because home-
+  # manager may already have created the new one (it manages
+  # `.hermes-local/config.yaml`), and a whole-directory move that declines
+  # when the target exists would then silently never run. Anything already
+  # present on the new side wins and the old copy is LEFT — this never
+  # overwrites and never deletes, so a partial migration is inspectable
+  # rather than lost.
+  migrateHarnessDirs = pkgs.writeShellScript "ai-harness-dirs-migrate" ''
+    set -eu
+    migrate() {
+      old="$HOME/$1"; new="$HOME/$2"
+      [ -d "$old" ] || return 0
+      mkdir -p "$new"
+      moved=0 kept=0
+      for f in "$old"/* "$old"/.[!.]*; do
+        [ -e "$f" ] || continue
+        base=$(basename "$f")
+        if [ -e "$new/$base" ]; then kept=$((kept + 1)); continue; fi
+        mv "$f" "$new/$base"; moved=$((moved + 1))
+      done
+      if rmdir "$old" 2>/dev/null; then
+        # Not `[ ... ] && echo`: under `set -e` a bare && list whose test
+        # fails IS the statement's exit status, so the nothing-to-do case
+        # would abort activation.
+        if [ "$moved" -gt 0 ]; then
+          echo "moved $moved entries from $1 to $2"
+        fi
+      else
+        echo "$1 still holds $kept entr(ies) that $2 already has; left alone"
+      fi
+      return 0
+    }
+    migrate .claude-logistikon .claude-local
+    migrate .hermes-logistikon .hermes-local
+  '';
+
+  # The old names, kept working. They are what is in muscle memory and in
+  # any script somebody wrote, and a command that vanishes on a rebuild is
+  # a worse way to learn about a rename than one that says so and works.
+  claude-logistikon-alias = pkgs.writeShellScriptBin "claude-logistikon" ''
+    echo "claude-logistikon is now claude-local (it points at the control" >&2
+    echo "plane rather than at one node); the old name still works." >&2
+    exec ${claude-local}/bin/claude-local "$@"
+  '';
+  hermes-logistikon-alias = pkgs.writeShellScriptBin "hermes-logistikon" ''
+    echo "hermes-logistikon is now hermes-local; the old name still works." >&2
+    exec ${hermes-local}/bin/hermes-local "$@"
+  '';
+
 in
 {
   # Function form so `lib` is home-manager's extended lib (lib.hm.*).
@@ -579,28 +660,37 @@ in
     home.packages = [
       claude-openrouter
       opencode-openrouter
-      claude-logistikon
+      claude-local
+      claude-logistikon-alias
       claude-statusbar
-      hermes-logistikon
+      hermes-local
+      hermes-logistikon-alias
       pkgs.qwen-code
     ]
     # `hermes` (default, OpenRouter provider) collides with nflx-nixcfg's
     # Netflix-gateway `hermes` on Netflix hosts, so ship it only elsewhere —
-    # same treatment as the default `opencode`. hermes-logistikon (local
-    # genai-server, isolated ~/.hermes-logistikon, unique bin name) has no
-    # collision and stays on every host, like claude-logistikon.
+    # same treatment as the default `opencode`. hermes-local (local
+    # genai-server, isolated ~/.hermes-local, unique bin name) has no
+    # collision and stays on every host, like claude-local.
     ++ lib.optionals (!userParams.nflxHost) [ pkgs.opencode hermes ];
 
-    home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # First: the merges below mkdir the new directories, so a migration
+    # ordered after them would find a target that already exists and move
+    # nothing.
+    home.activation.aiHarnessDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${migrateHarnessDirs}
+    '';
+
+    home.activation.claudeSettings = lib.hm.dag.entryAfter [ "aiHarnessDirs" ] ''
       run ${mergeClaudeSettings}
     '';
 
-    home.activation.claudeLogistikonSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      run ${mergeClaudeLogistikonSettings}
+    home.activation.claudeLocalSettings = lib.hm.dag.entryAfter [ "aiHarnessDirs" ] ''
+      run ${mergeClaudeLocalSettings}
     '';
 
-    home.activation.claudeLogistikonMcp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      run ${mergeClaudeLogistikonMcp}
+    home.activation.claudeLocalMcp = lib.hm.dag.entryAfter [ "aiHarnessDirs" ] ''
+      run ${mergeClaudeLocalMcp}
     '';
 
     home.activation.qwenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -621,8 +711,8 @@ in
       text = lib.generators.toYAML { } hermesConfig;
     };
 
-    # Separate config for hermes-logistikon wrapper (isolated config dir).
-    home.file.".hermes-logistikon/config.yaml" = {
+    # Separate config for hermes-local wrapper (isolated config dir).
+    home.file.".hermes-local/config.yaml" = {
       text = lib.generators.toYAML { } hermesConfig;
     };
 

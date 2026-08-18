@@ -658,7 +658,7 @@
           a llama.cpp floor of b10434 (below that genai-server drops it with
           a warning, and modules/system/overlays is what pins the engine
           above it). Bump the genai-server input with this, or the harness
-          asks :4000 for a name nothing serves.
+          asks the bridge for a name nothing serves.
         '';
       };
       claudeBackgroundModel = lib.mkOption {
@@ -679,6 +679,60 @@
 
           Subagents are deliberately unaffected — they do real work, and a 4B
           is the wrong place to send it.
+        '';
+      };
+
+      ## WHERE THE FLEET IS ANSWERED FROM, which is not where the card is.
+      ##
+      ## These used to be one hardcoded `logistikon.lan`, from when the box
+      ## WAS the deployment. It is now a node behind a control plane, and
+      ## the two halves the harnesses need — the Anthropic-protocol bridge
+      ## and the MCP gateway — are both controller-scoped. Pointing at a
+      ## node got away with it for the models (genai-server ran a LiteLLM on
+      ## every machine until 2026-08-18) and silently did not for the tools:
+      ## no node has ever listened on the gateway's port.
+      controllerHost = lib.mkOption {
+        type = lib.types.str;
+        default = "10.0.0.1";
+        example = "controller.lan";
+        description = ''
+          The machine running genai-server's controller half — the bridge,
+          the MCP gateway, the tool servers. Every harness here points at
+          it; nothing points at a node any more.
+
+          AN ADDRESS RATHER THAN A NAME, deliberately, and the reason is a
+          real outage. `logistikon.lan` resolved only through the router's
+          DNS and only to that box's *wlan0* address, so one failure took
+          out both the lookup and the route — and a VPN does exactly that
+          (Mullvad with default "block local network sharing" strands every
+          harness, 2026-07-31). An address removes the resolver from the
+          path; it cannot remove the route, and that exposure is real and
+          inherent now that the bridge is on another machine. The old
+          arrangement answered it with loopback, which is no longer
+          available: a node runs no bridge to loop back to.
+
+          Also why it is not a `.lan` name: Tailscale's resolver expands
+          search domains, which has resolved v4-only hosts here to the
+          router's WAN address before.
+        '';
+      };
+
+      controllerLitellmPort = lib.mkOption {
+        type = lib.types.port;
+        default = 9027;
+        example = 4000;
+        description = ''
+          Port the controller's LiteLLM answers on.
+
+          NOT genai-server's own 4000. HomeFree's app platform allocates
+          ports for the stack it hosts — its portal is 9023 where the
+          stack's default is 8897 — so this is that platform's number, and
+          it is a value copied across a repo boundary with nothing checking
+          it. Set it to 4000 for a controller that is a plain NixOS host
+          running the module directly.
+
+          The MCP gateway is not here because it is not remapped: the
+          platform publishes it on the stack's own 8899.
         '';
       };
     };

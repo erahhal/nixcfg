@@ -406,9 +406,13 @@
   ## off from its own portal and models. Same trick the homefree module uses
   ## for *.homefree.lan. Local-only: this file is /etc/hosts on logistikon, so
   ## LAN clients (and the mediaPublicUrl links below) are unaffected.
-  ## The CLI harnesses do not rely on this — they address :4000 as 127.0.0.1
-  ## directly on this host (modules/programs/ai-coding), which survives even a
-  ## wedged resolver, since nsswitch consults systemd-resolved before `files`.
+  ## The CLI harnesses USED to be the main beneficiary — they addressed
+  ## :4000 as 127.0.0.1 on this host, which survived even a wedged resolver.
+  ## They no longer can: the Anthropic bridge and the MCP gateway are both
+  ## controller-scoped, so both live on 10.0.0.1 and there is nothing local
+  ## left to loop back to (modules/programs/ai-coding says what that gave
+  ## up). This pin still covers everything else on the box that reaches a
+  ## service on the box — the portal, the engines, the browser URLs.
   networking.extraHosts = ''
     127.0.0.1 logistikon.lan
   '';

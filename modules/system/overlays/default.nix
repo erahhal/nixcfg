@@ -22,7 +22,7 @@ let
   ##
   ## IT IS NOT OPTIONAL HERE ANY MORE. Since 2026-08-17 `qwen38` holds the
   ## `dense` alias and is what claude-logistikon defaults to, so below this
-  ## floor genai-server drops it and the harness asks :4000 for a name
+  ## floor genai-server drops it and the harness asks the bridge for a name
   ## nothing serves — a broken coding session rather than one missing model
   ## in a picker.
   qwen38Floor = "10434";
