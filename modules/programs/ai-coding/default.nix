@@ -689,11 +689,21 @@ in
       hermes-local
       pkgs.qwen-code
     ]
-    # `hermes` (default, OpenRouter provider) collides with nflx-nixcfg's
-    # Netflix-gateway `hermes` on Netflix hosts, so ship it only elsewhere —
-    # same treatment as the default `opencode`. hermes-local (local
-    # genai-server, isolated ~/.hermes-local, unique bin name) has no
-    # collision and stays on every host, like claude-local.
+    # ONLY THE UNSUFFIXED NAMES ARE EVER GATED, and that is the rule rather
+    # than a fact about these two. `opencode` and `hermes` collide with
+    # nflx-nixcfg's own commands of those names on a work host, so they ship
+    # elsewhere only. Everything above is `<tool>-local` or
+    # `<tool>-openrouter`, which nflx-nixcfg does not use and never has —
+    # checked, not assumed: it defines claude, hermes, codex, genai, pi,
+    # agent-beach, newt and the `*-vanilla` variants, and mentions no
+    # `-local` anywhere.
+    #
+    # So the local harnesses are on EVERY host, including the work one, and
+    # a future gate here must not reach them. Each also execs its underlying
+    # binary by store path rather than off PATH, so `hermes-local` runs OUR
+    # hermes on a machine where `hermes` is the corp gateway. That is the
+    # property that makes shipping them everywhere safe, and it is worth
+    # keeping when any of these wrappers is touched.
     ++ lib.optionals (!userParams.nflxHost) [ pkgs.opencode hermes ];
 
     # First: the merges below mkdir the new directories, so a migration
