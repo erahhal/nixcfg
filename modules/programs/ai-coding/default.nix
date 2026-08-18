@@ -448,15 +448,15 @@ ${claudeCtxCase}
   # The local server is made the default model only ON logistikon, so
   # opencode's default isn't hijacked on other (possibly off-LAN) hosts
   # that can't reach the box at all. coder-pro stays the default
-  # (non-thinking, agent-RL-trained, battle-tested tool parser);
-  # qwen-dense-long is the A/B challenger — same 77.2 vs 70.6 SWE-V
-  # advantage, but thinking-mode, so it stays opt-in until proven in real
-  # sessions. It is the LONG variant rather than qwen-dense because that
-  # one (25744MiB) cannot coexist with the resident set and takes
-  # transcription down with it; the long variant is the same weights at
-  # 128k for MTP's ~1.7x speed, which speculative decoding makes a pure
-  # throughput difference. Claude Code can drive thinking models now — the
-  # bridge preserves reasoning_content as of 2026-08-03.
+  # (non-thinking, agent-RL-trained, battle-tested tool parser, 256k);
+  # `qwen38` is the A/B challenger, and as of 2026-08-17 it is also what
+  # claude-logistikon defaults to (hostParams.aiCoding.claudeModel) — so the
+  # A/B is now running by itself, on the harness that has the eval suite
+  # behind it, with opencode holding the control. It is the 96k half of the
+  # 3.8 pair because that is what the `dense` alias resolves to; a session
+  # that outgrows it reroutes to qwen38-long rather than dying. Claude Code
+  # can drive thinking models — the bridge preserves reasoning_content as
+  # of 2026-08-03, which is what made a thinking model eligible here at all.
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     # Binary is nix-managed; opencode must not self-update.

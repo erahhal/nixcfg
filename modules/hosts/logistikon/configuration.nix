@@ -147,9 +147,10 @@
   ## qwen-dense ships disabled: at 25744MiB it cannot coexist with the
   ## resident set (asr + embed + rerank), so it and voice/RAG/memory lock
   ## each other out — whichever loads second dies. Kept available here for
-  ## its MTP speed (~80 vs ~47 tok/s), but nothing DEFAULTS to it any more:
-  ## `qwen-dense-long` holds the `dense` alias and is what opencode and
-  ## Claude Code point at. So this only loads when named explicitly — and
+  ## its MTP speed (~80 vs ~47 tok/s), but nothing DEFAULTS to it: since
+  ## 2026-08-17 `qwen38` holds the `dense` alias and is what Claude Code
+  ## points at (opencode still defaults to `coder-pro`), and before that it
+  ## was `qwen-dense-long`. So this only loads when named explicitly — and
   ## when it does, transcription stops working until it ages out. Drop this
   ## line if that trade is not worth it.
   services.genai-server.llmModels.qwen-dense.serve.enable = true;

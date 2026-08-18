@@ -10,6 +10,23 @@ let
   ## the floor as `serve.minLlamaCpp` and drops the model below it.
   ds4FlashFloor = "10254";
 
+  ## genai-server's Qwen3.8 entries (`qwen38`, `qwen38-long`, `qwen38-uc`)
+  ## need llama.cpp >= b10434, and unlike the floor above the failure is not
+  ## "slow": on b10430 llama-server EXITS SILENTLY once a Qwen3.8 prompt
+  ## passes ~90-100k tokens (llama.cpp #27090), which llama-swap surfaces as
+  ## "upstream command exited prematurely" — the same string a VRAM overrun
+  ## gives you. `qwen38-long` and `qwen38-uc` declare a 128k window, i.e.
+  ## straight through that cliff, and `qwen38` sits at 96k, i.e. on it. This
+  ## is the floor the override below actually has to clear; ds4FlashFloor is
+  ## already met by anything recent.
+  ##
+  ## IT IS NOT OPTIONAL HERE ANY MORE. Since 2026-08-17 `qwen38` holds the
+  ## `dense` alias and is what claude-logistikon defaults to, so below this
+  ## floor genai-server drops it and the harness asks :4000 for a name
+  ## nothing serves — a broken coding session rather than one missing model
+  ## in a picker.
+  qwen38Floor = "10434";
+
   trunkPkgs = import inputs.nixpkgs-trunk {
     inherit system;
     # Mirrors nixpkgs.config below. Written out rather than referencing
@@ -194,19 +211,62 @@ bool vulkan_remake_and_acquire( void );'
       # nixos-unstable (which as of 2026-08-06 still ships b10133 even after
       # a flake update; the bump missed this channel's branch point).
       #
-      # This override is SELF-RETIRING: warnIf fires at eval time the moment
-      # nixos-unstable's own llama-cpp reaches the floor, so the reminder
-      # arrives on a rebuild instead of depending on somebody remembering.
-      # When it fires, delete this binding and the trunkPkgs import above —
-      # leaving it would silently pin llama.cpp to trunk forever, which is
-      # how a temporary override becomes a permanent, unnoticed one.
+      # TRUNK IS NO LONGER FAR ENOUGH, so this is trunk's DERIVATION with a
+      # newer SOURCE pinned on top. genai-server's Qwen3.8 entries declare
+      # serve.minLlamaCpp = b10434 and nothing in any channel is there yet:
+      # nixos-unstable is b10133, this trunk pin is b10273, and even
+      # nixpkgs master is only b10408. Bumping the trunk INPUT would not
+      # help — it lands on b10408, still short — so the version and src
+      # hash are set here instead. Upstream b10472 is 2026-08-17.
+      #
+      # WHY b10434 IS THE FLOOR: llama.cpp #27090 reports llama-server
+      # exiting SILENTLY on Qwen3.8-27B past ~90-100k of prompt on b10430,
+      # gone by b10434. Only four commits separate those tags and one is
+      # `ggml : recurrent state rollback for ggml_ssm_scan` (#26623), which
+      # is the attribution the reporter offers — marked "presumably" there
+      # and worth treating as such, since the crash was plain prefill and
+      # that commit is about draft-token state. Taking the whole tested
+      # build rather than backporting one 25-file cross-backend commit is
+      # the point: the floor is empirical (b10430 dies, b10434 does not)
+      # even where the cause is not settled.
+      #
+      # This also brings `chat : pass reasoning_effort to template`, which
+      # gives llama-server a native --reasoning-effort instead of the
+      # --chat-template-kwargs route genai-server uses for Qwen3.8 today.
+      #
+      # OVERRIDING src MEANS OVERRIDING npmDepsHash: the derivation builds
+      # the bundled web UI from tools/ui, and that lockfile changed between
+      # b10273 and b10408. It did NOT change between b10408 and b10472
+      # (verified byte-identical), so this is master's value.
+      #
+      # STILL SELF-RETIRING, now against the HIGHER of the two floors —
+      # retiring at ds4-flash's b10254 would drop the Qwen3.8 pair without
+      # anything saying so, which is the failure this warning exists to
+      # prevent. When it fires, delete this binding and the trunkPkgs
+      # import above; leaving it pins llama.cpp to a hand-set tag forever,
+      # which is how a temporary override becomes a permanent one.
       llama-cpp = lib.warnIf
-        (lib.versionAtLeast prev.llama-cpp.version ds4FlashFloor)
+        (lib.versionAtLeast prev.llama-cpp.version qwen38Floor)
         ("nixcfg: nixos-unstable's llama-cpp is now b${prev.llama-cpp.version}"
-          + " (>= b${ds4FlashFloor}), so the nixpkgs-trunk override in"
+          + " (>= b${qwen38Floor}, the highest floor genai-server declares),"
+          + " so the nixpkgs-trunk override in"
           + " modules/system/overlays/default.nix is redundant. Remove the"
           + " llama-cpp binding and the trunkPkgs import.")
-        trunkPkgs.llama-cpp;
+        (trunkPkgs.llama-cpp.overrideAttrs (finalAttrs: old: {
+          version = "10472";
+          src = trunkPkgs.fetchFromGitHub {
+            owner = "ggml-org";
+            repo = "llama.cpp";
+            tag = "b${finalAttrs.version}";
+            hash = "sha256-re0WlafJUDZOPNfIq2ECRSctdrDFVc0fXb5iSd7gDR8=";
+            leaveDotGit = true;
+            postFetch = ''
+              git -C "$out" rev-parse --short HEAD > $out/COMMIT
+              find "$out" -name .git -print0 | xargs -0 rm -rf
+            '';
+          };
+          npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+        }));
 
       # TEMPORARY: nixos-unstable moved glaze to 8.0.0, but the hyprland it
       # still ships (0.56.1) does `find_package(glaze 7...<8 QUIET)` and, when

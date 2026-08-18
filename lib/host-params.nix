@@ -619,7 +619,7 @@
     aiCoding = {
       claudeModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen-dense-long";
+        default = "qwen38";
         example = "coder-pro";
         description = ''
           Model claude-logistikon uses when none is given on the command
@@ -635,11 +635,30 @@
           quietly getting `coder-pro` while the box that needed the setting
           least was the only one with it.
 
-          `qwen-dense-long` scores higher on coding (77.2/59.3 SWE-bench
-          Verified / Terminal-Bench vs `coder-pro`'s 70.6/36.2) with half
-          the window, which is safe now that the wrapper tells Claude Code
-          the real context instead of letting it assume 200k.
-          `coder-pro` is the conservative choice for its 256k window.
+          `qwen38` (Qwen3.8-27B) took this from `qwen-dense-long` on
+          2026-08-17, the same day it took the `dense` alias on the server —
+          the two are one decision, and the server-side entry carries the
+          argument for it. Short version: its card beats Qwen3.6-27B on
+          every benchmark it reports and by a wide margin on the agent ones,
+          and the box measured 1.81x the generation speed from the drafter
+          that ships inside the same GGUF. What nobody has done is run the
+          two generations against each other on real work, so this is a
+          decision to DRIVE the newer weights rather than a result.
+          `qwen-dense-long` is still served; going back is this one word.
+
+          Its window is 96k rather than 128k — the drafter is what costs the
+          other 25% — which the wrapper reads from the catalog rather than
+          assuming, so auto-compaction moves with it. A session that
+          outgrows it is rerouted to `qwen38-long` by the bridge's
+          context_window_fallbacks. `coder-pro` stays the conservative
+          choice for its 256k window.
+
+          IT NEEDS A NEW ENOUGH SERVER TO RESOLVE AT ALL: the entry exists
+          only in genai-server revisions from 2026-08-17 on, and it declares
+          a llama.cpp floor of b10434 (below that genai-server drops it with
+          a warning, and modules/system/overlays is what pins the engine
+          above it). Bump the genai-server input with this, or the harness
+          asks :4000 for a name nothing serves.
         '';
       };
       claudeBackgroundModel = lib.mkOption {
