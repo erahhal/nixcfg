@@ -8,6 +8,9 @@
 #
 #   - claude-openrouter    -> Claude Code via OpenRouter (~/.claude-openrouter)
 #   - opencode-openrouter  -> opencode via OpenRouter (isolated XDG dirs)
+#   - opencode-local       -> opencode via the genai-server control plane
+#                             (isolated XDG dirs, so it never touches the
+#                             default or corp opencode config)
 #   - claude-local         -> Claude Code via the genai-server control
 #                             plane (~/.claude-local; pre-tuned env, plus
 #                             the stack's tools over MCP — see below)
@@ -27,7 +30,10 @@
 # The default `claude` (subscription) comes from base-user's claude-code on
 # every host. The default `opencode` package is installed here only on
 # non-Netflix hosts; on Netflix nflx-nixcfg provides it (and its `*-vanilla`
-# personal-login variants).
+# personal-login variants). NOTHING HERE CONFIGURES THAT COMMAND any more —
+# it is whatever the host it is on says it is, and the local fleet is
+# `opencode-local` on every host including the ones where the plain name is
+# already spoken for.
 { config, pkgs, lib, inputs, ... }:
 
 let
@@ -95,12 +101,6 @@ let
   # path for every host including this one. An ADDRESS rather than a name
   # keeps the resolver off it, which is the half that can still be removed;
   # see hostParams.aiCoding.controllerHost.
-  # Still asked, and still about the same thing: which hosts are certainly
-  # adjacent to the fleet. It sets opencode's DEFAULT model, and a default
-  # pointed at a server the machine may be nowhere near is a broken editor
-  # rather than a broken option. logistikon is on the controller's LAN by
-  # construction; a laptop is not.
-  onLogistikon = config.networking.hostName == "logistikon";
   genaiHost = config.hostParams.aiCoding.controllerHost;
   genaiBaseUrl =
     "http://${genaiHost}:${toString config.hostParams.aiCoding.controllerLitellmPort}";
@@ -148,6 +148,31 @@ let
     export XDG_DATA_HOME="$HOME/.opencode-openrouter/data"
     mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
     ${openrouterExportKey "OPENROUTER_API_KEY"}
+    exec ${pkgs.opencode}/bin/opencode "$@"
+  '';
+
+  # opencode against the genai-server control plane. Isolated XDG dirs for
+  # the same reason as opencode-openrouter above, and one more that is the
+  # whole point of this command existing:
+  #
+  # `opencode` MEANS DIFFERENT THINGS ON DIFFERENT MACHINES. On a work host
+  # nflx-nixcfg owns that name and points it at the corp proxy; on a
+  # personal one this module used to write the local fleet's provider into
+  # the shared ~/.config/opencode/opencode.json. Same command, two servers,
+  # decided by which laptop you happened to open — which is a coin-flip
+  # about where a prompt goes, and no way to tell from the prompt.
+  #
+  # So the local one gets its own name and stops touching the default's
+  # config at all. `opencode` is now whatever that host says it is,
+  # `opencode-local` is this fleet everywhere, and `opencode-openrouter` is
+  # OpenRouter — the same trio as claude/claude-local/claude-openrouter.
+  # It carries no `pkgs.opencode` on the profile, so it is safe on a work
+  # host where that name is already taken.
+  opencode-local = pkgs.writeShellScriptBin "opencode-local" ''
+    #!${pkgs.bash}/bin/bash
+    export XDG_CONFIG_HOME="$HOME/.opencode-local/config"
+    export XDG_DATA_HOME="$HOME/.opencode-local/data"
+    mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
     exec ${pkgs.opencode}/bin/opencode "$@"
   '';
 
@@ -289,10 +314,10 @@ ${claudeCtxCase}
   hermesConfig = {
     model = {
       default = "coder-pro";
-      provider = "logistikon";
+      provider = "local";
     };
     providers = {
-      logistikon = {
+      local = {
         name = "litellm";
         base_url = genaiApiUrl;
         api_key = "dummy";
@@ -437,13 +462,18 @@ ${claudeCtxCase}
   # opencode provider for the genai-server control plane, at
   # `genaiApiUrl`.
   #
-  # THE PROVIDER IS STILL CALLED `logistikon` while the URL is the
-  # controller's, and that is a deliberate hold rather than an oversight.
-  # The id is half of a model name people type and opencode saves
-  # (`logistikon/coder-pro`), so renaming it invalidates a selection rather
-  # than a comment — and it is not simply wrong: the bridge moved, the
-  # weights did not, and every bare name here still executes on that box.
-  # Rename it when there is a second node to make it ambiguous.
+  # THE PROVIDER IS `local`, not the name of the machine the weights happen
+  # to sit on. It was held at `logistikon` for one turn on the grounds that
+  # the id is half of a model name people type and opencode SAVES, so
+  # renaming it invalidates a selection rather than a comment. That reason
+  # died with the move to a config dir of its own: `opencode-local` reads
+  # ~/.opencode-local, which is new, so there is no saved selection to
+  # invalidate and nothing has ever typed `logistikon/` into it.
+  #
+  # It is also the accurate name now. The bridge addresses each node by its
+  # own suffix (`coder-pro@logistikon-eth`) and the bare names fall through
+  # the fleet, so a provider standing for "the bare names" is standing for
+  # the fleet rather than for one box.
   #
   # That is the LiteLLM bridge (`controllerLitellmPort`), whose
   # context_window_fallbacks silently continue an overflowing session on a
@@ -469,7 +499,7 @@ ${claudeCtxCase}
   # llama.cpp's preserve_thinking consumes), top_k/min_p (server-side
   # flags; LiteLLM may drop top_k).
   #
-  # The local server is made the default model only ON logistikon, so
+  # The default model is set unconditionally now (see the entry itself), so
   # opencode's default isn't hijacked on other (possibly off-LAN) hosts
   # that can't reach the box at all. coder-pro stays the default
   # (non-thinking, agent-RL-trained, battle-tested tool parser, 256k);
@@ -491,9 +521,9 @@ ${claudeCtxCase}
     # The title agent fires a concurrent request at session start that
     # evicts the single slot's prefix cache (titles become timestamps).
     agent.title.disable = true;
-    provider.logistikon = {
+    provider.local = {
       npm = "@ai-sdk/openai-compatible";
-      name = "Logistikon";
+      name = "Local fleet";
       options = {
         baseURL = genaiApiUrl;
         apiKey = "dummy";
@@ -529,8 +559,14 @@ ${claudeCtxCase}
     # `tools` map takes globs and is evaluated against the same
     # `<server>_<tool>` names.
     tools = { "genai_workflow_*" = false; };
-  } // lib.optionalAttrs onLogistikon {
-    model = "logistikon/coder-pro";
+    # UNCONDITIONAL now, where it used to be logistikon-only. That gate was
+    # right while this config was the SHARED one: a default model pointed at
+    # a server the machine may be nowhere near would have hijacked
+    # `opencode` on a laptop that had its own providers set up. In a config
+    # dir of its own there are no other providers to hijack — leaving it
+    # unset would just mean `opencode-local` starts with no model anywhere
+    # but logistikon, which is a broken command rather than a polite one.
+    model = "local/coder-pro";
   };
 
   # Qwen Code (Alibaba's gemini-cli fork) against the local genai-server,
@@ -640,19 +676,6 @@ ${claudeCtxCase}
     migrate .hermes-logistikon .hermes-local
   '';
 
-  # The old names, kept working. They are what is in muscle memory and in
-  # any script somebody wrote, and a command that vanishes on a rebuild is
-  # a worse way to learn about a rename than one that says so and works.
-  claude-logistikon-alias = pkgs.writeShellScriptBin "claude-logistikon" ''
-    echo "claude-logistikon is now claude-local (it points at the control" >&2
-    echo "plane rather than at one node); the old name still works." >&2
-    exec ${claude-local}/bin/claude-local "$@"
-  '';
-  hermes-logistikon-alias = pkgs.writeShellScriptBin "hermes-logistikon" ''
-    echo "hermes-logistikon is now hermes-local; the old name still works." >&2
-    exec ${hermes-local}/bin/hermes-local "$@"
-  '';
-
 in
 {
   # Function form so `lib` is home-manager's extended lib (lib.hm.*).
@@ -660,11 +683,10 @@ in
     home.packages = [
       claude-openrouter
       opencode-openrouter
+      opencode-local
       claude-local
-      claude-logistikon-alias
       claude-statusbar
       hermes-local
-      hermes-logistikon-alias
       pkgs.qwen-code
     ]
     # `hermes` (default, OpenRouter provider) collides with nflx-nixcfg's
@@ -697,10 +719,19 @@ in
       run ${mergeQwenSettings}
     '';
 
-    # Declaratively manage the default opencode config with the local
-    # genai-server provider. Non-Netflix hosts only (Netflix's opencode has
-    # its own corp config); the default `opencode` above is likewise gated.
-    xdg.configFile."opencode/opencode.json" = lib.mkIf (!userParams.nflxHost) {
+    # The local fleet's provider, in `opencode-local`'s OWN config dir.
+    #
+    # It used to be written to xdg.configFile."opencode/opencode.json" — the
+    # DEFAULT one — on non-Netflix hosts, which is what made `opencode` mean
+    # the local fleet here and the corp proxy at work. Nothing writes the
+    # default's config now, on any host: `opencode` is whatever that machine
+    # says it is, and this fleet has a command of its own everywhere.
+    #
+    # Removing the old entry is enough to clean up after it. It was a
+    # home-manager symlink, so the next activation takes exactly what it put
+    # there and leaves the rest of ~/.config/opencode alone — including any
+    # sessions and auth that were never ours.
+    home.file.".opencode-local/config/opencode/opencode.json" = {
       text = builtins.toJSON opencodeConfig;
     };
 
