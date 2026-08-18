@@ -45,6 +45,10 @@ let
   ## unrelated `fastModel` setting of its own further down.
   claudeBackgroundModel = config.hostParams.aiCoding.claudeBackgroundModel;
 
+  ## What every *-local harness defaults to. One option, read in three
+  ## places, so they cannot drift apart the way they did.
+  localModel = config.hostParams.aiCoding.localModel;
+
   ## The model list comes from the genai-server flake, not from a copy here.
   ##
   ## It used to be written out three times — opencode, qwen-code, hermes —
@@ -221,7 +225,7 @@ let
     export CLAUDE_CONFIG_DIR="$HOME/.claude-local"
     export ANTHROPIC_BASE_URL="${genaiBaseUrl}"
     export ANTHROPIC_AUTH_TOKEN=dummy
-    export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-${config.hostParams.aiCoding.claudeModel}}
+    export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-${localModel}}
 
     # -m/--model picks the model for this session; -l/--list shows them.
     # Consumed here rather than passed through, so they never reach claude.
@@ -313,7 +317,7 @@ ${claudeCtxCase}
   # that file declaratively.
   hermesConfig = {
     model = {
-      default = "coder-pro";
+      default = localModel;
       provider = "local";
     };
     providers = {
@@ -491,26 +495,28 @@ ${claudeCtxCase}
   # verified in opencode 1.17/1.18 + @ai-sdk/openai-compatible), and they
   # matter: opencode sends NO temperature for custom models, but it DOES
   # force top_p=1.0 for any model id containing "qwen" — the explicit
-  # options pin vendor sampling and neutralize that. temp 0.6/top_p 0.95 =
-  # official Qwen3.6 "precise coding" mode (server default stays 1.0 for
-  # chat). Deliberately NOT set: small_model (titles already run on the
+  # options pin vendor sampling and neutralize that. The NUMBERS come from
+  # each catalog entry (`temperature`/`topP`), never from here — a pair
+  # written into this comment goes stale the moment the server retunes an
+  # entry, and this one had said "temp 0.6, precise coding mode" for a while
+  # after the catalog moved to 1.0/0.95. Read the entry, not this sentence.
+  # Deliberately NOT set: small_model (titles already run on the
   # session's model; pinning one would *create* llama-swap churn),
   # interleaved (the SDK already round-trips reasoning_content, which
   # llama.cpp's preserve_thinking consumes), top_k/min_p (server-side
   # flags; LiteLLM may drop top_k).
   #
-  # The default model is set unconditionally now (see the entry itself), so
-  # opencode's default isn't hijacked on other (possibly off-LAN) hosts
-  # that can't reach the box at all. coder-pro stays the default
-  # (non-thinking, agent-RL-trained, battle-tested tool parser, 256k);
-  # `qwen38` is the A/B challenger, and as of 2026-08-17 it is also what
-  # claude-local defaults to (hostParams.aiCoding.claudeModel) — so the
-  # A/B is now running by itself, on the harness that has the eval suite
-  # behind it, with opencode holding the control. It is the 96k half of the
-  # 3.8 pair because that is what the `dense` alias resolves to; a session
-  # that outgrows it reroutes to qwen38-long rather than dying. Claude Code
-  # can drive thinking models — the bridge preserves reasoning_content as
-  # of 2026-08-03, which is what made a thinking model eligible here at all.
+  # THE DEFAULT MODEL IS NOT DECIDED HERE any more. opencode held `coder-pro`
+  # as the control arm of an A/B against `qwen38` on claude-local — but an
+  # A/B whose result nobody reads is not an experiment, it is two harnesses
+  # disagreeing about what this fleet codes on, and it survived a month past
+  # the point where anyone was comparing. All three now read
+  # hostParams.aiCoding.localModel, which carries the argument for whichever
+  # model is current.
+  #
+  # Claude Code can drive thinking models — the bridge preserves
+  # reasoning_content as of 2026-08-03, which is what made a thinking model
+  # eligible for any of these at all.
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     # Binary is nix-managed; opencode must not self-update.
@@ -566,7 +572,11 @@ ${claudeCtxCase}
     # dir of its own there are no other providers to hijack — leaving it
     # unset would just mean `opencode-local` starts with no model anywhere
     # but logistikon, which is a broken command rather than a polite one.
-    model = "local/coder-pro";
+    #
+    # The model itself comes from the same option claude-local and
+    # hermes-local read, so the three cannot disagree about what this fleet
+    # codes on.
+    model = "local/${localModel}";
   };
 
   # Qwen Code (Alibaba's gemini-cli fork) against the local genai-server,

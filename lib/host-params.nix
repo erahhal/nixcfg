@@ -617,48 +617,54 @@
     };
 
     aiCoding = {
-      claudeModel = lib.mkOption {
+      localModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen38";
+        default = "qwen38-long";
         example = "coder-pro";
         description = ''
-          Model claude-logistikon uses when none is given on the command
-          line. Sets the main, sonnet/opus and SUBAGENT slots together —
-          which is the point: picking a model with `/model` inside a session
-          moves only the main one, leaving the others on this value, and two
-          large models alternating is what makes llama-swap thrash.
+          The model every `*-local` harness reaches for when none is given:
+          claude-local, opencode-local and hermes-local alike.
 
-          Defaulted here rather than set per host: every host runs the same
-          wrapper against the same server, so a model chosen on one of them
-          is a model chosen for all of them. It lived in logistikon's
+          ONE OPTION FOR ALL OF THEM, and that is the point. It was
+          `claudeModel` and it moved only Claude Code, so the fleet's answer
+          to "which model do I code against" lived in three places and drifted
+          — opencode sat on `coder-pro` for a month after claude-local moved
+          off it, which is not an A/B when nobody is reading the result, just
+          two harnesses disagreeing. Change it here and every local harness
+          moves together.
+
+          For Claude Code it sets the main, sonnet/opus and SUBAGENT slots
+          at once — picking a model with `/model` inside a session moves only
+          the main one, leaving the others behind, and two large models
+          alternating is what makes llama-swap thrash.
+
+          Defaulted here rather than per host: every host runs the same
+          wrappers against the same server, so a model chosen on one of them
+          is chosen for all of them. It lived in logistikon's
           configuration.nix until 2026-08-04, which meant the laptops kept
-          quietly getting `coder-pro` while the box that needed the setting
+          quietly getting the old value while the box that needed the setting
           least was the only one with it.
 
-          `qwen38` (Qwen3.8-27B) took this from `qwen-dense-long` on
-          2026-08-17, the same day it took the `dense` alias on the server —
-          the two are one decision, and the server-side entry carries the
-          argument for it. Short version: its card beats Qwen3.6-27B on
-          every benchmark it reports and by a wide margin on the agent ones,
-          and the box measured 1.81x the generation speed from the drafter
-          that ships inside the same GGUF. What nobody has done is run the
-          two generations against each other on real work, so this is a
-          decision to DRIVE the newer weights rather than a result.
-          `qwen-dense-long` is still served; going back is this one word.
+          `qwen38-long` is Qwen3.8-27B at its full 128k. It took this from
+          `qwen38` (the same weights at 96k, which is what the drafter costs)
+          and from `coder-pro` before that. The pair is worth stating plainly
+          because the trade is real: coder-pro is non-thinking, agent-RL
+          trained, has a battle-tested tool parser and a 256k window; the 3.8
+          dense wins on every benchmark its card reports and by a wide margin
+          on the agent ones. 128k over 96k because a coding session is the
+          thing that outgrows a window, and the narrow half only ever bought
+          the drafter's speed back.
 
-          Its window is 96k rather than 128k — the drafter is what costs the
-          other 25% — which the wrapper reads from the catalog rather than
-          assuming, so auto-compaction moves with it. A session that
-          outgrows it is rerouted to `qwen38-long` by the bridge's
-          context_window_fallbacks. `coder-pro` stays the conservative
-          choice for its 256k window.
+          Windows are read from the catalog rather than assumed, so
+          auto-compaction and opencode's `limit.context` move with this
+          automatically — nothing here needs to know a number.
 
-          IT NEEDS A NEW ENOUGH SERVER TO RESOLVE AT ALL: the entry exists
-          only in genai-server revisions from 2026-08-17 on, and it declares
-          a llama.cpp floor of b10434 (below that genai-server drops it with
-          a warning, and modules/system/overlays is what pins the engine
-          above it). Bump the genai-server input with this, or the harness
-          asks the bridge for a name nothing serves.
+          IT NEEDS A NEW ENOUGH SERVER TO RESOLVE AT ALL: the qwen38 entries
+          exist only in genai-server revisions from 2026-08-17 on, and they
+          declare a llama.cpp floor of b10434 (below that genai-server drops
+          them with a warning, and modules/system/overlays is what pins the
+          engine above it). Bump the genai-server input with this, or the
+          harnesses ask the bridge for a name nothing serves.
         '';
       };
       claudeBackgroundModel = lib.mkOption {

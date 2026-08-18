@@ -167,12 +167,13 @@
   ## prompts to this slot, set claudeBackgroundModel back to "" and it
   ## returns to the main model.
 
-  ## Claude Code's default model is NOT set here — see
-  ## hostParams.aiCoding.claudeModel in lib/host-params.nix. It was, and
-  ## that made it a logistikon-only setting: every laptop runs the same
-  ## claude-logistikon against this same server, and they all kept the old
-  ## default. Anything about which model the harnesses use belongs to the
-  ## option, not to the host that happens to hold the card.
+  ## The harnesses' default model is NOT set here — see
+  ## hostParams.aiCoding.localModel in lib/host-params.nix, which every
+  ## `*-local` harness reads. It was set here once, and that made it a
+  ## logistikon-only setting: every laptop runs the same wrappers against
+  ## the same server, and they all kept the old default. Anything about
+  ## which model the harnesses use belongs to the option, not to the host
+  ## that happens to hold the card.
   ##
   ## (Whatever it is, set it there rather than reaching for `/model` in a
   ## session: that only moves the main slot, leaving subagents on the old
