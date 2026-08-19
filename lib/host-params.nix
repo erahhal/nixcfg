@@ -667,6 +667,45 @@
           harnesses ask the bridge for a name nothing serves.
         '';
       };
+      fanoutModel = lib.mkOption {
+        type = lib.types.str;
+        default = "qwen";
+        example = "coder-pro";
+        description = ''
+          The model `claude-local-fanout` picks: the one to code against when
+          TWO streams will be live at once.
+
+          Separate from `localModel` on purpose, because they answer
+          different questions. That one is "which model do I code against",
+          and depth wins it. This one is "which model do I code against when
+          a background subagent is running beside me", and WINDOW wins it.
+
+          The reason is a property of the server rather than of any model.
+          llama-server is started with `-np` unset, so it takes four slots,
+          and on b10472 those slots SHARE one KV pool the size of the
+          window — two live streams split that window instead of getting one
+          each. Measured 2026-08-18 against `qwen38-long` (131072): a
+          63,761-token conversation plus a 32,730-token background subagent
+          exhausted it, and both sides then failed with llama.cpp's
+          "Context size has been exceeded." for twenty minutes, each retry
+          re-prefilling the whole prompt first. LiteLLM cannot catch it —
+          that arrives as a 500, so `context_window_fallbacks` never fires.
+
+          Naming a wider model for those sessions buys the headroom back
+          without taxing the window of every session that does not need it.
+          `qwen` is the default because its 262144 is nearly free: a GDN
+          hybrid where only 10 of 40 layers carry KV, so the full window
+          costs ~2.7GB against `qwen38-long`'s ~4.3GB for half of it. The
+          cost is real and is a generation of coding depth — Qwen3.6 where
+          localModel is 3.8 — which is exactly why this is a separate
+          command and not a change to the default.
+
+          An assertion checks this names a served model and that its window
+          is genuinely WIDER than `localModel`'s. An equal-or-narrower one
+          would cost a model switch and buy no headroom at all, the same way
+          genai-server rejects a `serve.overflowTo` that is not wider.
+        '';
+      };
       claudeBackgroundModel = lib.mkOption {
         type = lib.types.str;
         default = "";

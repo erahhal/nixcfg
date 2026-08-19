@@ -14,6 +14,10 @@
 #   - claude-local         -> Claude Code via the genai-server control
 #                             plane (~/.claude-local; pre-tuned env, plus
 #                             the stack's tools over MCP — see below)
+#   - claude-local-fanout  -> the same, on hostParams.aiCoding.fanoutModel:
+#                             the wide-window model, for sessions that will
+#                             run a background subagent beside the
+#                             conversation (they share one KV pool)
 #
 # Hermes AI agent from Nous Research. Configured against the genai-server
 # control plane; provides isolated config dirs on other hosts:
@@ -48,6 +52,12 @@ let
   ## What every *-local harness defaults to. One option, read in three
   ## places, so they cannot drift apart the way they did.
   localModel = config.hostParams.aiCoding.localModel;
+
+  ## The wide-window model `claude-local-fanout` runs on. See the option for
+  ## the measurement; the short version is that llama-server's four slots
+  ## share ONE KV pool the size of the window, so a background subagent and
+  ## the conversation split it rather than getting one each.
+  fanoutModel = config.hostParams.aiCoding.fanoutModel;
 
   ## The model list comes from the genai-server flake, not from a copy here.
   ##
@@ -278,6 +288,27 @@ ${claudeCtxCase}
     export CLAUDE_CODE_ATTRIBUTION_HEADER=0
     export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
     exec ${pkgs.claude-code}/bin/claude "$@"
+  '';
+
+  # `claude-local -m <fanoutModel>`, as a command.
+  #
+  # A WRAPPER RATHER THAN A SHELL ALIAS so it works from scripts, from
+  # non-interactive shells and from anything that execs by name — the same
+  # reason every other harness here is a writeShellScriptBin.
+  #
+  # It passes `-m` THROUGH claude-local instead of reimplementing anything.
+  # That loop runs before the exports, so the model reaches the main,
+  # sonnet, opus AND subagent slots together, and
+  # CLAUDE_CODE_AUTO_COMPACT_WINDOW is recomputed from the chosen model's
+  # real context rather than from the default's. Both halves matter here:
+  # subagents are the reason this command exists, and a compaction threshold
+  # left on the narrower model would compact early against the wide window.
+  #
+  # A `-m` on the command line still wins — the loop takes the last one — so
+  # `claude-local-fanout -m coder-pro` is a one-off override, and
+  # `claude-local-fanout -l` lists the fleet with this model as `current`.
+  claude-local-fanout = pkgs.writeShellScriptBin "claude-local-fanout" ''
+    exec ${claude-local}/bin/claude-local -m ${fanoutModel} "$@"
   '';
 
   # Statusline for Claude Code showing 5h/7d rate-limit usage. Built from
@@ -576,6 +607,25 @@ ${claudeCtxCase}
 
   claudeLocalManagedSettings = builtins.toJSON {
     inherit (builtins.fromJSON claudeStatusBarSettings) statusLine;
+    # Telemetry, crash reports and update checks off. THE KEYS ARE ENV
+    # VARS, not settings fields — `telemetry`, `error_reporting` and
+    # `allow_update_checks` are not in Claude Code's schema at all. Checked
+    # against the deployed 2.1.223: "error_reporting" and
+    # "allow_update_checks" appear ZERO times in the binary and
+    # "telemetry" appears only as the name of a local log directory, so
+    # writing those three here would produce a settings file that looks
+    # configured and changes nothing. The four below are read.
+    #
+    # CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC, which the wrapper already
+    # exports, is the umbrella over these. They are set explicitly anyway:
+    # an umbrella is one release away from covering less than it did, and
+    # nothing would announce that.
+    env = {
+      DISABLE_TELEMETRY = "1";
+      DISABLE_ERROR_REPORTING = "1";
+      DISABLE_AUTOUPDATER = "1";
+      DO_NOT_TRACK = "1";
+    };
     # Measured end to end against the stub: 58 tools/~29.0k tokens ->
     # 17 tools/~6.1k, i.e. ~23k of window handed back on every turn.
     permissions.deny =
@@ -625,6 +675,77 @@ ${claudeCtxCase}
     ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg claudeLocalMcp} \
       '. * $managed' "$cfg" > "$tmp"
     mv "$tmp" "$cfg"
+  '';
+
+  # A managed CLAUDE.md for claude-local, and the one thing it has to say:
+  # DELEGATE SYNCHRONOUSLY.
+  #
+  # `Agent` runs in the background by default — 2.1.223's own wording is
+  # "Subagents run in the background by default ... Pass
+  # `run_in_background: false` for a synchronous run" — which puts the
+  # conversation and the agent on the card AT THE SAME TIME. Here that is
+  # the expensive kind of concurrency: llama-server takes n_slots = 4
+  # (`-np` is unset) and the slots share ONE KV pool the size of the
+  # model's window, so two live streams split the window instead of each
+  # getting one.
+  #
+  # Measured 2026-08-18 on qwen38-long: a 63,761-token conversation plus a
+  # 32,730-token background subagent exhausted the 131,072 pool, and both
+  # then retried for twenty minutes at 100% GPU without completing
+  # anything — each attempt re-prefilling ~90k tokens for 73s before
+  # llama.cpp returned 500 "Context size has been exceeded.". LiteLLM
+  # cannot rescue that: it classifies a 500 as an InternalServerError, so
+  # `context_window_fallbacks` (which does carry qwen38-long -> qwen) never
+  # applies and the ladder is not consulted.
+  #
+  # NOT the same problem as ANTHROPIC_DEFAULT_HAIKU_MODEL, which was
+  # measured INERT on this box on 2026-08-03 — see logistikon's config.
+  # Background traffic does not go through that slot; subagents do go
+  # through this one.
+  #
+  # It is written to a file of its own with CLAUDE.md importing it, rather
+  # than into CLAUDE.md directly, for the same reason the settings above
+  # are a jq merge and not a write: this half is managed and gets
+  # overwritten, anything put beside it by hand survives.
+  claudeLocalMemoryFile = "genai-fleet.md";
+  claudeLocalMemory = ''
+    # Running on the local fleet
+
+    This session reaches ONE shared GPU through `claude-local`. Other
+    people, and image and video work, share that card.
+
+    ## Delegate synchronously
+
+    Pass `run_in_background: false` when you use `Agent`.
+
+    In the background — the default — your conversation and the agent are
+    live on the card at once, and they do not get a context window each:
+    every slot on the model server shares ONE pool the size of the model's
+    window. Two live streams that no longer fit it BOTH fail, with
+    `Context size has been exceeded.`, after re-prefilling their whole
+    prompt first. So each failed attempt costs about a minute and retrying
+    does not help.
+
+    Delegating synchronously parks the parent. Its cached prefix becomes
+    reclaimable, and one stream is live at a time.
+
+    The budget, if you need to reason about it, is
+    `sum(context + max_tokens) < window` across everything live at once.
+    Launching several agents in one message is fine only when you know
+    their contexts are small.
+  '';
+
+  writeClaudeLocalMemory = pkgs.writeShellScript "claude-local-memory" ''
+    set -eu
+    dir="$HOME/.claude-local"
+    mkdir -p "$dir"
+    install -m 644 ${pkgs.writeText claudeLocalMemoryFile claudeLocalMemory} \
+      "$dir/${claudeLocalMemoryFile}"
+    # The import line, added once. CLAUDE.md itself stays the user's file.
+    if [ ! -e "$dir/CLAUDE.md" ] \
+       || ! grep -qF "@${claudeLocalMemoryFile}" "$dir/CLAUDE.md"; then
+      printf '@%s\n' "${claudeLocalMemoryFile}" >> "$dir/CLAUDE.md"
+    fi
   '';
 
   # opencode provider for the genai-server control plane, at
@@ -686,10 +807,17 @@ ${claudeCtxCase}
     # Binary is nix-managed; opencode must not self-update.
     autoupdate = false;
     # Drop old tool outputs before compacting — defers compaction, which
-    # costs a full re-prefill on the single-slot local server.
+    # costs a full re-prefill on the local server.
     compaction.prune = true;
-    # The title agent fires a concurrent request at session start that
-    # evicts the single slot's prefix cache (titles become timestamps).
+    # The title agent fires a concurrent request at session start, and a
+    # concurrent request is the expensive kind here. llama-server takes
+    # n_slots = 4 (`-np` is unset) and those slots SHARE one KV pool the
+    # size of the window, so a second live stream does not get a window of
+    # its own — it takes cells out of this one. Cheap case: it evicts the
+    # session's prefix and titles become timestamps. Expensive case: the
+    # two no longer fit and llama.cpp answers 500 "Context size has been
+    # exceeded." after re-prefilling the whole prompt. Measured on
+    # claude-local 2026-08-18; see claudeLocalMemory above.
     agent.title.disable = true;
     provider.local = {
       npm = "@ai-sdk/openai-compatible";
@@ -773,10 +901,10 @@ ${claudeCtxCase}
   # and limits both live here). The OpenAI pipeline round-trips
   # reasoning_content, so the thinking models are safe from qwen-code
   # (unlike the Anthropic bridge). timeout is generous: a llama-swap model
-  # load plus a single-slot 256k prefill can take minutes.
+  # load plus a 256k prefill can take minutes.
   #
   # Followup suggestions are disabled — they fire extra concurrent requests
-  # that evict the single slot's prefix cache (same reason opencode's title
+  # that compete for the server's shared KV pool (same reason opencode's title
   # agent is off). fastModel stays unset so side calls run on the session's
   # model instead of forcing llama-swap churn (tool-use summaries then
   # no-op). gitCoAuthor off: no AI-attribution trailers, ever.
@@ -867,6 +995,27 @@ ${claudeCtxCase}
 
 in
 {
+  # A fanout model that is not WIDER than the default is the one way
+  # `claude-local-fanout` can look configured and buy nothing: it would cost
+  # a model switch and leave the shared KV pool exactly as tight as it was.
+  # Same check, and the same reasoning, as genai-server's assertion on
+  # `serve.overflowTo`.
+  assertions = [
+    {
+      assertion = builtins.hasAttr fanoutModel genaiModels;
+      message = "hostParams.aiCoding.fanoutModel = \"${fanoutModel}\" names no model this fleet serves. Known: "
+        + lib.concatStringsSep ", " (lib.attrNames genaiModels);
+    }
+    {
+      assertion = !(builtins.hasAttr fanoutModel genaiModels
+                    && builtins.hasAttr localModel genaiModels)
+        || genaiModels.${fanoutModel}.context > genaiModels.${localModel}.context;
+      message = "hostParams.aiCoding.fanoutModel (\"${fanoutModel}\") must have a WIDER context than localModel"
+        + " (\"${localModel}\"): claude-local-fanout exists to buy KV headroom for concurrent streams, and an"
+        + " equal-or-narrower window buys none.";
+    }
+  ];
+
   # Function form so `lib` is home-manager's extended lib (lib.hm.*).
   home-manager.users.${username} = { lib, ... }: {
     home.packages = [
@@ -874,6 +1023,7 @@ in
       opencode-openrouter
       opencode-local
       claude-local
+      claude-local-fanout
       claude-statusbar
       hermes-local
       pkgs.qwen-code
@@ -912,6 +1062,10 @@ in
 
     home.activation.claudeLocalMcp = lib.hm.dag.entryAfter [ "aiHarnessDirs" ] ''
       run ${mergeClaudeLocalMcp}
+    '';
+
+    home.activation.claudeLocalMemory = lib.hm.dag.entryAfter [ "aiHarnessDirs" ] ''
+      run ${writeClaudeLocalMemory}
     '';
 
     home.activation.qwenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

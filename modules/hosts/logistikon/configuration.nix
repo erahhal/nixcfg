@@ -156,8 +156,8 @@
   services.genai-server.llmModels.qwen-dense.serve.enable = true;
   ## Claude Code's background slot (titles, small classification calls) on
   ## the CPU instead of pinned to whatever the session is using. Two things
-  ## come of it: that traffic stops queueing behind the conversation on
-  ## llama-swap's single GPU slot, and it becomes distinguishable from the
+  ## come of it: that traffic stops competing with the conversation for the
+  ## model server's shared KV pool, and it becomes distinguishable from the
   ## conversation, which is what makes a context readout stop jumping.
   ##
   ## Costs ~2.5GB of host RAM and no VRAM, and downloads nothing — it is the
