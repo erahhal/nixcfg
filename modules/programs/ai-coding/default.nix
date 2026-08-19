@@ -342,18 +342,27 @@ ${claudeCtxCase}
     # 900s. Matched to it, so the two agree on when a call has failed rather
     # than hermes giving up on one still running.
     #
-    # NOTE — no video exclusion here, unlike the other two harnesses. hermes
-    # can disable a whole MCP server but has no per-tool filter in 0.19.0
-    # (`mcp_servers.<name>.tools` is `{resources, prompts}`, not a name list).
-    # It gets whatever the gateway publishes, which today is the chat-facing
-    # spec with the ComfyUI graphs already left out; turning on
-    # `mediaTools.chatWorkflows` would reach this harness with nothing here
-    # to stop it.
+    # THIS IS THE HARNESS THAT GETS AN ALLOWLIST, and the note here used to
+    # say it could not have one: "hermes has no per-tool filter in 0.19.0
+    # (`mcp_servers.<name>.tools` is `{resources, prompts}`, not a name
+    # list)". Those two booleans are real but they are siblings, not the
+    # whole key. The same version reads `tools.include` (a whitelist) and
+    # `tools.exclude`, include winning over exclude, and applies them per
+    # tool before registration — `tools/mcp_tool.py`, `_should_register`.
+    # Exact names only: it is a set membership test, so no globs.
+    #
+    # An allowlist is the shape the other two cannot express, and it is
+    # better here for the reason written at genaiCodingTools: a tool added
+    # to a tool server does not reach a coding session unless somebody adds
+    # it. That also settles the video question this note was originally
+    # about — turning on `mediaTools.chatWorkflows` no longer reaches this
+    # harness, where before there was nothing here to stop it.
     mcp_servers = {
       genai = {
         url = genaiMcpUrl;
         timeout = 900;
         connect_timeout = 60;
+        tools.include = genaiCodingTools.keep;
       };
     };
   };
@@ -381,9 +390,104 @@ ${claudeCtxCase}
     mv "$tmp" "$settings"
   '';
 
+  # THE GENAI TOOLS A CODING SESSION WILL NEVER CALL, and what carrying
+  # them costs. One list, rendered into both harnesses that can express it
+  # (Claude Code's deny rules and opencode's `tools` map), because the
+  # judgement is about the tools and not about the client.
+  #
+  # MEASURED 2026-08-18 against a stub endpoint — the method the workflow_
+  # rule below already used, and no GPU: point a harness at a server that
+  # records the request and answers once, then read the tool block it sent.
+  # Claude Code 2.1.223 sends 58 tools, ~116k chars ~= 29k tokens, on EVERY
+  # turn. That is 30% of qwen38's 96k window and 23% of qwen38-long's 128k
+  # spent before a file is read. 34 of those tools (~12.3k tokens) are the
+  # gateway's.
+  #
+  # Grouped by the gateway's own upstreams — `curl <controller>:8899/tools`
+  # prints name -> upstream, which is how to re-derive this list rather than
+  # trusting it:
+  #
+  #   media  19 tools ~10.8k tok   image generation and editing, faces, TTS, STT
+  #   rag     7 tools  ~1.0k tok   four of them writes
+  #   memory  6 tools  ~0.9k tok
+  #   code    1 tool   ~0.4k tok   sandbox VM that cannot see this checkout
+  #   search  1 tool   ~0.1k tok   web_search, the reason any of this is here
+  #
+  # KEPT: `web_search` and the three READ tools of the knowledge
+  # collections. The call is per FAMILY rather than per tool, because a
+  # family is what a tool server is:
+  #   * media — a coding harness does not render pictures, and this is the
+  #     whole 10.8k.
+  #   * memory — Claude Code has its own memory and its own CLAUDE.md. A
+  #     second store that only one of the two ever writes is worse than
+  #     neither, because it looks like the box remembers.
+  #   * rag writes and `drop_collection` — a coding session has no business
+  #     mutating the box's collections, and dropping one is destructive
+  #     enough that genai-server confirm-gates it.
+  #   * `run_code` — Bash is right here. The sandbox is an ephemeral VM that
+  #     cannot reach this machine, so the only code it can run is code this
+  #     session has no interest in.
+  #
+  # BOTH HALVES ARE WRITTEN OUT because the harnesses need opposite ones:
+  # hermes takes a whitelist, Claude Code and opencode can only be told what
+  # to leave out. Together they are the gateway's inventory partitioned, and
+  # `keep` is the half that survives a tool server gaining a tool — which is
+  # the standing cost of the other two: something added to media-tools
+  # arrives in a coding session ENABLED and unnamed, and the only thing that
+  # notices is the window. The gateway's own comment celebrates precisely
+  # that ("a tool added to a tool server appears here on the next refresh,
+  # with nothing to update on this side"), and it is right, for chat.
+  #
+  # So: re-run the curl after adding a tool server, and expect `drop` to
+  # need a line. `keep` will not.
+  genaiCodingTools = {
+    keep = [
+      "web_search"
+      # The READ side of the knowledge collections, ~440 tokens for all
+      # three: looking something up in the box's own documents mid-task is
+      # a plausible thing for a coding session to want.
+      "list_collections" "list_documents" "search_documents"
+    ];
+    drop = [
+      # media
+      "create_mask" "edit_image" "face_frame_from_video" "generate_image"
+      "generate_image_with_face" "group_faces_in_folder" "inpaint_image"
+      "list_people" "list_regions" "photo_of_person" "portrait_from_video"
+      "reimagine_image" "smart_edit" "swap_face" "swap_face_fast"
+      "swap_face_full" "text_to_speech" "transcribe_audio" "who_is_this"
+      # memory
+      "consolidate_memories" "forget" "list_memories" "observe_conversation"
+      "recall" "remember"
+      # rag: the writes and the destructive one
+      "drop_collection" "ingest_path" "ingest_text" "ingest_url"
+      # sandbox
+      "run_code"
+    ];
+  };
+
   # Everything claude-local gets that plain `claude` does not, beyond
   # the wrapper's env: the statusline (shared) plus the tool exclusions
   # below.
+  #
+  # WEBSEARCH IS DENIED BECAUSE IT CANNOT WORK HERE, and this is the one
+  # rule that is about correctness rather than context. Claude Code sends it
+  # as an ordinary client tool — verified in the same capture, no
+  # server-side `type` on it — so the model can call it and does; what it
+  # cannot do is answer, because the search behind it is Anthropic's and
+  # this harness talks to the controller's bridge. The failure lands
+  # mid-task as a tool error instead of arriving as "this harness has no
+  # web", which is the worse of the two.
+  #
+  # `mcp__genai__web_search` is the replacement and was already on the
+  # gateway: SearXNG on the controller, 473 chars of schema against
+  # WebSearch's 877. Denying the built-in is also what stops a model
+  # choosing the broken one when both are offered.
+  #
+  # WEBFETCH IS DELIBERATELY KEPT. It fetches the URL from THIS machine and
+  # answers a prompt against it with the endpoint's own small-fast model,
+  # which the wrapper pins to the local fleet — so it works, and nothing on
+  # the gateway replaces it (`ingest_url` files a URL into a collection,
+  # which is a different act, and is denied above).
   #
   # WHY VIDEO IS DENIED HERE WHEN THE SERVER ALREADY DROPS IT. genai-server
   # decides this once, in `mediaTools.chatWorkflows` (off): the MCP gateway
@@ -415,9 +519,69 @@ ${claudeCtxCase}
   # option is generic and its own example is a poster render. A non-video
   # graph added there would come through as `workflow_<name>` and be
   # excluded with them, so it would need naming here.
+  # CLAUDE CODE'S OWN TOOLS, CULLED THE SAME WAY AND FOR THE SAME REASON.
+  # The gateway is not where the context goes: of the ~29k tokens of schema
+  # on every turn, 16.7k is built-in and 12.3k is the stack's. `Workflow` by
+  # itself is 5.5k — a fifth of the whole block, and more than the entire
+  # media tool server.
+  #
+  # This half is claude-local only. opencode and hermes have their own
+  # built-in sets and neither is expressed this way; the SHARED list is
+  # genaiCodingTools, which is the gateway half.
+  #
+  # WHAT IS CULLED AND WHY — every one of these is a real capability, so the
+  # test applied was "can it work on this box, driven by a 27B", not "is it
+  # good":
+  #   * Workflow (5.5k) — fans out dozens of subagents. There is one
+  #     llama-swap slot behind this endpoint, so they do not run in
+  #     parallel, they queue; and the GPU arbiter is what the queue collides
+  #     with. The most expensive tool here is also the one this box is
+  #     least able to run.
+  #   * Cron x3, ScheduleWakeup (2.3k) — scheduling and /loop pacing. A
+  #     local harness is started by a human at a terminal.
+  #   * EnterWorktree/ExitWorktree (1.7k) — this fleet works in place.
+  #   * ReportFindings (0.6k) — a rendering contract for /code-review only.
+  #   * NotebookEdit (0.4k) — no Jupyter here.
+  #   * TaskOutput (0.4k) — its own description begins "DEPRECATED", and the
+  #     path it used to return now comes back from the tool that started the
+  #     task. The rest of the Task family is NOT culled; see below.
+  #
+  # FOUR ARE DELIBERATELY KEPT, and two of them are kept BECAUSE `Agent` is.
+  # Subagents stay by choice — a second pass costs time this box has and
+  # buys an answer it might not otherwise get — and a kept capability should
+  # not be left half-wired:
+  #   * TaskCreate/Update/List/Get (2.2k) — the todo tracker, and the one
+  #     line here that was culled and then put back deliberately. It is the
+  #     harness remembering the plan instead of the model, which is worth
+  #     more at 27B than at frontier scale: what it buys is a multi-step job
+  #     that survives a compaction. 2.2k against a 96k window is the price
+  #     of the model not losing the thread, and that is a good trade until
+  #     something measures otherwise.
+  #   * SendMessage (0.4k) is the only way to continue a spawned agent with
+  #     its context intact. Culling it leaves `Agent` able to start work and
+  #     unable to follow it up.
+  #   * TaskStop (0.2k) is the off-switch. Agents run in the background by
+  #     default, this is a shared GPU, and a runaway one holding the card is
+  #     exactly the failure the arbiter exists to make rare — the model
+  #     should be able to end its own.
+  #   * Skill (0.5k) — slash commands are how the review and init flows are
+  #     invoked at all.
+  claudeBuiltinsOffForLocal = [
+    "Workflow"
+    "CronCreate" "CronDelete" "CronList" "ScheduleWakeup"
+    "EnterWorktree" "ExitWorktree"
+    "ReportFindings" "NotebookEdit"
+    "TaskOutput"
+  ];
+
   claudeLocalManagedSettings = builtins.toJSON {
     inherit (builtins.fromJSON claudeStatusBarSettings) statusLine;
-    permissions.deny = [ "mcp__genai__workflow_*" ];
+    # Measured end to end against the stub: 58 tools/~29.0k tokens ->
+    # 17 tools/~6.1k, i.e. ~23k of window handed back on every turn.
+    permissions.deny =
+      [ "WebSearch" "mcp__genai__workflow_*" ]
+      ++ claudeBuiltinsOffForLocal
+      ++ map (t: "mcp__genai__${t}") genaiCodingTools.drop;
   };
 
   # `*` rather than `+`: `+` replaces a whole top-level object, which would
@@ -564,7 +728,22 @@ ${claudeCtxCase}
     # harness if that is ever turned on for Open WebUI's sake. opencode's
     # `tools` map takes globs and is evaluated against the same
     # `<server>_<tool>` names.
-    tools = { "genai_workflow_*" = false; };
+    #
+    # The rest of the exclusions are the SAME LIST claude-local denies, from
+    # the same binding, so the two harnesses cannot end up carrying
+    # different tool budgets against the same gateway. Written as exact
+    # names rather than the glob families claude-local could have used: the
+    # glob POSITIONS were verified on Claude Code (leading, middle and
+    # trailing all match) and nothing here has verified opencode's, so this
+    # side spends a longer list on not having to find out from a tool that
+    # quietly stayed.
+    #
+    # No WebSearch equivalent to deny — opencode has no Anthropic web search
+    # to break. Its own `webfetch` is the counterpart of the one Claude Code
+    # keeps.
+    tools = { "genai_workflow_*" = false; }
+      // lib.listToAttrs
+        (map (t: lib.nameValuePair "genai_${t}" false) genaiCodingTools.drop);
     # UNCONDITIONAL now, where it used to be logistikon-only. That gate was
     # right while this config was the SHARED one: a default model pointed at
     # a server the machine may be nowhere near would have hijacked
