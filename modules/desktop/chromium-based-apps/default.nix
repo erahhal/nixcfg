@@ -74,6 +74,24 @@ let
       postBuild = ''
         rm $out/bin/brave
         makeWrapper ${originalBrave}/bin/brave $out/bin/brave ${forceIgpuFlags} ${braveFlags}
+
+        # symlinkJoin leaves share/applications pointing into the *unwrapped*
+        # brave, so anything launched through a desktop entry — the app
+        # launcher, xdg-open, and every link click that hits the default
+        # browser (brave-browser.desktop) — bypasses this wrapper entirely.
+        # It then runs with nixpkgs' own baked-in flags, which enable
+        # AcceleratedVideoDecodeLinuxGL (we deliberately disable it) and drop
+        # the iGPU pinning above, so GL goes through the NVIDIA vendor while
+        # the render node stays Intel: flicker, dead video, hangs. Brave is a
+        # singleton per profile, so whichever entry point starts it first wins
+        # for the whole session — which is why this presents as "fixed for a
+        # while, then broken again". Same treatment as the slack block below.
+        rm -rf $out/share/applications
+        mkdir -p $out/share/applications
+        for desktop in ${originalBrave}/share/applications/*.desktop; do
+          substitute "$desktop" "$out/share/applications/$(basename "$desktop")" \
+            --replace-fail "${originalBrave}/bin/brave" "$out/bin/brave"
+        done
       '';
       passthru = originalBrave.passthru;
       inherit (originalBrave) meta;
