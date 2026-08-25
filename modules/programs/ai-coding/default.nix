@@ -13,11 +13,10 @@
 #                             default or corp opencode config)
 #   - claude-local         -> Claude Code via the genai-server control
 #                             plane (~/.claude-local; pre-tuned env, plus
-#                             the stack's tools over MCP — see below)
-#   - claude-local-fanout  -> the same, on hostParams.aiCoding.fanoutModel:
-#                             the wide-window model, for sessions that will
-#                             run a background subagent beside the
-#                             conversation (they share one KV pool)
+#                             the stack's tools over MCP — see below).
+#                             Runs hostParams.aiCoding.localModel and holds
+#                             agentReserve tokens of its window back for
+#                             background subagents; --no-reserve opts out.
 #
 # Hermes AI agent from Nous Research. Configured against the genai-server
 # control plane; provides isolated config dirs on other hosts:
@@ -28,8 +27,8 @@
 #
 # Qwen Code (Alibaba's gemini-cli fork):
 #
-#   - qwen                 -> pre-configured against the local genai-server
-#                             via a modelProviders catalog in ~/.qwen
+#   - qwen36-35b-a3b                 -> pre-configured against the local genai-server
+#                             via a modelProviders catalog in ~/.qwen36-35b-a3b
 #
 # The default `claude` (subscription) comes from base-user's claude-code on
 # every host. The default `opencode` package is installed here only on
@@ -53,11 +52,12 @@ let
   ## places, so they cannot drift apart the way they did.
   localModel = config.hostParams.aiCoding.localModel;
 
-  ## The wide-window model `claude-local-fanout` runs on. See the option for
-  ## the measurement; the short version is that llama-server's four slots
-  ## share ONE KV pool the size of the window, so a background subagent and
   ## the conversation split it rather than getting one each.
-  fanoutModel = config.hostParams.aiCoding.fanoutModel;
+
+  ## Pool held back from the conversation so a background subagent has
+  ## somewhere to run. See the option: the server's slots share ONE pool the
+  ## size of the window, so the window is not the conversation's budget.
+  agentReserve = config.hostParams.aiCoding.agentReserve;
 
   ## The model list comes from the genai-server flake, not from a copy here.
   ##
@@ -205,7 +205,7 @@ let
   #    OpenAI Responses API); as of 2026-08-03 it routes through
   #    chat-completions and LiteLLM is patched so the streaming adapter
   #    stops dropping each content block's first delta. Verified end to
-  #    end against qwen-dense-long.
+  #    end against qwen36-27b-128k.
   # WHY THERE IS NO MODEL PICKER. Claude Code's /model list is not a query
   # against the endpoint — it is three alias slots (opus/sonnet/haiku) plus
   # whatever you type. Pointing those at DIFFERENT models breaks on this box:
@@ -224,12 +224,21 @@ let
     "  ${n}${lib.fixedWidthString (lib.max 1 (18 - lib.stringLength n)) " " ""}${modelLabel m}")
     claudeModelIds;
   # id -> context, as a shell case. Claude Code has no idea how big a window
-  # `qwen-dense-long` has: its table covers Anthropic model ids, and for
+  # `qwen36-27b-128k` has: its table covers Anthropic model ids, and for
   # anything else it assumes the stock 200k. That is not cosmetic — it is why
   # a 128k model overflows instead of compacting, because auto-compaction
   # fires against the window Claude Code THINKS it has.
+  # ALIASES GET A BRANCH TOO. `-m` takes any name llama-swap resolves, and
+  # the catalog hands out aliases deliberately — `dense`, `uncensored`, and
+  # `qwen-dense-uc` since that entry was retired onto qwen38-27b-uc-128k. An alias
+  # that serves but has no branch here is the worst of both: the request
+  # works, so nothing looks wrong, and the window silently reverts to the
+  # 200k Claude Code assumes. Shell `case` takes `a|b)`, so one branch
+  # covers every name for a model.
   claudeCtxCase = lib.concatMapStringsSep "\n" (n:
-    "      ${n}) CTX=${toString genaiModels.${n}.context} ;;") claudeModelIds;
+    let m = genaiModels.${n}; in
+    "      ${lib.concatStringsSep "|" ([ n ] ++ (m.aliases or [ ]))}) CTX=${toString m.context} ;;")
+    claudeModelIds;
   claude-local = pkgs.writeShellScriptBin "claude-local" ''
     #!${pkgs.bash}/bin/bash
     export CLAUDE_CONFIG_DIR="$HOME/.claude-local"
@@ -237,20 +246,16 @@ let
     export ANTHROPIC_AUTH_TOKEN=dummy
     export ANTHROPIC_MODEL=''${ANTHROPIC_MODEL:-${localModel}}
 
-    # -m/--model picks the model for this session; -l/--list shows them.
+    # -m/--model picks the model for this session; -l/--list shows them;
+    # --no-reserve gives the conversation the whole window.
     # Consumed here rather than passed through, so they never reach claude.
+    RESERVE=${toString agentReserve}
+    LIST=""
     while [ $# -gt 0 ]; do
       case "$1" in
         -m|--model) ANTHROPIC_MODEL="$2"; shift 2 ;;
-        -l|--list)
-          echo "models served by ${genaiBaseUrl}:"
-          echo "${claudeModelHelp}"
-          echo
-          echo "current: $ANTHROPIC_MODEL   (claude-local -m <id>)"
-          echo "note: auto-compaction is set from each model's REAL window"
-          echo "      (below), so a shorter one compacts sooner rather"
-          echo "      than overflowing."
-          exit 0 ;;
+        --no-reserve) RESERVE=0; shift ;;
+        -l|--list) LIST=1; shift ;;
         *) break ;;
       esac
     done
@@ -263,12 +268,68 @@ let
     case "$ANTHROPIC_MODEL" in
 ${claudeCtxCase}
     esac
+    # What llama-server is actually started with, kept so -l can show both
+    # numbers: in a wide session the difference between them IS the reserve.
+    SERVED="$CTX"
     # Compact with room for the REPLY. The window holds prompt plus
     # generation, so compacting at the full context leaves nowhere to put
     # the answer — llama.cpp clamps rather than erroring, so the symptom
     # would be quietly truncated responses near the limit.
     export CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384
+
+    # HOLD BACK POOL FOR THE OTHER STREAM. The four slots share ONE KV pool
+    # the size of the window, so "the model's window" is the budget for
+    # EVERYTHING live at once, not for the conversation. Declaring all of it
+    # entitles the main loop to eat the whole pool and leaves a background
+    # subagent with nothing — which fails as "Context size has been
+    # exceeded." on both streams, each re-prefilling first.
+    #
+    # Subtracting it from $CTX before both exports is the whole mechanism:
+    # compaction fires earlier and the difference is pool nothing grows into.
+    if [ -n "$CTX" ] && [ "$RESERVE" -gt 0 ]; then
+      if [ "$CTX" -gt $(( RESERVE + 2 * CLAUDE_CODE_MAX_OUTPUT_TOKENS )) ]; then
+        CTX=$(( CTX - RESERVE ))
+      else
+        echo "claude-local: agentReserve ($RESERVE) leaves too little of" >&2
+        echo "  $ANTHROPIC_MODEL's $CTX-token window; not reserving." >&2
+        RESERVE=0
+      fi
+    fi
+
+    # Deferred from the parse loop, so every number here is the one this
+    # session will actually run with.
+    if [ -n "$LIST" ]; then
+      echo "models served by ${genaiBaseUrl}:"
+      echo "${claudeModelHelp}"
+      echo
+      echo "current: $ANTHROPIC_MODEL   (claude-local -m <id>)"
+      if [ -n "$SERVED" ] && [ "$SERVED" != "$CTX" ]; then
+        echo "window:  $CTX for this conversation"
+        echo "       + $(( SERVED - CTX )) held back for background agents"
+        echo "       = $SERVED the model is served with, shared by everything"
+        echo "         live at once (the server's slots are one pool, not one"
+        echo "         window each)"
+      else
+        echo "window:  $CTX, all of it this conversation's"
+      fi
+      echo "note: auto-compaction is set from the window above, so a shorter"
+      echo "      model compacts sooner rather than overflowing."
+      echo
+      echo "      --no-reserve gives the conversation the whole window;"
+      echo "      use it only if this session will not delegate."
+      exit 0
+    fi
+
     [ -n "$CTX" ] && export CLAUDE_CODE_AUTO_COMPACT_WINDOW="$((CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS))"
+    # AND THE WINDOW ITSELF, which is a newer requirement than the line
+    # above. Claude Code gained an unknown-model check that says out loud
+    # that it does not recognise the id and is assuming 200k — true of every
+    # model this wrapper serves, since none of them are Anthropic ids. It
+    # reads CLAUDE_CODE_MAX_CONTEXT_TOKENS as the real window; AUTO_COMPACT_
+    # WINDOW is where compaction fires and does not answer the same
+    # question, so setting only that left the warning standing and the
+    # assumption with it. Same $CTX, so the two cannot disagree.
+    [ -n "$CTX" ] && export CLAUDE_CODE_MAX_CONTEXT_TOKENS="$CTX"
 
     # Pinned together by default — see the comment above this wrapper. Two
     # GPU models resident at once is what this card cannot do, and
@@ -288,27 +349,6 @@ ${claudeCtxCase}
     export CLAUDE_CODE_ATTRIBUTION_HEADER=0
     export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
     exec ${pkgs.claude-code}/bin/claude "$@"
-  '';
-
-  # `claude-local -m <fanoutModel>`, as a command.
-  #
-  # A WRAPPER RATHER THAN A SHELL ALIAS so it works from scripts, from
-  # non-interactive shells and from anything that execs by name — the same
-  # reason every other harness here is a writeShellScriptBin.
-  #
-  # It passes `-m` THROUGH claude-local instead of reimplementing anything.
-  # That loop runs before the exports, so the model reaches the main,
-  # sonnet, opus AND subagent slots together, and
-  # CLAUDE_CODE_AUTO_COMPACT_WINDOW is recomputed from the chosen model's
-  # real context rather than from the default's. Both halves matter here:
-  # subagents are the reason this command exists, and a compaction threshold
-  # left on the narrower model would compact early against the wide window.
-  #
-  # A `-m` on the command line still wins — the loop takes the last one — so
-  # `claude-local-fanout -m coder-pro` is a one-off override, and
-  # `claude-local-fanout -l` lists the fleet with this model as `current`.
-  claude-local-fanout = pkgs.writeShellScriptBin "claude-local-fanout" ''
-    exec ${claude-local}/bin/claude-local -m ${fanoutModel} "$@"
   '';
 
   # Statusline for Claude Code showing 5h/7d rate-limit usage. Built from
@@ -430,7 +470,7 @@ ${claudeCtxCase}
   # rule below already used, and no GPU: point a harness at a server that
   # records the request and answers once, then read the tool block it sent.
   # Claude Code 2.1.223 sends 58 tools, ~116k chars ~= 29k tokens, on EVERY
-  # turn. That is 30% of qwen38's 96k window and 23% of qwen38-long's 128k
+  # turn. That is 30% of qwen38-27b-96k's 96k window and 23% of qwen38-27b-128k's 128k
   # spent before a file is read. 34 of those tools (~12.3k tokens) are the
   # gateway's.
   #
@@ -689,13 +729,13 @@ ${claudeCtxCase}
   # model's window, so two live streams split the window instead of each
   # getting one.
   #
-  # Measured 2026-08-18 on qwen38-long: a 63,761-token conversation plus a
+  # Measured 2026-08-18 on qwen38-27b-128k: a 63,761-token conversation plus a
   # 32,730-token background subagent exhausted the 131,072 pool, and both
   # then retried for twenty minutes at 100% GPU without completing
   # anything — each attempt re-prefilling ~90k tokens for 73s before
   # llama.cpp returned 500 "Context size has been exceeded.". LiteLLM
   # cannot rescue that: it classifies a 500 as an InternalServerError, so
-  # `context_window_fallbacks` (which does carry qwen38-long -> qwen) never
+  # `context_window_fallbacks` (which does carry qwen38-27b-128k -> qwen36-35b-a3b) never
   # applies and the ladder is not consulted.
   #
   # NOT the same problem as ANTHROPIC_DEFAULT_HAIKU_MODEL, which was
@@ -714,25 +754,39 @@ ${claudeCtxCase}
     This session reaches ONE shared GPU through `claude-local`. Other
     people, and image and video work, share that card.
 
-    ## Delegate synchronously
+    ## Background agents are fine here, within a budget
 
-    Pass `run_in_background: false` when you use `Agent`.
+    The slots on the model server do NOT get a context window each: they
+    share ONE pool the size of the model's window. Your conversation and
+    any background agent spend the same budget, and two streams that no
+    longer fit it BOTH fail with `Context size has been exceeded.`, after
+    re-prefilling their whole prompt first. Each failed attempt costs about
+    a minute and retrying does not help.
 
-    In the background — the default — your conversation and the agent are
-    live on the card at once, and they do not get a context window each:
-    every slot on the model server shares ONE pool the size of the model's
-    window. Two live streams that no longer fit it BOTH fail, with
-    `Context size has been exceeded.`, after re-prefilling their whole
-    prompt first. So each failed attempt costs about a minute and retrying
-    does not help.
+    This session holds ${toString agentReserve} tokens of that pool back
+    from the conversation: the window you were told about is already the
+    served window minus the reserve, so the room is there and nothing you
+    do will compact into it. Use `Agent` normally, background included.
 
-    Delegating synchronously parks the parent. Its cached prefix becomes
-    reclaimable, and one stream is live at a time.
+    The reserve is a floor, not a licence. The budget is
+    `sum(context + max_tokens) < window` across everything live at once,
+    and ${toString agentReserve} tokens holds about two agents at the size
+    these usually run. Half a dozen at once will still exhaust it.
 
-    The budget, if you need to reason about it, is
-    `sum(context + max_tokens) < window` across everything live at once.
-    Launching several agents in one message is fine only when you know
-    their contexts are small.
+    Run `claude-local -l` to see both numbers. If they are the same, the
+    session was started with `--no-reserve` and you should pass
+    `run_in_background: false` when you delegate — that parks the parent so
+    only one stream is live at a time.
+
+    ## Retrieval and memory cost a model swap
+
+    The default model is served at its full 262144 and takes the card to
+    itself, so the embedding, rerank and speech-to-text models cannot be
+    loaded beside it. They still work — a call swaps the chat model out —
+    but swapping back is a FULL re-prefill of this conversation, because a
+    hybrid cannot rewind recurrent state. On a long session that is
+    expensive, so batch retrieval rather than interleaving it, or ask to be
+    moved to `qwen38-27b-224k`, which keeps them resident.
   '';
 
   writeClaudeLocalMemory = pkgs.writeShellScript "claude-local-memory" ''
@@ -760,7 +814,7 @@ ${claudeCtxCase}
   # invalidate and nothing has ever typed `logistikon/` into it.
   #
   # It is also the accurate name now. The bridge addresses each node by its
-  # own suffix (`coder-pro@logistikon-eth`) and the bare names fall through
+  # own suffix (`qwen3-coder-80b-a3b@logistikon-eth`) and the bare names fall through
   # the fleet, so a provider standing for "the bare names" is standing for
   # the fleet rather than for one box.
   #
@@ -779,7 +833,7 @@ ${claudeCtxCase}
   # Per-model `options` are spread raw into the request body (source-
   # verified in opencode 1.17/1.18 + @ai-sdk/openai-compatible), and they
   # matter: opencode sends NO temperature for custom models, but it DOES
-  # force top_p=1.0 for any model id containing "qwen" — the explicit
+  # force top_p=1.0 for any model id containing "qwen36-35b-a3b" — the explicit
   # options pin vendor sampling and neutralize that. The NUMBERS come from
   # each catalog entry (`temperature`/`topP`), never from here — a pair
   # written into this comment goes stale the moment the server retunes an
@@ -791,8 +845,8 @@ ${claudeCtxCase}
   # llama.cpp's preserve_thinking consumes), top_k/min_p (server-side
   # flags; LiteLLM may drop top_k).
   #
-  # THE DEFAULT MODEL IS NOT DECIDED HERE any more. opencode held `coder-pro`
-  # as the control arm of an A/B against `qwen38` on claude-local — but an
+  # THE DEFAULT MODEL IS NOT DECIDED HERE any more. opencode held `qwen3-coder-80b-a3b`
+  # as the control arm of an A/B against `qwen38-27b-96k` on claude-local — but an
   # A/B whose result nobody reads is not an experiment, it is two harnesses
   # disagreeing about what this fleet codes on, and it survived a month past
   # the point where anyone was comparing. All three now read
@@ -892,7 +946,7 @@ ${claudeCtxCase}
   # key from LOGISTIKON_API_KEY, which settings-level `env` exports at
   # startup — no secret, no wrapper script needed. The Qwen OAuth free tier
   # was discontinued 2026-04, so there's no login to protect and the plain
-  # `qwen` command can default to the local fleet outright.
+  # `qwen36-35b-a3b` command can default to the local fleet outright.
   #
   # contextWindowSize / max_tokens mirror opencodeConfig above and MUST
   # likewise match each model's real `-c` in genai-server's module.nix;
@@ -931,7 +985,7 @@ ${claudeCtxCase}
     }) genaiModels);
   };
 
-  # ~/.qwen/settings.json must stay mutable (/model and /auth persist the
+  # ~/.qwen36-35b-a3b/settings.json must stay mutable (/model and /auth persist the
   # active selection back into it), so like the Claude settings above the
   # managed keys are jq-merged in at activation instead of symlinked from
   # the store. `*` deep-merges objects but replaces arrays, keeping our
@@ -940,12 +994,12 @@ ${claudeCtxCase}
   # /model switch survives rebuilds.
   mergeQwenSettings = pkgs.writeShellScript "qwen-settings-merge" ''
     set -eu
-    settings="$HOME/.qwen/settings.json"
-    mkdir -p "$HOME/.qwen"
+    settings="$HOME/.qwen36-35b-a3b/settings.json"
+    mkdir -p "$HOME/.qwen36-35b-a3b"
     [ -s "$settings" ] || echo '{}' > "$settings"
     tmp=$(mktemp)
     ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg (builtins.toJSON qwenSettings)} \
-      '. * $managed | .model.name //= "coder-pro"' "$settings" > "$tmp"
+      '. * $managed | .model.name //= "qwen3-coder-80b-a3b"' "$settings" > "$tmp"
     mv "$tmp" "$settings"
   '';
 
@@ -995,24 +1049,26 @@ ${claudeCtxCase}
 
 in
 {
-  # A fanout model that is not WIDER than the default is the one way
-  # `claude-local-fanout` can look configured and buy nothing: it would cost
-  # a model switch and leave the shared KV pool exactly as tight as it was.
-  # Same check, and the same reasoning, as genai-server's assertion on
-  # `serve.overflowTo`.
+  # localModel is the one name every harness resolves, and the 3.8 entries
+  # carry genai-server's b10434 engine floor — below it they are dropped from
+  # the catalog entirely, so a stale engine pin surfaces here as a build
+  # failure that names the cause rather than as a 404 inside a session.
   assertions = [
     {
-      assertion = builtins.hasAttr fanoutModel genaiModels;
-      message = "hostParams.aiCoding.fanoutModel = \"${fanoutModel}\" names no model this fleet serves. Known: "
+      assertion = builtins.hasAttr localModel genaiModels;
+      message = "hostParams.aiCoding.localModel = \"${localModel}\" names no model this fleet serves."
+        + " The 3.8 entries declare a llama.cpp floor of b10434 and genai-server drops them below it,"
+        + " so check this host's engine pin before the spelling. Known: "
         + lib.concatStringsSep ", " (lib.attrNames genaiModels);
     }
+    # A reserve the model cannot spare degrades at runtime, where the warning
+    # goes to a session nobody is reading rather than to a build.
     {
-      assertion = !(builtins.hasAttr fanoutModel genaiModels
-                    && builtins.hasAttr localModel genaiModels)
-        || genaiModels.${fanoutModel}.context > genaiModels.${localModel}.context;
-      message = "hostParams.aiCoding.fanoutModel (\"${fanoutModel}\") must have a WIDER context than localModel"
-        + " (\"${localModel}\"): claude-local-fanout exists to buy KV headroom for concurrent streams, and an"
-        + " equal-or-narrower window buys none.";
+      assertion = agentReserve == 0 || !(builtins.hasAttr localModel genaiModels)
+        || agentReserve + 32768 < genaiModels.${localModel}.context;
+      message = "hostParams.aiCoding.agentReserve (${toString agentReserve}) leaves too little of"
+        + " localModel (\"${localModel}\"). It is subtracted from the served window before Claude Code"
+        + " is told what it has, so it must leave room for a conversation plus two 16384-token replies.";
     }
   ];
 
@@ -1023,7 +1079,6 @@ in
       opencode-openrouter
       opencode-local
       claude-local
-      claude-local-fanout
       claude-statusbar
       hermes-local
       pkgs.qwen-code

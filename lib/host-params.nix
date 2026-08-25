@@ -619,8 +619,8 @@
     aiCoding = {
       localModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen38-long";
-        example = "coder-pro";
+        default = "qwen38-27b-256k";
+        example = "qwen38-27b-224k";
         description = ''
           The model every `*-local` harness reaches for when none is given:
           claude-local, opencode-local and hermes-local alike.
@@ -628,7 +628,7 @@
           ONE OPTION FOR ALL OF THEM, and that is the point. It was
           `claudeModel` and it moved only Claude Code, so the fleet's answer
           to "which model do I code against" lived in three places and drifted
-          — opencode sat on `coder-pro` for a month after claude-local moved
+          — opencode sat on `qwen3-coder-80b-a3b` for a month after claude-local moved
           off it, which is not an A/B when nobody is reading the result, just
           two harnesses disagreeing. Change it here and every local harness
           moves together.
@@ -645,10 +645,10 @@
           quietly getting the old value while the box that needed the setting
           least was the only one with it.
 
-          `qwen38-long` is Qwen3.8-27B at its full 128k. It took this from
-          `qwen38` (the same weights at 96k, which is what the drafter costs)
-          and from `coder-pro` before that. The pair is worth stating plainly
-          because the trade is real: coder-pro is non-thinking, agent-RL
+          `qwen38-27b-128k` is Qwen3.8-27B at its full 128k. It took this from
+          `qwen38-27b-96k` (the same weights at 96k, which is what the drafter costs)
+          and from `qwen3-coder-80b-a3b` before that. The pair is worth stating plainly
+          because the trade is real: qwen3-coder-80b-a3b is non-thinking, agent-RL
           trained, has a battle-tested tool parser and a 256k window; the 3.8
           dense wins on every benchmark its card reports and by a wide margin
           on the agent ones. 128k over 96k because a coding session is the
@@ -659,7 +659,7 @@
           auto-compaction and opencode's `limit.context` move with this
           automatically — nothing here needs to know a number.
 
-          IT NEEDS A NEW ENOUGH SERVER TO RESOLVE AT ALL: the qwen38 entries
+          IT NEEDS A NEW ENOUGH SERVER TO RESOLVE AT ALL: the qwen38-27b-96k entries
           exist only in genai-server revisions from 2026-08-17 on, and they
           declare a llama.cpp floor of b10434 (below that genai-server drops
           them with a warning, and modules/system/overlays is what pins the
@@ -667,43 +667,36 @@
           harnesses ask the bridge for a name nothing serves.
         '';
       };
-      fanoutModel = lib.mkOption {
-        type = lib.types.str;
-        default = "qwen";
-        example = "coder-pro";
+      agentReserve = lib.mkOption {
+        type = lib.types.ints.unsigned;
+        default = 65536;
+        example = 0;
         description = ''
-          The model `claude-local-fanout` picks: the one to code against when
-          TWO streams will be live at once.
+          Tokens of the model's window that claude-local holds back from the
+          CONVERSATION, so a background subagent has somewhere to run.
 
-          Separate from `localModel` on purpose, because they answer
-          different questions. That one is "which model do I code against",
-          and depth wins it. This one is "which model do I code against when
-          a background subagent is running beside me", and WINDOW wins it.
+          THE WINDOW IS NOT THE CONVERSATION'S BUDGET. llama-server is
+          started with `-np` unset, so it takes four slots, and on b10472
+          those slots share ONE KV pool the size of the window — they do not
+          get a window each. Everything live at once spends the same pool.
 
-          The reason is a property of the server rather than of any model.
-          llama-server is started with `-np` unset, so it takes four slots,
-          and on b10472 those slots SHARE one KV pool the size of the
-          window — two live streams split that window instead of getting one
-          each. Measured 2026-08-18 against `qwen38-long` (131072): a
+          claude-local otherwise tells Claude Code the whole window is
+          available, which entitles the main loop to consume all of it and
+          leaves a background `Agent` with nothing. The failure is
+          llama.cpp's "Context size has been exceeded.", on BOTH streams,
+          after each re-prefills its whole prompt — about a minute per
+          attempt, and retrying does not help. Measured 2026-08-18: a
           63,761-token conversation plus a 32,730-token background subagent
-          exhausted it, and both sides then failed with llama.cpp's
-          "Context size has been exceeded." for twenty minutes, each retry
-          re-prefilling the whole prompt first. LiteLLM cannot catch it —
-          that arrives as a 500, so `context_window_fallbacks` never fires.
+          exhausted a 131072 window. LiteLLM cannot catch it either, because
+          it arrives as a 500 and `context_window_fallbacks` never fires.
 
-          Naming a wider model for those sessions buys the headroom back
-          without taxing the window of every session that does not need it.
-          `qwen` is the default because its 262144 is nearly free: a GDN
-          hybrid where only 10 of 40 layers carry KV, so the full window
-          costs ~2.7GB against `qwen38-long`'s ~4.3GB for half of it. The
-          cost is real and is a generation of coding depth — Qwen3.6 where
-          localModel is 3.8 — which is exactly why this is a separate
-          command and not a change to the default.
+          So the DECLARED window is the served window minus this, and the
+          difference is pool nothing will compact into. 65536 is two
+          subagents at the size that incident measured. Zero disables it,
+          which is right only for a session that will not delegate.
 
-          An assertion checks this names a served model and that its window
-          is genuinely WIDER than `localModel`'s. An equal-or-narrower one
-          would cost a model switch and buy no headroom at all, the same way
-          genai-server rejects a `serve.overflowTo` that is not wider.
+          claude-local only. opencode-local and hermes-local take the served
+          window whole.
         '';
       };
       claudeBackgroundModel = lib.mkOption {
