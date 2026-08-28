@@ -619,7 +619,7 @@
     aiCoding = {
       localModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen38-125b-a6b";
+        default = "qwen38-27b-256k";
         example = "qwen38-27b-224k";
         description = ''
           The model every `*-local` harness reaches for when none is given:
@@ -644,33 +644,6 @@
           configuration.nix until 2026-08-04, which meant the laptops kept
           quietly getting the old value while the box that needed the setting
           least was the only one with it.
-
-          MOVED TO qwen38-125b-a6b ON 2026-08-28 — Qwen3.8-Flash-Next, the
-          125B-A6B MoE, at 262144. The reason is the AGENTIC margins, which
-          is the axis a `*-local` harness actually runs on: on Qwen's own
-          head-to-head against the 27B, and corroborated by independent
-          write-ups, DeepSWE 1.1 58.7 against 42.2, JobBench 55.7 against
-          33.4, Toolathlon 73.5 against 67.1, Agents' Last Exam 51.2
-          against 42.9. Single-shot coding is nearly a tie (SWE-bench Pro
-          62.5 against 61.7) and the box's own six-case coding suite could
-          not separate them at all — both 6/6 — so this is a bet on long
-          tool-driven sessions and not on one-shot answers.
-
-          WHAT IT COSTS. 38.6 tok/s against the 27B's 134, so every turn is
-          about 3.5x slower to produce; a 2-bit quant, which measured a
-          different top token one time in six against the 4-bit of the same
-          weights; and a dependency on a llama.cpp pinned off an unmerged
-          PR (`qwen4exp`), which means the fleet default now rides on
-          genai-server's `serve.enginePackage`. That is caught rather than
-          silent: drop the pin and the assertion below fails the build,
-          naming the engine pin ahead of the spelling — verified by
-          simulating the removal on 2026-08-28. Loud at build time, but not
-          automatic, so this is the line to move if the pin ever goes.
-
-          NOT the `-max` sibling, which is the same weights at 93.5% quant
-          fidelity and 25.8 tok/s. That is the better answer per token and
-          the worse one per session; reach for it by name when a single
-          hard question is worth the wait.
 
           `qwen38-27b-128k` is Qwen3.8-27B at its full 128k. It took this from
           `qwen38-27b-96k` (the same weights at 96k, which is what the drafter costs)

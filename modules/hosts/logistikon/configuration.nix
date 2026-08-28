@@ -154,46 +154,6 @@
   ## when it does, transcription stops working until it ages out. Drop this
   ## line if that trade is not worth it.
   services.genai-server.llmModels.qwen-dense.serve.enable = true;
-  ## Qwen3.8-Flash-Next needs an engine that does not exist in any channel:
-  ## its `qwen4exp` architecture is ggml-org/llama.cpp#27742, still an open
-  ## PR. The catalog drops the model everywhere by default (serve.minLlamaCpp
-  ## = 10637, a lower bound on a merge that has not happened); this line is
-  ## this box opting in with a llama.cpp pinned at the PR head.
-  ##
-  ## PER-MODEL ON PURPOSE. Only this entry gets that engine — the other
-  ## nineteen stay on the b10472 build every measured number in the catalog
-  ## was taken on. genai-server applies `hardware.accelerator` to whatever it
-  ## is handed here, so the overlay attribute is deliberately not built with
-  ## cudaSupport itself.
-  ##
-  ## IT COSTS A SECOND 20-40 MINUTE CUDA COMPILE, and 190GB of weights that
-  ## genai-models-prefetch will now fetch (78.9GB + 111.3GB, one per half
-  ## of the pair) — the floor was what had been keeping both off this box.
-  ##
-  ## IT RETIRES ITSELF: the entry declares serve.engineArch = "qwen4exp", and
-  ## genai-server greps this host's own llama.cpp for that id on every
-  ## rebuild, failing the build once it is there and naming the edits. So
-  ## deleting this line is something the box asks for rather than something
-  ## to remember.
-  ##
-  ## BOTH HALVES OF THE PAIR. qwen38-125b-a6b is Q2_K_XL at 18.3 tok/s and
-  ## -max is Q4_K_XL at 4.1; they are the same weights at different quants,
-  ## and each carries its own floor. Wiring only one silently drops the
-  ## other, which is why they are set together here rather than a line
-  ## apart.
-  services.genai-server.llmModels.qwen38-125b-a6b.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp;
-  services.genai-server.llmModels.qwen38-125b-a6b-max.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp;
-  ## GLM-5.3-Flash needs a THIRD engine, not the one above: unsloth ships
-  ## glm5next on a separate branch that carries no qwen4exp, and vice
-  ## versa. Same seam, same expiry (serve.engineArch = "glm5next").
-  ##
-  ## Only the 1-bit quant fits 123GB of RAM with headroom — 93.1GB, inside
-  ## the range this box has already been measured serving. What it costs is
-  ## fidelity rather than capacity.
-  services.genai-server.llmModels.glm53-320b-a18b.serve.enginePackage =
-    pkgs.llama-cpp-glm5next;
   ## Claude Code's background slot (titles, small classification calls) on
   ## the CPU instead of pinned to whatever the session is using. Two things
   ## come of it: that traffic stops competing with the conversation for the
