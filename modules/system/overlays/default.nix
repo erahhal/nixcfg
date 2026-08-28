@@ -268,6 +268,116 @@ bool vulkan_remake_and_acquire( void );'
           npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
         }));
 
+      # TEMPORARY, AND THE ONE ABOVE CANNOT COVER IT. genai-server's
+      # qwen38-125b-a6b (Qwen3.8-Flash-Next) loads as `qwen4exp`, an
+      # architecture that exists in NO released llama.cpp: support is
+      # ggml-org/llama.cpp#27742, open as of 2026-08-26 with master at
+      # b10636. So this is not a channel lagging a fix, which is what the
+      # binding above is for — it is a build that does not exist yet.
+      #
+      # A SEPARATE PACKAGE RATHER THAN A NEWER `llama-cpp`, and that is the
+      # whole point of the split. Every VRAM and tok/s number in
+      # genai-server's catalog was measured on b10472; moving all twenty
+      # models onto b10636 plus an unmerged PR to run one of them would
+      # invalidate the lot and put chat, RAG and transcription on a fork.
+      # genai-server takes this through `serve.enginePackage`, which is
+      # per-model, so exactly one entry sees it.
+      #
+      # THE FORK HEAD, NOT A PATCH. The PR branch is a complete llama.cpp
+      # tree (base master 4d19b287 ~ b10636), so pinning the head commit is
+      # reproducible without a diff that has to be re-hashed every time the
+      # author pushes. 21 files, +2560/-9, almost entirely new: a qwen4exp
+      # model file and a NEW llama_memory_hybrid_idx class beside the
+      # existing hybrid one rather than a rewrite of it.
+      #
+      # version MUST STAY NUMERIC: it is passed as -DLLAMA_BUILD_NUMBER,
+      # which is an int in C, so "10636-qwen4exp" would fail to compile
+      # rather than merely read oddly. b10636 is the base this branch
+      # carries; the PR is what the attribute name records.
+      #
+      # NO cudaSupport HERE. genai-server applies its own
+      # `hardware.accelerator` to whatever it is handed, so setting a
+      # backend here would risk two engines on one box disagreeing about
+      # it — invisible until the one model nobody can test yet fails.
+      #
+      # npmDepsHash is the binding's above: tools/ui/package-lock.json is
+      # BYTE-IDENTICAL between b10472 and this commit (585457 bytes,
+      # compared 2026-08-26), the same check that comment documents.
+      #
+      # HOW THIS RETIRES: not by a warnIf here, because a build number
+      # cannot answer "does this engine know qwen4exp". genai-server greps
+      # the HOST's llama.cpp for that arch id on every rebuild and FAILS
+      # the build once it is there, naming the three edits — the entry
+      # declares `serve.engineArch = "qwen4exp"` for exactly that. So this
+      # attribute and the logistikon line that uses it both die on the
+      # first rebuild after nixpkgs catches up, whether or not anybody
+      # remembers this comment.
+      llama-cpp-qwen4exp = trunkPkgs.llama-cpp.overrideAttrs (finalAttrs: old: {
+        pname = "llama-cpp-qwen4exp";
+        version = "10636";
+        src = trunkPkgs.fetchFromGitHub {
+          owner = "unslothai";
+          repo = "llama.cpp";
+          rev = "035e22731a7fd70b9854b3a2d64ec68e9b1a45d3";
+          hash = "sha256-WopN0PBNA2KACay2p/MANcUBza9x7s2w+xhVH7zrlIM=";
+          leaveDotGit = true;
+          postFetch = ''
+            git -C "$out" rev-parse --short HEAD > $out/COMMIT
+            find "$out" -name .git -print0 | xargs -0 rm -rf
+          '';
+        };
+        npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+      });
+
+      # TEMPORARY, AND A THIRD ENGINE RATHER THAN A SECOND. genai-server's
+      # glm53-320b-a18b (GLM-5.3-Flash) loads as `glm5next`, which no
+      # released llama.cpp knows: support is ggml-org/llama.cpp#27752, open
+      # as of 2026-08-27. The qwen4exp binding above does NOT cover it —
+      # checked, not assumed: that branch 404s on the glm5next sources and
+      # this one 404s on src/models/qwen4exp.cpp. Two architectures, two
+      # branches, two builds, and `serve.enginePackage` is per-model so a
+      # host can have both instead of choosing.
+      #
+      # UNSLOTH'S BRANCH, NOT THE PR HEAD, and they have diverged: the PR
+      # lives on a different fork (eauchs:glm5next/add-glm-5.3-flash) and
+      # this branch is 30 commits ahead of it and 5 behind, with 50 files
+      # differing. What decides it is `conversion/glm5next.py` — the
+      # converter that PRODUCED the GGUF this box downloads lives on THIS
+      # branch, so pinning the PR head risks a loader that disagrees with
+      # the file. Revisit when the PR merges; the merged code is what the
+      # entry's minLlamaCpp floor is waiting for.
+      #
+      # version 10638: both branches share merge base 5e6a37cb with
+      # ggml-org master (2026-08-26 16:02Z), which sits between b10636 and
+      # b10638. Numeric because it becomes -DLLAMA_BUILD_NUMBER, an int in
+      # C — "10638-glm5next" would fail to compile rather than read oddly.
+      #
+      # npmDepsHash is the binding's above: tools/ui/package-lock.json is
+      # byte-identical between b10472 and this commit (585457 bytes,
+      # compared 2026-08-27).
+      #
+      # SAME EXPIRY AS THE OTHER PIN: the entry declares
+      # serve.engineArch = "glm5next", genai-server greps this host's own
+      # llama.cpp for that id on every rebuild, and the build fails once it
+      # is there — so this attribute and the logistikon line using it die
+      # together on the first rebuild after nixpkgs catches up.
+      llama-cpp-glm5next = trunkPkgs.llama-cpp.overrideAttrs (finalAttrs: old: {
+        pname = "llama-cpp-glm5next";
+        version = "10638";
+        src = trunkPkgs.fetchFromGitHub {
+          owner = "unslothai";
+          repo = "llama.cpp";
+          rev = "2e0e57f1008053bae4902a772da85e3eb99d4aff";
+          hash = "sha256-eukvUH7nnZXViH8D4vh6hNrVFbJa36/qosBMnEEQ9oE=";
+          leaveDotGit = true;
+          postFetch = ''
+            git -C "$out" rev-parse --short HEAD > $out/COMMIT
+            find "$out" -name .git -print0 | xargs -0 rm -rf
+          '';
+        };
+        npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+      });
+
       # TEMPORARY: nixos-unstable moved glaze to 8.0.0, but the hyprland it
       # still ships (0.56.1) does `find_package(glaze 7...<8 QUIET)` and, when
       # that finds nothing, falls back to a FetchContent git clone of
