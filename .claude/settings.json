@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "statusMessage": "Checking for build commands",
+            "command": "jq -r '.tool_input.command // \"\"' | grep -qE '(nixos-rebuild|home-manager[[:space:]]+switch|nix[[:space:]]+build|nix[[:space:]]+run[^;&|]*#(switch|build))' && printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"Build/realisation command. AGENTS.md requires explicit approval before running this - confirm here, not from an answer to some other question.\"}}' || true"
+          }
+        ]
+      }
+    ]
+  }
+}
