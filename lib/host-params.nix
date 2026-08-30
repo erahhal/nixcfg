@@ -619,7 +619,7 @@
     aiCoding = {
       localModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen38-125b-a6b";
+        default = "qwen38-125b-a6b-max";
         example = "qwen38-27b-224k";
         description = ''
           The model every `*-local` harness reaches for when none is given:
@@ -667,10 +667,19 @@
           simulating the removal on 2026-08-28. Loud at build time, but not
           automatic, so this is the line to move if the pin ever goes.
 
-          NOT the `-max` sibling, which is the same weights at 93.5% quant
-          fidelity and 25.8 tok/s. That is the better answer per token and
-          the worse one per session; reach for it by name when a single
-          hard question is worth the wait.
+          THE `-max` HALF, i.e. UD-Q4_K_XL at 93.5% top-1 against the full
+          weights, measured warm at 26.8 tok/s and ~697 tok/s prefill. This
+          option briefly pointed at the Q2_K_XL sibling instead, on numbers
+          taken with a cold page cache where the Q4 read 4.1 tok/s and
+          looked unusable. It is not, and the fidelity it buys is measured:
+          the two quants pick a different top token on one sampled token in
+          six.
+
+          `qwen38-125b-a6b` is the same weights at 85.2%, 1.4x faster, and
+          32GB lighter in host RAM. The Q4 sits at 111.3GB of this box's
+          123GB, so it is the better model right up until something else
+          large wants memory; switch if the box starts doing two things at
+          once.
 
           `qwen38-27b-128k` is Qwen3.8-27B at its full 128k. It took this from
           `qwen38-27b-96k` (the same weights at 96k, which is what the drafter costs)
