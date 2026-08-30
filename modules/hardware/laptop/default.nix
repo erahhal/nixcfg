@@ -9,9 +9,11 @@ in {
     # Thunderbolt
     services.hardware.bolt.enable = true;
 
-    # Bluetooth
+    # Bluetooth (bluez only; DMS provides the tray on every host that uses
+    # this module, so blueman-applet would just duplicate it — and its XDG
+    # autostart entry fires under niri-session, adding a second bluetooth
+    # icon.)
     hardware.bluetooth.enable = true;
-    services.blueman.enable = true;
 
     # --------------------------------------------------------------------------------------
     # Console
