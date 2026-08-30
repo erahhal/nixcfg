@@ -893,11 +893,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1788060723,
-        "narHash": "sha256-4JJdTpxjnJW6bX8X3+iRuqVJgaWR67RV0PeQfZ6vZng=",
+        "lastModified": 1788077674,
+        "narHash": "sha256-oDjPyG24uMWZh73E+0KwSDEriUrSJIF+usa14mnCDbY=",
         "ref": "main",
-        "rev": "c6f7437d453d8e57e72ea37c65a6f44db04b8f45",
-        "revCount": 378,
+        "rev": "b58e5db21608538adc31816fecdfa5e52c6fdfea",
+        "revCount": 381,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
@@ -915,12 +915,12 @@
         "rev": "b78426337d45121e19ed081796e69b67c631445e",
         "revCount": 12,
         "type": "git",
-        "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-nsfw.git"
+        "url": "file:///home/erahhal/genai-server-nsfw"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-nsfw.git"
+        "url": "file:///home/erahhal/genai-server-nsfw"
       }
     },
     "genai-server-private": {
@@ -928,11 +928,11 @@
         "genai-server-nsfw": "genai-server-nsfw"
       },
       "locked": {
-        "lastModified": 1787938513,
-        "narHash": "sha256-jGrVHI14Sf/AQKqhjAETYOcgN0Ev8fx8CZxMqLuwTqI=",
+        "lastModified": 1788077695,
+        "narHash": "sha256-yUSXj7Lq6BiCgLJJnrThdB8H1r2FmrjEf/VytgH0EEs=",
         "ref": "main",
-        "rev": "9fe414c07da104671b52fdd2cae7ec5cd12601a7",
-        "revCount": 25,
+        "rev": "873e14a8da1a4e8c5c35b092a4f15827a2386ace",
+        "revCount": 29,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git"
       },
@@ -1058,11 +1058,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785989441,
-        "narHash": "sha256-6lpPGuDeSCavcpz6UdyuZFXKQaZ2barZegSlztcPNDo=",
+        "lastModified": 1787724359,
+        "narHash": "sha256-mv3vx5+udiUtEvk1fn7oyd9DFVDI651lVtXW79yFvyc=",
         "owner": "cothinking-dev",
         "repo": "greyline",
-        "rev": "7e05f7f1f1a8bb22449cfbe680162f5ec3c5299c",
+        "rev": "a08c45941b21419ba69d0844cf39b0603b4ac7f5",
         "type": "github"
       },
       "original": {
@@ -1726,11 +1726,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786067084,
-        "narHash": "sha256-d3FMI+CpexPExeDndm7MiH1y2vexJCWPFfZmSuv+SKc=",
+        "lastModified": 1788070664,
+        "narHash": "sha256-aCP+6UxBAsz5Fa24M7AfBaqwyp2L9cAJu0UBS///ZpY=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "fb48693c9718fe3bb79668c2c053c4f0bb8bbb69",
+        "rev": "330fe424dd8539ebcd496a149916707a501f599c",
         "type": "github"
       },
       "original": {
