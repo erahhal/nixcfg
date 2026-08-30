@@ -594,7 +594,8 @@
       "Bash(bash /tmp/msi-research/sweep.sh)",
       "Bash(tee changelogs.txt)",
       "Bash(bash /tmp/msi-research/prices.sh)",
-      "WebFetch(domain:support.microsoft.com)"
+      "WebFetch(domain:support.microsoft.com)",
+      "mcp__genai__web_search"
     ],
     "deny": [],
     "ask": []
