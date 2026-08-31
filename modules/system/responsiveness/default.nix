@@ -86,9 +86,26 @@
   # feels like.  MemoryHigh triggers proactive reclaim before that
   # happens; MemoryMax is the hard ceiling that earlyoom (and as a
   # last resort the kernel OOM killer) will enforce.
+  #
+  # MemorySwapMax IS LOAD-BEARING, and its absence inverted this block on
+  # 2026-08-31: the box locked up hard (ping alive, sshd/console/journald
+  # all blocked, hard reboot to recover) because a process asked for ~104GB
+  # of ANONYMOUS memory inside this 54GB slice.  memory.max forces reclaim,
+  # anonymous pages can only be reclaimed to swap, and memory.swap.max was
+  # `max` — so instead of dying at the ceiling the slice swapped itself
+  # through the 32GB swapfile and took the machine's IO with it.  The cap
+  # made the failure WORSE than no cap would have.
+  #
+  # The comment above says the ceiling is "what earlyoom ... will enforce".
+  # earlyoom is NOT running on this host (systemctl is-active earlyoom =>
+  # inactive) and systemd-oomd did not act in time, so nothing enforced it.
+  # Bounding swap is what makes the ceiling self-enforcing: over-limit
+  # anonymous memory now hits the cgroup OOM killer, which kills the one
+  # process instead of stalling every session on the box.
   systemd.slices."user".sliceConfig = {
     MemoryHigh = "48G";
     MemoryMax = "54G";
+    MemorySwapMax = "8G";
   };
 
   # ── Btrfs maintenance ──────────────────────────────────────────────
