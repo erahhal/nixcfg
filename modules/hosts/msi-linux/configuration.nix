@@ -167,5 +167,22 @@
       ExecStart = "${pkgs.fbset}/bin/fbset -g 3840 2160 3840 2160 32";
     };
   };
+
+  # Watchdog for known-latent btrfs extent-tree damage on /: fails the unit if any device stat counter becomes non-zero.
+  systemd.services.btrfs-device-stats-check = {
+    description = "Check btrfs device error counters on /";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.btrfs-progs}/bin/btrfs device stats -c /";
+    };
+  };
+  systemd.timers.btrfs-device-stats-check = {
+    description = "Weekly btrfs device stats check on /";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
 }
 
