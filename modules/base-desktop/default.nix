@@ -108,6 +108,13 @@ in
           Value = false;
           Status = "locked";
         };
+
+        # Kill the "<site> is now full screen" toast. The timeout is in
+        # milliseconds; 0 means never show it.
+        "full-screen-api.warning.timeout" = {
+          Value = 0;
+          Status = "locked";
+        };
       };
     };
   };

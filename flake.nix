@@ -64,25 +64,6 @@
       ref = "main";
     };
 
-    # The private half of that stack's model catalog: the model choices
-    # that are personal, or otherwise not for publishing. A plain NixOS
-    # module that only ADDS catalog entries — the shipped catalog is
-    # mkDefault priority, so they merge rather than replace — and it holds
-    # no secrets: gated entries set `civitaiToken = true` and read whatever
-    # token the host points at.
-    #
-    # DECLARED HERE, not inside genai-server, and that is the whole reason
-    # it moved. As an input of genai-server it made a publishable repo name
-    # a private one, made the public flake unevaluable without read access
-    # to it, and pushed those model choices onto every consumer of the
-    # stack. Here it is what it always was: one more module this host
-    # imports, next to the one it extends.
-    genai-server-private = {
-      type = "git";
-      url = "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git";
-      ref = "main";
-    };
-
     steam-loader = {
       url = "path:./modules/programs/steam-loader";
     };
@@ -164,6 +145,6 @@
   inputs.flake-parts.lib.mkFlake { inherit inputs; } {
     systems = [ "x86_64-linux" ];
 
-    imports = (inputs.import-tree ./flake-modules).imports;
+    imports = [ (inputs.import-tree ./flake-modules) ];
   };
 }

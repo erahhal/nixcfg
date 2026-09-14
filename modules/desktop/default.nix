@@ -59,6 +59,20 @@ in {
         size = 16;
       };
 
+      # SNI tray apps publish an icon *name* with an empty IconThemePath —
+      # fcitx5 sends "input-keyboard-symbolic". With no icon theme configured,
+      # Qt only searches hicolor, finds nothing, and Quickshell (DMS) draws its
+      # missing-image checkerboard. Breeze carries those names; the -dark
+      # variant is light-on-transparent so it reads on the dark panel (Adwaita's
+      # symbolic set is near-black and would be invisible there).
+      # Drives both gtk.iconTheme and qt6ct's Appearance/icon_theme.
+      icons = {
+        enable = true;
+        package = pkgs.kdePackages.breeze-icons;
+        dark = "breeze-dark";
+        light = "breeze";
+      };
+
       fonts = {
         monospace = { name = "DejaVu Sans Mono"; package = pkgs.dejavu_fonts; };
         sansSerif = { name = "DejaVu Sans"; package = pkgs.dejavu_fonts; };

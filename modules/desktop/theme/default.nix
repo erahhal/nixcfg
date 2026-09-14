@@ -27,7 +27,16 @@ let
   isDark = osConfig.stylix.polarity == "dark";
 
   gtkThemeName = if isDark then "Tokyonight-Dark" else "Arc-Light";
-  iconThemeName = if isDark then "breeze-dark" else "Adwaita";
+
+  # Single source of truth: stylix.icons already drives gtk.iconTheme and
+  # qt6ct's Appearance/icon_theme. Read the same names here so xsettingsd
+  # hands X11 apps the theme Wayland/Qt apps are actually using. Track the
+  # home-manager-level polarity, which is what stylix's own targets use (the
+  # light-mode specialisation mkForces it).
+  iconThemeName =
+    if config.stylix.polarity == "dark"
+    then config.stylix.icons.dark
+    else config.stylix.icons.light;
 
   toggle-theme-script = pkgs.writeShellScriptBin "toggle-theme-script" ''
     set -euo pipefail

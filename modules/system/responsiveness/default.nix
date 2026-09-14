@@ -9,6 +9,8 @@
 #   - GameMode service — on-demand game-process renicing via gamemoderun
 #   - irqbalance — distributes hardware interrupts across cores
 #   - CFS autogroup + low swappiness — session-level fairness, keep pages in RAM
+#   - user.slice memory ceiling + systemd-oomd — bound runaway memory without
+#     creating a soft-throttle livelock (see the long note at the cap below)
 #   - BFQ I/O scheduler on rotational disks — per-process I/O bandwidth fairness
 #   - "none" (passthrough) on NVMe — hardware queues handle fairness natively
 { pkgs, ... }:
@@ -78,15 +80,7 @@
     DefaultLimitNOFILE = "524288:524288";
   };
 
-  # ── User-slice memory cap ───────────────────────────────────────────
-  # Without MemoryHigh on user.slice, a runaway Firefox + concurrent
-  # media-recording workload can push the whole system into
-  # synchronous direct-reclaim — the foreground task blocks waiting for
-  # pages to be freed, which is exactly what "laggy and unresponsive"
-  # feels like.  MemoryHigh triggers proactive reclaim before that
-  # happens; MemoryMax is the hard ceiling that earlyoom (and as a
-  # last resort the kernel OOM killer) will enforce.
-  #
+  # ── User-slice memory ceiling ───────────────────────────────────────
   # MemorySwapMax IS LOAD-BEARING, and its absence inverted this block on
   # 2026-08-31: the box locked up hard (ping alive, sshd/console/journald
   # all blocked, hard reboot to recover) because a process asked for ~104GB
@@ -96,16 +90,71 @@
   # through the 32GB swapfile and took the machine's IO with it.  The cap
   # made the failure WORSE than no cap would have.
   #
-  # The comment above says the ceiling is "what earlyoom ... will enforce".
-  # earlyoom is NOT running on this host (systemctl is-active earlyoom =>
-  # inactive) and systemd-oomd did not act in time, so nothing enforced it.
-  # Bounding swap is what makes the ceiling self-enforcing: over-limit
-  # anonymous memory now hits the cgroup OOM killer, which kills the one
-  # process instead of stalling every session on the box.
+  # MemoryHigh WAS the next lockup, on 2026-09-01, and is now gone.  The
+  # kernel caught it mid-livelock in an RCU stall: a task spun ~21s inside
+  #   filemap_add_folio → try_charge_memcg → __mem_cgroup_handle_over_high
+  #   → reclaim_high → shrink_lruvec → evict_folios
+  # i.e. page-cache readahead on an ordinary page fault, blocked doing
+  # synchronous reclaim because the slice sat above memory.high.  Three
+  # properties combined into a trap:
+  #
+  #   1. memory.high THROTTLES BUT NEVER KILLS.  Past the limit every
+  #      allocating task does its own reclaim plus an escalating penalty
+  #      sleep (up to 2s per allocation), across all ~55 session processes.
+  #      That was the "high CPU" — it was kernel reclaim, not userspace.
+  #   2. memory.max WAS THEREFORE UNREACHABLE.  The 48G throttle held usage
+  #      below the 54G ceiling, so the cgroup OOM killer that would have
+  #      ended it cleanly never ran (memory.events: oom_kill 0).
+  #   3. memory.current COUNTS PAGE CACHE.  25G of the 46G here is file
+  #      cache and 4G is unswappable shmem_thp; with anon capped at 8G of
+  #      swap, reclaim fell on the mapped working set — evict, fault back
+  #      in, recharge, reclaim again.  A cap on a slice holding page cache
+  #      is a thrash line by construction, and normal desktop use sits at
+  #      46.6G of the 48G limit (2827 throttle events in one 6min boot).
+  #
+  # Note earlyoom would NOT have saved this and is the wrong tool: it
+  # watches global MemAvailable, but this was a per-cgroup livelock with
+  # the machine globally fine.  pgscan_kswapd was 0 against pgscan_direct
+  # 471163 — kswapd never ran, proving global watermarks were never
+  # breached while 100% of reclaim was synchronous in-task cgroup reclaim.
+  # systemd-oomd is the right tool because it triggers on the actual
+  # symptom, sustained memory PSI on this specific slice.
+  #
+  # So: no soft throttle.  MemoryMax + bounded swap stays as the runaway-
+  # anon backstop (the 2026-08-31 case, which it handles correctly and can
+  # now actually reach), and oomd below is the pressure-based safety net.
   systemd.slices."user".sliceConfig = {
-    MemoryHigh = "48G";
     MemoryMax = "54G";
     MemorySwapMax = "8G";
+  };
+
+  # ── OOM enforcement ────────────────────────────────────────────────
+  # Nothing enforced the ceiling during either lockup: earlyoom is not
+  # enabled on most hosts, and oomd's ManagedOOM* default to "auto", which
+  # means "inherit" — with nothing set to "kill" anywhere, oomd monitored
+  # nothing and took no action across a 10-hour session.
+  #
+  # enableUserSlices sets ManagedOOMMemoryPressure=kill on user.slice.
+  # The nixpkgs default limit is 80% sustained pressure, which only fires
+  # once the box is already unusable; 60% over 20s is early enough to keep
+  # the session interactive and still far past any legitimate I/O burst.
+  systemd.oomd = {
+    enable = true;
+    enableUserSlices = true;
+    settings.OOM.DefaultMemoryPressureDurationSec = "20s";
+  };
+  systemd.slices."user".sliceConfig.ManagedOOMMemoryPressureLimit = "60%";
+
+  # ── Keep the recovery path resident ────────────────────────────────
+  # The 2026-08-31 lockup left sshd, journald and the console blocked, so
+  # there was no way in to diagnose it.  Capping user.slice was the wrong
+  # lever for that (see above); protecting system.slice is the right one.
+  # MemoryMin is never reclaimed, MemoryLow is reclaimed only as a last
+  # resort.  system.slice idles at ~2.5G, so this costs nothing in practice
+  # and guarantees a way in when the session is thrashing.
+  systemd.slices."system".sliceConfig = {
+    MemoryMin = "1G";
+    MemoryLow = "3G";
   };
 
   # ── Btrfs maintenance ──────────────────────────────────────────────

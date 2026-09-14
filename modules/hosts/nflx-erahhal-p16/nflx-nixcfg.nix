@@ -1,5 +1,17 @@
 { ... }:
 {
+  # nixpkgs removed the unversioned `cairomm` attribute (2026-08-28; it now
+  # throws, pointing at the `cairomm_*` ABI-versioned attrs), but
+  # nflx-nixcfg's pulse-official client.nix still takes plain `cairomm` as a
+  # callPackage arg. Resurrect it as cairomm_1_0 -- the same 1.14.x/ABI-1.0
+  # series the old attribute resolved to, and the ABI the Pulse blob links
+  # against. Drop this once nflx-nixcfg asks for cairomm_1_0 itself.
+  nixpkgs.overlays = [
+    (final: prev: {
+      cairomm = final.cairomm_1_0;
+    })
+  ];
+
   nflx = {
     username = "erahhal";
     ssh-agent.enable = true;
