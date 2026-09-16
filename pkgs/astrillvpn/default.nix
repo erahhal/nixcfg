@@ -137,6 +137,8 @@ stdenv.mkDerivation (finalAttrs: {
     # its (preferred) StatusNotifierItem tray icon, falling back to legacy XEmbed
     # GtkStatusIcon (which doesn't work under Wayland) when it's absent — so add
     # the GTK2 appindicator too (it links the same gtk+-2.24.33, no double-load).
+    # nixpkgs removed libappindicator-gtk2 in 2026-08, so the caller passes in
+    # the vendored build from pkgs/libappindicator-gtk2.
     # autoPatchelf would shrink these away, so queue the fix on postFixupHooks
     # *after* autoPatchelf's own entry (registered at setup time).
     postFixupHooks+=("patchelf --add-rpath '$out/usr/local/Astrill:${libappindicator-gtk2}/lib' '$out/usr/local/Astrill/astrill'")

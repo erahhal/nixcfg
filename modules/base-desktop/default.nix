@@ -109,6 +109,16 @@ in
           Status = "locked";
         };
 
+        # WebGPU is still off by default on Linux (Firefox 153). The Vulkan
+        # path works here: with this on, RADV yields a hardware adapter that
+        # passes dom.webgpu.testing.assert-hardware-adapter, no blocklist
+        # override needed. "default" not "locked" so about:config can still
+        # turn it off if a site misbehaves.
+        "dom.webgpu.enabled" = {
+          Value = true;
+          Status = "default";
+        };
+
         # Kill the "<site> is now full screen" toast. The timeout is in
         # milliseconds; 0 means never show it.
         "full-screen-api.warning.timeout" = {

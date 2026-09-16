@@ -1,7 +1,12 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.nixcfg.networking.astrill;
-  astrillvpn = pkgs.callPackage ../../../pkgs/astrillvpn { };
+  astrillvpn = pkgs.callPackage ../../../pkgs/astrillvpn {
+    # nixpkgs dropped its GTK 2 appindicator build (2026-08-10); astrill is a
+    # GTK 2 binary and needs the GTK 2 soname for its tray icon, so build it
+    # ourselves — see pkgs/libappindicator-gtk2.
+    libappindicator-gtk2 = pkgs.callPackage ../../../pkgs/libappindicator-gtk2 { };
+  };
 in {
   options.nixcfg.networking.astrill = {
     enable = lib.mkEnableOption "Astrill VPN";

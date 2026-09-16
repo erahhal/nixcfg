@@ -440,8 +440,21 @@
   ## the radio; iwd's initial GET_REG query landed inside that window (kernel
   ## WARN at nl80211.c:10285, returns -EINVAL) and iwd permanently abandoned
   ## the phy -- no retry, no log line -- leaving NM showing "unavailable"
-  ## until a manual module reload created a fresh phy that iwd adopted. The
-  ## reload needs no NetworkManager restart. NOTE: the retired
+  ## until manual recovery gave iwd a working phy again.
+  ##
+  ## Recurrence 2026-09-12 (journal boot f42030ce): a 64 s LUKS wait
+  ## compressed the post-unlock userspace burst, so the ath11k probe and the
+  ## iwd start landed in the same second and iwd lost the race again. The
+  ## reload-only recovery below then FAILED: reloading the module merely
+  ## re-runs the same race against a fresh phy, and iwd (same PID 1663) lost
+  ## the rematch, hitting the identical WARN on phy1. Wifi stayed dead 11
+  ## more minutes until a manual `systemctl restart iwd` connected in 2 s.
+  ## Lesson: the radio is not what breaks -- iwd is. A fresh iwd start cannot
+  ## lose, because by then the phy's regdom has long since attached. So
+  ## restart iwd FIRST and keep the module reload as a fallback only.
+  ## An iwd restart needs no NetworkManager restart (verified 2026-09-12: NM
+  ## logged a single warn and the link came up), so it does not reintroduce
+  ## the DMS wifi-icon desync. NOTE: the retired
   ## ath11k-boot-fix variant reloaded unconditionally and lacked
   ## RemainAfterExit, so `nixos-rebuild switch` re-ran it mid-session,
   ## restarting NM and desyncing the DMS wifi icon -- keep the boot service
@@ -486,7 +499,7 @@
       # NM reports disconnected/connecting/connected. Only the broken state
       # (radio on, wlan0 stuck "unavailable" or missing) survives the loop.
       for _ in $(seq 25); do
-        state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep '^wlan0:' | cut -d: -f2)
+        state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep '^wlan0:' | cut -d: -f2 || true)
 
         # Wifi intentionally off (e.g. exclusive-lan docked boot): nothing to fix.
         [ "$(nmcli radio wifi 2>/dev/null)" = "enabled" ] || exit 0
@@ -497,10 +510,30 @@
         esac
       done
 
-      echo "wlan0 stuck ''${state:-missing} with radio enabled; reloading ath11k_pci"
+      # The phy is almost always healthy -- iwd is the party that gave up on
+      # it. Restart iwd first: a fresh start enumerates a phy whose regdom
+      # attached long ago, so it cannot lose the race. Reloading the module
+      # here would only re-run the race (2026-09-12: it lost the rematch).
+      echo "wlan0 stuck ''${state:-missing} with radio enabled; restarting iwd"
+      systemctl restart iwd.service
+
+      for _ in $(seq 10); do
+        state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep '^wlan0:' | cut -d: -f2 || true)
+        case "$state" in
+          ""|unavailable) sleep 1 ;;
+          *) exit 0 ;;
+        esac
+      done
+
+      # Still stuck: the radio itself is bad (the old 6.17-era probe bug),
+      # not just iwd's view of it. Reload the driver, then give iwd a fresh
+      # start so it cannot lose the regdom race on the new phy either.
+      echo "iwd restart did not help; reloading ath11k_pci"
       modprobe -r ath11k_pci || true
       sleep 1
       modprobe ath11k_pci
+      sleep 3
+      systemctl restart iwd.service
     '';
   };
 

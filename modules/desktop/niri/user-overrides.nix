@@ -11,6 +11,9 @@
   nixcfg-niri.desktop.cycleColumnsOnRepeatedWorkspaceFocus =
     config.hostParams.desktop.cycleColumnsOnRepeatedWorkspaceFocus;
 
+  nixcfg-niri.desktop.autoFocusUrgentWindows =
+    config.hostParams.desktop.autoFocusUrgentWindows;
+
   nixcfg-niri.desktop.startupWorkspace = config.hostParams.desktop.startupWorkspace;
   nixcfg-niri.desktop.workspaceOutput = config.hostParams.desktop.workspaceOutput;
   nixcfg-niri.desktop.blankAtStartupSeconds =

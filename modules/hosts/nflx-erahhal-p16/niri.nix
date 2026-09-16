@@ -44,12 +44,15 @@ let
   '';
 in
 {
-  # Set both option paths so the config applies whether the greeter is
-  # sourced from the dank-greeter flake (programs.dms-greeter) or from the
-  # nixpkgs-native module (services.displayManager.dms-greeter). Only one is
-  # active at a time; the unused one is a no-op. The flake path was
-  # programs.dank-material-shell.greeter until upstream split the greeter out
-  # of DankMaterialShell into its own repo.
+  # Set both option paths so the config applies whichever greeter module is
+  # active: programs.dms-greeter (the dank-greeter flake, imported by
+  # nixcfg-niri) or services.displayManager.dms-greeter (nixpkgs-native). Both
+  # are types.lines, so mkAfter appends to whatever the module already set.
+  #
+  # Both paths must EXIST or evaluation fails -- an undefined option is a hard
+  # error, not a no-op. That is what broke here: upstream DankMaterialShell
+  # dropped programs.dank-material-shell.greeter and split the greeter into the
+  # dank-greeter repo, leaving nixosModules.greeter an empty warning stub.
   programs.dms-greeter.compositor.customConfig = greeter-compositor-config;
   services.displayManager.dms-greeter.compositor.customConfig = greeter-compositor-config;
 

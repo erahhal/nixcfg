@@ -67,13 +67,30 @@ let
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"
         ];
+      # WebGPU. Brave's WebGPU backend (Dawn) loads the stock Vulkan loader
+      # *bundled* in the package (opt/brave.com/brave/libvulkan.so.1). A stock
+      # loader looks for ICD manifests in /etc/vulkan and $XDG_DATA_DIRS — never
+      # NixOS's /run/opengl-driver/share — so it finds no driver and WebGPU
+      # either reports no adapter or falls back to SwiftShader. Independently,
+      # Chromium's own Vulkan path dlopens libvulkan.so.1 by bare name, and no
+      # loader is on the nixpkgs brave library path (/run/opengl-driver/lib
+      # isn't either). Fix both: expose the nixpkgs loader, and let the bundled
+      # one see the driver manifests. Host-agnostic — every ICD under
+      # /run/opengl-driver/share becomes visible. Verified on antikythera
+      # (RADV): default flags give an AMD/rdna-3 adapter, isFallbackAdapter
+      # false. No --enable-unsafe-webgpu needed; do NOT add
+      # --enable-features=Vulkan, it is incompatible with --ozone-platform=wayland.
+      braveVulkanEnv = lib.concatStringsSep " " [
+        "--prefix LD_LIBRARY_PATH : ${prev.vulkan-loader}/lib"
+        "--prefix XDG_DATA_DIRS : /run/opengl-driver/share"
+      ];
     in (prev.symlinkJoin {
       name = "brave-${originalBrave.version}";
       paths = [ originalBrave ];
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/brave
-        makeWrapper ${originalBrave}/bin/brave $out/bin/brave ${forceIgpuFlags} ${braveFlags}
+        makeWrapper ${originalBrave}/bin/brave $out/bin/brave ${forceIgpuFlags} ${braveVulkanEnv} ${braveFlags}
 
         # symlinkJoin leaves share/applications pointing into the *unwrapped*
         # brave, so anything launched through a desktop entry — the app

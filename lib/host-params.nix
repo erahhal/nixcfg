@@ -508,6 +508,27 @@
         description = "When pressing Mod+<N> while already on workspace N, cycle through columns instead of doing nothing.";
       };
 
+      autoFocusUrgentWindows = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Focus any window that raises an urgency hint (xdg-activation), which
+          also switches to that window's workspace. True is the long-standing
+          behaviour: clicking a link in chat follows the browser to whichever
+          workspace it opened the tab on.
+
+          Set false on hosts that drive a GUI automatically. Browser automation
+          over CDP raises windows through this same mechanism, so with it on the
+          session gets dragged between workspaces for the length of the job.
+          Turning it off keeps the signal -- the hint stays set, so DMS's
+          workspace indicator lights that workspace in its urgent colour and
+          niri draws the window's border in urgent-color.
+
+          Mirrors to nixcfg-niri.desktop.autoFocusUrgentWindows via
+          modules/desktop/niri/user-overrides.nix.
+        '';
+      };
+
       waybarSimple = lib.mkOption {
         type = lib.types.bool;
         default = false;

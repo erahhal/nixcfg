@@ -49,6 +49,13 @@
       disableXwaylandScaling = true;
       dmsLockProgram = "hyprlock";
 
+      # Don't let a window that asks for attention drag the session to its
+      # workspace -- browser automation (CDP `Page.bringToFront`) raises windows
+      # through the same xdg-activation path, which made driving a browser here
+      # yank focus constantly. The urgency hint still stands: the DMS workspace
+      # indicator and niri's window border both mark it.
+      autoFocusUrgentWindows = false;
+
       startupWorkspace = "five";
       # Keep the named workspaces on the laptop panel regardless of what's docked.
       workspaceOutput = "eDP-1";
