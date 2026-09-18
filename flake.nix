@@ -64,6 +64,35 @@
       ref = "main";
     };
 
+    # The private half of that stack's model catalog: the model choices
+    # that are personal, or otherwise not for publishing. A plain NixOS
+    # module that only ADDS catalog entries — the shipped catalog is
+    # mkDefault priority, so they merge rather than replace — and it holds
+    # no secrets: gated entries set `civitaiToken = true` and read whatever
+    # token the host points at.
+    #
+    # DECLARED HERE, not inside genai-server, and that is the whole reason
+    # it moved. As an input of genai-server it made a publishable repo name
+    # a private one, made the public flake unevaluable without read access
+    # to it, and pushed those model choices onto every consumer of the
+    # stack. Here it is what it always was: one more module this host
+    # imports, next to the one it extends.
+    #
+    # RESTORED 2026-09-17. ff7fd22 ("oom fixes; bumped niri") deleted this
+    # block while `flake-modules/hosts/logistikon.nix` kept importing
+    # `inputs.genai-server-private.nixosModules.default`, so committed main
+    # could not evaluate that host at all — "error: attribute
+    # 'genai-server-private' missing". Nothing about the deletion was
+    # deliberate: the commit is about OOM tuning and a niri bump, and the
+    # rationale above went with it. An input and the import that needs it
+    # are one decision; removing either alone is how a host stops building
+    # for a reason nobody connects to the commit that did it.
+    genai-server-private = {
+      type = "git";
+      url = "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git";
+      ref = "main";
+    };
+
     steam-loader = {
       url = "path:./modules/programs/steam-loader";
     };

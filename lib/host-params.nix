@@ -774,6 +774,72 @@
 
           Subagents are deliberately unaffected — they do real work, and a 4B
           is the wrong place to send it.
+
+          IT DOES NOT MOVE THE AUTO-MODE CLASSIFIER, which is the other
+          "small classification call" and the one that costs a session. That
+          runs on the SONNET slot and falls back to the main model — see
+          `claudeAutoModeModels`. Two questions that name similar-looking
+          slots; do not merge them.
+        '';
+      };
+      claudeAutoModeModels = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        example = [ "qwen38-27b-128k" ];
+        description = ''
+          The models claude-local leaves AUTO MODE available on. Anything not
+          named here starts with `permissions.disableAutoMode = "disable"`,
+          which takes auto out of the shift-tab carousel and refuses
+          `--permission-mode auto` rather than half-working.
+
+          WHAT AUTO MODE COSTS, measured against a mock endpoint on
+          2026-09-10 rather than guessed: every non-read-only Bash command
+          triggers a second, separate inference before the command runs — a
+          "security monitor" classifier carrying a 110,180-character
+          (~27.6k token) system prompt, non-streaming, `max_tokens` 2112,
+          and the whole call is cut off at 60 SECONDS. The prompt is marked
+          `cache_control: ephemeral`, which is the tell: the feature is
+          designed around Anthropic's prompt cache, where re-sending 27.6k
+          tokens is a cache read costing milliseconds.
+
+          llama.cpp has no such cache — it can only reuse a prefix a slot
+          still holds. So the deadline is met or missed on whether that
+          27.6k prefix survived the conversation's own turns, which is luck.
+          On `qwen38-125b-a6b-max` (436 tok/s prefill, current pin) a cold
+          re-prefill is ~63s and loses the race by a few seconds; measured
+          in a real session, five denials landed at exactly 60.0s after the
+          tool call. It then FAILS CLOSED and denies the command, saying the
+          model is "temporarily unavailable" — which reads as transient, so
+          the agent retries with sleeps that cannot help, because nothing is
+          recovering. The box is fine throughout: LiteLLM logged 200 for
+          every one of those requests.
+
+          So this is an allow list and it is empty by default: off is the
+          state that works, and a model earns its way on by having prefill
+          fast enough to absorb 27.6k tokens with time left to answer.
+          `qwen38-27b-128k` (489-729 tok/s) is the plausible candidate here;
+          the 125B halves are not, in either quant.
+
+          `CLAUDE_CODE_AUTO_MODE_MODEL` looks like the knob for this and is
+          ignored in claude-code 2.1.223 — tested with both an id and an
+          alias, the classifier still went to the sonnet slot.
+        '';
+      };
+      claudePermissionMode = lib.mkOption {
+        type = lib.types.str;
+        default = "acceptEdits";
+        example = "default";
+        description = ''
+          What claude-local starts a session in — `permissions.defaultMode`.
+          Empty leaves it to Claude Code (which remembers per project).
+
+          `acceptEdits` because the alternative to auto mode should not be a
+          prompt on every file write; Bash still asks, and an allow rule in
+          `~/.claude-local/settings.json` is how a command stops asking.
+
+          It arrives via `--settings`, which outranks `settings.json` — so
+          this is the place to change it, and editing the mode in the UI
+          will not survive the next session.
         '';
       };
 

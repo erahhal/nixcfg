@@ -181,10 +181,27 @@
   ## and each carries its own floor. Wiring only one silently drops the
   ## other, which is why they are set together here rather than a line
   ## apart.
+  ## THE `-qsa` VARIANT, NOT THE PLAIN ONE, and the difference is one
+  ## unmerged patch: ggml-org/llama.cpp#28213, gather-based sparse attention
+  ## for QSA decode. Measured here at +14.5% generation at 123k and +21.8%
+  ## at 253k with prefill, VRAM and greedy output all unmoved — see the
+  ## overlay, which carries the numbers and the agreement check. Point both
+  ## halves back at `pkgs.llama-cpp-qwen4exp` the day that PR merges.
   services.genai-server.llmModels.qwen38-125b-a6b.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp;
+    pkgs.llama-cpp-qwen4exp-qsa;
+  ## THE PAIR SPLITS HERE, and it is the drafter that splits it. The Q2
+  ## half runs MTP and so needs the branch; `-max` measured MTP as a 10%
+  ## LOSS and carries no `serve.draft`, so the only thing it still needs a
+  ## pinned engine FOR is #28213 — which applies to master just as well.
+  ## Keeping them together cost it #28330, #28896, #28901 and #28739, on
+  ## the entry whose every failure has been headroom. See the overlay for
+  ## what each is worth and for what is and is not patched onto master.
+  ##
+  ## `serve.enginePackage` being per-model is what makes this a one-line
+  ## decision rather than a choice between the two halves — the same seam
+  ## glm5next uses below.
   services.genai-server.llmModels.qwen38-125b-a6b-max.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp;
+    pkgs.llama-cpp-qwen4exp-next;
   ## GLM-5.3-Flash needs a THIRD engine, not the one above: unsloth ships
   ## glm5next on a separate branch that carries no qwen4exp, and vice
   ## versa. Same seam, same expiry (serve.engineArch = "glm5next").

@@ -930,11 +930,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1788915837,
-        "narHash": "sha256-/GDUfnUEo65UGNVFofl2NAHfbM0+IeRrdXaLg+Ze3Yc=",
+        "lastModified": 1789718328,
+        "narHash": "sha256-DnHGZVeeqkTLEnUT2/ti2E7U5vI/lZewTkpn1lt0oE4=",
         "ref": "main",
-        "rev": "ca51bed73ac5e3c1aa863fa9902b4e67435c53a8",
-        "revCount": 449,
+        "rev": "d7917f19af61b55c7823917cea94584669c6636f",
+        "revCount": 478,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
@@ -942,6 +942,41 @@
         "ref": "main",
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
+      }
+    },
+    "genai-server-nsfw": {
+      "locked": {
+        "lastModified": 1788490431,
+        "narHash": "sha256-XDocrgL35X4HnMIZBNI7RZNg5oH4dxiTc9w/CVEUyHA=",
+        "ref": "main",
+        "rev": "daf596d3450d52020cd9048d6e8e49bcd00dd97c",
+        "revCount": 13,
+        "type": "git",
+        "url": "file:///home/erahhal/genai-server-nsfw"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "file:///home/erahhal/genai-server-nsfw"
+      }
+    },
+    "genai-server-private": {
+      "inputs": {
+        "genai-server-nsfw": "genai-server-nsfw"
+      },
+      "locked": {
+        "lastModified": 1789500574,
+        "narHash": "sha256-lOUnA3ykUvjzbutYryOerGVJcO1Qs/WzV4NNFZKdQy4=",
+        "ref": "main",
+        "rev": "050c99b3169d710e98b5496a027667da7770af9c",
+        "revCount": 35,
+        "type": "git",
+        "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git"
       }
     },
     "git-hooks-nix": {
@@ -2590,6 +2625,7 @@
         "flake-utils-plus": "flake-utils-plus",
         "flox": "flox",
         "genai-server": "genai-server",
+        "genai-server-private": "genai-server-private",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "import-tree": "import-tree",

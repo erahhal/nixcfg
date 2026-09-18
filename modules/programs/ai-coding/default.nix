@@ -48,6 +48,12 @@ let
   ## unrelated `fastModel` setting of its own further down.
   claudeBackgroundModel = config.hostParams.aiCoding.claudeBackgroundModel;
 
+  ## Claude Code's AUTO MODE, which is a different slot and a different
+  ## question — see the options. The classifier runs on the SONNET slot, not
+  ## the background one, and its 60s deadline is what a slow prefill loses.
+  claudeAutoModeModels = config.hostParams.aiCoding.claudeAutoModeModels;
+  claudePermissionMode = config.hostParams.aiCoding.claudePermissionMode;
+
   ## What every *-local harness defaults to. One option, read in three
   ## places, so they cannot drift apart the way they did.
   localModel = config.hostParams.aiCoding.localModel;
@@ -260,6 +266,25 @@ let
       esac
     done
 
+    # AUTO MODE IS A SECOND INFERENCE PER COMMAND, on a 60-second clock.
+    # Before every non-read-only Bash command Claude Code asks a classifier
+    # whether to allow it: a ~27.6k-token system prompt, non-streaming, and
+    # the whole call abandoned at 60s. That prompt is sent with
+    # `cache_control: ephemeral` because the feature assumes a provider-side
+    # prompt cache; llama.cpp only has whatever prefix a slot still holds, so
+    # a cold re-prefill on this fleet's larger models runs past the deadline
+    # and the tool is DENIED — fail-closed, worded as the model being
+    # "temporarily unavailable", which reads as transient and is not.
+    #
+    # Decided per model because it is a per-model race, and off unless the
+    # host names one: `hostParams.aiCoding.claudeAutoModeModels`. Matched on
+    # the name this session was STARTED with, so an alias has to be named the
+    # way it is typed.
+    AUTO_OK=""
+    for m in ${lib.concatStringsSep " " claudeAutoModeModels}; do
+      [ "$m" = "$ANTHROPIC_MODEL" ] && AUTO_OK=1
+    done
+
     # Tell Claude Code the real window for the model it is about to use.
     # CLAUDE_CODE_AUTO_COMPACT_WINDOW is what auto-compaction measures
     # against, and the statusline percentage is re-derived from it too.
@@ -312,6 +337,13 @@ ${claudeCtxCase}
       else
         echo "window:  $CTX, all of it this conversation's"
       fi
+      if [ -n "$AUTO_OK" ]; then
+        echo "auto:    available on this model"
+      else
+        echo "auto:    off on this model — the permission classifier is a"
+        echo "         27.6k-token call on a 60s deadline, and a cold prefill"
+        echo "         here loses it (hostParams.aiCoding.claudeAutoModeModels)"
+      fi
       echo "note: auto-compaction is set from the window above, so a shorter"
       echo "      model compacts sooner rather than overflowing."
       echo
@@ -348,7 +380,21 @@ ${claudeCtxCase}
     export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     export CLAUDE_CODE_ATTRIBUTION_HEADER=0
     export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
-    exec ${pkgs.claude-code}/bin/claude "$@"
+
+    # Both decisions above the session, as a settings SOURCE rather than as a
+    # flag: --settings outranks ~/.claude-local/settings.json and is merged
+    # with it, so the rest of that file (allow rules, statusline, theme) is
+    # untouched and only these two keys are ours. A --permission-mode passed
+    # after this still wins for the mode; disableAutoMode is not overridable
+    # by a flag, which is the point of putting it here.
+    PERMS=""
+    [ -n "${claudePermissionMode}" ] && PERMS="\"defaultMode\":\"${claudePermissionMode}\""
+    if [ -z "$AUTO_OK" ]; then
+      [ -n "$PERMS" ] && PERMS="$PERMS,"
+      PERMS="$PERMS\"disableAutoMode\":\"disable\""
+    fi
+    exec ${pkgs.claude-code}/bin/claude \
+      --settings "{\"permissions\":{$PERMS}}" "$@"
   '';
 
   # Statusline for Claude Code showing 5h/7d rate-limit usage. Built from
