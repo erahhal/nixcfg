@@ -710,6 +710,22 @@
   };
 
   ## Onboard Bluetooth and ASMedia ASM4242 USB4 (previously provided by the laptop module)
+  ## THIS BOX DECLARED NO CPU VENDOR AT ALL, and two things were wrong
+  ## because of it. AMD microcode updates were not being applied — this is
+  ## a Ryzen 7 9700X and `hardware.enableRedistributableFirmware` is on, so
+  ## there was nothing stopping them but the missing line. And
+  ## `services.thermald` had nothing to gate on: it is Intel's thermal
+  ## daemon (Intel P-state, RAPL, DTS), the shared module enables it
+  ## fleet-wide, and on AMD it looks for `coretemp`, finds none and exits 1
+  ## at init. The sensors are there — k10temp, amdgpu, two nvme, two
+  ## spd5118 — they are simply not ones thermald can read.
+  ##
+  ## The cost was not the daemon. `switch-to-configuration` returns 4 when
+  ## any unit fails to start, so EVERY rebuild on this host has exited 4
+  ## since it was built, and "that is just thermald" is a sentence nobody
+  ## should have to learn: it is how a real unit failure gets waved past.
+  hardware.cpu.amd.updateMicrocode = pkgs.lib.mkDefault config.hardware.enableRedistributableFirmware;
+
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   services.hardware.bolt.enable = true;
