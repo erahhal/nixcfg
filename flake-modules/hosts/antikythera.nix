@@ -48,6 +48,7 @@ in
       switchyard
       whisper-dictation
       nerd-dictation
+      xteink-unlocker
       spacenavd
       connection-sharing
     ])

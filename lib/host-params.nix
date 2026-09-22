@@ -562,6 +562,19 @@
         default = [];
         description = "Applications to launch at startup via the startup-apps systemd service";
       };
+
+      xteink-unlocker.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Xteink Unlocker: flashes CrossPoint Reader onto USB-locked Xteink
+          e-readers by intercepting their OTA update check. Installs the GUI plus
+          a privileged helper unit that is deliberately never started at boot --
+          it turns the Wi-Fi radio into a hotspot and spoofs DNS/NTP while up, so
+          it is started by hand for the duration of a flash. See
+          modules/programs/xteink-unlocker.
+        '';
+      };
     };
 
     cpu = {

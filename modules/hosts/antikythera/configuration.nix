@@ -52,6 +52,7 @@
       appimage.enable = true;
       android.enable = true;
       totp.enable = true;
+      xteink-unlocker.enable = config.hostParams.programs.xteink-unlocker.enable;
       flatpak.enable = true;
       flox.enable = true;
       switchyard.enable = true;

@@ -50,6 +50,7 @@
     switchyard = import ../modules/programs/switchyard;
     whisper-dictation = import ../modules/programs/whisper-dictation;
     nerd-dictation = import ../modules/programs/nerd-dictation;
+    xteink-unlocker = import ../modules/programs/xteink-unlocker;
     # moonshine dropped from active use but module/pkg kept in-tree --
     # re-register here if we ever want to re-enable it on a host.
     # moonshine = import ../modules/programs/moonshine;

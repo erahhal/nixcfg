@@ -126,6 +126,8 @@
         "element-desktop"
         "joplin-desktop"
       ];
+
+      xteink-unlocker.enable = true;
     };
 
     cpu = {

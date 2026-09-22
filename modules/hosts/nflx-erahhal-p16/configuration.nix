@@ -47,6 +47,7 @@
       appimage.enable = true;
       android.enable = true;
       totp.enable = true;
+      xteink-unlocker.enable = config.hostParams.programs.xteink-unlocker.enable;
       # steam.enable = true;
       flatpak.enable = true;
       flox.enable = true;
@@ -441,11 +442,14 @@
   # quick desk-to-desk roaming. After 30 minutes of sleep, it automatically
   # wakes up briefly to save the session to the SSD and fully powers off.
   services.logind = {
-    # TEMPORARY for hibernate debug: leave lidSwitch at default so we can
-    # test `systemctl hibernate` directly from a TTY without the chained
-    # suspend-then-hibernate path interfering. Restore the line below
-    # once a clean hibernate cycle works.
-    # lidSwitch = lib.mkForce "suspend-then-hibernate";
+    # Lid close -> s2idle, then hibernate after HibernateDelaySec (30m, set
+    # below). Re-enabled 2026-09-18 together with
+    # hardware.nvidia.powerManagement.kernelSuspendNotifier = false (see the
+    # NVIDIA VRAM note further down) -- that is the fix for the hibernate
+    # hang this was originally commented out for. If hibernate wedges again,
+    # comment this line back out: logind then falls back to plain suspend on
+    # lid close and nothing else needs touching.
+    lidSwitch = lib.mkForce "suspend-then-hibernate";
     # Optional: also hibernate on external power so it doesn't cook in a bag
     # lidSwitchExternalPower = "suspend-then-hibernate";
 
@@ -460,6 +464,31 @@
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "30m";
   };
+
+  # NVIDIA VRAM preservation path for hibernate.
+  #
+  # With NVreg_PreserveVideoMemoryAllocations=1 the driver has to stash the
+  # dGPU's VRAM somewhere before the machine powers off. Current nixpkgs
+  # defaults hardware.nvidia.powerManagement.kernelSuspendNotifier to true
+  # for the open kernel modules on driver >= 595, which hands that job to an
+  # in-kernel PM notifier and drops the nvidia-{suspend,hibernate,resume}
+  # services entirely. That path fails on this machine: the hibernate attempt
+  # on 2026-08-24 died immediately after "PM: hibernation: hibernation entry"
+  # with
+  #   NVRM: nvCheckOkFailedNoLog: Check failed: Out of memory
+  #         [NV_ERR_NO_MEMORY] (0x00000051) returned from
+  #         _memdescAllocInternal(pMemDesc) @ mem_desc.c:1338
+  # and wedged hard enough to need a power cut -- the log stops before
+  # "Freezing user space processes" and there is no hibernation exit.
+  #
+  # Disabling the notifier restores the classic service ordering:
+  # nvidia-hibernate.service runs `nvidia-sleep.sh hibernate` *before*
+  # systemd-hibernate.service, so the VRAM dump is written to
+  # NVreg_TemporaryFilePath (/var/tmp, set in gfx-nvidia) while the system is
+  # still fully up, rather than being allocated from inside the kernel's
+  # hibernate path once memory is already being reserved for the image.
+  # Revert once a driver release fixes the notifier path.
+  hardware.nvidia.powerManagement.kernelSuspendNotifier = false;
 
   # Hibernation resume target.
   #
