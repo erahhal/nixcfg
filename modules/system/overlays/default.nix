@@ -266,6 +266,21 @@ bool vulkan_remake_and_acquire( void );'
             '';
           };
           npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+          # THE REPORTED BUILD NUMBER DOES NOT FOLLOW THIS PIN unless it is
+          # said here. nixpkgs passes -DLLAMA_BUILD_NUMBER and
+          # -DLLAMA_BUILD_COMMIT from ITS OWN version and rev, and neither
+          # follows `finalAttrs.version` or `src.rev` through
+          # `overrideAttrs`. This binding reported b10472 correctly only
+          # because it was built while nixpkgs-trunk still sat there;
+          # trunk is b10809 now, so without these two lines the next
+          # rebuild would produce a b10472 tree that introduces itself as
+          # b10809. Found on `llama-cpp-qwen4exp-next`, where trunk had
+          # moved far enough to make it visible. Appended so it wins:
+          # CMake takes the last -D of a repeated name.
+          cmakeFlags = (old.cmakeFlags or [ ]) ++ [
+            "-DLLAMA_BUILD_NUMBER:STRING=${finalAttrs.version}"
+            "-DLLAMA_BUILD_COMMIT:STRING=60eeeb6"
+          ];
         }));
 
       # TEMPORARY, AND IT NOW OUTLIVES THE REASON IT WAS WRITTEN FOR.
@@ -359,6 +374,15 @@ bool vulkan_remake_and_acquire( void );'
       # declares `QWEN4EXP MTP`, which is what THIS build is pinned for,
       # and qwen38-125b-a6b-max declares `QWEN4EXP_QSA_GATHER` because it
       # runs no drafter and takes `llama-cpp-qwen4exp-next` below instead.
+      # PATCHES COME FROM THE CATALOG NOW, not from this repo. Which
+      # llama.cpp patch a model needs is a property of the model, and
+      # genai-server declares serve.engineArch/engineFeature/minLlamaCpp
+      # beside it already; keeping the files here meant a second host
+      # wanting these models to work correctly had to copy them out of this
+      # machine's config. genai-server PUBLISHES them (lib.enginePatches)
+      # and this repo still decides the revision, the backend and whether
+      # to pin at all — a patch is only valid against a revision range, so
+      # applying one is the host's call, not the catalog's.
       llama-cpp-qwen4exp = trunkPkgs.llama-cpp.overrideAttrs (finalAttrs: old: {
         pname = "llama-cpp-qwen4exp";
         version = "10791";
@@ -373,8 +397,26 @@ bool vulkan_remake_and_acquire( void );'
             find "$out" -name .git -print0 | xargs -0 rm -rf
           '';
         };
-        patches = (old.patches or []) ++ [ ./patches/llamacpp-28068-gdn-l2norm-rsqrt.patch ];
+        # #29030 IS HERE TOO, ADAPTED, because the Q2 half still runs this
+        # branch and wants the PLE table off its resident set more than
+        # -max did: the table is 26.8GiB in BOTH halves (unsloth keeps it
+        # at IQ4_NL whatever the main quant is), which is 36.5% of this
+        # model's 73.4GiB against 25.9% of the other's 103.7. See that
+        # patch's header for the two files it had to change and why
+        # dropping the llama-bench hunks is safe.
+        patches = (old.patches or []) ++ [
+          inputs.genai-server.lib.enginePatches.gdn-l2norm
+          inputs.genai-server.lib.enginePatches.lazy-direct-b10791
+        ];
         npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+        # Same fix as the binding above and for the same reason: nixpkgs'
+        # -DLLAMA_BUILD_NUMBER / -DLLAMA_BUILD_COMMIT do not follow this
+        # pin. This one currently reports b10791 by luck rather than by
+        # construction. The commit is the branch head, not a tag.
+        cmakeFlags = (old.cmakeFlags or [ ]) ++ [
+          "-DLLAMA_BUILD_NUMBER:STRING=${finalAttrs.version}"
+          "-DLLAMA_BUILD_COMMIT:STRING=d1a9235"
+        ];
       });
 
       # A MEASUREMENT, NOT A DEPLOYMENT, and the distinction is the reason
@@ -414,7 +456,7 @@ bool vulkan_remake_and_acquire( void );'
       # permanent.
       llama-cpp-qwen4exp-qsa = final.llama-cpp-qwen4exp.overrideAttrs (old: {
         pname = "llama-cpp-qwen4exp-qsa";
-        patches = (old.patches or []) ++ [ ./patches/llamacpp-28213-qsa-gather-decode.patch ];
+        patches = (old.patches or []) ++ [ inputs.genai-server.lib.enginePatches.qsa-gather ];
       });
 
       # THE SAME PATCH ON MASTER, FOR THE HALF THAT DOES NOT DRAFT — and
@@ -464,24 +506,34 @@ bool vulkan_remake_and_acquire( void );'
       #     b10829, and master's qwen4exp.cpp now calls the shared
       #     `build_gdn_l2_norm` helper it introduced. Carrying it here
       #     would be applying a patch upstream already has.
-      #   * #28671 IS CARRIED AND IS WORTH NOTHING HERE — radix-select
-      #     TOP_K for the CUB fallback, added 2026-09-18 on a good
-      #     prediction and measured flat the same day: 23.56 tok/s at
-      #     253344 tokens against a control of 23.68, where the PR reports
-      #     +13-18% on this same model and quant. It is still applied
-      #     because removing it costs a 40-minute recompile and it does no
-      #     harm, but DELETE IT at the next engine change rather than
-      #     inheriting it — an unmerged patch that buys nothing is the
-      #     purest form of the permanent-temporary pin. The patch header
-      #     carries the numbers and the one test that would distinguish
-      #     "not engaging" from "engaging and irrelevant".
+      #   * #28671 WAS TRIED AND REMOVED, both on 2026-09-18 — radix-select
+      #     TOP_K for the CUB fallback. It predicted +13-18% decode at
+      #     depth on this same model and quant and measured 23.56 tok/s at
+      #     253344 tokens against a control of 23.68. Its file is kept with
+      #     the numbers so the prediction is not re-derived and re-tried.
       #
-      #     READ THAT BEFORE TRYING #28699 OR ANY OTHER GPU-SIDE qwen4exp
-      #     WORK. At nCpuMoe 38 this entry streams 38 of 48 MoE layers out
-      #     of host RAM per token, and the evidence so far is that GPU
-      #     time is not its critical path — which would make every
-      #     optimisation of that kind a null result here, however well it
-      #     measures on a card that holds the whole model.
+      #     DO NOT TRY #28699 OR ANY OTHER GPU-SIDE qwen4exp WORK HERE,
+      #     and this is measured rather than inferred from that one null
+      #     result. Sampling the card at 2Hz through 1024 tokens of PURE
+      #     generation at 253344 context (the prompt was re-sent so the
+      #     prefix cache served the prefill, leaving only decode):
+      #         GPU utilisation    mean 41.4%  median 42%  max 45%
+      #         GPU memory bus     mean 23.2%              max 25%
+      #     88 samples, distribution 41-45%, i.e. a steady-state wait
+      #     rather than a bursty one. The card is idle more than half of
+      #     every decode step because it is waiting on 38 of 48 MoE layers
+      #     streaming out of host RAM. Removing ALL GPU work would bound
+      #     out near 1.7x and in practice far less, so a patch that makes
+      #     a kernel faster has nothing to win. That is why #28671
+      #     measured flat, and it is a property of this ENTRY's offload
+      #     split rather than of the patches.
+      #   * #29030 IS ADDED — lazy PLE direct reads, and the first lever
+      #     tried here that is about HOST I/O rather than the GPU.
+      #     per_layer_token_embd.weight is 26.8 GiB of this model's 103.7,
+      #     and `--lazy-mode off` keeps all of it resident. See that
+      #     patch's header; note it does nothing until serve.extraFlags
+      #     stops saying `off`, which is deliberately a separate edit so
+      #     the flag can be A/B'd in one binary.
       #
       # npmDepsHash is the binding's above and that is CHECKED, not
       # inherited: tools/ui/package-lock.json is byte-identical at b11028
@@ -509,9 +561,19 @@ bool vulkan_remake_and_acquire( void );'
             find "$out" -name .git -print0 | xargs -0 rm -rf
           '';
         };
+        # ORDER IS LOAD-BEARING: #29030 overlaps #28213 on
+        # src/llama-graph.cpp and src/models/qwen4exp.cpp, and only applies
+        # cleanly with the gather patch already in (checked on b11028).
+        #
+        # #28671 CAME OUT AGAIN, 2026-09-18, one day after going in. It
+        # predicted +13-18% decode at depth on this model and quant and
+        # measured -0.5%; carrying an unmerged patch that buys nothing is
+        # the failure mode this whole section is written against. Its file
+        # is kept, with the numbers, so nobody re-derives the prediction
+        # and tries it a second time.
         patches = (old.patches or []) ++ [
-          ./patches/llamacpp-28213-qsa-gather-decode.patch
-          ./patches/llamacpp-28671-cuda-radix-topk.patch
+          inputs.genai-server.lib.enginePatches.qsa-gather
+          inputs.genai-server.lib.enginePatches.lazy-direct
         ];
         # THE REPORTED BUILD NUMBER DOES NOT FOLLOW THE PIN, and every
         # llama-cpp override in this file has the bug — this is just the

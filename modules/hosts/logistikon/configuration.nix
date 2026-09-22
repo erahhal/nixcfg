@@ -202,6 +202,13 @@
   ## glm5next uses below.
   services.genai-server.llmModels.qwen38-125b-a6b-max.serve.enginePackage =
     pkgs.llama-cpp-qwen4exp-next;
+  ## The Q5 rung rides the same master-based build as -max: no drafter, so
+  ## nothing it needs is on the MTP branch, and it is only loadable at all
+  ## because that build carries ggml-org#29030 (its 50.7GiB PLE table has
+  ## to be read rather than held). Without a pin here it falls below
+  ## serve.minLlamaCpp and is dropped.
+  services.genai-server.llmModels.qwen38-125b-a6b-q5.serve.enginePackage =
+    pkgs.llama-cpp-qwen4exp-next;
   ## GLM-5.3-Flash needs a THIRD engine, not the one above: unsloth ships
   ## glm5next on a separate branch that carries no qwen4exp, and vice
   ## versa. Same seam, same expiry (serve.engineArch = "glm5next").
