@@ -558,6 +558,17 @@
   services.upower = {
     enable = true;
     criticalPowerAction = "Hibernate";
+    # Headroom for the emergency hibernate. upower's defaults (low 20 /
+    # critical 5 / action 2) fire it at 2%, about 1 Wh on this pack. A
+    # hibernate here takes minutes -- 28-224 s just to preallocate the image,
+    # then ~24 GB written to the encrypted swapfile -- at a 12-15 W draw, so
+    # 2% is a coin flip on the EC cutting power mid-write. On 2026-09-23 it
+    # was cut short by a hard reboot instead, because three minutes of dark
+    # screen looks like a hang. 6% is ~3 Wh, ~12 min at that draw.
+    # battery-notify (nixcfg-niri) reads these same levels for its warnings.
+    percentageLow = 20;
+    percentageCritical = 10;
+    percentageAction = 6;
   };
 
   services.logind = {

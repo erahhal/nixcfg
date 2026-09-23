@@ -118,15 +118,21 @@ in
           Value = true;
           Status = "default";
         };
-
-        # Kill the "<site> is now full screen" toast. The timeout is in
-        # milliseconds; 0 means never show it.
-        "full-screen-api.warning.timeout" = {
-          Value = 0;
-          Status = "locked";
-        };
       };
     };
+
+    # Kill the "<site> is now full screen" toast. This can't go in
+    # policies.Preferences above: Firefox's Preferences policy only accepts
+    # prefs under a fixed prefix allowlist (browser., dom., gfx., media.,
+    # widget., ...) and silently drops full-screen-api.* ("Preference is not
+    # allowed" in about:policies). AutoConfig (mozilla.cfg) has no such
+    # restriction. timeout is in ms; <= 0 means never show it. delay = -1
+    # stops the toast re-appearing when the pointer touches the top edge.
+    autoConfig = ''
+      lockPref("full-screen-api.warning.timeout", 0);
+      lockPref("full-screen-api.keyboardlock-warning.timeout", 0);
+      lockPref("full-screen-api.warning.delay", -1);
+    '';
   };
 
   home-manager.users.${userParams.username} = { osConfig, ... }: {

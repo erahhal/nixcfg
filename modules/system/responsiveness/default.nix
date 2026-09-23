@@ -11,9 +11,16 @@
 #   - CFS autogroup + low swappiness — session-level fairness, keep pages in RAM
 #   - user.slice memory ceiling + systemd-oomd — bound runaway memory without
 #     creating a soft-throttle livelock (see the long note at the cap below)
+#   - swap cap lifted for the duration of a sleep cycle — hibernation has to
+#     swap the session out to build its image (see the note below the cap)
 #   - BFQ I/O scheduler on rotational disks — per-process I/O bandwidth fairness
 #   - "none" (passthrough) on NVMe — hardware queues handle fairness natively
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
+let
+  # Shared by the slice definition and the post-resume restore below.
+  userSliceSwapMax = "8G";
+  systemctl = "${config.systemd.package}/bin/systemctl";
+in
 {
   # ── Process priority daemon ─────────────────────────────────────────
   services.ananicy = {
@@ -125,8 +132,46 @@
   # now actually reach), and oomd below is the pressure-based safety net.
   systemd.slices."user".sliceConfig = {
     MemoryMax = "54G";
-    MemorySwapMax = "8G";
+    MemorySwapMax = userSliceSwapMax;
   };
+
+  # ── Lift the swap cap for the duration of a sleep cycle ────────────
+  # The swap cap broke hibernation: on antikythera every attempt from
+  # 2026-09-18 to 09-20 failed with "Image allocation is N pages short" or
+  # "Normal pages needed X, available Y / Error -12 creating image", and on
+  # 09-20 the fallback drained the battery overnight.
+  #
+  # Hibernation must shrink the resident set to under half of RAM before it
+  # can snapshot, and anonymous memory can only shrink by going to swap.
+  # Once user.slice sits at memory.swap.max, the kernel's global reclaim
+  # skips every anon page in the slice (can_reclaim_anon_pages → memcg swap
+  # limit), so a session larger than ~half of RAM minus kernel/GPU memory
+  # can never be hibernated.  The journal showed swap use parked at the cap
+  # (8191 MiB) from 2026-09-17 on; hibernation had worked until the session
+  # outgrew the limit.
+  #
+  # Worse, systemd's suspend-then-hibernate handles a failed hibernate with
+  # ONE plain suspend and no wake-up timer (sleep.c, execute_s2h), so the
+  # box sat in s2idle for 22 h until the battery was empty.  upower's
+  # criticalPowerAction = "Hibernate" fails the same way, so the safety net
+  # only exists if hibernation actually works.
+  #
+  # sleep-actions.service runs powerDownCommands before sleep.target and
+  # resumeCommands when the target is torn down after resume, bracketing
+  # the whole suspend → hibernate → resume cycle.  Nothing in the session
+  # runs while asleep, so the runaway-anon backstop loses nothing.
+  # mkBefore puts the restore ahead of host resume hooks (the script runs
+  # under set -e), and `|| true` keeps a failed restore from blocking them;
+  # systemctl still logs the failure.  The restore writes the configured
+  # value instead of `systemctl revert`, which would also delete NixOS's
+  # own /etc drop-ins.  The runtime drop-in it leaves behind matches the
+  # unit file and disappears at reboot.
+  powerManagement.powerDownCommands = ''
+    ${systemctl} set-property --runtime user.slice MemorySwapMax=infinity
+  '';
+  powerManagement.resumeCommands = lib.mkBefore ''
+    ${systemctl} set-property --runtime user.slice MemorySwapMax=${userSliceSwapMax} || true
+  '';
 
   # ── OOM enforcement ────────────────────────────────────────────────
   # Nothing enforced the ceiling during either lockup: earlyoom is not
