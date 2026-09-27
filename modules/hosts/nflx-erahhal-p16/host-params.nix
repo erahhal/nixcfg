@@ -70,6 +70,14 @@
         ];
       };
 
+      # Hand the lid to logind so it can suspend-then-hibernate (see
+      # systemd.sleep.settings.Sleep in configuration.nix). This also unbinds
+      # niri's lid-close handler -- with both armed, the compositor's suspend
+      # request was frozen at lid close and replayed on resume, re-suspending
+      # the machine or, when it landed while nvidia-sleep.sh still had VT 63
+      # in front, raising a polkit password prompt to suspend.
+      lidCloseAction = "suspend-then-hibernate";
+
       # EasyEffects intercepts Bluetooth headset recording on this host,
       # breaking the A2DP->HSP autoswitch for the Bose NC 700 mic. Skip it.
       easyeffects.enable = false;

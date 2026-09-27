@@ -131,6 +131,10 @@ in
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
     # package = config.boot.kernelPackages.nvidiaPackages.stable;
     package = config.boot.kernelPackages.nvidiaPackages.latest;
+    # nixpkgs' nvidia-{suspend,hibernate,resume} services are in use, rather
+    # than the in-kernel PM notifier.
+    classicSleepServices = config.hardware.nvidia.powerManagement.enable
+      && !config.hardware.nvidia.powerManagement.kernelSuspendNotifier;
   in {
     services.lact.enable = true;
 
@@ -199,6 +203,31 @@ in
         else
           echo "Reload did not create an NVIDIA DRM card; a reboot/power cycle may be needed."
         fi
+      '';
+    };
+
+    # nixpkgs' classic sleep services only hook nvidia-sleep.sh into
+    # systemd-suspend.service and systemd-hibernate.service. Under
+    # suspend-then-hibernate the driver never gets its procfs "suspend", so
+    # with NVreg_PreserveVideoMemoryAllocations=1 the kernel aborts every
+    # attempt (nv_pmops_suspend returns -5). Order the same units around
+    # systemd-suspend-then-hibernate.service, and install NVIDIA's
+    # system-sleep hook, which moves the driver from suspend to hibernate
+    # when the HibernateDelaySec alarm fires. For plain suspend the hook also
+    # switches back from VT 63 before user.slice is thawed. nvidia-sleep.sh
+    # runs chvt from PATH, and systemd-sleep's PATH has no kbd.
+    systemd.services.nvidia-suspend = lib.mkIf classicSleepServices {
+      before = [ "systemd-suspend-then-hibernate.service" ];
+      requiredBy = [ "systemd-suspend-then-hibernate.service" ];
+    };
+    systemd.services.nvidia-resume = lib.mkIf classicSleepServices {
+      after = [ "systemd-suspend-then-hibernate.service" ];
+      requiredBy = [ "systemd-suspend-then-hibernate.service" ];
+    };
+    environment.etc."systemd/system-sleep/nvidia" = lib.mkIf classicSleepServices {
+      source = pkgs.writeShellScript "nvidia-system-sleep" ''
+        export PATH=${lib.makeBinPath [ pkgs.kbd ]}:$PATH
+        exec ${config.hardware.nvidia.package.out}/lib/systemd/system-sleep/nvidia "$@"
       '';
     };
 

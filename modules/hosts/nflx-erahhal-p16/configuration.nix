@@ -443,13 +443,15 @@
   # wakes up briefly to save the session to the SSD and fully powers off.
   services.logind = {
     # Lid close -> s2idle, then hibernate after HibernateDelaySec (30m, set
-    # below). Re-enabled 2026-09-18 together with
-    # hardware.nvidia.powerManagement.kernelSuspendNotifier = false (see the
-    # NVIDIA VRAM note further down) -- that is the fix for the hibernate
-    # hang this was originally commented out for. If hibernate wedges again,
-    # comment this line back out: logind then falls back to plain suspend on
-    # lid close and nothing else needs touching.
-    lidSwitch = lib.mkForce "suspend-then-hibernate";
+    # below). The lid action is hostParams.desktop.lidCloseAction in
+    # host-params.nix; don't force lidSwitch here, as that leaves niri's
+    # lid-close binding armed too and the two race. Re-enabled 2026-09-18
+    # together with hardware.nvidia.powerManagement.kernelSuspendNotifier =
+    # false (see the NVIDIA VRAM note further down) -- that is the fix for
+    # the hibernate hang this was originally disabled for -- but it only
+    # works with the suspend-then-hibernate wiring in
+    # modules/hardware/gfx-nvidia. If hibernate wedges again, set
+    # lidCloseAction = "suspend" in host-params.nix.
     # Optional: also hibernate on external power so it doesn't cook in a bag
     # lidSwitchExternalPower = "suspend-then-hibernate";
 
