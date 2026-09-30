@@ -63,7 +63,7 @@ nix run .#get-new-packages  # Compare current system to new build with nvd
   - `hosts/` - Per-host configuration and params
   - `networking/` - Tailscale, captive portal, etc.
   - `programs/` - Steam, Android, etc.
-  - `services/` - VMs, Waydroid, Snapcast, etc.
+  - `services/` - VMs, Waydroid, the mediaserver audio sender, etc.
   - `system/` - Boot, security, packages, overlays, networking
   - `overrides/` - Package overrides
 - `nixos-anywhere/` - Remote installation script

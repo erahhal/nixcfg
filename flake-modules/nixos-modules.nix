@@ -57,7 +57,7 @@
 
     # Services
     waydroid = import ../modules/services/waydroid;
-    snapcast = import ../modules/services/snapcast;
+    mediaserver-sender = import ../modules/services/mediaserver-sender;
     nfs-mounts = import ../modules/services/nfs-mounts;
     virtual-machines = import ../modules/services/virtual-machines;
     macchanger = import ../modules/services/macchanger;

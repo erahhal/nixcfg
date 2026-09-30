@@ -62,7 +62,7 @@
         # See modules/hosts/antikythera/niri.nix (Mod+Period).
       };
       nerd-dictation = {
-        enable = true;
+        enable = config.hostParams.programs.nerd-dictation.enable;
         # Full 1.8 GB US English model -- most accurate non-gigaspeech option,
         # still realtime on this CPU. See models.nix for smaller alternatives:
         #   small-en-us-0_15     (≈40 MB, fastest)
@@ -79,7 +79,7 @@
     };
     services = {
       waydroid.enable = true;
-      snapcast.enable = true;
+      mediaserver-sender.enable = config.hostParams.desktop.mediaserverSender.enable;
       nfs-mounts.enable = true;
       printers-scanners.enable = true;
     };

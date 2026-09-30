@@ -31,7 +31,7 @@ in
       android
       totp
       waydroid
-      snapcast
+      mediaserver-sender
       nfs-mounts
       virtual-machines
       macchanger

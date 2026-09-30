@@ -80,7 +80,7 @@
         # See modules/hosts/nflx-erahhal-p16/niri.nix (Mod+Period).
       };
       nerd-dictation = {
-        enable = true;
+        enable = config.hostParams.programs.nerd-dictation.enable;
         # Full 1.8 GB US English model -- most accurate non-gigaspeech option,
         # still realtime on this CPU. See models.nix for smaller alternatives:
         #   small-en-us-0_15     (≈40 MB, fastest)
@@ -97,7 +97,7 @@
     };
     services = {
       waydroid.enable = true;
-      snapcast.enable = true;
+      mediaserver-sender.enable = config.hostParams.desktop.mediaserverSender.enable;
       printers-scanners.enable = true;
       nfs-mounts.enable = false;
     };
@@ -452,8 +452,6 @@
     # works with the suspend-then-hibernate wiring in
     # modules/hardware/gfx-nvidia. If hibernate wedges again, set
     # lidCloseAction = "suspend" in host-params.nix.
-    # Optional: also hibernate on external power so it doesn't cook in a bag
-    # lidSwitchExternalPower = "suspend-then-hibernate";
 
     # ThinkPad Fn+4 emits the ACPI sleep key and gets hit accidentally.
     # Ignore short presses; require a long press to suspend.
@@ -463,8 +461,14 @@
     };
   };
 
+  # On AC, HibernateOnACPower = false keeps suspend-then-hibernate in plain
+  # suspend: the HibernateDelaySec countdown only starts once AC is unplugged.
+  # systemd defaults it to true, which hibernated the laptop 30 min after lid
+  # close while plugged in. Set it to true if it should also hibernate on AC
+  # (e.g. so it doesn't cook in a bag).
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "30m";
+    HibernateOnACPower = false;
   };
 
   # NVIDIA VRAM preservation path for hibernate.

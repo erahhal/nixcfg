@@ -554,6 +554,32 @@
           description = "Maximum display height before resolution is halved";
         };
       };
+
+      mediaserverSender = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = ''
+            Send this machine's audio to the house speakers: PipeWire finds
+            the HomeFree box's snapserver over mDNS and adds a sink for it,
+            which becomes this machine's own stream there. Nothing about this
+            machine is configured on the server. See
+            modules/services/mediaserver-sender.
+          '';
+        };
+
+        serverHost = lib.mkOption {
+          type = lib.types.str;
+          default = "homefree";
+          description = "mDNS host name the snapserver announces (without .local); only that server gets a sink.";
+        };
+
+        serverAddress = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = "10.0.0.1";
+          description = "The server's IPv4 address, let through the firewall to pull the audio. null leaves the firewall alone.";
+        };
+      };
     };
 
     programs = {
@@ -573,6 +599,17 @@
           it turns the Wi-Fi radio into a hotspot and spoofs DNS/NTP while up, so
           it is started by hand for the duration of a flash. See
           modules/programs/xteink-unlocker.
+        '';
+      };
+
+      nerd-dictation.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          nerd-dictation: offline streaming speech-to-text (Vosk), toggled
+          from a niri hotkey. Its pre-warmed user daemon keeps the model
+          resident even while idle -- ~5 GB for the full en-us-0_22 model.
+          See modules/programs/nerd-dictation.
         '';
       };
     };

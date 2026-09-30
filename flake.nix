@@ -93,6 +93,22 @@
       ref = "main";
     };
 
+    # The house audio fleet (snapcast, run from the HomeFree box). Only its
+    # `sender` module is used here -- a laptop's audio goes to the house as
+    # a stream of its own; see modules/services/mediaserver-sender. That
+    # module needs none of the flake's inputs, so they all follow ours and
+    # the lock gains no second nixpkgs.
+    mediaserver = {
+      type = "git";
+      url = "ssh://git@git.homefree.host:3022/homefree/mediaserver.git";
+      ref = "master";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.nixpkgs-trunk.follows = "nixpkgs-trunk";
+      inputs.nixos-hardware.follows = "nixos-hardware";
+      inputs.nixvim-config.follows = "nixvim-config";
+    };
+
     steam-loader = {
       url = "path:./modules/programs/steam-loader";
     };

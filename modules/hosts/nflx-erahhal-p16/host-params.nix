@@ -48,6 +48,7 @@
 
       multipleSessions = true;
       defaultSession = "niri";
+      mediaserverSender.enable = true;
       useHyprlandFlake = false;
       disableXwaylandScaling = true;
       defaultLockProgram = "hyprlock";
@@ -138,6 +139,7 @@
       ];
 
       xteink-unlocker.enable = true;
+      nerd-dictation.enable = false;
     };
 
     gpu = {

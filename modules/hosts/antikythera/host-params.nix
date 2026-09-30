@@ -44,6 +44,7 @@
       displayManager = "dms";
       multipleSessions = true;
       defaultSession = "niri";
+      mediaserverSender.enable = true;
       dpi = 192;
       wallpaper = ../../../wallpapers/huashan-temple.jpg;
       disableXwaylandScaling = true;
@@ -128,6 +129,7 @@
       ];
 
       xteink-unlocker.enable = true;
+      nerd-dictation.enable = false;
     };
 
     cpu = {

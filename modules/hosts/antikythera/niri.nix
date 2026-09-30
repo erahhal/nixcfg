@@ -88,13 +88,14 @@ in
         # mid-flight keystrokes race with the repeating hotkey).
         # cooldown-ms is a belt-and-suspenders debounce against double-taps.
         # mkForce is needed because modules/desktop/niri/home.nix ships
-        # defaults on these keys (consume-window-into-column etc).
-        "Mod+Comma" = lib.mkForce {
+        # defaults on these keys (consume-window-into-column etc); with
+        # nerd-dictation disabled, Mod+Comma falls back to that default.
+        "Mod+Comma" = lib.mkIf config.hostParams.programs.nerd-dictation.enable (lib.mkForce {
           repeat = false;
           cooldown-ms = 500;
           hotkey-overlay.title = "Dictation: nerd-dictation (Vosk, streaming)";
           action.spawn = [ "nerd-dictation-toggle" ];
-        };
+        });
         "Mod+Period" = lib.mkForce {
           repeat = false;
           cooldown-ms = 500;

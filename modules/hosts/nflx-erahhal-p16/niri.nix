@@ -127,7 +127,7 @@ in
         # apps may still interpret Ctrl+Shift+<letter> as their own shortcut
         # if the user keeps Ctrl+Shift held, but that's strictly less
         # destructive than niri rearranging windows.
-        "Ctrl+Shift+Comma" = {
+        "Ctrl+Shift+Comma" = lib.mkIf config.hostParams.programs.nerd-dictation.enable {
           repeat = false;
           cooldown-ms = 500;
           hotkey-overlay.title = "Dictation: nerd-dictation (Vosk, streaming)";

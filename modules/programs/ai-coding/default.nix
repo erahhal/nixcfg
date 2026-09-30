@@ -37,6 +37,10 @@
 # it is whatever the host it is on says it is, and the local fleet is
 # `opencode-local` on every host including the ones where the plain name is
 # already spoken for.
+#
+# CLAUDE_CODE_OAUTH_TOKEN is exported into the main user's session from the
+# shared agenix secret `claude-code-oauth-token` (see claudeOauthTokenFile);
+# the claude-openrouter / claude-local wrappers unset it.
 { config, pkgs, lib, inputs, ... }:
 
 let
@@ -147,11 +151,23 @@ let
       fi
     '';
 
+  # Claude subscription token (`claude setup-token`) from the shared agenix
+  # secret `claude-code-oauth-token`, if it's declared. Exported as
+  # CLAUDE_CODE_OAUTH_TOKEN into the main user's session at login (see
+  # home.sessionVariablesExtra below), so it never lands in the nix store.
+  claudeOauthTokenFile =
+    if config.age.secrets ? "claude-code-oauth-token"
+    then config.age.secrets."claude-code-oauth-token".path
+    else null;
+
   # Claude Code against OpenRouter's Anthropic-compatible endpoint. Its own
   # config dir keeps the OpenRouter API-key session from clobbering the
-  # subscription OAuth login that the default `claude` uses.
+  # subscription OAuth login that the default `claude` uses. The session's
+  # CLAUDE_CODE_OAUTH_TOKEN is dropped too: it ranks below ANTHROPIC_API_KEY,
+  # but would be sent to OpenRouter whenever that key is missing or declined.
   claude-openrouter = pkgs.writeShellScriptBin "claude-openrouter" ''
     #!${pkgs.bash}/bin/bash
+    unset CLAUDE_CODE_OAUTH_TOKEN
     export CLAUDE_CONFIG_DIR="$HOME/.claude-openrouter"
     export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
     ${openrouterExportKey "ANTHROPIC_API_KEY"}${lib.optionalString (orCfg.model != null) ''export ANTHROPIC_MODEL="${orCfg.model}"
@@ -247,6 +263,8 @@ let
     claudeModelIds;
   claude-local = pkgs.writeShellScriptBin "claude-local" ''
     #!${pkgs.bash}/bin/bash
+    # The subscription token has no business on the LAN endpoint.
+    unset CLAUDE_CODE_OAUTH_TOKEN
     export CLAUDE_CONFIG_DIR="$HOME/.claude-local"
     export ANTHROPIC_BASE_URL="${genaiBaseUrl}"
     export ANTHROPIC_AUTH_TOKEN=dummy
@@ -1145,6 +1163,17 @@ in
     # property that makes shipping them everywhere safe, and it is worth
     # keeping when any of these wrappers is touched.
     ++ lib.optionals (!userParams.nflxHost) [ pkgs.opencode hermes ];
+
+    # CLAUDE_CODE_OAUTH_TOKEN for every Claude Code session, read from the
+    # decrypted secret when the session starts. It ranks below
+    # ANTHROPIC_AUTH_TOKEN, ANTHROPIC_API_KEY and apiKeyHelper, so the corp
+    # `claude` (apiKeyHelper) keeps its gateway auth; it outranks /login, so
+    # plain `claude` and `claude-vanilla` use it.
+    home.sessionVariablesExtra = lib.mkIf (claudeOauthTokenFile != null) ''
+      if [ -r "${claudeOauthTokenFile}" ]; then
+        export CLAUDE_CODE_OAUTH_TOKEN="$(${pkgs.coreutils}/bin/cat "${claudeOauthTokenFile}")"
+      fi
+    '';
 
     # First: the merges below mkdir the new directories, so a migration
     # ordered after them would find a target that already exists and move
