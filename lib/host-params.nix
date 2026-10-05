@@ -298,7 +298,9 @@
           resume, immediately re-suspending the machine.
 
           "suspend-then-hibernate" also needs systemd.sleep.settings.Sleep
-          (HibernateDelaySec / HibernateOnACPower) set on the host.
+          (HibernateDelaySec / HibernateOnACPower) set on the host. On
+          NVIDIA hosts leave HibernateOnACPower at its default; see
+          modules/hardware/gfx-nvidia.
 
           Mirrors to nixcfg-niri.desktop.lidCloseAction via
           modules/desktop/niri/user-overrides.nix.
@@ -560,24 +562,23 @@
           type = lib.types.bool;
           default = false;
           description = ''
-            Send this machine's audio to the house speakers: PipeWire finds
-            the HomeFree box's snapserver over mDNS and adds a sink for it,
-            which becomes this machine's own stream there. Nothing about this
-            machine is configured on the server. See
-            modules/services/mediaserver-sender.
+            Send this machine's audio to the house speakers: a "House
+            speakers" output whose audio becomes this machine's own stream on
+            the HomeFree box's snapserver. Nothing about this machine is
+            configured on the server. See modules/services/mediaserver-sender.
           '';
         };
 
         serverHost = lib.mkOption {
           type = lib.types.str;
           default = "homefree";
-          description = "mDNS host name the snapserver announces (without .local); only that server gets a sink.";
+          description = "The snapserver's host name; used only when serverAddress is null.";
         };
 
         serverAddress = lib.mkOption {
           type = lib.types.nullOr lib.types.str;
           default = "10.0.0.1";
-          description = "The server's IPv4 address, let through the firewall to pull the audio. null leaves the firewall alone.";
+          description = "The server's IPv4 address: the sender connects to it, and the firewall lets it in to pull the audio. null connects to serverHost and leaves the firewall alone.";
         };
       };
     };

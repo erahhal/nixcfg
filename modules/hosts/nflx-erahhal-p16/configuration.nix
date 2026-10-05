@@ -442,8 +442,8 @@
   # quick desk-to-desk roaming. After 30 minutes of sleep, it automatically
   # wakes up briefly to save the session to the SSD and fully powers off.
   services.logind = {
-    # Lid close -> s2idle, then hibernate after HibernateDelaySec (30m, set
-    # below). The lid action is hostParams.desktop.lidCloseAction in
+    # Lid close on battery -> s2idle, then hibernate after HibernateDelaySec
+    # (30m, set below). The lid action is hostParams.desktop.lidCloseAction in
     # host-params.nix; don't force lidSwitch here, as that leaves niri's
     # lid-close binding armed too and the two race. Re-enabled 2026-09-18
     # together with hardware.nvidia.powerManagement.kernelSuspendNotifier =
@@ -453,22 +453,30 @@
     # modules/hardware/gfx-nvidia. If hibernate wedges again, set
     # lidCloseAction = "suspend" in host-params.nix.
 
-    # ThinkPad Fn+4 emits the ACPI sleep key and gets hit accidentally.
-    # Ignore short presses; require a long press to suspend.
     settings.Login = {
+      # ThinkPad Fn+4 emits the ACPI sleep key and gets hit accidentally.
+      # Ignore short presses; require a long press to suspend.
       HandleSuspendKey = "ignore";
       HandleSuspendKeyLongPress = "suspend";
+
+      # On AC the lid does plain suspend, so it never hibernates while plugged
+      # in. Don't get there with HibernateOnACPower = false instead: that
+      # still wakes the machine at HibernateDelaySec and puts it back to sleep,
+      # and that re-suspend always fails here (see modules/hardware/gfx-nvidia).
+      # On 2026-09-30 the wake also wedged the dGPU, and logind retried the
+      # lid action every 30 s for 9 hours with the lid shut. Only set while
+      # logind owns the lid, so niri's lid-close binding is never armed too.
+      HandleLidSwitchExternalPower = lib.mkIf
+        (config.hostParams.desktop.lidCloseAction == "suspend-then-hibernate")
+        "suspend";
     };
   };
 
-  # On AC, HibernateOnACPower = false keeps suspend-then-hibernate in plain
-  # suspend: the HibernateDelaySec countdown only starts once AC is unplugged.
-  # systemd defaults it to true, which hibernated the laptop 30 min after lid
-  # close while plugged in. Set it to true if it should also hibernate on AC
-  # (e.g. so it doesn't cook in a bag).
+  # HibernateOnACPower stays at systemd's default (true); see
+  # HandleLidSwitchExternalPower above. If AC is plugged in after the lid
+  # was closed on battery, the machine still hibernates at 30 min.
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "30m";
-    HibernateOnACPower = false;
   };
 
   # NVIDIA VRAM preservation path for hibernate.

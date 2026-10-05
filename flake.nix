@@ -152,7 +152,7 @@
 
     nflx-nixcfg = {
       type = "git";
-      url = "git+ssh://git@github.com/netflix/nflx-nixcfg.git";
+      url = "git+https://netflix.ghe.com/ncselinuxdesktop/nflx-nixcfg.git";
       ref = "main";
       # ref = "recovery-updates";
     };

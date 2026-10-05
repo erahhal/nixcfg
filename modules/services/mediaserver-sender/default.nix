@@ -1,9 +1,10 @@
 # Sends this machine's audio to the house speakers (the mediaserver fleet the
-# HomeFree box runs) as a stream of its own. PipeWire finds the box's
-# snapserver over mDNS and adds an output for it; pick that output, then play
-# the stream from the mediaserver console (Play everywhere, or per speaker).
-# The server needs no entry for this machine, so any laptop running this
-# works, and its stream goes away with it.
+# HomeFree box runs) as a stream of its own. Pick the "House speakers" output,
+# then play the stream from the mediaserver console (Play everywhere, or per
+# speaker). A small sender keeps the stream registered on the box's
+# snapserver through restarts, roaming and address changes. The server needs
+# no entry for this machine, so any laptop running this works, and its
+# stream goes away with it.
 #
 # Replaces a local snapserver fed by a PipeWire pipe tunnel, which the house
 # had to know about by address.

@@ -1638,18 +1638,18 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1790988977,
-        "narHash": "sha256-SGUjn/EupyIhZXnkLgpknbhj3ixXuTjm7FsOvytePto=",
+        "lastModified": 1791233184,
+        "narHash": "sha256-/jJCdxS+XMd4zL4ZDl5qvkCC0EpZzjpUgh5/ikJdhN0=",
         "ref": "main",
-        "rev": "d0496992ca213a153238adabc8fcbb27d3b84bc1",
-        "revCount": 198,
+        "rev": "8f4bbe7dabea75d7c891f15cef805dc1cb3defef",
+        "revCount": 223,
         "type": "git",
-        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "https://netflix.ghe.com/ncselinuxdesktop/nflx-nixcfg.git"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "ssh://git@github.com/netflix/nflx-nixcfg.git"
+        "url": "https://netflix.ghe.com/ncselinuxdesktop/nflx-nixcfg.git"
       }
     },
     "niri-flake": {

@@ -213,7 +213,11 @@ in
     # attempt (nv_pmops_suspend returns -5). Order the same units around
     # systemd-suspend-then-hibernate.service, and install NVIDIA's
     # system-sleep hook, which moves the driver from suspend to hibernate
-    # when the HibernateDelaySec alarm fires. For plain suspend the hook also
+    # when the HibernateDelaySec alarm fires. The hook assumes that wake ends
+    # in hibernate: if systemd suspends again instead (HibernateOnACPower =
+    # false while on AC), the driver is left resumed and the re-suspend fails
+    # with EIO, so keep HibernateOnACPower at its default on hosts that use
+    # this. For plain suspend the hook also
     # switches back from VT 63 before user.slice is thawed. nvidia-sleep.sh
     # runs chvt from PATH, and systemd-sleep's PATH has no kbd.
     systemd.services.nvidia-suspend = lib.mkIf classicSleepServices {

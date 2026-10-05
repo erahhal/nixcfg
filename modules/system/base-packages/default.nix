@@ -90,6 +90,7 @@ let userParams = config.hostParams.user; in
     msr-tools
     fastfetch
     nethogs
+    netwatch         # `sudo netwatch` for capture/eBPF; no setcap wrapper: NixOS makes caps ambient and netwatch execs PATH-resolved helpers
     networkmanager
     nh
     nix
