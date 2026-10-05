@@ -41,6 +41,7 @@
       laptop.enable = true;
       udev-rules.enable = true;
       thinkpad-dock-udev.enable = true;
+      power-clamp-notify.enable = true;
       spacenavd.enable = true;
       ryzenadj.enable = true;
       dmemcg = {

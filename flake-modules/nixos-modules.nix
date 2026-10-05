@@ -35,6 +35,7 @@
     openrgb = import ../modules/hardware/openrgb;
     keyboard-debounce = import ../modules/hardware/keyboard-debounce;
     keyboard-unwedge = import ../modules/hardware/keyboard-unwedge;
+    power-clamp-notify = import ../modules/hardware/power-clamp-notify;
     spacenavd = import ../modules/hardware/spacenavd;
     ryzenadj = import ../modules/hardware/ryzenadj;
     dmemcg = import ../modules/hardware/dmemcg;

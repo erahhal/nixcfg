@@ -1655,7 +1655,10 @@
     "niri-flake": {
       "inputs": {
         "niri-stable": "niri-stable",
-        "niri-unstable": "niri-unstable",
+        "niri-unstable": [
+          "nixcfg-niri",
+          "niri-unstable"
+        ],
         "nixpkgs": [
           "nixcfg-niri",
           "nixpkgs"
@@ -1698,11 +1701,11 @@
     "niri-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1785701241,
-        "narHash": "sha256-ircVOzPWRircI39ac/tqJajr5OoJxEVrDlBb05TULEk=",
+        "lastModified": 1790884237,
+        "narHash": "sha256-3BtIY8xxJHLai3/73kOqgSgcVmqpSKpz9uUstQYgfLk=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "feb3e43f1475e0865bb89cbd1e898b34d1d2ccf6",
+        "rev": "ed22699d99462f61ab171472d3ea67e844ea580d",
         "type": "github"
       },
       "original": {
@@ -1773,16 +1776,17 @@
         "dms-shell": "dms-shell",
         "greyline": "greyline",
         "niri-flake": "niri-flake",
+        "niri-unstable": "niri-unstable",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1791170803,
-        "narHash": "sha256-qnms2YVw3NI5tEKEbz6JwfPyEXplQa+lv5b3Y87UD0w=",
+        "lastModified": 1791172619,
+        "narHash": "sha256-LVL5+XaUBv3GfcatDoag0frEuoqXEgAZYhZqlVBbNf8=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "4c2fc7c694b5b7ee5704010eaf01b8e91ffe930d",
+        "rev": "2c5d6715c765ca1050263b0c76ea3c8142e65f16",
         "type": "github"
       },
       "original": {

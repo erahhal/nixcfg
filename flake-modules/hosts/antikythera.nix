@@ -36,6 +36,7 @@ in
       ryzenadj
       dmemcg
       thinkpad-dock-udev
+      power-clamp-notify
       appimage
       android
       totp
