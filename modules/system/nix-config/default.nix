@@ -1,5 +1,5 @@
 # Nix daemon, flake, garbage collection, and registry configuration
-{ config, pkgs, inputs, system, ... }:
+{ config, lib, pkgs, inputs, system, ... }:
 let userParams = config.hostParams.user; in
 {
   nix = {
@@ -7,7 +7,38 @@ let userParams = config.hostParams.user; in
 
     settings = {
       sandbox = true;
-      auto-optimise-store = true;
+
+      # OFF DELIBERATELY -- this is the "build looks frozen" setting. With it
+      # on, the daemon hardlink-dedupes every path INLINE as it is
+      # substituted, and `daemonCPUSchedPolicy = "idle"` /
+      # `daemonIOSchedClass = "idle"` below mean it does that work at idle
+      # priority while builders block behind it on log backpressure. During a
+      # mass rebuild (e.g. the GCC 16 window of 2026-10) that reads as a
+      # hung switch rather than a slow one. The `nix.optimise` timer further
+      # down already dedupes weekly, out of band, which is where that work
+      # belongs. Note this flag has been `true` since the 2023-06-03 initial
+      # commit; it was never the cause of a regression, just never turned off.
+      auto-optimise-store = false;
+
+      # Collect every independent failure in ONE pass. Without this, nix stops
+      # at the first failed derivation, so a flake bump that breaks three
+      # unrelated packages costs three full build rounds to discover -- which
+      # is exactly what the 2026-10-01 nixpkgs bump cost (eternal-terminal,
+      # then gimp-with-plugins, then grantlee, an hour apiece).
+      keep-going = true;
+
+      # Keep the machine usable during a mass rebuild. The NixOS defaults are
+      # `max-jobs = auto` and `cores = 0`, i.e. on antikythera up to 16
+      # concurrent derivations EACH allowed all 16 logical cores; load average
+      # hit 30.7 during the 2026-10-01 bump. Rule of thumb is
+      # max-jobs * cores ~= core count. Throughput barely changes -- the box
+      # was already saturated -- but the desktop stays responsive.
+      #
+      # mkDefault because this is a module shared by every host: a bigger
+      # build box (logistikon) wants a larger pair, and one big job like
+      # llama-cpp is badly served by cores = 4. Override per host.
+      max-jobs = lib.mkDefault 4;
+      cores = lib.mkDefault 4;
       trusted-users = [ "@wheel" "root" ];
       allowed-users = [ "@wheel" ];
       substituters = [

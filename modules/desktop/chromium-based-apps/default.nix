@@ -61,8 +61,13 @@ let
           "--enable-wayland-ime"
           "--password-store=basic"
           "--ozone-platform=wayland"
-          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL"
-          "--enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations,WaylandLinuxDrmSyncobj,UseOzonePlatform"
+          # Hardware video decode. VaapiVideoDecoder + AcceleratedVideoDecode*
+          # were previously in --disable-features, which left Brave decoding
+          # every stream on the CPU (confirmed 2026-10-01: Brave's GPU process
+          # never loaded radeonsi_drv_video.so while playing video).  This
+          # mirrors the flag set the `slack` wrapper below already uses.
+          "--disable-features=OutdatedBuildDetector,UseChromeOSDirectVideoDecoder"
+          "--enable-features=WebRTCPipeWireCapturer,WaylandWindowDecorations,WaylandLinuxDrmSyncobj,UseOzonePlatform,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiIgnoreDriverChecks,UseMultiPlaneFormatForHardwareVideo"
           "--enable-gpu-rasterization"
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"

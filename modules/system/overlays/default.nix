@@ -35,17 +35,46 @@ let
     # cudaSupport = true, which pulls unfree CUDA deps.
     config = { allowUnfree = true; allowBroken = true; };
   };
+
 in
 {
   nixpkgs = {
     config = {
       allowUnfree = true;
-      allowBroken = true;
-      # obsidian, logseq, and bitwarden-desktop still pin electron_39 in
-      # nixpkgs (default electron is now electron_41), and the bump marked
-      # electron_39 EOL/insecure. nixpkgs pins it on purpose — those apps
-      # aren't compatible with newer Electron yet — so allow it rather than
-      # override (which would break them). Remove once they move to electron_41.
+
+      # NO allowBroken HERE, AND IT MUST STAY THAT WAY. It is not a harmless
+      # "let me build broken things" switch any more: since the 2026-10-01
+      # nixpkgs bump, meta.broken is computed from the new problems framework
+      # (check-meta.nix: `broken = hasProblemKind "broken"`) and the broken
+      # problem's generator opens with `if allowBroken then attrs: false`
+      # (problems.nix). Setting it therefore makes meta.broken read FALSE on
+      # EVERY package in the tree -- not just for us, but for the ~20 places
+      # in nixpkgs whose own Nix code filters on it: gimp/wrapper.nix and
+      # inkscape/with-extensions.nix dropping incompatible plugins,
+      # matrix-synapse's optional deps, tree-sitter grammars, nushell and
+      # maubot plugins, `doCheck = !valgrind.meta.broken`. With it on,
+      # gimp-with-plugins pulled all seven GIMP-2-only plugins into a GIMP 3
+      # build and died compiling farbfeld.
+      #
+      # Nothing here needs it. The `broken` stub helper (lib/broken.nix, used
+      # as `(broken vllm)` in modules/hosts/nflx-erahhal-p16) builds its
+      # stubs from its OWN pkgs instance that sets allowBroken itself
+      # (lib/shared.nix, flake-modules/home.nix) -- and nixpkgs only checks
+      # validity in the instance that CREATES a derivation, never in the
+      # consumer, so those stubs pass through this one untouched. Verified.
+      #
+      # If a package here is ever genuinely marked broken upstream, eval
+      # fails naming it; wrap it as `(broken thatPackage)` or set
+      # `problems.handlers.<pkg>.broken = "warn"` for that one package, which
+      # leaves meta.broken intact. Do not reach for the global flag.
+      #
+      # (An electron_39 note used to sit here. It documented
+      # `permittedInsecurePackages = [ "electron-39.8.10" ]`, added
+      # 2026-06-03 and removed 2026-06-13 in "fixed issues with slow
+      # builds"; the comment outlived the setting. logseq is not installed
+      # anywhere in this repo, and obsidian and bitwarden-desktop both
+      # evaluate with no flag at all. Note electron_39 is marked INSECURE,
+      # not broken, so allowBroken never covered it regardless.)
       packageOverrides = pkgs: {
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;
@@ -651,48 +680,50 @@ bool vulkan_remake_and_acquire( void );'
         npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
       });
 
-      # TEMPORARY: nixos-unstable moved glaze to 8.0.0, but the hyprland it
-      # still ships (0.56.1) does `find_package(glaze 7...<8 QUIET)` and, when
-      # that finds nothing, falls back to a FetchContent git clone of
-      # glaze v7.2.0 — which the build sandbox has no network for, so
-      # configure dies with "could not find git for clone of glaze". Hand it
-      # the 7.x it actually asks for. Upstream dropped the version bound after
-      # the 0.56.1 tag (main is now plain `find_package(glaze QUIET)`), so the
-      # next hyprland bump in nixpkgs makes this unnecessary.
+      # TEMPORARY: abseil-cpp 20260817 (the new nixpkgs default, pulled in by
+      # protobuf 36.2) is a C++20-ONLY header set, and eternal-terminal's
+      # CMakeLists hardcodes `set(CMAKE_CXX_STANDARD 17)`.
       #
-      # SELF-RETIRING like the llama-cpp pin above: warnIf fires at eval time
-      # once nixpkgs' hyprland moves past 0.56.1. Hosts with
-      # hostParams.desktop.useHyprlandFlake = true replace pkgs.hyprland from
-      # their own overlay and never see this one.
-      hyprland = lib.warnIf
-        (lib.versionOlder "0.56.1" prev.hyprland.version)
-        ("nixcfg: nixpkgs' hyprland is now ${prev.hyprland.version} (> 0.56.1),"
-          + " which builds against glaze 8, so the glaze 7.x override in"
-          + " modules/system/overlays/default.nix is redundant. Remove the"
-          + " hyprland binding.")
-        (prev.hyprland.override {
-          glaze = prev.glaze.overrideAttrs (old: rec {
-            version = "7.2.0";
-            src = prev.fetchFromGitHub {
-              owner = "stephenberry";
-              repo = "glaze";
-              tag = "v${version}";
-              hash = "sha256-f3NVRi3SXKo42hn0WCw7JsOK3EkdOVJIcuzhPorKjFY=";
-            };
-          });
-        });
-
-      # langfuse 4.0.2 declares wrapt<2.0 but nixpkgs now ships wrapt 2.2.2,
-      # which fails the runtime-deps check and breaks litellm. Fixed on nixpkgs
-      # master (45368b0, 2026-07-23) but not yet on nixos-unstable. Remove once
-      # a flake update pulls a nixpkgs rev containing that fix.
-      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-        (pyfinal: pyprev: {
-          langfuse = pyprev.langfuse.overridePythonAttrs (old: {
-            pythonRelaxDeps = (old.pythonRelaxDeps or [ ]) ++ [ "wrapt" ];
-          });
-        })
-      ];
+      # The mechanism, since the error does not read like a standards
+      # problem: absl/base/options.h now ships
+      # `#define ABSL_OPTION_USE_STD_ORDERING 1` — unconditionally, not the
+      # "2 = autodetect" value — so absl::{partial,weak,strong}_ordering are
+      # plain aliases for the std:: ones. At -std=gnu++17 those don't exist,
+      # so compare.h fails with "'partial_ordering' has not been declared in
+      # 'std'" and everything downstream of absl::weak_ordering collapses:
+      # btree.h loses btree_is_key_compare_to, btree_map_container comes out
+      # incomplete, and the visible failure is a wall of "'count' has not
+      # been declared in ... btree_map<...>::Base" while building et-lib's
+      # precompiled header. The first error in the log, not the last one, is
+      # the one that names the cause.
+      #
+      # -DCMAKE_CXX_STANDARD=20 in cmakeFlags does NOT work here: the plain
+      # `set()` in CMakeLists.txt shadows the cache variable, and CMake puts
+      # its own -std=gnu++17 after CMAKE_CXX_FLAGS, so it wins over any
+      # CXXFLAGS we pass. The source line has to change.
+      #
+      # C++20 is also the only self-consistent choice: protobuf and abseil in
+      # this closure are themselves compiled at C++20, so linking a C++17
+      # translation unit against those headers would be an ODR mismatch even
+      # if it compiled.
+      #
+      # SELF-RETIRING: --replace-fail means the build dies loudly rather than
+      # silently doing nothing if upstream rewrites that line, and the warnIf
+      # fires once nixpkgs moves eternal-terminal past 7.0.0 so the override
+      # gets re-checked against whatever that release does.
+      eternal-terminal = lib.warnIf
+        (lib.versionOlder "7.0.0" prev.eternal-terminal.version)
+        ("nixcfg: nixpkgs' eternal-terminal is now"
+          + " ${prev.eternal-terminal.version} (> 7.0.0). Re-check whether its"
+          + " CMakeLists still pins CMAKE_CXX_STANDARD 17; if upstream moved"
+          + " to C++20, remove the eternal-terminal binding in"
+          + " modules/system/overlays/default.nix.")
+        (prev.eternal-terminal.overrideAttrs (old: {
+          postPatch = (old.postPatch or "") + ''
+            substituteInPlace CMakeLists.txt \
+              --replace-fail "set(CMAKE_CXX_STANDARD 17)" "set(CMAKE_CXX_STANDARD 20)"
+          '';
+        }));
     })
   ];
 }

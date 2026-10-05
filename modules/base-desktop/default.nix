@@ -2,6 +2,7 @@
 
 let
   userParams = config.hostParams.user;
+
   kvantummanager = pkgs.writeShellScriptBin "kvantummanager" ''
     ${pkgs.kdePackages.qtstyleplugin-kvantum}/bin/kvantummanager $@
   '';
@@ -75,6 +76,44 @@ in
 
   services.gnome.gnome-keyring.enable = true;
 
+  # ── Firefox profile + cache: no CoW, no compression ────────────────
+  # /home mounts compress=zstd:1, so every Firefox SQLite database is both
+  # copy-on-write AND compressed.  SQLite in WAL mode fsync()s on every
+  # checkpoint, and on CoW+compressed extents that fsync is enormously
+  # expensive.  Measured on antikythera 2026-10-02 while streaming:
+  #
+  #   sqldb:cookies.sqlite thread   74% of a core, 9h CPU in 18h uptime
+  #   firefox parent                159% total
+  #   btrfs-transaction             29-60% of a core
+  #   sustained writes              ~14.6 MB/s
+  #
+  # 10/10 gdb stack samples of that thread were in
+  #   fsync -> unixSync -> sqlite3WalCheckpoint / pagerWalFrames
+  # and strace of the parent showed where the bytes go:
+  #   36.6 MB/10s  cookies.sqlite-wal      <- the actual driver
+  #    7.0 MB/10s  cookies.sqlite
+  #    0.3 MB/10s  cache2 entries          <- video cache is irrelevant
+  # So this is a cookie write storm from tracker-heavy sites, NOT video.
+  #
+  # Be honest about what this rule buys: a controlled A/B (1500 cookie-sized
+  # WAL commits, CoW+zstd vs NODATACOW) measured 11.5 MB vs 8.9 MB to the
+  # block layer — about 23% less write traffic, and checkpoint latency
+  # 1.5ms vs 0.8ms.  Worth having, but it is NOT the fix; it only trims a
+  # storm whose source is the cookie write rate itself.  Do not expect this
+  # alone to resolve the stalls.
+  #
+  # +C (NODATACOW) implies no compression and no checksums.  That is the
+  # standard configuration for databases on btrfs, and the usual trade for
+  # a browser profile.  NOTE: it only applies to files created AFTER it is
+  # set — existing databases must be recreated (copy away, delete, copy
+  # back) with Firefox closed, or they keep their current extents.
+  systemd.tmpfiles.rules = [
+    "d /home/${userParams.username}/.mozilla/firefox 0700 ${userParams.username} users -"
+    "h /home/${userParams.username}/.mozilla/firefox - - - - +C"
+    "d /home/${userParams.username}/.cache/mozilla 0700 ${userParams.username} users -"
+    "h /home/${userParams.username}/.cache/mozilla - - - - +C"
+  ];
+
   # Firefox — use "System theme — auto" to follow portal dark/light preference
   programs.firefox = {
     enable = true;
@@ -89,10 +128,25 @@ in
         # Firefox's gfxInfo blocklist marks the AMD Phoenix iGPU (MESA
         # device 0x1900) as FEATURE_FAILURE_BROKEN_DRIVER and blocks
         # DMABUF_SURFACE_EXPORT, which gates the entire VAAPI path.
-        # These three prefs let the decoder run anyway.  Without them,
-        # Firefox falls back to software decode on every stream — which
-        # pegs the CPU and triggers thermal throttling on Phoenix
-        # laptops (the chronic "becomes laggy every few minutes" issue).
+        # Without an override Firefox falls back to software decode on
+        # every stream — which pegs the CPU and triggers thermal throttling
+        # on Phoenix laptops (the chronic "becomes laggy every few minutes"
+        # issue).
+        #
+        # NOTE (2026-10-02): two corrections to the claim above.
+        #  1. These prefs do NOT clear DMABUF_SURFACE_EXPORT.  about:support's
+        #     decision log shows X11_EGL / DMABUF / HARDWARE_VIDEO_DECODING as
+        #     "user force_enabled" while DMABUF_SURFACE_EXPORT stays
+        #     "env blocked / FEATURE_FAILURE_BROKEN_DRIVER".  Only
+        #     gfx.blacklist.dmabuf.surface-export = 1 clears that row.
+        #  2. That block is nonetheless NOT fatal: VAAPI decode works anyway.
+        #     Verified by the RDD decoder process having libgallium (the real
+        #     name behind radeonsi_drv_video.so) mapped, and by the main
+        #     instance's RDD using only ~4 min CPU across 2d18h of use.
+        #     So do not "fix" DMABUF_SURFACE_EXPORT without first proving
+        #     hardware decode is actually broken.
+        #  3. gfx.x11-egl.force-enabled is an X11 pref, inert under
+        #     MOZ_ENABLE_WAYLAND=1; kept only for non-Wayland fallback.
         #
         # Locked so the prefs survive about:config changes; remove when
         # Firefox's gfxInfo correctly recognises Phoenix iGPUs.
@@ -523,7 +577,7 @@ in
         ## apps
         audacity
         bambu-studio
-        (broken bitwarden-desktop) # currently insecure
+        bitwarden-desktop
         brave
         calibre
         # czkawka-full = czkawka + krokiet + czkawka_cli, wrapped with ffmpeg on PATH.
@@ -535,7 +589,7 @@ in
         element-desktop
         evolutionWithPlugins
         feh
-        (broken freecad) # pdal 2.9.3 fails against gdal 3.13; fix pending in nixpkgs#541146
+        freecad
         git-sync
         gimp3-with-plugins
         # pr67576-gimp-wayland.gimp-with-plugins
@@ -598,7 +652,7 @@ in
         adwaita-icon-theme
         eog # image viewer
         evince # PDF viewer
-        (broken openscad)
+        openscad
         # @TODO: figure out a way to overlay instead of replacing the package
         # This will get out of date
         sweethome3d.application

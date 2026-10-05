@@ -3,7 +3,17 @@
 let userParams = config.hostParams.user; in
 {
   programs.nix-ld.enable = true;
-  programs.command-not-found.enable = true;
+  # OFF, and it has to be: the module's dbPath defaults to
+  # `pkgs.path + "/programs.sqlite"`, a file that only exists in a nixpkgs
+  # CHANNEL tarball, never in a flake checkout. Until the 2026-10-01 nixpkgs
+  # bump that non-existent path just became a dangling derivation reference
+  # (so the handler failed at runtime and nobody noticed); trivial-builders
+  # moving to finalAttrs/lib.toFunction now coerces it during
+  # derivationStrict, so eval itself dies with "path
+  # '«github:NixOS/nixpkgs/...»/programs.sqlite' does not exist" and no host
+  # builds. Nothing is lost -- `nix-index` is in the package list below and
+  # is what nixpkgs itself points flake users at.
+  programs.command-not-found.enable = false;
   programs.mosh.enable = true;
   programs.zsh.enable = if userParams.shell == "zsh" then true else false;
 
