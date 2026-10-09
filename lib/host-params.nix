@@ -807,6 +807,47 @@
           window whole.
         '';
       };
+      claudeCompactAt = lib.mkOption {
+        type = lib.types.ints.unsigned;
+        default = 143360;
+        example = 0;
+        description = ''
+          A CEILING on the context size at which claude-local has Claude Code
+          auto-compact. 0 disables the clamp and restores the derived value,
+          which is the declared window minus one output budget.
+
+          COMPACTION IS THE HARDEST CALL A SESSION MAKES AND IT IS MADE AT THE
+          WORST MOMENT. It sends the whole conversation and asks for a
+          summary, so the prompt is the largest the session ever sends, the
+          task is the hardest, and generation is at its slowest — while the
+          output budget is the same 16384 a one-line answer gets, shared
+          between the thinking trace and the summary itself. When the trace
+          spends all of it the model returns EMPTY content, Claude Code has
+          nothing to compact with, and the session is over: "automatic
+          compaction failed: summarization produced empty response",
+          recoverable only by /clear. It is the same failure the `medium`
+          reasoning-effort default in genai-server's module.nix exists to
+          bound, arriving on the one call where empty output is fatal.
+
+          THE NUMBER IS MEASURED, from claude-local transcripts on
+          qwen38-125b-a6b-max: compaction succeeded at 133,676 tokens of
+          context (19,456-char summary) and at 150,184 (15,270 chars), and
+          FAILED at ~180,224 — which is exactly what the derived value
+          produces on a 262144 window at the default agentReserve.
+
+          IT IS NOT SET AT THE LAST VALUE THAT WORKED, and the two successes
+          are why: 12% more conversation produced 21% LESS summary. Above
+          ~133k the budget is already squeezed and compaction starts
+          succeeding while carrying less forward — quieter than the crash,
+          because nothing reports it and the model merely seems to have
+          forgotten more than it should have. 143360 (140 x 1024) sits
+          between the two confirmed successes, nearer the one with room.
+
+          Derived from the same CTX as the other window numbers, so a host on
+          a narrower model keeps the derived value untouched whenever it is
+          already below this.
+        '';
+      };
       claudeBackgroundModel = lib.mkOption {
         type = lib.types.str;
         default = "";

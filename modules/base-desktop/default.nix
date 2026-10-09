@@ -591,7 +591,12 @@ in
         feh
         freecad
         git-sync
-        gimp3-with-plugins
+        # Explicit list: the wrapper's default takes every gimpPlugin not marked
+        # broken, and bimp/farbfeld/fourier/gimplensfun/lqrPlugin/texturize/
+        # waveletSharpen are GIMP-2-only but unmarked (configure: no gimp-2.0).
+        (gimp-with-plugins.override {
+          plugins = with gimpPlugins; [ gmic lightning resynthesizer ];
+        })
         # pr67576-gimp-wayland.gimp-with-plugins
         # pr67576-gimp-wayland.gimp
         glava

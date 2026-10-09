@@ -94,6 +94,11 @@
   ## AI model-serving stack (external flake: ~/Code/genai-server)
   services.genai-server.enable = true;
 
+  ## RTX 5090 only. The default compiles every CUDA engine for nine GPU
+  ## generations, which is most of a nixpkgs bump's build time. Change
+  ## this with the card: an engine built for sm_120 will not run on another.
+  services.genai-server.hardware.cudaCapabilities = [ "12.0" ];
+
   ## A NODE: this machine is the card and the engines that touch it, and
   ## the singletons -- portal, Open WebUI, the tool servers, identity --
   ## live once on the router, which fronts them.
@@ -202,6 +207,10 @@
   ## glm5next uses below.
   services.genai-server.llmModels.qwen38-125b-a6b-max.serve.enginePackage =
     pkgs.llama-cpp-qwen4exp-next;
+  ## The abliterated -max: same quant, same shapes, same engine. Without
+  ## this it falls below serve.minLlamaCpp and is dropped.
+  services.genai-server.llmModels.qwen38-125b-a6b-max-uc.serve.enginePackage =
+    pkgs.llama-cpp-qwen4exp-next;
   ## The Q5 rung rides the same master-based build as -max: no drafter, so
   ## nothing it needs is on the MTP branch, and it is only loadable at all
   ## because that build carries ggml-org#29030 (its 50.7GiB PLE table has
@@ -209,6 +218,23 @@
   ## serve.minLlamaCpp and is dropped.
   services.genai-server.llmModels.qwen38-125b-a6b-q5.serve.enginePackage =
     pkgs.llama-cpp-qwen4exp-next;
+  ## THE FLASH-NEXT FAMILY RUNS ON STRATA, not on the llama.cpp pins above.
+  ## Measured 2026-10-09 on the same prompts: the fast tier writes 157-195
+  ## tok/s on GSQ-RCO IQ3_XXS where llama.cpp's Q2 did 34-43, -max and -q5
+  ## write 61-76 on their own files where llama.cpp did 25-32, and prompts
+  ## read 5-14x faster. Same file means same perplexity on both engines.
+  ## See genai-server's `strata.enable` for the costs: up to ~69GB of
+  ## pinned RAM while a model is loaded, and a young engine.
+  ##
+  ## ROLLBACK IS THIS LINE SET TO false. Each entry goes back to its
+  ## llama.cpp command, file and guide. The pins above stay built while
+  ## this is on (their retirement checks build them), so going back costs
+  ## a rebuild and not a compile.
+  ##
+  ## Strata needs CUDA 13, which it takes from this channel's
+  ## cudaPackages_13. That needed a backport (the buildRedistHook fix) until
+  ## nixos-unstable carried it; the backport retired itself 2026-10-09.
+  services.genai-server.strata.enable = true;
   ## GLM-5.3-Flash needs a THIRD engine, not the one above: unsloth ships
   ## glm5next on a separate branch that carries no qwen4exp, and vice
   ## versa. Same seam, same expiry (serve.engineArch = "glm5next").

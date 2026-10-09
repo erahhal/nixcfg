@@ -68,6 +68,7 @@ let
   ## somewhere to run. See the option: the server's slots share ONE pool the
   ## size of the window, so the window is not the conversation's budget.
   agentReserve = config.hostParams.aiCoding.agentReserve;
+  claudeCompactAt = config.hostParams.aiCoding.claudeCompactAt;
 
   ## The model list comes from the genai-server flake, not from a copy here.
   ##
@@ -339,6 +340,21 @@ ${claudeCtxCase}
       fi
     fi
 
+    # WHERE COMPACTION FIRES, derived like the two numbers above and then
+    # CLAMPED — see hostParams.aiCoding.claudeCompactAt. The derived value is
+    # the declared window minus one output budget, which on a 262144 model is
+    # ~180k: measured as the point where summarization spends its entire
+    # budget on a thinking trace and returns empty content, ending the session
+    # with nothing to compact into.
+    COMPACT_AT=""
+    if [ -n "$CTX" ]; then
+      COMPACT_AT=$(( CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS ))
+      COMPACT_CAP=${toString claudeCompactAt}
+      if [ "$COMPACT_CAP" -gt 0 ] && [ "$COMPACT_AT" -gt "$COMPACT_CAP" ]; then
+        COMPACT_AT="$COMPACT_CAP"
+      fi
+    fi
+
     # Deferred from the parse loop, so every number here is the one this
     # session will actually run with.
     if [ -n "$LIST" ]; then
@@ -362,15 +378,25 @@ ${claudeCtxCase}
         echo "         27.6k-token call on a 60s deadline, and a cold prefill"
         echo "         here loses it (hostParams.aiCoding.claudeAutoModeModels)"
       fi
-      echo "note: auto-compaction is set from the window above, so a shorter"
-      echo "      model compacts sooner rather than overflowing."
+      if [ -n "$COMPACT_AT" ]; then
+        echo "compact: at $COMPACT_AT tokens"
+        if [ "$COMPACT_AT" -lt "$(( CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS ))" ]; then
+          echo "         clamped by hostParams.aiCoding.claudeCompactAt; the"
+          echo "         derived $(( CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS )) is late enough that"
+          echo "         summarization can spend its whole output budget"
+          echo "         thinking and return nothing, which ends the session"
+        else
+          echo "         derived from the window above, so a shorter model"
+          echo "         compacts sooner rather than overflowing"
+        fi
+      fi
       echo
       echo "      --no-reserve gives the conversation the whole window;"
       echo "      use it only if this session will not delegate."
       exit 0
     fi
 
-    [ -n "$CTX" ] && export CLAUDE_CODE_AUTO_COMPACT_WINDOW="$((CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS))"
+    [ -n "$COMPACT_AT" ] && export CLAUDE_CODE_AUTO_COMPACT_WINDOW="$COMPACT_AT"
     # AND THE WINDOW ITSELF, which is a newer requirement than the line
     # above. Claude Code gained an unknown-model check that says out loud
     # that it does not recognise the id and is assuming 200k — true of every
@@ -378,7 +404,9 @@ ${claudeCtxCase}
     # reads CLAUDE_CODE_MAX_CONTEXT_TOKENS as the real window; AUTO_COMPACT_
     # WINDOW is where compaction fires and does not answer the same
     # question, so setting only that left the warning standing and the
-    # assumption with it. Same $CTX, so the two cannot disagree.
+    # assumption with it. This one is the window itself and is never clamped;
+    # AUTO_COMPACT_WINDOW is deliberately lower (claudeCompactAt), so read
+    # them as window-and-trigger rather than as two copies of one number.
     [ -n "$CTX" ] && export CLAUDE_CODE_MAX_CONTEXT_TOKENS="$CTX"
 
     # Pinned together by default — see the comment above this wrapper. Two

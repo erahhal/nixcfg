@@ -1,6 +1,11 @@
 # Nix daemon, flake, garbage collection, and registry configuration
 { config, lib, pkgs, inputs, system, ... }:
-let userParams = config.hostParams.user; in
+let
+  userParams = config.hostParams.user;
+  # Filtered by NAME only, so an input left out is never fetched.
+  linkedInputs = lib.filterAttrs
+    (name: _: name != "nflx-nixcfg" || userParams.nflxHost) inputs;
+in
 {
   nix = {
     package = pkgs.nixVersions.latest;
@@ -77,8 +82,11 @@ let userParams = config.hostParams.user; in
         !include ${config.age.secrets."nix-config".path}
       '' else "");
 
-    registry.nixpkgs.flake = inputs.nixpkgs;
-    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+    # Every input this host links (see linkedInputs and environment.etc
+    # below), nixpkgs among them.
+    registry = lib.mapAttrs (_: v: { flake = v; })
+      (lib.filterAttrs (_: v: v ? outputs) linkedInputs);
+    nixPath = [ "nixpkgs=${inputs.nixpkgs}" "/etc/nix/inputs" ];
 
     daemonIOSchedPriority = 6;
     daemonIOSchedClass = "idle";
@@ -95,10 +103,15 @@ let userParams = config.hostParams.user; in
     };
   };
 
-  # From flake-utils-plus
-  nix = {
-    generateNixPathFromInputs = true;
-    generateRegistryFromInputs = true;
-    linkInputs = true;
-  };
+  # Every flake input this host can fetch, in the registry, on NIX_PATH and
+  # under /etc/nix/inputs. This was flake-utils-plus's autoGenFromInputs, which
+  # takes EVERY input on every host, so building any host meant fetching every
+  # input. nflx-nixcfg moved to netflix.ghe.com over https, which only the work
+  # laptop has a credential for, and logistikon's rebuild then failed fetching
+  # a repo nothing on it imports (2026-10-09). Same three features here, with
+  # the work input only where it is used. The registry and NIX_PATH halves are
+  # in the `nix` block above.
+  environment.etc = lib.mapAttrs'
+    (name: v: lib.nameValuePair "nix/inputs/${name}" { source = v.outPath; })
+    linkedInputs;
 }

@@ -39,8 +39,9 @@ in {
     ../modules/hardware/base
     ../modules/base-user
     ../modules/programs/ai-coding
-    # Flake integrations
-    inputs.flake-utils-plus.nixosModules.autoGenFromInputs
+    # Flake integrations. flake-utils-plus's autoGenFromInputs is gone: it
+    # linked every input on every host, so every host had to fetch every one.
+    # modules/system/nix-config does the same per host.
     inputs.home-manager.nixosModules.home-manager
     inputs.stylix.nixosModules.stylix
   ];

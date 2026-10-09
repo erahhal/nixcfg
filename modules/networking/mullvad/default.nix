@@ -7,9 +7,9 @@ in {
     enable = lib.mkEnableOption "Mullvad VPN";
 
     # The daemon persists its own settings to /etc/mullvad-vpn/settings.json
-    # and there is no NixOS option surface for them, so the three that decide
-    # whether a misfire strands the machine are declared here and reconciled
-    # by mullvad-defaults.service below.
+    # and there is no NixOS option surface for them, so the ones that decide
+    # whether a misfire strands the machine (or half of its network) are
+    # declared here and reconciled by mullvad-defaults.service below.
     #
     # Why this exists: hitting connect with no account logged in does NOT fail
     # harmlessly. The daemon enters its error state and blocks ALL traffic
@@ -55,6 +55,16 @@ in {
         account logged in this would block all traffic on every boot.
       '';
     };
+
+    tunnelIpv6 = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Carry IPv6 inside the tunnel. Off does not let IPv6 bypass the VPN;
+        it makes the daemon reject all global IPv6 while connected, which
+        looks like a broken router.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -86,8 +96,8 @@ in {
     # the file rather than owning it — a store symlink would break the daemon's
     # writes. Idempotent, and persisted, so it only has to win once per boot.
     # NOTE: this is authoritative. Changing these by hand with `mullvad lan
-    # set` / `lockdown-mode set` / `auto-connect set` lasts until the next
-    # daemon restart; change the options instead.
+    # set` / `lockdown-mode set` / `auto-connect set` / `tunnel set ipv6`
+    # lasts until the next daemon restart; change the options instead.
     systemd.services.mullvad-defaults = {
       description = "Reconcile declarative Mullvad daemon settings";
       after = [ "mullvad-daemon.service" ];
@@ -114,6 +124,7 @@ in {
         mullvad lan set ${if cfg.allowLan then "allow" else "block"}
         mullvad lockdown-mode set ${onOff cfg.lockdownMode}
         mullvad auto-connect set ${onOff cfg.autoConnect}
+        mullvad tunnel set ipv6 ${onOff cfg.tunnelIpv6}
       '';
     };
   };

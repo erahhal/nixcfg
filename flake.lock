@@ -904,11 +904,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1791168758,
-        "narHash": "sha256-Yhn8mbuKMo/XV+9xQUudzjh320wzHmehRJCj2fktch8=",
+        "lastModified": 1791569334,
+        "narHash": "sha256-nH06ujYfRpeezwgn+YA4ra6e0kX97XiTC8EshRQ267I=",
         "ref": "main",
-        "rev": "9f804bedd3f30fb3aea259c7b6ebbaca3fd20581",
-        "revCount": 512,
+        "rev": "03754d5ea6b53968680c8fe89149ca1210ffd059",
+        "revCount": 529,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
@@ -939,11 +939,11 @@
         "genai-server-nsfw": "genai-server-nsfw"
       },
       "locked": {
-        "lastModified": 1791168769,
-        "narHash": "sha256-Z+Bo4zoyRQ8z3yGJcwzLfQklgPORyNhqaUatqozw4bg=",
+        "lastModified": 1791228763,
+        "narHash": "sha256-yByDfbo6z9mUjadiUzl9gjt3J/SfgTczrMWaw/fx61Q=",
         "ref": "main",
-        "rev": "343accf1db8f4f6c3708527062474a2570efa2b4",
-        "revCount": 41,
+        "rev": "f9d5e0507830e523063269b67de03be83bb37b00",
+        "revCount": 43,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/erahhal/genai-server-private.git"
       },
