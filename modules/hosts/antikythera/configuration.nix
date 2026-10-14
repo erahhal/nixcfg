@@ -81,7 +81,7 @@
     services = {
       waydroid.enable = true;
       mediaserver-sender.enable = config.hostParams.desktop.mediaserverSender.enable;
-      nfs-mounts.enable = true;
+      nfs-mounts.enable = config.hostParams.services.nfs-mounts.enable;
       printers-scanners.enable = true;
     };
   };

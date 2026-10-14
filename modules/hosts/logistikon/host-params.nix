@@ -115,6 +115,10 @@
       ];
     };
 
+    services = {
+      nfs-mounts.enable = true;
+    };
+
     gpu = {
       nvidia.enable = true;
       amd.enable = true;

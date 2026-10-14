@@ -99,5 +99,10 @@ in {
       fsType = "nfs";
       options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
     };
+    fileSystems."/mnt/storage" = {
+      device = "10.0.0.1:/mnt/storage";
+      fsType = "nfs";
+      options = nfs3Options ++ [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
+    };
   };
 }

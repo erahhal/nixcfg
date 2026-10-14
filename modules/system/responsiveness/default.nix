@@ -13,12 +13,18 @@
 #     creating a soft-throttle livelock (see the long note at the cap below)
 #   - swap cap lifted for the duration of a sleep cycle — hibernation has to
 #     swap the session out to build its image (see the note below the cap)
+#   - login-session memory protection — keeps niri resident while user.slice
+#     reclaims (see the note at the protection)
+#   - per-pane memory ceiling for tmux — bounds an agent fan-out to its pane
 #   - BFQ I/O scheduler on rotational disks — per-process I/O bandwidth fairness
 #   - "none" (passthrough) on NVMe — hardware queues handle fairness natively
 { config, lib, pkgs, ... }:
 let
   # Shared by the slice definition and the post-resume restore below.
   userSliceSwapMax = "8G";
+  # Shared by every level of the session-protection chain below.
+  sessionMemoryMin = "1G";
+  sessionMemoryLow = "2G";
   systemctl = "${config.systemd.package}/bin/systemctl";
 in
 {
@@ -200,6 +206,63 @@ in
   systemd.slices."system".sliceConfig = {
     MemoryMin = "1G";
     MemoryLow = "3G";
+  };
+
+  # ── Keep the graphical session resident ────────────────────────────
+  # 2026-10-13: the UI froze for ~10 min while agents fanned out (parallel
+  # tsc, eslint and vitest+Chromium next to a nix flake check).  user.slice
+  # was pinned at memory.max with memory.swap.max full (this boot:
+  # memory.events max 9.7M, swap.events max 82k, oom_kill 0), so reclaim
+  # could only drop file pages, and it dropped niri's with the rest — every
+  # input event waited on a refault.  The 2026-09-01 page-cache thrash line
+  # again, reached through memory.max instead of memory.high.
+  #
+  # session-N.scope holds niri, Xwayland, foot and the tmux server.  A
+  # cgroup's protection is capped by each ancestor's, and without
+  # memory_recursiveprot (not on this mount) a child doesn't inherit it, so
+  # every level sets it: user.slice → user-UID.slice → session-N.scope.
+  # Only memory in use is shielded, and other sessions (ssh) share it.
+  systemd.slices."user".sliceConfig = {
+    MemoryMin = sessionMemoryMin;
+    MemoryLow = sessionMemoryLow;
+  };
+  systemd.units."user-.slice" = {
+    overrideStrategy = "asDropin";
+    text = ''
+      [Slice]
+      MemoryMin=${sessionMemoryMin}
+      MemoryLow=${sessionMemoryLow}
+    '';
+  };
+  systemd.units."session-.scope" = {
+    overrideStrategy = "asDropin";
+    text = ''
+      [Scope]
+      MemoryMin=${sessionMemoryMin}
+      MemoryLow=${sessionMemoryLow}
+    '';
+  };
+
+  # ── Per-pane memory ceiling for tmux ───────────────────────────────
+  # tmux built with systemd support moves each pane into its own transient
+  # tmux-spawn-<uuid>.scope, and this prefix drop-in reaches all of them
+  # (daemon-reload re-applies it to running panes).  An agent and all of
+  # its children share one pane, so a fan-out is bounded there instead of
+  # filling user.slice.
+  #
+  # A hard ceiling, not MemoryHigh (the 2026-09-01 livelock above): past it
+  # the kernel OOM-kills the pane's largest process — normally the tsc /
+  # vitest / nix child rather than the agent.  Like any memory.max over
+  # page cache it can thrash before the kill, but only that pane does.
+  # Swap is bounded for the 2026-08-31 reason, and so one pane can't take
+  # all of user.slice's swap.
+  systemd.user.units."tmux-spawn-.scope" = {
+    overrideStrategy = "asDropin";
+    text = ''
+      [Scope]
+      MemoryMax=25%
+      MemorySwapMax=2G
+    '';
   };
 
   # ── Btrfs maintenance ──────────────────────────────────────────────

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+BASE_PATH=/mnt/data/Backups/p16
+
+mkdir -p ${BASE_PATH}/home
+sudo chown ${USER}:users ${BASE_PATH}
+
+wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
+
+## Wifi passwords
+mkdir -p ${BASE_PATH}/etc/NetworkManager
+sudo rsync -aP \
+  --progress /etc/NetworkManager/system-connections ${BASE_PATH}/etc/NetworkManager/
+
+## Home directory
+rsync -aP \
+  --exclude=.BitwigStudio \
+  --exclude="VirtualBox VMs" \
+  --exclude=Android \
+  --exclude=.android \
+  --exclude=.gradle \
+  --exclude=.config/Signal \
+  --exclude=.local/share/Steam \
+  --exclude=.local/share/bottles \
+  --exclude=.local/state/nix \
+  --exclude=.local/state/home-manager \
+  --exclude-from=/var/tmp/ignorelist \
+  --progress /home/$USER/ /mnt/data/Backups/p16/home

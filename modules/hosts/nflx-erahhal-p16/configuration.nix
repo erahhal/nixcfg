@@ -99,7 +99,7 @@
       waydroid.enable = true;
       mediaserver-sender.enable = config.hostParams.desktop.mediaserverSender.enable;
       printers-scanners.enable = true;
-      nfs-mounts.enable = false;
+      nfs-mounts.enable = config.hostParams.services.nfs-mounts.enable;
     };
   };
 
@@ -477,6 +477,15 @@
   # was closed on battery, the machine still hibernates at 30 min.
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "30m";
+
+    # After the image is written, power off via the regular shutdown path
+    # (ACPI S5) rather than systemd's default "platform" mode (ACPI S4). On
+    # 2026-10-05 the first real suspend-then-hibernate wrote the image fine
+    # (and later restored it), but the kernel hung in the S4 power-down and
+    # never turned off: ~30 W for 2h+ in a backpack until the battery died.
+    # TPM restartCount=1 at the next boot showed nothing booted in between,
+    # so it was not a spurious wake. Resume is the same either way.
+    HibernateMode = "shutdown";
   };
 
   # NVIDIA VRAM preservation path for hibernate.

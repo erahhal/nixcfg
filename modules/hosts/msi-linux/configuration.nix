@@ -42,7 +42,7 @@
       switchyard.enable = true;
     };
     services = {
-      nfs-mounts.enable = true;
+      nfs-mounts.enable = config.hostParams.services.nfs-mounts.enable;
     };
   };
 

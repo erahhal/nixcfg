@@ -10,7 +10,7 @@
       uid = 1026;
       gid = 100;
       # timeZone = "America/Denver";
-      thinkpad-battery-charge-to-full = true;
+      thinkpad-battery-charge-to-full = false;
     };
 
     networking = {
@@ -140,6 +140,10 @@
 
       xteink-unlocker.enable = true;
       nerd-dictation.enable = false;
+    };
+
+    services = {
+      nfs-mounts.enable = true;
     };
 
     gpu = {

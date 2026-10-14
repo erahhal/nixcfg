@@ -132,6 +132,10 @@
       nerd-dictation.enable = false;
     };
 
+    services = {
+      nfs-mounts.enable = true;
+    };
+
     cpu = {
       amd.ryzenadj = "off";   # options: off, medium, high
     };

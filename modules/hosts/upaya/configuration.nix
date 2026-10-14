@@ -47,7 +47,7 @@ in
     };
     services = {
       waydroid.enable = true;
-      nfs-mounts.enable = true;
+      nfs-mounts.enable = config.hostParams.services.nfs-mounts.enable;
       virtual-machines.enable = true;
     };
   };

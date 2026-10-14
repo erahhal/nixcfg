@@ -615,6 +615,18 @@
       };
     };
 
+    services = {
+      nfs-mounts.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          NFS automount of 10.0.0.1:/mnt/data at /mnt/data, plus a policy
+          route that sends 10.0.0.0/24 out the LAN interface (around any VPN)
+          while on the home network. See modules/services/nfs-mounts.
+        '';
+      };
+    };
+
     cpu = {
       amd = {
         ryzenadj = lib.mkOption {
