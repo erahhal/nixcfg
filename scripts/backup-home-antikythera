@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 BACKUP_PATH=/mnt/data/Backups/antikythera-home
+# NFS server for /mnt/data. Writing via ssh avoids NFS per-file round trips.
+BACKUP_HOST=10.0.0.1
 
 sudo mkdir -p $BACKUP_PATH
 sudo chown erahhal:users $BACKUP_PATH
 
 wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
 
-rsync -aP \
+rsync -aP -e ssh \
   --exclude=.BitwigStudio \
   --exclude="VirtualBox VMs" \
   --exclude=Android \
@@ -19,4 +21,4 @@ rsync -aP \
   --exclude=.local/state/nix \
   --exclude=.local/state/home-manager \
   --exclude-from=/var/tmp/ignorelist \
-  --progress /home/$USER $BACKUP_PATH
+  --progress /home/$USER ${BACKUP_HOST}:$BACKUP_PATH

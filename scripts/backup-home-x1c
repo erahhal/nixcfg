@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 BASE_PATH=/mnt/data/Backups/x1c
+# NFS server for /mnt/data. Writing via ssh avoids NFS per-file round trips.
+BACKUP_HOST=10.0.0.1
 
 mkdir -p ${BASE_PATH}/home
 sudo chown ${USER}:users ${BASE_PATH}
@@ -13,7 +15,7 @@ sudo rsync -aP \
   --progress /etc/NetworkManager/system-connections ${BASE_PATH}/etc/NetworkManager/
 
 ## Home directory
-rsync -aP \
+rsync -aP -e ssh \
   --exclude=.BitwigStudio \
   --exclude="VirtualBox VMs" \
   --exclude=Android \
@@ -25,4 +27,4 @@ rsync -aP \
   --exclude=.local/state/nix \
   --exclude=.local/state/home-manager \
   --exclude-from=/var/tmp/ignorelist \
-  --progress /home/$USER /mnt/data/Backups/x1c-home
+  --progress /home/$USER ${BACKUP_HOST}:/mnt/data/Backups/x1c-home

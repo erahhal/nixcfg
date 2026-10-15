@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+# NFS server for /mnt/data. Writing via ssh avoids NFS per-file round trips.
+BACKUP_HOST=10.0.0.1
+
 wget https://raw.githubusercontent.com/rubo77/rsync-homedir-excludes/master/rsync-homedir-excludes.txt -O /var/tmp/ignorelist
 
-rsync -aP \
+rsync -aP -e ssh \
   --exclude=.BitwigStudio \
   --exclude="VirtualBox VMs" \
   --exclude=Android \
@@ -10,4 +13,4 @@ rsync -aP \
   --exclude=.gradle \
   --exclude=.local/share/Steam \
   --exclude-from=/var/tmp/ignorelist \
-  --progress /home/$USER /mnt/data/Backups/xps-home
+  --progress /home/$USER ${BACKUP_HOST}:/mnt/data/Backups/xps-home
