@@ -182,10 +182,17 @@ in
     # allowed" in about:policies). AutoConfig (mozilla.cfg) has no such
     # restriction. timeout is in ms; <= 0 means never show it. delay = -1
     # stops the toast re-appearing when the pointer touches the top edge.
+    #
+    # Containers are deliberately off. Locked rather than set because any
+    # extension holding the contextualIdentities permission (Tampermonkey
+    # does) silently re-enables them at startup via
+    # privacy.userContext.extension.
     autoConfig = ''
       lockPref("full-screen-api.warning.timeout", 0);
       lockPref("full-screen-api.keyboardlock-warning.timeout", 0);
       lockPref("full-screen-api.warning.delay", -1);
+      lockPref("privacy.userContext.enabled", false);
+      lockPref("privacy.userContext.ui.enabled", false);
     '';
   };
 
