@@ -16,6 +16,7 @@
       pipewire.enable = true;
       fonts.enable = true;
       chromium-based-apps.enable = true;
+      chromium-based-apps.braveSyncUrl = "https://brave-sync.homefree.host/v2";
     };
     networking = {
       mullvad.enable = true;

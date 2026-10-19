@@ -57,7 +57,7 @@ let
     brave = let
       originalBrave = prev.brave;
       braveFlags = lib.concatMapStringsSep " "
-        (f: "--add-flags ${lib.escapeShellArg f}") [
+        (f: "--add-flags ${lib.escapeShellArg f}") ([
           "--enable-wayland-ime"
           "--password-store=basic"
           "--ozone-platform=wayland"
@@ -71,7 +71,7 @@ let
           "--enable-gpu-rasterization"
           "--enable-oop-rasterization"
           "--ignore-gpu-blocklist"
-        ];
+        ] ++ lib.optional (cfg.braveSyncUrl != null) "--sync-url=${cfg.braveSyncUrl}");
       # WebGPU. Brave's WebGPU backend (Dawn) loads the stock Vulkan loader
       # *bundled* in the package (opt/brave.com/brave/libvulkan.so.1). A stock
       # loader looks for ICD manifests in /etc/vulkan and $XDG_DATA_DIRS — never
@@ -252,8 +252,43 @@ let
 in {
   options.nixcfg.desktop.chromium-based-apps = {
     enable = lib.mkEnableOption "Chromium-based app overlays (Wayland, IME, GPU)";
+    braveSyncUrl = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "https://brave-sync.example.com/v2";
+      description = ''
+        Self-hosted Brave Sync server (brave/go-sync or sync-lite) to use
+        instead of Brave's own. Passed as --sync-url, which reaches every
+        entry point because the desktop entries are rewritten to the
+        wrapper. Brave's production sync host is also blackholed in
+        /etc/hosts so a missing flag can never fall back to Brave's cloud.
+      '';
+    };
+    braveSyncTypesDisabled = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      ## typedUrls is the "History" toggle.
+      default = [ "bookmarks" "typedUrls" "readingList" ];
+      description = ''
+        Sync data types forced off via Chromium's SyncTypesListDisabled
+        policy when braveSyncUrl is set. Brave resets the type selection to
+        its defaults (bookmarks + passwords) whenever a chain is created or
+        joined, and uploads before the settings page can be changed, so a
+        policy is the only way to keep e.g. bookmarks (synced by Floccus)
+        from ever reaching the chain. Everything not listed stays
+        user-selectable.
+      '';
+    };
   };
   config = lib.mkIf cfg.enable {
+    networking.hosts = lib.mkIf (cfg.braveSyncUrl != null) {
+      "0.0.0.0" = [ "sync-v2.brave.com" ];
+      "::" = [ "sync-v2.brave.com" ];
+    };
+
+    environment.etc."brave/policies/managed/sync-types.json" = lib.mkIf (cfg.braveSyncUrl != null) {
+      text = builtins.toJSON { SyncTypesListDisabled = cfg.braveSyncTypesDisabled; };
+    };
+
     home-manager.users.${userParams.username} = { lib, pkgs, ... }: {
       home.activation.chromium = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         for prefs in ~/.config/chromium/Default/Preferences; do

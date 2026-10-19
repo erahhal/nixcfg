@@ -16,6 +16,7 @@
       pipewire.enable = true;
       fonts.enable = true;
       chromium-based-apps.enable = true;
+      chromium-based-apps.braveSyncUrl = "https://brave-sync.homefree.host/v2";
     };
     networking = {
       tailscale = {
@@ -246,41 +247,15 @@
 
   hardware.wirelessRegulatoryDatabase = true;
 
-  # The Elan trackpoint in this P14s Gen 5 AMD drifts every couple of minutes.
-  #
-  # sensitivity = 100 does NOT fix that -- it is applied and live (read back
-  # from /sys/bus/serio/devices/serio1/sensitivity) and drift persists. Kept
-  # only because it is a reasonable gain for this stick. The `device` line does
-  # matter: the module defaults to "TPPS/2 IBM TrackPoint", which matches
-  # nothing here, so without it the tuning silently never applies.
-  #
-  # There is nothing else to tune in the kernel. This Elan variant exposes only
-  # `sensitivity` and `press_to_select` -- no drift_time, speed, thresh or
-  # inertia -- so the usual "fix ThinkPad trackpoint drift" advice cannot apply.
-  # The kernel log shows no psmouse resync/reset errors, so it is not PS/2
-  # corruption either. See the libinput plugin below for what actually helps.
+  # The `device` line matters: the module defaults to "TPPS/2 IBM TrackPoint",
+  # which matches nothing here, so without it the tuning silently never
+  # applies. This Elan variant (LEN0321) only exposes `sensitivity` and
+  # `press_to_select`.
   hardware.trackpoint = {
     enable = true;
     device = "TPPS/2 Elan TrackPoint";
     sensitivity = 100;
   };
-
-  # Drift filter. Measured against user-confirmed hands-off drift events (the
-  # worst threw the cursor 2270px in 2.3s): drift is indistinguishable from
-  # real input by magnitude and by absolute dispersion, but separates on
-  # spread-relative-to-magnitude -- a sensor bias is steady relative to its own
-  # size at any size, a hand is not. Replay over 184 minutes of captured use:
-  # suppresses 2.24% of all motion while removing ~80% of the severe runaway.
-  # It acts about once per 2.1 min, matching the observed drift rate.
-  # Details and caveats in the plugin header.
-  #
-  # libinput 1.31 has Lua plugin support compiled in and searches
-  # /etc/libinput/plugins; niri links this same libinput.
-  #
-  # If the pointer ever stalls during slow deliberate movement, that is this
-  # filter -- drop this block to disable it.
-  environment.etc."libinput/plugins/10-trackpoint-drift.lua".source =
-    ./10-trackpoint-drift.lua;
 
   # Enable fingerprint reading daemon.
   services.fprintd.enable = true;
