@@ -304,37 +304,33 @@ in {
         '';
       };
 
+      # tailscaled owns tailscale0's resolved config: it applies the split-DNS
+      # routes and search domains that headscale pushes (homefree repo,
+      # apps/headscale/default.nix -- change DNS routing THERE, and check
+      # `tailscale dns status` against `resolvectl domain tailscale0`).
+      # Never set them here with `resolvectl domain`: it REPLACES tailscaled's
+      # whole list. This unit used to (2026-03 to 2026-10) with a hardcoded
+      # list that dropped ~lan, the `lan`/`homefree.vpn` search domains and the
+      # reverse zones. That went unnoticed while headscale overrode local DNS
+      # (tailscale0 was the default DNS route); once it stopped (2026-06),
+      # *.lan and bare hostnames broke off-LAN.
+      #
+      # All that remains is the stop-time revert, so a later re-auth resolves
+      # the control server (vpn.homefree.host) via public DNS rather than dead
+      # MagicDNS.
       tailscale-split-dns = {
-        description = "Configure split DNS routing for Tailscale domains";
-        after = [ "tailscaled.service" "network-online.target" "tailscale-local-route.service" ];
-        wants = [ "network-online.target" ];
-        # Lifecycle-bound to tailscaled so it never pins *.homefree.host into
-        # MagicDNS while Tailscale is down/logged-out (the deadlock source).
+        description = "Revert Tailscale DNS settings when tailscaled stops";
+        after = [ "tailscaled.service" ];
         wantedBy = [ "tailscaled.service" ];
         partOf = [ "tailscaled.service" ];
 
         serviceConfig = {
           Type = "oneshot";
           RemainAfterExit = true;
-          # Revert the split-DNS pin when Tailscale stops, so a later re-auth
-          # resolves the control server (vpn.homefree.host) via public DNS rather
-          # than dead MagicDNS. '-' ignores failure when tailscale0 is already gone.
+          ExecStart = "${pkgs.coreutils}/bin/true";
+          # '-' ignores failure when tailscale0 is already gone.
           ExecStop = "-${pkgs.systemd}/bin/resolvectl revert tailscale0";
         };
-
-        script = ''
-          # Wait for tailscale0 interface to be up
-          for i in {1..30}; do
-            if ${pkgs.iproute2}/bin/ip addr show tailscale0 >/dev/null 2>&1; then
-              break
-            fi
-            sleep 1
-          done
-
-          # Set routing domains so systemd-resolved forwards these queries to tailscale's DNS
-          ${pkgs.systemd}/bin/resolvectl domain tailscale0 ~rahh.al ~homefree.host ~homefree.lan ~slacktopia.org ~slacktopia.lan
-          echo "Split DNS configured: rahh.al and homefree.host homefree.lan slacktopia.org slacktopia.lan -> tailscale0"
-        '';
       };
     }
     # One tailscaled instance per extra tailnet. Never started at boot
