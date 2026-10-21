@@ -2,8 +2,11 @@
 ## Background: https://pixelcluster.github.io/VRAM-Mgmt-fixed/
 ##
 ## Pieces:
-##  - CachyOS kernel: ships pixelcluster's dmem cgroup patches (not yet
-##    upstream as of 2026-05).
+##  - A kernel carrying pixelcluster's dmem cgroup patches (not upstream as
+##    of 2026-05). This module used to force the CachyOS kernel, which ships
+##    them; that was removed 2026-10-15 along with the third-party kernel
+##    flake and its cache. On a kernel WITHOUT the patches the boosters run
+##    but change nothing -- leave this off until mainline carries them.
 ##  - dmemcg-booster: systemd-managed daemon that activates the dmem
 ##    controller across the cgroup hierarchy. System + user units.
 ##  - foreground booster: tracks the focused window and promotes its
@@ -19,7 +22,7 @@ in
   key = "nixcfg/hardware/dmemcg";
 
   options.nixcfg.hardware.dmemcg = {
-    enable = lib.mkEnableOption "dmem cgroup VRAM boost (CachyOS kernel + boosters)";
+    enable = lib.mkEnableOption "dmem cgroup VRAM boost (boosters; needs a kernel with the dmem patches)";
 
     foregroundBooster = lib.mkOption {
       type = lib.types.enum [ "niri" "none" ];
@@ -35,8 +38,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    boot.kernelPackages = lib.mkForce pkgs.cachyosKernels.linuxPackages-cachyos-latest;
-
     environment.systemPackages = [ dmemcg-booster ];
 
     # Ship the upstream unit files (dmemcg-booster-system.service +

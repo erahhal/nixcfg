@@ -137,7 +137,6 @@
     # "video=efifb"
   ];
 
-  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------

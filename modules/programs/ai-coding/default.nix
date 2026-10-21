@@ -287,16 +287,16 @@ let
 
     # AUTO MODE IS A SECOND INFERENCE PER COMMAND, on a 60-second clock.
     # Before every non-read-only Bash command Claude Code asks a classifier
-    # whether to allow it: a ~27.6k-token system prompt, non-streaming, and
+    # whether to allow it: a ~30k-token system prompt, non-streaming, and
     # the whole call abandoned at 60s. That prompt is sent with
     # `cache_control: ephemeral` because the feature assumes a provider-side
     # prompt cache; llama.cpp only has whatever prefix a slot still holds, so
-    # a cold re-prefill on this fleet's larger models runs past the deadline
+    # a cold re-prefill on llama.cpp's larger models runs past the deadline
     # and the tool is DENIED — fail-closed, worded as the model being
     # "temporarily unavailable", which reads as transient and is not.
     #
-    # Decided per model because it is a per-model race, and off unless the
-    # host names one: `hostParams.aiCoding.claudeAutoModeModels`. Matched on
+    # Decided per model because it is a per-model race, and off unless
+    # `hostParams.aiCoding.claudeAutoModeModels` names it. Matched on
     # the name this session was STARTED with, so an alias has to be named the
     # way it is typed.
     AUTO_OK=""
@@ -372,11 +372,13 @@ ${claudeCtxCase}
         echo "window:  $CTX, all of it this conversation's"
       fi
       if [ -n "$AUTO_OK" ]; then
-        echo "auto:    available on this model"
+        echo "auto:    available on this model (measured; a check that lands"
+        echo "         while a background agent is replying waits for it)"
       else
         echo "auto:    off on this model — the permission classifier is a"
-        echo "         27.6k-token call on a 60s deadline, and a cold prefill"
-        echo "         here loses it (hostParams.aiCoding.claudeAutoModeModels)"
+        echo "         ~30k-token call on a 60s deadline, and this model has"
+        echo "         not been measured to win it"
+        echo "         (hostParams.aiCoding.claudeAutoModeModels)"
       fi
       if [ -n "$COMPACT_AT" ]; then
         echo "compact: at $COMPACT_AT tokens"
@@ -423,6 +425,11 @@ ${claudeCtxCase}
     export ANTHROPIC_SMALL_FAST_MODEL="$BG"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="$ANTHROPIC_MODEL"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="$ANTHROPIC_MODEL"
+    # The fourth alias slot, added after the other three (present in 2.1.289,
+    # where it is the target of automatic model-access fallback). No built-in
+    # agent names it today; left unset, anything that does would send an
+    # Anthropic id the bridge has never heard of.
+    export ANTHROPIC_DEFAULT_FABLE_MODEL="$ANTHROPIC_MODEL"
     export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     export CLAUDE_CODE_ATTRIBUTION_HEADER=0
     export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
@@ -848,7 +855,13 @@ ${claudeCtxCase}
 
     ## Background agents are fine here, within a budget
 
-    The slots on the model server do NOT get a context window each: they
+    The default model (the 125B family, on the Strata engine) answers ONE
+    request at a time: a background agent's turns wait for yours and yours
+    for its, so delegating buys a second context, not parallel speed. Each
+    stream's state stays in RAM between turns, so taking turns does not
+    re-read either prompt.
+
+    On the other models the slots do NOT get a context window each: they
     share ONE pool the size of the model's window. Your conversation and
     any background agent spend the same budget, and two streams that no
     longer fit it BOTH fail with `Context size has been exceeded.`, after
@@ -872,13 +885,13 @@ ${claudeCtxCase}
 
     ## Retrieval and memory cost a model swap
 
-    The default model is served at its full 262144 and takes the card to
-    itself, so the embedding, rerank and speech-to-text models cannot be
-    loaded beside it. They still work — a call swaps the chat model out —
-    but swapping back is a FULL re-prefill of this conversation, because a
-    hybrid cannot rewind recurrent state. On a long session that is
-    expensive, so batch retrieval rather than interleaving it, or ask to be
-    moved to `qwen38-27b-224k`, which keeps them resident.
+    The embedding, rerank and speech-to-text models cannot share the card
+    with ANY chat model. They still work — a call unloads the chat model —
+    but loading it back is a cold start plus a FULL re-prefill of this
+    conversation: a hybrid cannot rewind recurrent state, and the state the
+    engine kept goes with the process. On a long session that is a minute or more,
+    so batch retrieval (`search_documents`) rather than interleaving it.
+    Web search does not use them and costs nothing of the kind.
   '';
 
   writeClaudeLocalMemory = pkgs.writeShellScript "claude-local-memory" ''

@@ -190,7 +190,6 @@
   };
 
   # boot.kernelPackages = pkgs.linuxPackages_6_18;
-  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.kernel.sysctl = {

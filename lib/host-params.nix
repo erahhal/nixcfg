@@ -650,8 +650,10 @@
             type = lib.types.bool;
             default = false;
             description = ''
-              Enable dmem cgroup VRAM-management boost (CachyOS kernel +
-              dmemcg-booster + foreground booster). Useful on hosts with
+              Enable dmem cgroup VRAM-management boost (dmemcg-booster +
+              foreground booster). Needs a kernel carrying pixelcluster's
+              dmem cgroup patches, which mainline did not as of 2026-05 and
+              nothing here provides any more. Useful on hosts with
               low-VRAM AMD GPUs to keep the focused app's VRAM resident
               instead of being evicted to GTT by background apps.
               See: https://pixelcluster.github.io/VRAM-Mgmt-fixed/
@@ -703,7 +705,7 @@
     aiCoding = {
       localModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen38-125b-a6b-max";
+        default = "qwen38-125b-a6b-q5";
         example = "qwen38-27b-224k";
         description = ''
           The model every `*-local` harness reaches for when none is given:
@@ -729,62 +731,48 @@
           quietly getting the old value while the box that needed the setting
           least was the only one with it.
 
-          MOVED TO qwen38-125b-a6b ON 2026-08-28 — Qwen3.8-Flash-Next, the
-          125B-A6B MoE, at 262144. The reason is the AGENTIC margins, which
-          is the axis a `*-local` harness actually runs on: on Qwen's own
-          head-to-head against the 27B, and corroborated by independent
-          write-ups, DeepSWE 1.1 58.7 against 42.2, JobBench 55.7 against
-          33.4, Toolathlon 73.5 against 67.1, Agents' Last Exam 51.2
-          against 42.9. Single-shot coding is nearly a tie (SWE-bench Pro
-          62.5 against 61.7) and the box's own six-case coding suite could
-          not separate them at all — both 6/6 — so this is a bet on long
+          `qwen38-125b-a6b-q5` SINCE 2026-10-19: Qwen3.8-Flash-Next, the
+          125B-A6B MoE, at UD-Q5_K_XL and 262144, on Strata. The family has
+          held this option since 2026-08-28 on its AGENTIC margins, which is
+          the axis a `*-local` harness actually runs on: on Qwen's own
+          head-to-head against the 27B dense, DeepSWE 1.1 58.7 against 42.2,
+          JobBench 55.7 against 33.4, Toolathlon 73.5 against 67.1, Agents'
+          Last Exam 51.2 against 42.9. Single-shot coding is nearly a tie
+          (SWE-bench Pro 62.5 against 61.7), so this is a bet on long
           tool-driven sessions and not on one-shot answers.
 
-          WHAT IT COSTS. 38.6 tok/s against the 27B's 134, so every turn is
-          about 3.5x slower to produce; a 2-bit quant, which measured a
-          different top token one time in six against the 4-bit of the same
-          weights; and a dependency on a llama.cpp pinned off an unmerged
-          PR (`qwen4exp`), which means the fleet default now rides on
-          genai-server's `serve.enginePackage`. That is caught rather than
-          silent: drop the pin and the assertion below fails the build,
-          naming the engine pin ahead of the spelling — verified by
-          simulating the removal on 2026-08-28. Loud at build time, but not
-          automatic, so this is the line to move if the pin ever goes.
+          Q5 OVER `-max`'S Q4 because Strata erased the speed gap that kept
+          it off: with the image encoder loaded both write at 55-65 tok/s
+          (Q5 55-63), and Q5 is 93.7% top-1 against the full weights where
+          Q4 is 92.3% (unsloth's numbers; KLD falls 35%). On llama.cpp Q5
+          was the slow rung — 25 tok/s, 333 tok/s prefill — which is why
+          `-max` held this until Strata.
 
-          THE `-max` HALF, i.e. UD-Q4_K_XL at 93.5% top-1 against the full
-          weights, measured warm at 26.8 tok/s and ~697 tok/s prefill. This
-          option briefly pointed at the Q2_K_XL sibling instead, on numbers
-          taken with a cold page cache where the Q4 read 4.1 tok/s and
-          looked unusable. It is not, and the fidelity it buys is measured:
-          the two quants pick a different top token on one sampled token in
-          six.
+          WHAT IT COSTS. ~71GB of host RAM pinned while it is loaded, against
+          -max's ~49GB, and slower READING: 1.1-1.4k tok/s at ~4k tokens and
+          2.5k at 37k, where -max reads 1.7-4.5k. Strata keeps each
+          conversation's state in RAM between turns, so that is mostly the
+          price of a cold start or a compaction rather than of every turn.
 
-          `qwen38-125b-a6b` is the same weights at 85.2%, 1.4x faster, and
-          32GB lighter in host RAM. The Q4 sits at 111.3GB of this box's
-          123GB, so it is the better model right up until something else
-          large wants memory; switch if the box starts doing two things at
-          once.
+          IT IS A STRATA CHOICE. With genai-server's `strata.enable` off the
+          same name runs on llama.cpp at the numbers above, and the right
+          value goes back to `qwen38-125b-a6b-max`. Nothing here can check
+          that — whether a host runs Strata is the serving host's config,
+          not this module's.
 
-          `qwen38-27b-128k` is Qwen3.8-27B at its full 128k. It took this from
-          `qwen38-27b-96k` (the same weights at 96k, which is what the drafter costs)
-          and from `qwen3-coder-80b-a3b` before that. The pair is worth stating plainly
-          because the trade is real: qwen3-coder-80b-a3b is non-thinking, agent-RL
-          trained, has a battle-tested tool parser and a 256k window; the 3.8
-          dense wins on every benchmark its card reports and by a wide margin
-          on the agent ones. 128k over 96k because a coding session is the
-          thing that outgrows a window, and the narrow half only ever bought
-          the drafter's speed back.
+          `qwen38-125b-a6b-max` is the same weights at Q4 and the same
+          speed, ~20GB lighter in RAM. `qwen38-125b-a6b` is the fast tier,
+          IQ3_XXS at 157-195 tok/s, for sessions where turnaround matters
+          more than the last points of fidelity. `qwen38-27b-128k` is the
+          dense 27B, which held this before the 125B arrived.
 
           Windows are read from the catalog rather than assumed, so
           auto-compaction and opencode's `limit.context` move with this
           automatically — nothing here needs to know a number.
 
-          IT NEEDS A NEW ENOUGH SERVER TO RESOLVE AT ALL: the qwen38-27b-96k entries
-          exist only in genai-server revisions from 2026-08-17 on, and they
-          declare a llama.cpp floor of b10434 (below that genai-server drops
-          them with a warning, and modules/system/overlays is what pins the
-          engine above it). Bump the genai-server input with this, or the
-          harnesses ask the bridge for a name nothing serves.
+          A NAME THE SERVER DOES NOT SERVE FAILS AT THE BRIDGE, NOT HERE: the
+          list comes from the genai-server input, so bump that input with any
+          change to this, or the harnesses ask for a name nothing serves.
         '';
       };
       agentReserve = lib.mkOption {
@@ -888,8 +876,8 @@
       };
       claudeAutoModeModels = lib.mkOption {
         type = lib.types.listOf lib.types.str;
-        default = [ ];
-        example = [ "qwen38-27b-128k" ];
+        default = [ "qwen38-125b-a6b-q5" ];
+        example = [ "qwen38-125b-a6b-q5" "qwen38-27b-128k" ];
         description = ''
           The models claude-local leaves AUTO MODE available on. Anything not
           named here starts with `permissions.disableAutoMode = "disable"`,
@@ -909,7 +897,7 @@
           llama.cpp has no such cache — it can only reuse a prefix a slot
           still holds. So the deadline is met or missed on whether that
           27.6k prefix survived the conversation's own turns, which is luck.
-          On `qwen38-125b-a6b-max` (436 tok/s prefill, current pin) a cold
+          On `qwen38-125b-a6b-max` (436 tok/s prefill on llama.cpp) a cold
           re-prefill is ~63s and loses the race by a few seconds; measured
           in a real session, five denials landed at exactly 60.0s after the
           tool call. It then FAILS CLOSED and denies the command, saying the
@@ -918,11 +906,33 @@
           recovering. The box is fine throughout: LiteLLM logged 200 for
           every one of those requests.
 
-          So this is an allow list and it is empty by default: off is the
-          state that works, and a model earns its way on by having prefill
-          fast enough to absorb 27.6k tokens with time left to answer.
-          `qwen38-27b-128k` (489-729 tok/s) is the plausible candidate here;
-          the 125B halves are not, in either quant.
+          So this is an allow list: off is the state that works, and a model
+          earns its way on by MEASUREMENT — prefill fast enough to absorb the
+          prompt with time left to answer. Being listed makes auto AVAILABLE
+          (shift-tab, `--permission-mode auto`); `claudePermissionMode` is
+          still what a session starts in.
+
+          `qwen38-125b-a6b-q5` EARNED IT ON STRATA, measured 2026-10-19 by
+          capturing claude-code 2.1.289's real classifier request against a
+          stub and replaying it through the controller's bridge. The prompt
+          has grown — 139,634 characters, 30,646 tokens as the server counts
+          them — and is two-stage now by its own wording (stage 1 blocks
+          broadly and leaves the exceptions to a stage 2). Cold: 21.1s. Repeated: 6.3s, with 30,641 of those
+          tokens served from Strata's conversation cache, and still 6.5s
+          after an unrelated 21k-token turn in between, because Strata parks
+          that prefix in RAM instead of evicting it. Every answer came back
+          in the required `<block>` form after 400-530 tokens of thinking.
+
+          THE ONE WAY IT CAN STILL LOSE: Strata answers one request at a
+          time, so a check that arrives while a BACKGROUND agent is mid-reply
+          waits for that reply first, and a long one can push it past 60s.
+          The denial looks exactly like the llama.cpp one above. A session
+          leaning on background agents is the case for leaving auto off.
+
+          The other 125B entries are unmeasured and stay off: `-max` and the
+          IQ3_XXS tier read faster than Q5 on Strata and would likely pass,
+          but this list is for measured. On llama.cpp none of them did.
+          `qwen38-27b-128k` (489-729 tok/s) is the plausible llama.cpp one.
 
           `CLAUDE_CODE_AUTO_MODE_MODEL` looks like the knob for this and is
           ignored in claude-code 2.1.223 — tested with both an id and an

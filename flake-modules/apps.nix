@@ -39,10 +39,24 @@
       fi
     '';
 
+    # BUILD WITH THE CACHES THE NEW CONFIGURATION DECLARES, not the running
+    # system's. A build reads the CURRENT /etc/nix/nix.conf, so a cache taken
+    # out of `nix.settings.substituters` because it is down would still be
+    # queried -- and fail the build -- by the very rebuild that removes it.
+    # Read from the evaluated host rather than restated here, because modules
+    # add their own (hyprland does). Costs one extra eval, ~10-15s.
+    targetCaches = extraArgs: ''
+      SUBSTITUTERS=$(nix eval --raw ${extraArgs} \
+        .#nixosConfigurations.${hostname}.config.nix.settings.substituters \
+        --apply 'builtins.concatStringsSep " "')
+    '';
+    cacheArgs = ''--option substituters "$SUBSTITUTERS"'';
+
     buildAndSwitch = { extraArgs ? "" }: ''
       CURR_THEME=$(cat "''${HOME}/.system-theme" 2>/dev/null || echo "")
       ${preSwitch}
-      nixos-rebuild switch --sudo --flake .#${hostname} ${extraArgs} -L
+      ${targetCaches extraArgs}
+      nixos-rebuild switch --sudo --flake .#${hostname} ${extraArgs} ${cacheArgs} -L
       ${postSwitch}
     '';
   in {
@@ -59,14 +73,16 @@
 
       boot = mkApp "nixcfg-boot" {
         text = ''
-          nixos-rebuild boot --sudo --flake .#${hostname} -L
+          ${targetCaches ""}
+          nixos-rebuild boot --sudo --flake .#${hostname} ${cacheArgs} -L
         '';
       };
 
       show-trace = mkApp "nixcfg-show-trace" {
         text = ''
           ${preSwitch}
-          nixos-rebuild switch --sudo --show-trace --flake .#${hostname} -L
+          ${targetCaches "--show-trace"}
+          nixos-rebuild switch --sudo --show-trace --flake .#${hostname} ${cacheArgs} -L
           ${postSwitch}
         '';
       };

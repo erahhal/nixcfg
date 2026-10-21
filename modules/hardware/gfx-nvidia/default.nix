@@ -130,7 +130,25 @@ in
     truecrack-cuda = pkgs.callPackage ../../../pkgs/truecrack-cuda { };
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
     # package = config.boot.kernelPackages.nvidiaPackages.stable;
-    package = config.boot.kernelPackages.nvidiaPackages.latest;
+    # TEMPORARY: backport of nixpkgs#576397 (master 2026-10-21, not yet in
+    # nixos-unstable). patchelf 0.19.2 given --interpreter and --set-rpath
+    # in one call writes overlapping LOAD segments into non-PIE binaries;
+    # .dynamic ends up read-only and ld.so segfaults writing DT_DEBUG, so
+    # nvidia-smi, nvidia-powerd and nvidia-cuda-mps-control crash on start
+    # (nixpkgs#576412). Split into rpath-then-interpreter, as upstream does.
+    # Remove once the locked builder.sh no longer has the combined call --
+    # the --replace-fail below will fail the build to say so.
+    package = config.boot.kernelPackages.nvidiaPackages.latest.overrideAttrs (old: {
+      builder = pkgs.runCommand "builder.sh" { } ''
+        substitute ${old.builder} $out \
+          --replace-fail \
+            '--set-rpath $out/lib:$libPath $bin/bin/$i' \
+            '$bin/bin/$i' \
+          --replace-fail \
+            'patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \' \
+            'patchelf --set-rpath $out/lib:$libPath $bin/bin/$i; patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \'
+      '';
+    });
     # nixpkgs' nvidia-{suspend,hibernate,resume} services are in use, rather
     # than the in-kernel PM notifier.
     classicSleepServices = config.hardware.nvidia.powerManagement.enable

@@ -155,8 +155,6 @@
     };
   };
 
-  # The CachyOS kernel is pulled in automatically when
-  # hostParams.gpu.amd.dmemcg.enable is true (see modules/hardware/dmemcg).
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------

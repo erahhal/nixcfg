@@ -142,8 +142,8 @@
 
     gpu = {
       amd.enable = true;
-      ## VRAM-management boost via dmem cgroup controller. Requires the
-      ## CachyOS kernel; see modules/hardware/dmemcg.
+      ## VRAM-management boost via dmem cgroup controller. Requires a kernel
+      ## carrying the dmem cgroup patches; see modules/hardware/dmemcg.
       amd.dmemcg.enable = false;  # Currently false, seeing AMD HW video decoder crashes, might be related
     };
   };

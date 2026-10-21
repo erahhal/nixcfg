@@ -159,66 +159,8 @@
   ## when it does, transcription stops working until it ages out. Drop this
   ## line if that trade is not worth it.
   services.genai-server.llmModels.qwen-dense.serve.enable = true;
-  ## Qwen3.8-Flash-Next needs an engine that does not exist in any channel:
-  ## its `qwen4exp` architecture is ggml-org/llama.cpp#27742, still an open
-  ## PR. The catalog drops the model everywhere by default (serve.minLlamaCpp
-  ## = 10637, a lower bound on a merge that has not happened); this line is
-  ## this box opting in with a llama.cpp pinned at the PR head.
-  ##
-  ## PER-MODEL ON PURPOSE. Only this entry gets that engine — the other
-  ## nineteen stay on the b10472 build every measured number in the catalog
-  ## was taken on. genai-server applies `hardware.accelerator` to whatever it
-  ## is handed here, so the overlay attribute is deliberately not built with
-  ## cudaSupport itself.
-  ##
-  ## IT COSTS A SECOND 20-40 MINUTE CUDA COMPILE, and 190GB of weights that
-  ## genai-models-prefetch will now fetch (78.9GB + 111.3GB, one per half
-  ## of the pair) — the floor was what had been keeping both off this box.
-  ##
-  ## IT RETIRES ITSELF: the entry declares serve.engineArch = "qwen4exp", and
-  ## genai-server greps this host's own llama.cpp for that id on every
-  ## rebuild, failing the build once it is there and naming the edits. So
-  ## deleting this line is something the box asks for rather than something
-  ## to remember.
-  ##
-  ## BOTH HALVES OF THE PAIR. qwen38-125b-a6b is Q2_K_XL at 18.3 tok/s and
-  ## -max is Q4_K_XL at 4.1; they are the same weights at different quants,
-  ## and each carries its own floor. Wiring only one silently drops the
-  ## other, which is why they are set together here rather than a line
-  ## apart.
-  ## THE `-qsa` VARIANT, NOT THE PLAIN ONE, and the difference is one
-  ## unmerged patch: ggml-org/llama.cpp#28213, gather-based sparse attention
-  ## for QSA decode. Measured here at +14.5% generation at 123k and +21.8%
-  ## at 253k with prefill, VRAM and greedy output all unmoved — see the
-  ## overlay, which carries the numbers and the agreement check. Point both
-  ## halves back at `pkgs.llama-cpp-qwen4exp` the day that PR merges.
-  services.genai-server.llmModels.qwen38-125b-a6b.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp-qsa;
-  ## THE PAIR SPLITS HERE, and it is the drafter that splits it. The Q2
-  ## half runs MTP and so needs the branch; `-max` measured MTP as a 10%
-  ## LOSS and carries no `serve.draft`, so the only thing it still needs a
-  ## pinned engine FOR is #28213 — which applies to master just as well.
-  ## Keeping them together cost it #28330, #28896, #28901 and #28739, on
-  ## the entry whose every failure has been headroom. See the overlay for
-  ## what each is worth and for what is and is not patched onto master.
-  ##
-  ## `serve.enginePackage` being per-model is what makes this a one-line
-  ## decision rather than a choice between the two halves — the same seam
-  ## glm5next uses below.
-  services.genai-server.llmModels.qwen38-125b-a6b-max.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp-next;
-  ## The abliterated -max: same quant, same shapes, same engine. Without
-  ## this it falls below serve.minLlamaCpp and is dropped.
-  services.genai-server.llmModels.qwen38-125b-a6b-max-uc.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp-next;
-  ## The Q5 rung rides the same master-based build as -max: no drafter, so
-  ## nothing it needs is on the MTP branch, and it is only loadable at all
-  ## because that build carries ggml-org#29030 (its 50.7GiB PLE table has
-  ## to be read rather than held). Without a pin here it falls below
-  ## serve.minLlamaCpp and is dropped.
-  services.genai-server.llmModels.qwen38-125b-a6b-q5.serve.enginePackage =
-    pkgs.llama-cpp-qwen4exp-next;
-  ## THE FLASH-NEXT FAMILY RUNS ON STRATA, not on the llama.cpp pins above.
+  ## THE FLASH-NEXT FAMILY RUNS ON STRATA, not on its llama.cpp pins (which
+  ## genai-server's catalog carries itself, engines.nix).
   ## Measured 2026-10-09 on the same prompts: the fast tier writes 157-195
   ## tok/s on GSQ-RCO IQ3_XXS where llama.cpp's Q2 did 34-43, -max and -q5
   ## write 61-76 on their own files where llama.cpp did 25-32, and prompts
@@ -227,7 +169,7 @@
   ## pinned RAM while a model is loaded, and a young engine.
   ##
   ## ROLLBACK IS THIS LINE SET TO false. Each entry goes back to its
-  ## llama.cpp command, file and guide. The pins above stay built while
+  ## llama.cpp command, file and guide. The pins stay built while
   ## this is on (their retirement checks build them), so going back costs
   ## a rebuild and not a compile.
   ##
@@ -235,15 +177,6 @@
   ## cudaPackages_13. That needed a backport (the buildRedistHook fix) until
   ## nixos-unstable carried it; the backport retired itself 2026-10-09.
   services.genai-server.strata.enable = true;
-  ## GLM-5.3-Flash needs a THIRD engine, not the one above: unsloth ships
-  ## glm5next on a separate branch that carries no qwen4exp, and vice
-  ## versa. Same seam, same expiry (serve.engineArch = "glm5next").
-  ##
-  ## Only the 1-bit quant fits 123GB of RAM with headroom — 93.1GB, inside
-  ## the range this box has already been measured serving. What it costs is
-  ## fidelity rather than capacity.
-  services.genai-server.llmModels.glm53-320b-a18b.serve.enginePackage =
-    pkgs.llama-cpp-glm5next;
   ## Claude Code's background slot (titles, small classification calls) on
   ## the CPU instead of pinned to whatever the session is using. Two things
   ## come of it: that traffic stops competing with the conversation for the
@@ -601,14 +534,6 @@
   ## token's account must have accepted the license at
   ## huggingface.co/facebook/sam3, or the fetch 403s and skips.
   services.genai-server.hfTokenFile = config.age.secrets."hf-token".path;
-  ## Build llama-swap from upstream (v245) instead of the nixpkgs v240.
-  ## Stage 2 of the roadmap needs >= v242 for selectors (virtual model IDs
-  ## that flip a champion/challenger A/B without touching clients),
-  ## SQLite-persisted activity metrics and static apiKeys. Config
-  ## compatibility was checked against v245's schema and the built binary
-  ## starts on this host's config unchanged. The flake warns when nixpkgs
-  ## catches up, at which point delete this line.
-  services.genai-server.llamaSwap.useNewerBuild = true;
   ## Realtime voice on :8901 (portal page at :8897/voice). The chat model
   ## runs on the CPU, so this costs system RAM rather than VRAM and does not
   ## compete with the card. Transcription still uses the GPU-resident `asr`.
@@ -708,7 +633,6 @@
     # "video=efifb"
   ];
 
-  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # --------------------------------------------------------------------------------------
