@@ -25,8 +25,11 @@
   dnsmasq,
   iptables,
   xdg-utils,
+  callPackage,
 }:
 let
+  patchelf_0_15 = callPackage ../patchelf-0.15 { };
+
   # Placed on the launcher's PATH so astrill's shell-outs resolve: chattr/lsattr
   # (resolv.conf immutability), route/ifconfig + ip (routing/detection), sysctl,
   # killall (`killall -HUP dnsmasq`), dnsmasq, iptables, cat/cp/rm, grep/sed,
@@ -128,6 +131,9 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   preFixup = ''
+    # Old patchelf first on PATH; see pkgs/patchelf-0.15.
+    export PATH="${patchelf_0_15}/bin:$PATH"
+
     # Let autoPatchelf resolve Astrill's bundled .so siblings (the OpenSSL 1.0 ABI
     # it dlopens) instead of dragging in nixpkgs openssl. Must run before autoPatchelf.
     addAutoPatchelfSearchPath $out/usr/local/Astrill

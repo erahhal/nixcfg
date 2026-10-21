@@ -21,9 +21,13 @@
   libxcrypt-legacy,
   nspr,
   nss,
+  callPackage,
   xorg,
 }:
 
+let
+  patchelf_0_15 = callPackage ../patchelf-0.15 { };
+in
 stdenv.mkDerivation (finalAttrs: {
   pname = "hyperbackup-explorer";
   version = "3.0.1-0156";
@@ -111,7 +115,9 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
+  # Old patchelf first on PATH; see pkgs/patchelf-0.15.
   preFixup = ''
+    export PATH="${patchelf_0_15}/bin:$PATH"
     addAutoPatchelfSearchPath $out/opt/hyperbackup-explorer/lib
   '';
 

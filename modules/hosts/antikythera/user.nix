@@ -1,4 +1,4 @@
-{ config, pkgs, hostParams, ... }:
+{ config, pkgs, broken, ... }:
 
 let
   userParams = config.hostParams.user;
@@ -68,7 +68,7 @@ in
         (pkgs.callPackage ../../../pkgs/hyperbackup-explorer {})
         ## terminal apps
         exercism
-        awscli
+        (broken awscli)
         postgresql
 
         ## Dev and tools

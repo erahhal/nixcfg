@@ -150,13 +150,6 @@
       flake = false;
     };
 
-    nflx-nixcfg = {
-      type = "git";
-      url = "git+https://netflix.ghe.com/ncselinuxdesktop/nflx-nixcfg.git";
-      ref = "main";
-      # ref = "recovery-updates";
-    };
-
     nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
 
     plasma-manager = {

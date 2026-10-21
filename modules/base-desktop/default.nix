@@ -234,7 +234,7 @@ in
             qt6Packages.fcitx5-configtool
             qt6Packages.fcitx5-chinese-addons
             fcitx5-gtk
-            fcitx5-mozc
+            (broken fcitx5-mozc)
             fcitx5-nord
             fcitx5-rime
             libsForQt5.fcitx5-qt
@@ -582,11 +582,11 @@ in
         # librewolf-wayland
 
         ## apps
-        audacity
+        (broken audacity)
         bambu-studio
         bitwarden-desktop
         brave
-        calibre
+        (broken calibre)
         # czkawka-full = czkawka + krokiet + czkawka_cli, wrapped with ffmpeg on PATH.
         # Plain `czkawka` finds no similar VIDEOS without it, and says
         # "Not found any similar videos" while doing so.
@@ -613,7 +613,7 @@ in
         inkscape
         joplin-desktop
         # Not yet available in stable
-        unstable.kphotoalbum
+        (broken kphotoalbum)
         krita
         libreoffice-fresh
         mpv

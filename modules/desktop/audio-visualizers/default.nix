@@ -120,9 +120,6 @@ in
     # projectM - Milkdrop-compatible music visualizer (use 'projectm' wrapper)
     projectm-wrapper
 
-    # Cavalier - GTK4 audio visualizer based on CAVA
-    pkgs.cavalier
-
     # CAVA - Console-based audio visualizer (used by Cavalier)
     pkgs.cava
 

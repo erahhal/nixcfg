@@ -217,11 +217,7 @@ let
     };
 
     joplin-desktop = let
-      # TEMPORARY: from trunk. nixos-unstable 2026-09-29's joplin-desktop
-      # fails its yarn offline-cache fetch (stale missing-hashes.json;
-      # nixpkgs#568397), fixed by nixpkgs#568575 (3.7.21) on master
-      # 2026-09-30. Go back to prev.joplin-desktop once unstable has 3.7.21+.
-      original = prev.trunk.joplin-desktop;
+      original = prev.joplin-desktop;
     in prev.symlinkJoin {
       name = "joplin-desktop-${original.version}";
       paths = [ original ];

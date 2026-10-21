@@ -1,32 +1,6 @@
 # Package config: allowUnfree, unstable/trunk channels, overlays
 { config, inputs, lib, system, ... }:
 let
-  ## genai-server's `ds4-flash` (DeepSeek-V4-Flash-0731) needs llama.cpp
-  ## >= b10254: the arch landed in June, but the 0731 checkpoint's chat
-  ## template and the DSML tool-call separator fix are commit 0ef6e55e
-  ## (2026-08-04). Below that the model loads and ANSWERS — it just
-  ## re-prefills the whole context on every agentic turn — so the failure
-  ## reads as "slow model" rather than "wrong build". genai-server declares
-  ## the floor as `serve.minLlamaCpp` and drops the model below it.
-  ds4FlashFloor = "10254";
-
-  ## genai-server's Qwen3.8 entries (`qwen38`, `qwen38-long`, `qwen38-uc`)
-  ## need llama.cpp >= b10434, and unlike the floor above the failure is not
-  ## "slow": on b10430 llama-server EXITS SILENTLY once a Qwen3.8 prompt
-  ## passes ~90-100k tokens (llama.cpp #27090), which llama-swap surfaces as
-  ## "upstream command exited prematurely" — the same string a VRAM overrun
-  ## gives you. `qwen38-long` and `qwen38-uc` declare a 128k window, i.e.
-  ## straight through that cliff, and `qwen38` sits at 96k, i.e. on it. This
-  ## is the floor the override below actually has to clear; ds4FlashFloor is
-  ## already met by anything recent.
-  ##
-  ## IT IS NOT OPTIONAL HERE ANY MORE. Since 2026-08-17 `qwen38` holds the
-  ## `dense` alias and is what claude-logistikon defaults to, so below this
-  ## floor genai-server drops it and the harness asks the bridge for a name
-  ## nothing serves — a broken coding session rather than one missing model
-  ## in a picker.
-  qwen38Floor = "10434";
-
   trunkPkgs = import inputs.nixpkgs-trunk {
     inherit system;
     # Mirrors nixpkgs.config below. Written out rather than referencing
@@ -235,83 +209,6 @@ bool vulkan_remake_and_acquire( void );'
         };
       };
 
-      # TEMPORARY: llama.cpp from trunk, for genai-server's ds4-flash. Same
-      # shape as the langfuse pin below — fixed on master, not yet on
-      # nixos-unstable (which as of 2026-08-06 still ships b10133 even after
-      # a flake update; the bump missed this channel's branch point).
-      #
-      # TRUNK IS NO LONGER FAR ENOUGH, so this is trunk's DERIVATION with a
-      # newer SOURCE pinned on top. genai-server's Qwen3.8 entries declare
-      # serve.minLlamaCpp = b10434 and nothing in any channel is there yet:
-      # nixos-unstable is b10133, this trunk pin is b10273, and even
-      # nixpkgs master is only b10408. Bumping the trunk INPUT would not
-      # help — it lands on b10408, still short — so the version and src
-      # hash are set here instead. Upstream b10472 is 2026-08-17.
-      #
-      # WHY b10434 IS THE FLOOR: llama.cpp #27090 reports llama-server
-      # exiting SILENTLY on Qwen3.8-27B past ~90-100k of prompt on b10430,
-      # gone by b10434. Only four commits separate those tags and one is
-      # `ggml : recurrent state rollback for ggml_ssm_scan` (#26623), which
-      # is the attribution the reporter offers — marked "presumably" there
-      # and worth treating as such, since the crash was plain prefill and
-      # that commit is about draft-token state. Taking the whole tested
-      # build rather than backporting one 25-file cross-backend commit is
-      # the point: the floor is empirical (b10430 dies, b10434 does not)
-      # even where the cause is not settled.
-      #
-      # This also brings `chat : pass reasoning_effort to template`, which
-      # gives llama-server a native --reasoning-effort instead of the
-      # --chat-template-kwargs route genai-server uses for Qwen3.8 today.
-      #
-      # OVERRIDING src MEANS OVERRIDING npmDepsHash: the derivation builds
-      # the bundled web UI from tools/ui, and that lockfile changed between
-      # b10273 and b10408. It did NOT change between b10408 and b10472
-      # (verified byte-identical), so this is master's value.
-      #
-      # STILL SELF-RETIRING, now against the HIGHER of the two floors —
-      # retiring at ds4-flash's b10254 would drop the Qwen3.8 pair without
-      # anything saying so, which is the failure this warning exists to
-      # prevent. When it fires, delete this binding and the trunkPkgs
-      # import above; leaving it pins llama.cpp to a hand-set tag forever,
-      # which is how a temporary override becomes a permanent one.
-      llama-cpp = lib.warnIf
-        (lib.versionAtLeast prev.llama-cpp.version qwen38Floor)
-        ("nixcfg: nixos-unstable's llama-cpp is now b${prev.llama-cpp.version}"
-          + " (>= b${qwen38Floor}, the highest floor genai-server declares),"
-          + " so the nixpkgs-trunk override in"
-          + " modules/system/overlays/default.nix is redundant. Remove the"
-          + " llama-cpp binding and the trunkPkgs import.")
-        (trunkPkgs.llama-cpp.overrideAttrs (finalAttrs: old: {
-          version = "10472";
-          src = trunkPkgs.fetchFromGitHub {
-            owner = "ggml-org";
-            repo = "llama.cpp";
-            tag = "b${finalAttrs.version}";
-            hash = "sha256-re0WlafJUDZOPNfIq2ECRSctdrDFVc0fXb5iSd7gDR8=";
-            leaveDotGit = true;
-            postFetch = ''
-              git -C "$out" rev-parse --short HEAD > $out/COMMIT
-              find "$out" -name .git -print0 | xargs -0 rm -rf
-            '';
-          };
-          npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
-          # THE REPORTED BUILD NUMBER DOES NOT FOLLOW THIS PIN unless it is
-          # said here. nixpkgs passes -DLLAMA_BUILD_NUMBER and
-          # -DLLAMA_BUILD_COMMIT from ITS OWN version and rev, and neither
-          # follows `finalAttrs.version` or `src.rev` through
-          # `overrideAttrs`. This binding reported b10472 correctly only
-          # because it was built while nixpkgs-trunk still sat there;
-          # trunk is b10809 now, so without these two lines the next
-          # rebuild would produce a b10472 tree that introduces itself as
-          # b10809. Found on `llama-cpp-qwen4exp-next`, where trunk had
-          # moved far enough to make it visible. Appended so it wins:
-          # CMake takes the last -D of a repeated name.
-          cmakeFlags = (old.cmakeFlags or [ ]) ++ [
-            "-DLLAMA_BUILD_NUMBER:STRING=${finalAttrs.version}"
-            "-DLLAMA_BUILD_COMMIT:STRING=60eeeb6"
-          ];
-        }));
-
       # TEMPORARY, AND IT NOW OUTLIVES THE REASON IT WAS WRITTEN FOR.
       # genai-server's qwen38-125b-a6b (Qwen3.8-Flash-Next) loads as
       # `qwen4exp`, and when this binding was added that architecture
@@ -379,7 +276,7 @@ bool vulkan_remake_and_acquire( void );'
       # backend here would risk two engines on one box disagreeing about
       # it — invisible until one of them fails.
       #
-      # npmDepsHash is the binding's above: tools/ui/package-lock.json is
+      # npmDepsHash is the one the old b10472 `llama-cpp` pin used: tools/ui/package-lock.json is
       # byte-identical from b10472 through this commit (585457 bytes,
       # sha256 03379c8e…, re-compared at d1a9235 on 2026-09-09).
       #
@@ -613,7 +510,7 @@ bool vulkan_remake_and_acquire( void );'
         # this attribute fetched b11028 (checked: the source's COMMIT file
         # reads 972d231) and the binary introduced itself as
         # "build 10809, commit 5266f24" — nixpkgs-trunk's llama-cpp, not
-        # ours. `llama-cpp` and `llama-cpp-qwen4exp` above currently read
+        # ours. `llama-cpp-qwen4exp` above currently reads
         # correctly only because they were built while trunk still sat
         # near their pins; they will start lying the same way on the next
         # trunk bump.
@@ -679,51 +576,6 @@ bool vulkan_remake_and_acquire( void );'
         };
         npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
       });
-
-      # TEMPORARY: abseil-cpp 20260817 (the new nixpkgs default, pulled in by
-      # protobuf 36.2) is a C++20-ONLY header set, and eternal-terminal's
-      # CMakeLists hardcodes `set(CMAKE_CXX_STANDARD 17)`.
-      #
-      # The mechanism, since the error does not read like a standards
-      # problem: absl/base/options.h now ships
-      # `#define ABSL_OPTION_USE_STD_ORDERING 1` — unconditionally, not the
-      # "2 = autodetect" value — so absl::{partial,weak,strong}_ordering are
-      # plain aliases for the std:: ones. At -std=gnu++17 those don't exist,
-      # so compare.h fails with "'partial_ordering' has not been declared in
-      # 'std'" and everything downstream of absl::weak_ordering collapses:
-      # btree.h loses btree_is_key_compare_to, btree_map_container comes out
-      # incomplete, and the visible failure is a wall of "'count' has not
-      # been declared in ... btree_map<...>::Base" while building et-lib's
-      # precompiled header. The first error in the log, not the last one, is
-      # the one that names the cause.
-      #
-      # -DCMAKE_CXX_STANDARD=20 in cmakeFlags does NOT work here: the plain
-      # `set()` in CMakeLists.txt shadows the cache variable, and CMake puts
-      # its own -std=gnu++17 after CMAKE_CXX_FLAGS, so it wins over any
-      # CXXFLAGS we pass. The source line has to change.
-      #
-      # C++20 is also the only self-consistent choice: protobuf and abseil in
-      # this closure are themselves compiled at C++20, so linking a C++17
-      # translation unit against those headers would be an ODR mismatch even
-      # if it compiled.
-      #
-      # SELF-RETIRING: --replace-fail means the build dies loudly rather than
-      # silently doing nothing if upstream rewrites that line, and the warnIf
-      # fires once nixpkgs moves eternal-terminal past 7.0.0 so the override
-      # gets re-checked against whatever that release does.
-      eternal-terminal = lib.warnIf
-        (lib.versionOlder "7.0.0" prev.eternal-terminal.version)
-        ("nixcfg: nixpkgs' eternal-terminal is now"
-          + " ${prev.eternal-terminal.version} (> 7.0.0). Re-check whether its"
-          + " CMakeLists still pins CMAKE_CXX_STANDARD 17; if upstream moved"
-          + " to C++20, remove the eternal-terminal binding in"
-          + " modules/system/overlays/default.nix.")
-        (prev.eternal-terminal.overrideAttrs (old: {
-          postPatch = (old.postPatch or "") + ''
-            substituteInPlace CMakeLists.txt \
-              --replace-fail "set(CMAKE_CXX_STANDARD 17)" "set(CMAKE_CXX_STANDARD 20)"
-          '';
-        }));
     })
   ];
 }

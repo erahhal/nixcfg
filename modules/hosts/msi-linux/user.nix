@@ -1,4 +1,4 @@
-{ config, pkgs, lib, hostParams, ... }:
+{ config, pkgs, broken, ... }:
 let userParams = config.hostParams.user; in
 {
   home-manager.users.${userParams.username} = {
@@ -15,7 +15,7 @@ let userParams = config.hostParams.user; in
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
       packages = with pkgs; [
-        awscli
+        (broken awscli)
         blender
         chromium
         nicotine-plus
