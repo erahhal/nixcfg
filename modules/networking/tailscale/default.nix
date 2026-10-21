@@ -323,6 +323,11 @@ in {
         after = [ "tailscaled.service" ];
         wantedBy = [ "tailscaled.service" ];
         partOf = [ "tailscaled.service" ];
+        # The unit embeds store paths, so most flake bumps change it. A
+        # switch-time restart would run ExecStop and wipe tailscale0's DNS
+        # (servers too) while Tailscale is up; tailscaled never re-applies it
+        # on its own. The new definition takes effect at the next tsup.
+        restartIfChanged = false;
 
         serviceConfig = {
           Type = "oneshot";
