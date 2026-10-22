@@ -52,6 +52,9 @@ in
         "https://arm.cachix.org/"
         "https://robotnix.cachix.org/"
         "https://cache.flox.dev"
+        # attic.xuyh0120.win/lantian (nix-cachyos-kernel) dropped along with its
+        # key: the server was compromised and taken offline in 2026-10, see
+        # https://github.com/xddxdd/nix-cachyos-kernel/issues/110
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="

@@ -184,7 +184,29 @@ bool vulkan_remake_and_acquire( void );'
         '';
       });
 
-      jetbrains-toolbox = prev.jetbrains-toolbox.overrideAttrs (old: {
+      # JetBrains moved Toolbox downloads behind signed CloudFront URLs, so the
+      # download-cdn.jetbrains.com path nixpkgs pins now 404s on every unsigned
+      # request and the build dies in fetchzip rather than in the package.
+      # download.jetbrains.com still serves it and redirects to a signed CDN
+      # URL, which curl follows.
+      #
+      # This has to go through `.override` on the fetchzip argument rather than
+      # `overrideAttrs`: on Linux the package is a buildFHSEnv whose `src` is a
+      # let-bound fetchzip, baked into runScript/extraInstallCommands as a
+      # string and re-exported only as passthru.src. An `overrideAttrs` src is
+      # therefore never read -- it silently does nothing. Rewriting only the
+      # host leaves upstream's version and hash in play (the fetch is
+      # fixed-output, so the store path doesn't change), which keeps a future
+      # nixpkgs bump working. Drop this once nixpkgs stops fetching the CDN
+      # host directly.
+      jetbrains-toolbox = (prev.jetbrains-toolbox.override {
+        fetchzip = args: prev.fetchzip (args // {
+          url = builtins.replaceStrings
+            [ "https://download-cdn.jetbrains.com/" ]
+            [ "https://download.jetbrains.com/" ]
+            args.url;
+        });
+      }).overrideAttrs (old: {
         buildInputs = (old.buildInputs or []) ++ [ prev.makeWrapper ];
         postInstall = old.postInstall or "" + ''
           wrapProgram "$out/bin/jetbrains-toolbox" \
