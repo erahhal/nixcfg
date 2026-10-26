@@ -18,7 +18,17 @@
       chromium-based-apps.enable = true;
     };
     networking = {
-      mullvad.enable = true;
+      mullvad = {
+        enable = true;
+        ## Connect on boot, and block internet traffic whenever the tunnel is
+        ## down. Safe only because an account is logged in here — without one
+        ## this blocks all non-LAN traffic on every boot (see the module).
+        autoConnect = true;
+        lockdownMode = true;
+        ## The module default, pinned: keeps the LAN (and the box's own
+        ## services) reachable while lockdown is blocking.
+        allowLan = true;
+      };
       kdeconnect.enable = true;
       connection-sharing.enable = true;
     };

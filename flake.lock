@@ -691,11 +691,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1792616043,
-        "narHash": "sha256-Q5kML/PCC/APeD6bWESqeA05ZNK1ZbmO258QIwnSkIU=",
+        "lastModified": 1792985306,
+        "narHash": "sha256-zFMaaAWZmOS+lCF4KD9Hr291yJ62mLs2/CWgkTp0T6o=",
         "ref": "main",
-        "rev": "c8749f5054897f1bb93554e737430ffc48bedc0a",
-        "revCount": 566,
+        "rev": "6ccdb092d8cf929b09733db4dd39eb4f7778f725",
+        "revCount": 568,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
@@ -1634,11 +1634,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1787135253,
-        "narHash": "sha256-RD2kNWCG+Bjo6h+JVjWVNntZs2GtRoeY2xHjts/FNkA=",
+        "lastModified": 1792773339,
+        "narHash": "sha256-rZLrzrC6i+jnTAlvPZHogKDulY7WWDEv9hJeHieO7Zw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ffb3c9b700e759be2ef13237c9d8f953b32a1e46",
+        "rev": "3ec636362e1816bc2f0888fa0fa2c69f1bc9e504",
         "type": "github"
       },
       "original": {
