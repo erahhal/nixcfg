@@ -119,6 +119,7 @@
       # because systemd user services cannot use setuid binaries like sudo
       startupApps = [
         "spotify"
+        "slack"
         "brave"
         "firefox"
         "signal-desktop"

@@ -91,6 +91,7 @@ in
         chromium
         cool-retro-term
         nicotine-plus
+        photocraft
         qbittorrent
         telegram-desktop
         telegram-mz
