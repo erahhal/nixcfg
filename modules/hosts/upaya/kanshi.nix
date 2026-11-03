@@ -1,22 +1,16 @@
 { config, pkgs, lib, ... }:
 let
   userParams = config.hostParams.user;
-  wlr-randr = "${pkgs.wlr-randr}/bin/wlr-randr";
-  grep = "${pkgs.gnugrep}/bin/grep";
-  awk = "${pkgs.gawk}/bin/awk";
-  # home-monitor-left-sway = ''"LG Electronics LG Ultra HD 0x00003EAD"'';
-  # home-monitor-right-sway = ''"LG Electronics LG HDR 4K 0x00000F5B"'';
-  home-monitor-left-sway = ''$(${wlr-randr} | ${grep} "LG Electronics LG Ultra HD 0x00003EAD" | ${awk} '{print $1}')'';
-  home-monitor-right-sway = ''$(${wlr-randr} | ${grep} "LG Electronics LG HDR 4K 0x00000F5B" | ${awk} '{print $1}')'';
-  # home-monitor-left-sway = "left";
-  # home-monitor-right-sway = "right";
-  home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
-  home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
-  hyprctl="${pkgs.hyprland}/bin/hyprctl";
-  swaymsg="${pkgs.sway}/bin/swaymsg";
+  portable-monitor-scale = 1.6;
+  asus-monitor = "ASUSTek COMPUTER INC ASUS VG289 RALMTF124240";
+  # 3840x2160 panel; 2.0 keeps the logical size integral (1920x1080).
+  eDP-1-mode = "3840x2160";
+  eDP-1-scale = 2.0;
 in
 {
+  # Profiles follow nflx-erahhal-p16's kanshi.nix (same desks, same dock),
+  # adapted to this panel. No hyprctl/swaymsg execs: upaya only runs niri.
   home-manager.users.${userParams.username} = {
     # Override home-manager's Restart=always to prevent blocking graphical-session.target stop
     systemd.user.services.kanshi.Service.Restart = lib.mkForce "on-failure";
@@ -32,13 +26,13 @@ in
               {
                 criteria = "eDP-1";
                 status = "enable";
-                mode = "3840x2160";
+                mode = eDP-1-mode;
                 position = "0,0";
-                scale = 2.0;
+                scale = eDP-1-scale;
               }
             ];
             exec = [
-              "boltctl forget --all"
+              ''${pkgs.xrdb}/bin/xrdb -merge <<< "Xft.dpi: 282"''
             ];
           };
         }
@@ -47,38 +41,47 @@ in
             name = "desk-sway";
             outputs = [
               {
-                criteria = "eDP-1";
-                status = "disable";
-                mode = "3840x2160";
-                position = "0,910";
-                scale = 2.0;
-              }
-              {
                 criteria = "LG Electronics LG Ultra HD 0x00003EAD";
                 status = "enable";
                 mode = "3840x2160";
-                position = "1920,0";
-                # transform = "90";
+                position = "0,0";
                 scale = 1.5;
               }
               {
                 criteria = "LG Electronics LG HDR 4K 0x00000F5B";
                 status = "enable";
                 mode = "3840x2160";
-                position = "4480,0";
+                position = "2560,0";
                 scale = 1.5;
+              }
+              {
+                criteria = "eDP-1";
+                status = "disable";
+              }
+            ];
+          };
+        }
+        {
+          # ThinkPad TB4 dock with the ThinkVision daisy-chained.
+          profile = {
+            name = "desk-hyprland-thinkvision";
+            outputs = [
+              {
+                criteria = "Lenovo Group Limited P40w-20 V90DFGMV";
+                status = "enable";
+                # This host's TB3 port carries DP 1.2: 5120x2160 tops out
+                # at 50 Hz here (the p16 runs it at 60).
+                mode = "5120x2160@49.983Hz";
+                position = "0,0";
+                scale = 1.333333;
+              }
+              {
+                criteria = "eDP-1";
+                status = "disable";
               }
             ];
             exec = [
-              "${swaymsg} workspace 1, move workspace to output ${home-monitor-left-sway}"
-              "${swaymsg} workspace 2, move workspace to output ${home-monitor-right-sway}"
-              "${swaymsg} workspace 3, move workspace to output ${home-monitor-right-sway}"
-              "${swaymsg} workspace 4, move workspace to output ${home-monitor-left-sway}"
-              "${swaymsg} workspace 5, move workspace to output ${home-monitor-left-sway}"
-              "${swaymsg} workspace 6, move workspace to output ${home-monitor-left-sway}"
-              "${swaymsg} workspace 7, move workspace to output ${home-monitor-left-sway}"
-              "${swaymsg} workspace 8, move workspace to output ${home-monitor-left-sway}"
-              "${swaymsg} workspace 9, move workspace to output ${home-monitor-left-sway}"
+              ''${pkgs.xrdb}/bin/xrdb -merge <<< "Xft.dpi: 140"''
             ];
           };
         }
@@ -87,38 +90,23 @@ in
             name = "desk-hyprland";
             outputs = [
               {
-                criteria = "eDP-1";
-                status = "disable";
-                mode = "3840x2160";
-                position = "0,910";
-                scale = 2.0;
-              }
-              {
                 criteria = "LG Electronics LG Ultra HD 0x00043EAD";
                 status = "enable";
                 mode = "3840x2160";
-                position = "1920,0";
-                # transform = "90";
+                position = "0,0";
                 scale = 1.5;
               }
               {
                 criteria = "LG Electronics LG HDR 4K 0x00020F5B";
                 status = "enable";
                 mode = "3840x2160";
-                position = "4480,0";
+                position = "2560,0";
                 scale = 1.5;
               }
-            ];
-            exec = [
-              "${hyprctl} dispatch moveworkspacetomonitor 1 desc:${home-monitor-left-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 2 desc:${home-monitor-right-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 3 desc:${home-monitor-right-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 4 desc:${home-monitor-left-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 5 desc:${home-monitor-left-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 6 desc:${home-monitor-left-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 7 desc:${home-monitor-left-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 8 desc:${home-monitor-left-hyprland}"
-              "${hyprctl} dispatch moveworkspacetomonitor 9 desc:${home-monitor-left-hyprland}"
+              {
+                criteria = "eDP-1";
+                status = "disable";
+              }
             ];
           };
         }
@@ -127,19 +115,19 @@ in
             name = "desk-left";
             outputs = [
               {
-                criteria = "eDP-1";
+                criteria = "LG Electronics LG Ultra HD 0x00003EAD";
                 status = "enable";
                 mode = "3840x2160";
-                position = "0,1500";
-                scale = 2.0;
+                position = "0,0";
+                scale = 1.5;
               }
               {
-                criteria = "Goldstar Company Ltd LG Ultra HD 0x00003EAD";
+                # Centred under the monitor's right edge, as on the p16.
+                criteria = "eDP-1";
                 status = "enable";
-                mode = "3840x2160";
-                position = "2560,0";
-                # transform = "90";
-                scale = 1.5;
+                mode = eDP-1-mode;
+                position = "1600,1440";
+                scale = eDP-1-scale;
               }
             ];
           };
@@ -149,19 +137,62 @@ in
             name = "desk-right";
             outputs = [
               {
-                criteria = "eDP-1";
+                criteria = "LG Electronics LG HDR 4K 0x00000F5B";
                 status = "enable";
                 mode = "3840x2160";
-                position = "0,1500";
-                scale = 2.0;
+                position = "0,0";
+                scale = 1.5;
               }
               {
-                criteria = "Goldstar Company Ltd LG HDR 4K 0x00000F5B";
+                criteria = "eDP-1";
+                status = "enable";
+                mode = eDP-1-mode;
+                position = "1600,1440";
+                scale = eDP-1-scale;
+              }
+            ];
+          };
+        }
+        {
+          profile = {
+            name = "portable-left";
+            outputs = [
+              {
+                criteria = portable-monitor;
+                status = "enable";
+                mode = "2560x1600@59.972000Hz";
+                position = "0,40";
+                # Resolution must be integer divisible by scale
+                scale = portable-monitor-scale;
+              }
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                mode = eDP-1-mode;
+                position = "1600,0";
+                scale = eDP-1-scale;
+              }
+            ];
+          };
+        }
+        {
+          profile = {
+            name = "desk-asus-hyprland";
+            outputs = [
+              {
+                criteria = asus-monitor;
                 status = "enable";
                 mode = "3840x2160";
-                position = "2560,0";
-                # transform = "90";
+                position = "0,0";
+                # Resolution must be integer divisible by scale
                 scale = 1.5;
+              }
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                mode = eDP-1-mode;
+                position = "2560,360";
+                scale = eDP-1-scale;
               }
             ];
           };

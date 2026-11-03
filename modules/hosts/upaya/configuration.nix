@@ -159,6 +159,17 @@ in
   # Rename dock interface to dock_eth0 instead of the crazy default name;
   services.udev.packages = [ dell-dock-udev-rules ];
 
+  # Authorize the ThinkPad Thunderbolt 4 Dock and the P40w-20 daisy-chained
+  # behind it. BIOS Thunderbolt security is "User Authorization" and this TB3
+  # host has no IOMMU DMA protection, so boltd never authorizes them itself:
+  # the display (a DisplayPort tunnel) works, but the dock's USB hub and
+  # ethernet (a PCIe tunnel) stay dark. Pinned by unique_id; the monitor sits
+  # under the dock in sysfs, so udev runs the dock's add event first.
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{unique_id}=="be030080-0150-5c8c-8116-21936af43803", ATTR{authorized}=="0", ATTR{authorized}="1"
+    ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{unique_id}=="af030080-0180-848c-0121-941ccda2400b", ATTR{authorized}=="0", ATTR{authorized}="1"
+  '';
+
   networking = {
     hostId = "39ed170e";
 
@@ -207,7 +218,9 @@ in
 
   programs.captive-browser = {
     enable = true;
-    interface = "wlp0s20f3";
+    # iwd's 80-iwd.link keeps the kernel name, so the card is wlan0 (it was
+    # wlp2s0 under wpa_supplicant).
+    interface = "wlan0";
   };
 
   /*
