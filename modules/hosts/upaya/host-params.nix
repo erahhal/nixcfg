@@ -5,11 +5,17 @@
       hostName = "upaya";
     };
 
+    networking = {
+      tailscale.enable = true;
+    };
+
     containers = {
       backend = "docker";
     };
 
     desktop = {
+      displayManager = "dms";
+      defaultSession = "niri";
       dpi = 210;
       wallpaper = ../../../wallpapers/yellowstone.jpg;
     };

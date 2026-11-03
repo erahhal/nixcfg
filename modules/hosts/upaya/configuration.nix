@@ -19,19 +19,36 @@ in
 
   nixcfg = {
     desktop = {
+      enable = true;
+      niri.enable = true;
+      dms.enable = true;
       pipewire.enable = true;
       fonts.enable = true;
+      ## Also pins Chromium/Brave/Electron apps to the Intel iGPU (iHD decode)
+      ## on hybrid hosts.
+      chromium-based-apps.enable = true;
     };
     networking = {
+      ## No tailscale-key secret for this host: first connect is an
+      ## interactive `sudo tailscale up` login.
+      tailscale.enable = true;
       mullvad.enable = true;
       kdeconnect.enable = true;
       wireless.enable = true;
+      wifi-qos.enable = true;
       captive-portal.enable = true;
       exclusive-lan.enable = true;
       connection-sharing.enable = true;
     };
     hardware = {
-      gfx-nvidia.enable = true;
+      gfx-nvidia = {
+        enable = true;
+        ## GTX 1050 (Pascal): 580 is the last driver branch that supports it.
+        driver = "legacy_580";
+        ## Every output on the 9560 (panel, HDMI, Thunderbolt DP) is wired to
+        ## the Intel iGPU, so render there and offload to NVIDIA on demand.
+        primeMode = "offload";
+      };
       gfx-intel.enable = true;
       laptop.enable = true;
       udev-rules.enable = true;
@@ -40,6 +57,7 @@ in
     programs = {
       appimage.enable = true;
       android.enable = true;
+      totp.enable = true;
       dell-dcc.enable = true;
       flatpak.enable = true;
       flox.enable = true;
@@ -49,6 +67,7 @@ in
       waydroid.enable = true;
       nfs-mounts.enable = config.hostParams.services.nfs-mounts.enable;
       virtual-machines.enable = true;
+      printers-scanners.enable = true;
     };
   };
 
@@ -93,10 +112,11 @@ in
     "ath3k"
   ];
 
-  ## Take latest kernel rather than default
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+  ## Root is on ZFS, so the kernel must be one ZFS supports: linuxPackages_latest
+  ## is routinely ahead of it (zfs_2_4 is marked broken on 7.3). The default
+  ## LTS kernel is always covered. zfs.latestCompatibleLinuxPackages, used here
+  ## previously, is deprecated and now just aliases linuxPackages.
+  boot.kernelPackages = pkgs.linuxPackages;
 
   # --------------------------------------------------------------------------------------
   # File system
@@ -268,17 +288,26 @@ in
   # --------------------------------------------------------------------------------------
 
   # Enable power management
+  # powertop's auto-tune fights TLP: it re-enables WiFi power save and USB
+  # autosuspend (laggy USB input) behind TLP's back. TLP handles it all.
   powerManagement = {
     enable = true;
-    powertop.enable = true;
+    powertop.enable = false;
   };
 
+  # This host cannot hibernate: the ZFS module adds `nohibernate`, and swap is
+  # re-keyed every boot (randomEncryption). upower falls back to PowerOff
+  # anyway; state it rather than ask for an action that can't happen.
   services.upower = {
     enable = true;
-    criticalPowerAction = "Hibernate";
+    criticalPowerAction = "PowerOff";
   };
 
-  powerManagement.cpuFreqGovernor = "performance";
+  ## No cpuFreqGovernor = "performance" here: under intel_pstate that pins the
+  ## cores at max clocks even when idle, and on this chassis (CPU and GPU share
+  ## one cooler) the extra heat is what makes it throttle under real load.
+  ## intel_pstate's "powersave" is the dynamic HWP governor, not a slow mode;
+  ## responsiveness comes from the energy/perf policy set via TLP below.
 
   boot.kernelParams = [
     # Disables discrete Nvidia GPU when not in use
@@ -296,9 +325,15 @@ in
     ##
     ##   cctk --CStatesCtrl
 
-    ## From: https://github.com/NixOS/nixos-hardware/blob/master/common/cpu/intel/kaby-lake/default.nix
-    "i915.enable_fbc=1"
-    "i915.enable_psr=2"
+    ## i915.enable_fbc=1 / i915.enable_psr=2 come from nixos-hardware's
+    ## kaby-lake module (imported via dell-xps-15-9560).
+
+    ## Kaby Lake is hit by nearly every CPU side-channel bug, and the combined
+    ## fixes (KPTI for Meltdown, MDS buffer clearing, retpolines, ...) slow
+    ## anything syscall- or context-switch-heavy -- builds, browsers, I/O --
+    ## by a noticeable margin on this generation. Trade-off accepted: these
+    ## attacks need code already running locally (incl. a browser's JS).
+    "mitigations=off"
   ];
 
   # https://discourse.nixos.org/t/nixos-23-11-thermald-not-working/36317/3
@@ -315,7 +350,21 @@ in
   # However, these 2 services clash when enabled simultaneously.
   # https://github.com/NixOS/nixos-hardware/issues/260
   services.power-profiles-daemon.enable = false;
-  services.tlp.enable = true;
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      CPU_BOOST_ON_AC = 1;
+      CPU_BOOST_ON_BAT = 1;
+      # WiFi power save causes latency spikes and drops; NetworkManager
+      # already has wifi.powersave = false, keep TLP from undoing it.
+      WIFI_PWR_ON_AC = "off";
+      WIFI_PWR_ON_BAT = "off";
+    };
+  };
 
 
   # @TODO: TEMPORARY - Just testing to see if this has an effect on performance

@@ -122,10 +122,38 @@ in
 {
   key = "nixcfg/hardware/gfx-nvidia";
 
-  options.nixcfg.hardware.gfx-nvidia.enable = lib.mkEnableOption "NVIDIA GPU support";
+  options.nixcfg.hardware.gfx-nvidia = {
+    enable = lib.mkEnableOption "NVIDIA GPU support";
+
+    driver = lib.mkOption {
+      type = lib.types.str;
+      default = "latest";
+      example = "legacy_580";
+      description = ''
+        Attribute of boot.kernelPackages.nvidiaPackages to build the driver
+        from. Maxwell, Pascal and Volta GPUs need "legacy_580": 580 is the
+        last branch that supports them, and the open kernel modules never did
+        (set hardware.nvidia.open = false too; nixos-hardware's per-generation
+        modules already do).
+      '';
+    };
+
+    primeMode = lib.mkOption {
+      type = lib.types.enum [ "reverse-sync" "offload" ];
+      default = "reverse-sync";
+      description = ''
+        PRIME mode on Intel+NVIDIA hybrids (hostParams.gpu.intel.enable).
+        "reverse-sync" suits laptops whose external outputs hang off the
+        dGPU (ThinkPad P16). "offload" suits laptops whose outputs are all
+        wired to the iGPU (Dell XPS 15 9560): everything renders on Intel
+        and the dGPU runs only what is launched through `nvidia-offload`.
+      '';
+    };
+  };
 
   config = lib.mkIf cfg.enable (let
     usingIntel = config.hostParams.gpu.intel.enable == true;
+    offloadMode = usingIntel && cfg.primeMode == "offload";
     disableIntelModules = config.hostParams.gpu.intel.enable == false && config.hostParams.gpu.intel.disableModules == true;
     truecrack-cuda = pkgs.callPackage ../../../pkgs/truecrack-cuda { };
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
@@ -138,7 +166,7 @@ in
     # (nixpkgs#576412). Split into rpath-then-interpreter, as upstream does.
     # Remove once the locked builder.sh no longer has the combined call --
     # the --replace-fail below will fail the build to say so.
-    package = config.boot.kernelPackages.nvidiaPackages.latest.overrideAttrs (old: {
+    package = config.boot.kernelPackages.nvidiaPackages.${cfg.driver}.overrideAttrs (old: {
       builder = pkgs.runCommand "builder.sh" { } ''
         substitute ${old.builder} $out \
           --replace-fail \
@@ -451,11 +479,12 @@ in
         ## less power than Prime Sync since the more power efficient APU does most of the
         ## rendering, thus, allowing the NVIDIA card to sleep where possible.
 
-        reverseSync.enable = true;
+        reverseSync.enable = !offloadMode;
 
-        offload.enable = false;
-        # offload.enable = true;
-        # offload.enableOffloadCmd = true;
+        ## Offload: everything renders on the iGPU; `nvidia-offload <cmd>`
+        ## runs a single program on the dGPU. See cfg.primeMode.
+        offload.enable = offloadMode;
+        offload.enableOffloadCmd = offloadMode;
 
         intelBusId = "PCI:0:2:0";
         nvidiaBusId = "PCI:1:0:0";
@@ -479,7 +508,12 @@ in
     #   };
     # };
     home-manager.users.${userParams.username} = { pkgs, ... }: {
-      home.sessionVariables = {
+      ## Offload PRIME: leave apps on the iGPU, which owns every output.
+      ## Forcing GLX/VA-API to NVIDIA would make each frame (and each decoded
+      ## video frame) cross PCIe back to Intel for scanout. VA-API falls
+      ## through to gfx-intel's LIBVA_DRIVER_NAME=iHD; `nvidia-offload` sets
+      ## the NVIDIA variables per program.
+      home.sessionVariables = removeAttrs ({
         ## Causes Niri to fail to load on external monitor
         # __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json:/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json";
         LIBVA_DRIVER_NAME = "nvidia";
@@ -508,7 +542,8 @@ in
         ## Get rid of stuttering at the start of Niri animations?
         __GL_SHADER_DISK_CACHE = "1";
         __GL_SHADER_DISK_CACHE_PATH = "/home/${userParams.username}/.cache/nvidia-shader-cache";
-      } // (if usingIntel then {
+      } // (if offloadMode then {
+      } else if usingIntel then {
         ## Prioritize NVidia GPU (card 1) over Intel GPU for Hyprland
         AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
         ## For dual-gpu setup, deal with slowness/stuttering on external monitor due to memory copy between GPUs
@@ -527,7 +562,7 @@ in
         # AQ_DRM_DEVICES = "/dev/dri/card0";
         # AQ_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
         # AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
-      });
+      })) (lib.optionals offloadMode [ "LIBVA_DRIVER_NAME" "__GLX_VENDOR_LIBRARY_NAME" ]);
     };
   });
 }

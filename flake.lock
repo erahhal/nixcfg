@@ -1266,11 +1266,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793672584,
-        "narHash": "sha256-o5PvAEBOhlSoTZ+W3T9FFoN738zEf6VCRco1lgvz/ao=",
+        "lastModified": 1793673937,
+        "narHash": "sha256-kSvLY3RFgsQ+c1IQnGyd/fb9asUH4GFVtbvFQ7VDPI8=",
         "ref": "master",
-        "rev": "6ef5912271b2e102bb46e5e2ee08564980f4b996",
-        "revCount": 86,
+        "rev": "faeca9d016645bd29ab7011acb8af602ce24264a",
+        "revCount": 87,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/mediaserver.git"
       },
@@ -1602,11 +1602,11 @@
     },
     "nixpkgs_10": {
       "locked": {
-        "lastModified": 1793110635,
-        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
+        "lastModified": 1793540411,
+        "narHash": "sha256-fiPJ88izTVucjeo2EQ3jk4aWmLg03I1D4vxnX2QjEgE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
+        "rev": "0bb2eedc20e4739f29e8045034f2828ad7054f8f",
         "type": "github"
       },
       "original": {
@@ -2021,11 +2021,11 @@
         "nixpkgs": "nixpkgs_10"
       },
       "locked": {
-        "lastModified": 1790749004,
-        "narHash": "sha256-VKKYniThos9glZF+JUi08vtFvAZixuaQuBGLf2VGALY=",
+        "lastModified": 1793740744,
+        "narHash": "sha256-J1BJwZa9o0WNod4a9xar6k836CkBukqNjr5bud8y88o=",
         "ref": "refs/heads/master",
-        "rev": "2edbbe4dd710af11674123ececc662b2af6f36d6",
-        "revCount": 43,
+        "rev": "fa5f5d7129ab5e8cfbd266a1982bf1383d1a366b",
+        "revCount": 44,
         "type": "git",
         "url": "ssh://git@github.com/erahhal/nixcfg-secrets"
       },

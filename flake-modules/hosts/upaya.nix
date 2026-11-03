@@ -17,14 +17,18 @@ in
       desktop
       pipewire
       fonts
+      chromium-based-apps
+      tailscale
       mullvad
       kdeconnect
       wireless
+      wifi-qos
       captive-portal
       exclusive-lan
       gfx-nvidia gfx-intel laptop udev-rules
       appimage
       android
+      totp
       dell-dcc
       waydroid
       nfs-mounts

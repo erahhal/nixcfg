@@ -56,13 +56,16 @@ in
         # android-studio  # adb/fastboot come from android-tools (nixcfg.programs.android); unfree so never cached, re-unpacks GBs every nixpkgs bump
 
         ## arduino
+        arduino
+        arduino-ide
         platformio
         teensy-loader-cli
         udev
         libudev0-shim
         gcc-arm-embedded
         teensy-loader-gui
-        teensyduino
+        ## Conflicts with arduino IDE
+        # teensyduino
 
         ## unstable
         unstable.bitwig-studio
