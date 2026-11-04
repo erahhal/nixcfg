@@ -1,4 +1,4 @@
-{ broken, config, pkgs, inputs, ... }:
+{ broken, config, lib, pkgs, inputs, ... }:
 
 let
   userParams = config.hostParams.user;
@@ -283,40 +283,46 @@ in
         ];
       };
 
-      initContent = ''
-        # Use ctrl-p in addition to the default up-arrow for activating atuin
-        bindkey '^p' _atuin_search_widget
+      initContent = lib.mkMerge [
+        # Print the quote first so it shows immediately, rather than after
+        # zplug/oh-my-zsh/compinit/etc. finish loading.
+        (lib.mkOrder 100 ''
+          random_quote_cow() {
+            local quotes_file="$1"
+            local cow_file="$2"
 
-        tree () {
-          ${pkgs.tree}/bin/tree -C $1 | less
-        }
+            if [[ -z "$quotes_file" ]]; then
+              echo "Usage: random_quote_cow /path/to/quotes.txt [cow_name]"
+              return 1
+            fi
 
-        random_quote_cow() {
-          local quotes_file="$1"
-          local cow_file="$2"
+            if [[ ! -f "$quotes_file" ]]; then
+              echo "Error: Quotes file '$quotes_file' not found"
+              return 1
+            fi
 
-          if [[ -z "$quotes_file" ]]; then
-            echo "Usage: random_quote_cow /path/to/quotes.txt [cow_name]"
-            return 1
-          fi
+            if [[ -z "$cow_file" ]]; then
+              # No cow specified, use a random cow
+              PERL_UNICODE=SA cowsay "$(shuf -n 1 "$quotes_file")"
+            else
+              # Use the specified cow
+              PERL_UNICODE=SA cowsay -f "$cow_file" "$(shuf -n 1 "$quotes_file")"
+            fi
+            echo ""
+          }
 
-          if [[ ! -f "$quotes_file" ]]; then
-            echo "Error: Quotes file '$quotes_file' not found"
-            return 1
-          fi
+          random_quote_cow "${./cowsay/buddha.txt}" "$1"
+        '')
 
-          if [[ -z "$cow_file" ]]; then
-            # No cow specified, use a random cow
-            cowsay "$(shuf -n 1 "$quotes_file")"
-          else
-            # Use the specified cow
-            cowsay -f "$cow_file" "$(shuf -n 1 "$quotes_file")"
-          fi
-          echo ""
-        }
+        ''
+          # Use ctrl-p in addition to the default up-arrow for activating atuin
+          bindkey '^p' _atuin_search_widget
 
-        random_quote_cow "${./cowsay/buddha.txt}" "$1"
-      '';
+          tree () {
+            ${pkgs.tree}/bin/tree -C $1 | less
+          }
+        ''
+      ];
 
       oh-my-zsh = {
         enable = true;
