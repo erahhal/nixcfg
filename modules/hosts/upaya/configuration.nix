@@ -361,12 +361,14 @@ in
     ## keeps PCIeHotplug), so the firmware's single range is all there is.
     ## Trial fix; see https://bugs.launchpad.net/bugs/1950780.
     "pci=realloc"
-
-    ## The firmware advertises a TPM 2.0 (ACPI TPM2 / MSFT0101) that tpm_tis
-    ## fails to probe ("error -1"), and systemd's tpm2-generator then waits
-    ## 90s for /dev/tpm0 + /dev/tpmrm0 on every boot. Nothing here uses a TPM.
-    "systemd.tpm2_wait=0"
   ];
+
+  ## The firmware advertises a TPM 2.0 (ACPI TPM2 / MSFT0101) that tpm_tis
+  ## fails to probe ("error -1"), and tpm2.target then waits 90s for
+  ## /dev/tpm0 + /dev/tpmrm0 on every boot and every switch (via
+  ## sysinit-reactivation.target). Nothing here uses a TPM, so drop the units.
+  systemd.tpm2.enable = false;
+  boot.initrd.systemd.tpm2.enable = false;
 
   # https://discourse.nixos.org/t/nixos-23-11-thermald-not-working/36317/3
   # Addresses "stack smashing detected" startup error
