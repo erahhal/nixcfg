@@ -13,9 +13,13 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  # tmpfs defaults to mode 1777 (world-writable) without mode=, which is
+  # unsafe for / and which Nix >= 2.3x refuses to build under ("Path "/" is
+  # world-writable or a symlink").
   fileSystems."/" =
     { device = "none";
       fsType = "tmpfs";
+      options = [ "defaults" "mode=755" ];
     };
 
   fileSystems."/nix" =
