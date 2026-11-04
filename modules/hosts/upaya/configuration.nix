@@ -75,6 +75,7 @@ in
     [
       # device specific
       ./hardware-configuration.nix
+      ./thunderbolt-pci-renumber.nix
 
       # user specific
       ./user.nix
