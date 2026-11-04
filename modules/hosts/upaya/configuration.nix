@@ -81,6 +81,11 @@ in
 
       # display
       ./kanshi.nix
+      # Every niri host imports these: they pass hostParams.desktop.* (Mod+G
+      # DDC toggle, lid action, startup-app GPU pinning, EasyEffects, ...)
+      # through to nixcfg-niri, plus the shared workspace window rules.
+      ../../desktop/niri/user-window-rules.nix
+      ../../desktop/niri/user-overrides.nix
     ];
 
   # --------------------------------------------------------------------------------------
@@ -347,6 +352,20 @@ in
     ## by a noticeable margin on this generation. Trade-off accepted: these
     ## attacks need code already running locally (incl. a browser's JS).
     "mitigations=off"
+
+    ## Let the kernel resize PCI bridge windows the firmware sized too small.
+    ## Behind the ThinkPad TB4 Dock, the bridge to the P40w-20's USB hub (where
+    ## the KVM-switched keyboard/mouse live) fails with "bridge window ...
+    ## can't assign; no space" and "devices behind bridge are unusable because
+    ## [bus 0d] cannot be assigned". Thunderbolt here is BIOS-assisted (_OSC
+    ## keeps PCIeHotplug), so the firmware's single range is all there is.
+    ## Trial fix; see https://bugs.launchpad.net/bugs/1950780.
+    "pci=realloc"
+
+    ## The firmware advertises a TPM 2.0 (ACPI TPM2 / MSFT0101) that tpm_tis
+    ## fails to probe ("error -1"), and systemd's tpm2-generator then waits
+    ## 90s for /dev/tpm0 + /dev/tpmrm0 on every boot. Nothing here uses a TPM.
+    "systemd.tpm2_wait=0"
   ];
 
   # https://discourse.nixos.org/t/nixos-23-11-thermald-not-working/36317/3

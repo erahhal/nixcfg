@@ -69,11 +69,16 @@ in
               {
                 criteria = "Lenovo Group Limited P40w-20 V90DFGMV";
                 status = "enable";
-                # This host's TB3 port carries DP 1.2: 5120x2160 tops out
-                # at 50 Hz here (the p16 runs it at 60).
-                mode = "5120x2160@49.983Hz";
+                # Not the native 5120x2160: this host's TB3 port carries DP
+                # 1.2, so 5120 tops out at 50 Hz, and the HD 630's display
+                # engine doesn't scan out a 5120-wide plane correctly (only
+                # part of the panel updates). A custom 21:9 mode at <= 4096
+                # px wide keeps the aspect ratio -- the monitor upscales it
+                # to the full panel -- and 60 Hz. Scale 1.0667 gives the
+                # same 3840x1620 logical layout as the p16's 5120 @ 1.333.
+                mode = "--custom 4096x1728@60Hz";
                 position = "0,0";
-                scale = 1.333333;
+                scale = 1.066667;
               }
               {
                 criteria = "eDP-1";
@@ -81,7 +86,8 @@ in
               }
             ];
             exec = [
-              ''${pkgs.xrdb}/bin/xrdb -merge <<< "Xft.dpi: 140"''
+              # Physical DPI of 4096 px across the 40" panel's ~930 mm.
+              ''${pkgs.xrdb}/bin/xrdb -merge <<< "Xft.dpi: 112"''
             ];
           };
         }

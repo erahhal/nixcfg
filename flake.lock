@@ -1389,11 +1389,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793389345,
-        "narHash": "sha256-WGak4b/rAz673yQFOU1Xhie+XMCovrsSfR0bLMIvhVY=",
+        "lastModified": 1793754541,
+        "narHash": "sha256-YnP43Zr29XqvLhCEipGlNrTWp3cqhnFEoY0pkpoIhUc=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "66c21dcac73f2a73a80e14ff47e7505feeb6a630",
+        "rev": "8263b1fb9570189fb28dc78e3e897016bfb827fb",
         "type": "github"
       },
       "original": {
