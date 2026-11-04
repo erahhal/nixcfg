@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
   userParams = config.hostParams.user;
   home-monitor-left-hyprland = "LG Electronics LG Ultra HD 0x00043EAD";
