@@ -590,7 +590,11 @@
       "Bash(tee changelogs.txt)",
       "Bash(bash /tmp/msi-research/prices.sh)",
       "WebFetch(domain:support.microsoft.com)",
-      "mcp__genai__web_search"
+      "mcp__genai__web_search",
+      "Bash(claude-local -l)",
+      "Bash(inkscape pelican-bike.svg --export-type=png --export-filename=/tmp/.pelican-check.png -w 640)",
+      "Bash(awk '{print \"png bytes:\",$5}')",
+      "Bash(awk '{print \"kept:\",$NF, $5\" bytes\"}')"
     ],
     "deny": [],
     "ask": []

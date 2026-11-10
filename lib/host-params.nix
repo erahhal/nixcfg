@@ -705,7 +705,7 @@
     aiCoding = {
       localModel = lib.mkOption {
         type = lib.types.str;
-        default = "qwen38-125b-a6b-q5";
+        default = "qwen38-125b-a6b-q5-1m";
         example = "qwen38-27b-224k";
         description = ''
           The model every `*-local` harness reaches for when none is given:
@@ -731,6 +731,21 @@
           quietly getting the old value while the box that needed the setting
           least was the only one with it.
 
+          `qwen38-125b-a6b-q5-1m` SINCE 2026-11-02: the Q5 below, same file,
+          on Strata with YaRN at factor 4 and a 1048576 window. What it
+          costs is that YaRN is on for EVERY prompt, not only long ones —
+          Strata caches keys after rotating them, so one run has one
+          scaling — and within 262144 that is a slightly different model
+          from `-q5`, by an amount Strata's own perplexity tests could not
+          tell from noise at 2.7k and 32k. Unmeasured on this box: ~84GB of
+          host RAM pinned is the prediction, against -q5's 71.
+
+          claude-local compacts it at ~966k rather than at `claudeCompactAt`'s
+          143360, which is a trial with a known risk — see
+          `claudeCompactAtModels`. opencode-local and hermes-local take the
+          window whole. Auto mode is off on it: `claudeAutoModeModels` names
+          measured models and this one has not been.
+
           `qwen38-125b-a6b-q5` SINCE 2026-10-19: Qwen3.8-Flash-Next, the
           125B-A6B MoE, at UD-Q5_K_XL and 262144, on Strata. The family has
           held this option since 2026-08-28 on its AGENTIC margins, which is
@@ -754,8 +769,9 @@
           conversation's state in RAM between turns, so that is mostly the
           price of a cold start or a compaction rather than of every turn.
 
-          IT IS A STRATA CHOICE. With genai-server's `strata.enable` off the
-          same name runs on llama.cpp at the numbers above, and the right
+          IT IS A STRATA CHOICE. With genai-server's `strata.enable` off,
+          `-q5-1m` is not served at all (llama.cpp cannot hold its window)
+          and `-q5` runs on llama.cpp at the numbers above, so the right
           value goes back to `qwen38-125b-a6b-max`. Nothing here can check
           that — whether a host runs Strata is the serving host's config,
           not this module's.
@@ -846,6 +862,31 @@
           Derived from the same CTX as the other window numbers, so a host on
           a narrower model keeps the derived value untouched whenever it is
           already below this.
+
+          `claudeCompactAtModels` replaces it for a named model.
+        '';
+      };
+      claudeCompactAtModels = lib.mkOption {
+        type = lib.types.attrsOf lib.types.ints.unsigned;
+        default = { qwen38-125b-a6b-q5-1m = 0; };
+        example = { qwen38-125b-a6b-q5-1m = 524288; };
+        description = ''
+          Per-model replacements for `claudeCompactAt`, keyed by the name a
+          claude-local session is started with (an alias has to be named the
+          way it is typed, as for `claudeAutoModeModels`). 0 removes the
+          ceiling for that model, so it compacts at the derived point: the
+          declared window minus one output budget.
+
+          `qwen38-125b-a6b-q5-1m = 0` SINCE 2026-11-02, AS A TRIAL. Under
+          the global ceiling its 1048576 window was never reached — the
+          session compacted at 143360 like every other model and paid YaRN
+          on every prompt for nothing. Unclamped it compacts at ~966k. The
+          risk is the one `claudeCompactAt` exists for, at seven times the
+          size: past ~180k a summary spent its whole output budget thinking
+          and came back empty, which ends the session ("automatic
+          compaction failed: summarization produced empty response",
+          recoverable only by /clear). Nothing about this model is known to
+          avoid that; if it happens, this entry is what to change.
         '';
       };
       claudeBackgroundModel = lib.mkOption {
@@ -1008,6 +1049,28 @@
 
           The MCP gateway is not here because it is not remapped: the
           platform publishes it on the stack's own 8899.
+        '';
+      };
+
+      egressDeny = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Refuse, in this machine's firewall, every address in
+          genai-server's egress deny sets (`lib.egressDeny`; shipped:
+          Alibaba Cloud's announced address space).
+
+          WHY HERE AND NOT ONLY ON THE SERVER. Qwen3.8 has been seen
+          writing uploads to Alibaba Cloud storage unprompted (Cohere,
+          2026-10). A model sends nothing itself; the harness on THIS
+          machine runs the command, so this is where a firewall holds
+          whatever the URL looked like. The server's egress guard reads
+          what the model writes and is the alarm; this is the wall. Mullvad
+          hides the traffic from the router, which is why it is per machine.
+
+          THE COST: the same ranges serve Alibaba's shopping sites (Taobao,
+          AliExpress), so a browser here cannot reach them either. Turn it
+          off on a machine where that matters more.
         '';
       };
     };

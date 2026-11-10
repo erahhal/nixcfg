@@ -550,6 +550,11 @@
   ## NOTE: the browser only grants microphone access in a secure context —
   ## use http://localhost:8897/voice on this box, not the LAN name.
   services.genai-server.voice.enable = true;
+  ## The PersonaPlex full-duplex voice demo on :8905. Starts when something
+  ## connects and takes ~20GB of the card until it has been idle 10 minutes.
+  ## Its weights are license-gated under the same hf-token account. Same
+  ## secure-context note as above: http://localhost:8905, or an SSH tunnel.
+  services.genai-server.personaplex.enable = true;
 
   ## Model choices themselves live in the genai-server-private flake, which
   ## genai-server imports — nothing about them is host-specific, so nothing

@@ -69,6 +69,10 @@ let
   ## size of the window, so the window is not the conversation's budget.
   agentReserve = config.hostParams.aiCoding.agentReserve;
   claudeCompactAt = config.hostParams.aiCoding.claudeCompactAt;
+  ## Per-model replacements for that ceiling, as shell case branches.
+  claudeCompactCase = lib.concatStringsSep "\n" (lib.mapAttrsToList (n: v:
+    "        ${n}) COMPACT_CAP=${toString v}; COMPACT_PER_MODEL=1 ;;")
+    config.hostParams.aiCoding.claudeCompactAtModels);
 
   ## The model list comes from the genai-server flake, not from a copy here.
   ##
@@ -346,10 +350,16 @@ ${claudeCtxCase}
     # ~180k: measured as the point where summarization spends its entire
     # budget on a thinking trace and returns empty content, ending the session
     # with nothing to compact into.
+    # hostParams.aiCoding.claudeCompactAtModels replaces the ceiling for a
+    # named model; 0 there means unclamped.
     COMPACT_AT=""
+    COMPACT_PER_MODEL=""
     if [ -n "$CTX" ]; then
       COMPACT_AT=$(( CTX - CLAUDE_CODE_MAX_OUTPUT_TOKENS ))
       COMPACT_CAP=${toString claudeCompactAt}
+      case "$ANTHROPIC_MODEL" in
+${claudeCompactCase}
+      esac
       if [ "$COMPACT_CAP" -gt 0 ] && [ "$COMPACT_AT" -gt "$COMPACT_CAP" ]; then
         COMPACT_AT="$COMPACT_CAP"
       fi
@@ -390,6 +400,10 @@ ${claudeCtxCase}
         else
           echo "         derived from the window above, so a shorter model"
           echo "         compacts sooner rather than overflowing"
+        fi
+        if [ -n "$COMPACT_PER_MODEL" ]; then
+          echo "         (this model's ceiling is set by"
+          echo "         hostParams.aiCoding.claudeCompactAtModels)"
         fi
       fi
       echo
@@ -1152,8 +1166,76 @@ ${claudeCtxCase}
     migrate .hermes-logistikon .hermes-local
   '';
 
+  ## THE SERVER'S DENY LIST, AS THIS MACHINE'S FIREWALL. See
+  ## hostParams.aiCoding.egressDeny. Read from the flake input like the model
+  ## list above, so a refresh there (`nix run .#update-egress-deny`) is a lock
+  ## bump here rather than a second copy to keep in step.
+  ##
+  ## Its own nftables table, loaded by a oneshot rather than through
+  ## `networking.nftables`, because this host's firewall is the iptables one
+  ## and Mullvad keeps its own table: a reject in ANY table is final, so this
+  ## holds inside the tunnel without touching either. Reject rather than
+  ## drop, so a harness's curl fails at once instead of waiting out SYN
+  ## retries. `nft list table inet genai_egress_deny` shows the counters.
+  egressDenyOn = config.hostParams.aiCoding.egressDeny;
+  ## `or { }` so a lock that predates the list still builds — and the
+  ## warning below says nothing is being refused, rather than the build
+  ## failing on a host somebody only meant to update.
+  egressDenyCidrs = lib.unique (lib.concatMap (s: s.cidrs)
+    (lib.attrValues (inputs.genai-server.lib.egressDeny or { })));
+  egressDenyV6 = lib.filter (lib.hasInfix ":") egressDenyCidrs;
+  egressDenyV4 = lib.filter (c: !lib.hasInfix ":" c) egressDenyCidrs;
+  egressDenySet = name: type: cidrs: lib.optionalString (cidrs != [ ]) ''
+    set ${name} {
+      type ${type}
+      flags interval
+      auto-merge
+      elements = { ${lib.concatStringsSep ", " cidrs} }
+    }
+  '';
+  egressDenyRules = pkgs.writeText "genai-egress-deny.nft" ''
+    table inet genai_egress_deny
+    delete table inet genai_egress_deny
+    table inet genai_egress_deny {
+      ${egressDenySet "v4" "ipv4_addr" egressDenyV4}
+      ${egressDenySet "v6" "ipv6_addr" egressDenyV6}
+      chain output {
+        type filter hook output priority filter; policy accept;
+        ${lib.optionalString (egressDenyV4 != [ ])
+          "ip daddr @v4 counter reject with icmpx type admin-prohibited"}
+        ${lib.optionalString (egressDenyV6 != [ ])
+          "ip6 daddr @v6 counter reject with icmpx type admin-prohibited"}
+      }
+    }
+  '';
+
 in
 {
+  systemd.services.genai-egress-deny = lib.mkIf (egressDenyOn && egressDenyCidrs != [ ]) {
+    description = "Refuse genai-server's egress deny sets on this machine";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-pre.target" ];
+    before = [ "network-pre.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.nftables}/bin/nft -f ${egressDenyRules}";
+      ExecStop = "${pkgs.nftables}/bin/nft delete table inet genai_egress_deny";
+    };
+  };
+
+  ## networking.nftables flushes the WHOLE ruleset on every reload, which
+  ## would delete the table above without a word. Nothing here enables it
+  ## today; this says so the day something does.
+  warnings = lib.optional (egressDenyOn && config.networking.nftables.enable)
+    ("hostParams.aiCoding.egressDeny: networking.nftables is on and flushes"
+      + " the ruleset on reload, which removes genai_egress_deny. Move it into"
+      + " networking.nftables.tables.")
+  ++ lib.optional (egressDenyOn && egressDenyCidrs == [ ])
+    ("hostParams.aiCoding.egressDeny: the genai-server input publishes no"
+      + " lib.egressDeny address ranges, so this machine refuses nothing."
+      + " Update the input.");
+
   # localModel is the one name every harness resolves, and the 3.8 entries
   # carry genai-server's b10434 engine floor — below it they are dropped from
   # the catalog entirely, so a stale engine pin surfaces here as a build
