@@ -17,7 +17,10 @@
       Host turingtesttwister-github
           HostName github.com
           User git
-          IdentityFile ~/.ssh/id_rsa_turing_test_twister"
+          IdentityFile ~/.ssh/id_rsa_turing_test_twister
+      Host knot.homefree.host
+          Port 2222
+          User homefree.tngl.sh"
 
       # Check if both markers exist
       if grep -q "''${START_MARKER}" "$CONFIG_FILE" 2>/dev/null && grep -q "''${END_MARKER}" "$CONFIG_FILE" 2>/dev/null; then

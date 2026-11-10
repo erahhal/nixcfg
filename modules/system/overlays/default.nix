@@ -1,6 +1,8 @@
 # Package config: allowUnfree, unstable/trunk channels, overlays
 { config, inputs, lib, system, ... }:
 {
+  imports = [ ./brave.nix ];
+
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -38,6 +40,16 @@
       # anywhere in this repo, and obsidian and bitwarden-desktop both
       # evaluate with no flag at all. Note electron_39 is marked INSECURE,
       # not broken, so allowBroken never covered it regardless.)
+
+      # gtk2 is marked broken as a removal notice (NixOS/nixpkgs#410814),
+      # not because it fails to build: "migrate to gtk3/gtk4 before NixOS
+      # 27.05". Astrill (pkgs/astrillvpn) is a prebuilt GTK2 binary, with
+      # the vendored pkgs/libappindicator-gtk2 alongside it, so it can't
+      # migrate. This lets gtk2 evaluate (as a warning) without touching
+      # meta.broken. Once nixpkgs actually removes gtk2, Astrill has to be
+      # dropped or gtk2 vendored as well.
+      problems.handlers."gtk+".broken = "warn";
+
       packageOverrides = pkgs: {
         unstable = import inputs.nixpkgs-unstable {
           config = config.nixpkgs.config;
@@ -178,6 +190,17 @@ bool vulkan_remake_and_acquire( void );'
           wrapProgram "$out/bin/jetbrains-toolbox" \
             --add-flags "--graphics-api software"
         '';
+      });
+
+      # TEMPORARY: netwatch 0.39.0's parser_layer_leaves_fast_open_and_autobind_open
+      # asserts that a TCP Fast Open sendto still slips past its own Landlock
+      # sandbox. The build kernel's Landlock refuses it (EACCES), i.e. the
+      # sandbox is tighter than the test assumes. Hydra fails the same drv.
+      # Drop once nixpkgs or upstream skips/updates the test.
+      netwatch = prev.netwatch.overrideAttrs (old: {
+        checkFlags = (old.checkFlags or [ ]) ++ [
+          "--skip=sandbox::linux::tests::parser_layer_leaves_fast_open_and_autobind_open"
+        ];
       });
 
       ranger = prev.ranger.overrideAttrs (old: {

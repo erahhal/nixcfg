@@ -10,7 +10,7 @@
   pango,
   cairo,
   atk,
-  xorg,
+  libx11,
   libappindicator-gtk2,
   # Runtime tools astrill shells out to via /bin/sh (with a bare PATH).
   coreutils,
@@ -78,7 +78,7 @@ stdenv.mkDerivation (finalAttrs: {
     pango
     cairo
     atk
-    xorg.libX11
+    libx11
   ];
 
   dontConfigure = true;

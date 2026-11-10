@@ -87,7 +87,6 @@ EOF
       packages = with pkgs; [
         (pkgs.callPackage ../../../pkgs/airport-utility {}) # Wayland driver scales via compositor
         (pkgs.callPackage ../../../pkgs/hyperbackup-explorer {})
-        awscli
         blender
 
         ## genai (requires CUDA/NVIDIA)

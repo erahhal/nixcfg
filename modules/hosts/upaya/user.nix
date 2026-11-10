@@ -49,7 +49,10 @@ in
         atlauncher
         # minecraft — removed from nixpkgs, use prismlauncher
         # glfw3-minecraft
-        hmcl
+        # nixos-unstable 2026-11-07 hmcl's terracotta dep fails in
+        # zstd-sys's build script; master since links system zstd. Back
+        # to plain hmcl once the channel moves past f4a03c0.
+        trunk.hmcl
         wesnoth
 
         ## dev

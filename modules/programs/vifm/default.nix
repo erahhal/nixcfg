@@ -355,8 +355,8 @@
 
     " Directories
     filextype */
-            \ {View in thunar}
-            \ Thunar %f &,
+            \ {View in nemo}
+            \ nemo %f &,
 
     " Syntax highlighting in preview
     "

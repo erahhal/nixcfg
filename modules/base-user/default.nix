@@ -144,10 +144,12 @@ in
 
         ## dev
         claude-code
-        codex
+        # nixos-unstable 2026-11-07 codex fails in aws-lc-sys's build script;
+        # master since links system aws-lc. Back to plain codex once the
+        # channel moves past f4a03c0.
+        trunk.codex
         devbox
         difftastic
-        gemini-cli
         git-secrets
         go
         cargo

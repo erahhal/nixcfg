@@ -46,15 +46,17 @@ in
 {
   # Set both option paths so the config applies whichever greeter module is
   # active: programs.dms-greeter (the dank-greeter flake, imported by
-  # nixcfg-niri) or services.displayManager.dms-greeter (nixpkgs-native). Both
-  # are types.lines, so mkAfter appends to whatever the module already set.
+  # nixcfg-niri) or services.displayManager.dux-greeter (nixpkgs-native;
+  # nixpkgs renamed it from dms-greeter, keeping the old path as a warning
+  # alias). Both are types.lines, so mkAfter appends to whatever the module
+  # already set.
   #
   # Both paths must EXIST or evaluation fails -- an undefined option is a hard
   # error, not a no-op. That is what broke here: upstream DankMaterialShell
   # dropped programs.dank-material-shell.greeter and split the greeter into the
   # dank-greeter repo, leaving nixosModules.greeter an empty warning stub.
   programs.dms-greeter.compositor.customConfig = greeter-compositor-config;
-  services.displayManager.dms-greeter.compositor.customConfig = greeter-compositor-config;
+  services.displayManager.dux-greeter.compositor.customConfig = greeter-compositor-config;
 
   home-manager.users.${userParams.username} = {
     programs.niri.settings = {

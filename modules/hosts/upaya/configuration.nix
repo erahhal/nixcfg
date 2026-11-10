@@ -130,6 +130,12 @@ in
 
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.devNodes = "/dev/";
+  ## 26.11 flips the default to false (refuse to import a root pool last
+  ## imported by another hostid). Kept true -- the old default -- until it's
+  ## checked on upaya that `zdb -C <pool> | grep hostid` (decimal) equals
+  ## networking.hostId below (0x39ed170e = 971839246); with a mismatch, false
+  ## leaves it unbootable.
+  boot.zfs.forceImportRoot = true;
   ## Needed to boot with latest kernel
   # boot.zfs.enableUnstable = true;
 

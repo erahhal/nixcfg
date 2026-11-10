@@ -47,7 +47,7 @@ let userParams = config.hostParams.user; in
     dos2unix
     ed
     efibootmgr
-    elixir
+    beamPackages.elixir
     eternal-terminal
     exfat
     exiftool

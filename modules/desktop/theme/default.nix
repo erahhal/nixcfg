@@ -223,6 +223,11 @@ in
   # Disable Stylix for apps with custom config management
   stylix.targets.vscode.enable = false;
 
+  # Stylix's rofi target still sets programs.rofi.font, which home-manager
+  # renamed to programs.rofi.settings.font; the rename warns on any
+  # definition, even with rofi off. Only theme rofi where it's enabled.
+  stylix.targets.rofi.enable = config.programs.rofi.enable;
+
   # --- Xresources ---
   # Stylix handles colors, cursor, and fonts. Only add host-specific DPI override.
   xresources.extraConfig = if osConfig.hostParams.desktop.disableXwaylandScaling then ''

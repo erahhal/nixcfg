@@ -234,7 +234,7 @@ in
             qt6Packages.fcitx5-configtool
             qt6Packages.fcitx5-chinese-addons
             fcitx5-gtk
-            (broken fcitx5-mozc)
+            fcitx5-mozc
             fcitx5-nord
             fcitx5-rime
             libsForQt5.fcitx5-qt
@@ -347,7 +347,7 @@ in
     xdg.enable = true;
     xdg.mimeApps =
       let mimeTypes = {
-        "inode/directory"                                                               = [ "org.gnome.Nautilus.desktop" ];
+        "inode/directory"                                                               = [ "nemo.desktop" ];
 
         "x-scheme-handler/http"                                                         = [ "io.github.alyraffauf.Switchyard.desktop" ];
         "x-scheme-handler/https"                                                        = [ "io.github.alyraffauf.Switchyard.desktop" ];
@@ -442,6 +442,17 @@ in
       associations.added = mimeTypes;
       defaultApplications = mimeTypes;
     };
+
+    # "Show in folder" (browsers, etc.) activates org.freedesktop.FileManager1 over D-Bus.
+    # Nautilus and Nemo both ship a service file for it and the bus keeps whichever it reads
+    # first; ~/.local/share/dbus-1/services is searched before every system dir, so pin Nemo here.
+    # Nautilus is still installed system-wide (nixcfg-niri, and nixpkgs programs.niri.useNautilus
+    # registers its D-Bus service): xdg-desktop-portal-gnome delegates the open/save dialogs to it.
+    xdg.dataFile."dbus-1/services/org.freedesktop.FileManager1.service".text = ''
+      [D-BUS Service]
+      Name=org.freedesktop.FileManager1
+      Exec=${pkgs.nemo}/bin/nemo --no-default-window
+    '';
 
     # @TODO: For some reason ~/.config/mimeapps.list is ignored by the following commands:
     #
@@ -582,11 +593,11 @@ in
         # librewolf-wayland
 
         ## apps
-        (broken audacity)
+        audacity
         bambu-studio
         bitwarden-desktop
         brave
-        (broken calibre)
+        calibre
         # czkawka-full = czkawka + krokiet + czkawka_cli, wrapped with ffmpeg on PATH.
         # Plain `czkawka` finds no similar VIDEOS without it, and says
         # "Not found any similar videos" while doing so.
@@ -615,7 +626,7 @@ in
         # Not yet available in stable
         (broken kphotoalbum)
         krita
-        libreoffice-fresh
+        libreoffice
         mpv
         rpi-imager
         shotwell
@@ -654,9 +665,8 @@ in
 
         ## file managers
         # dolphin          # Doesn't render very well
-        nautilus
+        # nautilus         # nixcfg-niri still installs it system-wide for the GNOME portal's file dialogs
         krusader
-        thunar
         nemo
 
         # unstable.ardour
@@ -710,7 +720,7 @@ in
         ## unfree
         bcompare
         # nixpkgs-windsurf.windsurf
-        windsurf
+        devin-desktop # formerly windsurf
         code-cursor
       ];
     };

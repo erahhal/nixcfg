@@ -15,7 +15,6 @@ let userParams = config.hostParams.user; in
       extraOutputsToInstall = [ "man" ]; # Additionally installs the manpages for each pkg
 
       packages = with pkgs; [
-        (broken awscli)
         blender
         chromium
         nicotine-plus

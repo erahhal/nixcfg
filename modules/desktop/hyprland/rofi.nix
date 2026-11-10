@@ -6,10 +6,11 @@
 
   programs.rofi = {
     enable = true;
-    font = "Cascadia Code 10";
-    # font = "Droid Sans Mono 14";
-    terminal = "kitty";
-    extraConfig = {
+    # font/terminal/extraConfig were folded into settings by home-manager
+    settings = {
+      font = "Cascadia Code 10";
+      # font = "Droid Sans Mono 14";
+      terminal = "kitty";
       show-icons = false;
       display-drun = "Apps";
       drun-display-format = "{name}";

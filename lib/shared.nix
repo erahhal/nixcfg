@@ -51,7 +51,7 @@ in {
     systemd.services."home-manager-${config.hostParams.user.username}".serviceConfig = { RemainAfterExit = "yes"; };
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
-    home-manager.users.${config.hostParams.user.username} = {config, ...}: {
+    home-manager.users.${config.hostParams.user.username} = {config, pkgs, ...}: {
       imports = [
         inputs.nixcfg-niri.homeModules.dms-shell
         inputs.nixcfg-niri.homeModules.niri
@@ -60,6 +60,16 @@ in {
         inputs.plasma-manager.homeModules.plasma-manager
         inputs.steam-loader.homeManagerModules.default
       ];
+
+      # TEMPORARY: nixpkgs' cargo setup hook now exports LIBGIT2_NO_VENDOR=1
+      # (alongside the zstd/aws-lc "use the system lib" switches), so
+      # libgit2-sys won't build its bundled copy. lan-mouse gets git2 through
+      # shadow-rs but its flake doesn't list libgit2, so the build aborts.
+      # Supply it; drop once upstream adds libgit2 to buildInputs.
+      programs.lan-mouse.package =
+        inputs.lan-mouse.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.libgit2 ];
+        });
     };
   };
 

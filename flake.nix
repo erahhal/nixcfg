@@ -142,6 +142,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # nixpkgs dropped brave and brave-origin on 2026-11-03
+    # (NixOS/nixpkgs#582838): a browser needs a committer among its
+    # maintainers, and none of Brave's were. One of those maintainers,
+    # buckley310, carries the same package on here -- make-brave.nix is
+    # identical to the dropped one, repackaging Brave's official .deb, so
+    # nothing compiles. Bump with `nix flake update brave-browser-nix`.
+    # Applied in modules/system/overlays/brave.nix; drop it if brave
+    # returns to nixpkgs.
+    brave-browser-nix = {
+      url = "git+https://codeberg.org/buckley310/brave-browser-nix?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Claude Code statusline showing 5h/7d rate-limit usage. Non-flake
     # source input so `nix flake update` tracks upstream; packaged in
     # pkgs/claude-statusbar, wired up in modules/programs/ai-coding.

@@ -25,7 +25,9 @@ in {
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      jack.enable = true;
+      # No jack.enable: nixpkgs deprecated it because it sets a global
+      # LD_LIBRARY_PATH. JACK-only apps run as `pw-jack <app>` (on PATH
+      # below); Bitwig talks to PipeWire/ALSA natively.
       ## Should be default enabled
       wireplumber.enable = true;
 
@@ -46,6 +48,8 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
+      # pw-jack, for the odd JACK-only app
+      config.services.pipewire.package.jack
       pavucontrol
       # for pactl
       pulseaudio

@@ -48,6 +48,13 @@
 
   nixcfg-niri.desktop.greyline.enable = config.hostParams.desktop.greyline.enable;
 
+  # greyline's home-manager module defaults swwwPackage to pkgs.swww, which
+  # nixpkgs renamed to awww (the old name is a warning alias). greyline already
+  # copes with the rename: it runs "<exe>-daemon", i.e. awww-daemon here.
+  home-manager.users.${config.hostParams.user.username} = { pkgs, ... }: {
+    services.greyline.swwwPackage = pkgs.awww;
+  };
+
   nixcfg-niri.desktop.greyline.settings = {
     # Hide the bottom-left corner logo (bundled default is Tux).
     logo = false;
