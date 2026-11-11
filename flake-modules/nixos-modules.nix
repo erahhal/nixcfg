@@ -37,6 +37,7 @@
     keyboard-unwedge = import ../modules/hardware/keyboard-unwedge;
     power-clamp-notify = import ../modules/hardware/power-clamp-notify;
     spacenavd = import ../modules/hardware/spacenavd;
+    leap-motion = import ../modules/hardware/leap-motion;
     ryzenadj = import ../modules/hardware/ryzenadj;
     dmemcg = import ../modules/hardware/dmemcg;
 

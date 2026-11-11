@@ -51,6 +51,7 @@ in
       nerd-dictation
       xteink-unlocker
       spacenavd
+      leap-motion
       connection-sharing
     ])
     ++ [

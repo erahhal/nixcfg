@@ -163,6 +163,15 @@
       flake = false;
     };
 
+    # Leap Motion / Ultraleap hand tracking service, control panel and
+    # OpenXR layer, repackaged from Ultraleap's (now offline) Ubuntu .debs.
+    # Its fetch URLs are dead, so modules/hardware/leap-motion re-points
+    # them at Wayback Machine captures. Only its nixpkgs.lib is used.
+    ultraleap-nix = {
+      url = "github:Makesesama/ultraleap-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixvim-config.url = "git+https://git.homefree.host/homefree/nixvim-config";
 
     plasma-manager = {

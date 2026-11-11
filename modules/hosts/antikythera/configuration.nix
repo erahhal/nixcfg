@@ -44,6 +44,7 @@
       thinkpad-dock-udev.enable = true;
       power-clamp-notify.enable = true;
       spacenavd.enable = true;
+      leap-motion.enable = true;
       ryzenadj.enable = true;
       dmemcg = {
         enable = config.hostParams.gpu.amd.dmemcg.enable;
