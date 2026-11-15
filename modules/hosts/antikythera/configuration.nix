@@ -232,11 +232,6 @@
     # interfaces."wlp0s20f3".useDHCP = true;
   };
 
-  # Enable debug logging for systemd-resolved to diagnose DNS failures
-  systemd.services.systemd-resolved.environment = {
-    SYSTEMD_LOG_LEVEL = "debug";
-  };
-
   # WiFi QoS now managed via nixcfg.networking.wifi-qos (see above)
 
   programs.captive-browser = {
@@ -576,6 +571,58 @@
     HibernateDelaySec = "3h";
     HibernateOnACPower = false;
   };
+
+  # ── Sleep / hibernate diagnostics (added 2026-11-15) ────────────────
+  # 2026-11-14: the hibernate step of suspend-then-hibernate failed in
+  # create_image ("Normal pages needed: 8386171 + 1024, available pages:
+  # 7249001", Error -12) although preallocation had succeeded ("Allocated
+  # 6087997 pages"): ~8.8 GiB of saveable memory appeared between
+  # preallocation and the snapshot, i.e. while devices were being frozen.
+  # systemd's fallback (one untimed suspend) then drained the battery at
+  # ~2.5 W, several times a normal s0i3 draw.
+  #
+  # This hook logs, for every sleep phase, the memory picture the kernel
+  # starts from (GPU VRAM/GTT, zswap pool, user.slice, swap) and, after
+  # each suspend, the hardware-sleep (s0i3) residency and the average
+  # battery draw. A failed hibernate leaves a "pre ... suspend-after-
+  # failed-hibernate" entry with the post-preallocation state.
+  #   journalctl -t sleep-diag
+  # pm_debug_messages adds the kernel's own PM debug lines (s2idle wakeup
+  # IRQs, timing). Remove both once hibernation and sleep drain are fixed.
+  environment.etc."systemd/system-sleep/sleep-diag".source = pkgs.writeShellScript "sleep-diag" ''
+    PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.gawk pkgs.util-linux ]}
+    stamp=/run/sleep-diag.last
+    bat=/sys/class/power_supply/BAT0
+    act=''${SYSTEMD_SLEEP_ACTION:-$2}
+    now=$(date +%s)
+    e_now=$(cat $bat/energy_now 2>/dev/null || echo 0)
+    {
+      echo "$1 $2 action=$act battery=$(( e_now / 1000 ))mWh $(cat $bat/status 2>/dev/null) ac=$(cat /sys/class/power_supply/AC/online 2>/dev/null)"
+      if [ "$1" = post ] && [ -r $stamp ]; then
+        read -r t0 e0 < $stamp
+        hw=0
+        # last_hw_sleep is only refreshed by a suspend, not by hibernate
+        case $act in *suspend*) hw=$(cat /sys/power/suspend_stats/last_hw_sleep 2>/dev/null || echo 0) ;; esac
+        awk -v dt=$(( now - t0 )) -v e0="$e0" -v e1="$e_now" -v hw="$hw" -v act="$act" 'BEGIN {
+          if (dt <= 0) exit
+          printf "slept %.2f h (%s): hw sleep %.1f%% of it, battery %+.2f Wh, avg %.2f W\n",
+            dt / 3600, act, 100 * hw / 1e6 / dt, (e1 - e0) / 1e6, (e0 - e1) / 1e6 / (dt / 3600) }'
+      fi
+      awk '/^(MemFree|MemAvailable|Cached|Shmem|AnonPages|Unevictable|SwapFree|Zswap|Zswapped|Slab|SUnreclaim|PageTables):/ {
+        printf "%s%d ", $1, $2 / 1024 } END { print "(MiB)" }' /proc/meminfo
+      for d in /sys/class/drm/card*/device; do
+        [ -r "$d/mem_info_vram_used" ] || continue
+        echo "gpu vram_used=$(( $(cat $d/mem_info_vram_used) >> 20 ))MiB gtt_used=$(( $(cat $d/mem_info_gtt_used) >> 20 ))MiB"
+      done
+      z=/sys/kernel/debug/zswap
+      [ -r $z/pool_total_size ] && echo "zswap pool=$(( $(cat $z/pool_total_size) >> 20 ))MiB stored_pages=$(cat $z/stored_pages) written_back=$(cat $z/written_back_pages) pool_limit_hit=$(cat $z/pool_limit_hit)"
+      u=/sys/fs/cgroup/user.slice
+      echo "user.slice current=$(( $(cat $u/memory.current) >> 20 ))MiB swap=$(( $(cat $u/memory.swap.current) >> 20 ))MiB swap.max=$(cat $u/memory.swap.max) image_size=$(( $(cat /sys/power/image_size) >> 20 ))MiB"
+    } 2>&1 | logger -t sleep-diag
+    [ "$1" = pre ] && echo "$now $e_now" > $stamp
+    exit 0
+  '';
+  systemd.tmpfiles.rules = [ "w /sys/power/pm_debug_messages - - - - 1" ];
 
   # Thinkpad power and performance management
   services.power-profiles-daemon.enable = false;
@@ -921,10 +968,14 @@
       # (*) keeps BIOS ASPM defaults (recommended)
       # Default: <none>
 
-      #PCIE_ASPM_ON_AC = "default";
-      #PCIE_ASPM_ON_BAT = "default";
-      PCIE_ASPM_ON_AC = "performance";
-      PCIE_ASPM_ON_BAT = "powersave";
+      # Keep the BIOS defaults. "powersave" (BAT) clears the L1.1/L1.2
+      # substates the BIOS enables on the WLAN (02:00.0) and NVMe (03:00.0)
+      # links, and "performance" (AC) disables ASPM outright. 2026-11-15
+      # amd-s2idle on battery: powersave = 97.4% hw sleep, 0.83 W (5 min);
+      # default = 99.1% hw sleep, 0.60 W (15 min). The tool also flags any
+      # override as a failed s2idle prerequisite.
+      PCIE_ASPM_ON_AC = "default";
+      PCIE_ASPM_ON_BAT = "default";
 
       # Runtime Power Management for PCIe bus devices: on=disable, auto=enable.
       # Default: on (AC), auto (BAT)
