@@ -1035,19 +1035,21 @@
 
       controllerLitellmPort = lib.mkOption {
         type = lib.types.port;
-        default = 9027;
-        example = 4000;
+        default = 4000;
         description = ''
-          Port the controller's LiteLLM answers on.
+          Port the controller's LiteLLM answers on: genai-server's own 4000,
+          on a HomeFree controller too.
 
-          NOT genai-server's own 4000. HomeFree's app platform allocates
-          ports for the stack it hosts — its portal is 9023 where the
-          stack's default is 8897 — so this is that platform's number, and
-          it is a value copied across a repo boundary with nothing checking
-          it. Set it to 4000 for a controller that is a plain NixOS host
-          running the module directly.
+          It used to be HomeFree's number. The platform's pool hands out
+          slots in label order, so LiteLLM drew 9027 and then 9032 as
+          labels were added before it — and LibreChat drew 9027, so every
+          harness here got LibreChat's HTML page back with a 200 and
+          reported a malformed API response (2026-11-15). genai-server now
+          pins the surface to its own port, the way the platform pins
+          anything a client dials by number, so this is no longer a value
+          copied across a repo boundary.
 
-          The MCP gateway is not here because it is not remapped: the
+          The MCP gateway is not here because it was never remapped: the
           platform publishes it on the stack's own 8899.
         '';
       };

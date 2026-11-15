@@ -555,6 +555,22 @@
   ## Its weights are license-gated under the same hf-token account. Same
   ## secure-context note as above: http://localhost:8905, or an SSH tunnel.
   services.genai-server.personaplex.enable = true;
+  ## The avatar page (:8897/avatar): a talking face on the voice service,
+  ## with AVTR-1 and FlashHead Lite/Pro to compare. An engine starts on the
+  ## first conversation and takes the card until 5 minutes after the last.
+  ## Its conversation is the ROUTER's voice service — voice is a controller
+  ## singleton, so the `voice.enable` above is forced off on this node — at
+  ## its own default port, which the HomeFree adapter pins there because
+  ## this machine dials it (the allocator's next free slot moved it once).
+  ## Same secure-context note: use http://localhost:8897/avatar on this
+  ## box, or the avatar surface.
+  services.genai-server.avatar.enable = true;
+  services.genai-server.backends.voice = "http://10.0.0.1:8901";
+  ## Its conversations are answered by the abliterated `voice`, served here
+  ## on the CPU (zero VRAM, so it never competes with the face for the
+  ## card); the router's voice service reaches it through its portal.
+  services.genai-server.llmModels.voice-uc.serve.enable = true;
+  services.genai-server.avatar.chatModel = "voice-uc";
 
   ## Model choices themselves live in the genai-server-private flake, which
   ## genai-server imports — nothing about them is host-specific, so nothing
