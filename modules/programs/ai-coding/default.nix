@@ -278,16 +278,35 @@ let
     # -m/--model picks the model for this session; -l/--list shows them;
     # --no-reserve gives the conversation the whole window.
     # Consumed here rather than passed through, so they never reach claude.
+    #
+    # LOOKED FOR ANYWHERE ON THE LINE, not only before the first other
+    # flag. The loop used to stop at the first argument it did not know,
+    # and `--model` is also claude's own flag, so one written after
+    # anything else went straight through: claude ran the model asked for
+    # under the window numbers worked out for the default. On 2026-11-15
+    # `--dangerously-skip-permissions --model qwen38-125b-a6b-q5 --resume`
+    # ran -q5 (262144) told it had -1m's 983040, compacting at 966656, and
+    # one turn took it from 92k to 245k: past where it could answer, and
+    # past where it could still be compacted. Only `--` ends the scan.
     RESERVE=${toString agentReserve}
     LIST=""
+    PASS=()
     while [ $# -gt 0 ]; do
       case "$1" in
-        -m|--model) ANTHROPIC_MODEL="$2"; shift 2 ;;
+        -m|--model)
+          if [ $# -lt 2 ]; then
+            echo "claude-local: $1 needs a model id (claude-local -l lists them)" >&2
+            exit 2
+          fi
+          ANTHROPIC_MODEL="$2"; shift 2 ;;
+        --model=*) ANTHROPIC_MODEL="''${1#--model=}"; shift ;;
         --no-reserve) RESERVE=0; shift ;;
         -l|--list) LIST=1; shift ;;
-        *) break ;;
+        --) PASS+=("$@"); break ;;
+        *) PASS+=("$1"); shift ;;
       esac
     done
+    set -- "''${PASS[@]}"
 
     # AUTO MODE IS A SECOND INFERENCE PER COMMAND, on a 60-second clock.
     # Before every non-read-only Bash command Claude Code asks a classifier

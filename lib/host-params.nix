@@ -737,8 +737,10 @@
           Strata caches keys after rotating them, so one run has one
           scaling — and within 262144 that is a slightly different model
           from `-q5`, by an amount Strata's own perplexity tests could not
-          tell from noise at 2.7k and 32k. Unmeasured on this box: ~84GB of
-          host RAM pinned is the prediction, against -q5's 71.
+          tell from noise at 2.7k and 32k. 87.1GiB of host RAM pinned,
+          against -q5's 71.3, measured 2026-11-15 with its image encoder on:
+          it reads pictures (to 1,037k tokens, measured), so a session that
+          has one is not refused when it outgrows -q5 or starts here.
 
           claude-local compacts it at ~966k rather than at `claudeCompactAt`'s
           143360, which is a trial with a known risk — see
