@@ -109,7 +109,7 @@
         "app.asar"
         "element" "element-desktop" "Element"
         "electron"
-        "whatsapp-for-linux"
+        "karere"
         "vlc"
       ];
     };

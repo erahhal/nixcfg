@@ -51,7 +51,6 @@ in
       nerd-dictation
       xteink-unlocker
       spacenavd
-      leap-motion
       connection-sharing
     ])
     ++ [
@@ -61,6 +60,8 @@ in
       inputs.secrets.nixosModules.antikythera
       inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen5
       inputs.nix-flatpak.nixosModules.nix-flatpak
+      inputs.projection-mapping.nixosModules.default
+      inputs.leap-motion.nixosModules.default
     ];
   };
 }

@@ -19,6 +19,7 @@ in
       { matches = [{ app-id = "Signal$"; }]; open-on-workspace = "six"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "org.telegram.desktop$"; }]; open-on-workspace = "six"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "wechat$"; }]; open-on-workspace = "six"; default-column-width = { proportion = 1.0; }; }
+      { matches = [{ app-id = "io.github.tobagin.karere$"; }]; open-on-workspace = "six"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "discord$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "vesktop$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }
       { matches = [{ app-id = "Element$"; }]; open-on-workspace = "seven"; default-column-width = { proportion = 1.0; }; }

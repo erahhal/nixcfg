@@ -44,7 +44,6 @@
       thinkpad-dock-udev.enable = true;
       power-clamp-notify.enable = true;
       spacenavd.enable = true;
-      leap-motion.enable = true;
       ryzenadj.enable = true;
       dmemcg = {
         enable = config.hostParams.gpu.amd.dmemcg.enable;
@@ -86,6 +85,15 @@
       nfs-mounts.enable = config.hostParams.services.nfs-mounts.enable;
       printers-scanners.enable = true;
     };
+  };
+
+  # Leap Motion controller (the leap-motion flake). Tracking runs only while
+  # an app uses it; Theremotion; and snd-virmidi so Bitwig can take
+  # leap-midi's output.
+  hardware.leap-motion = {
+    enable = true;
+    theremotion.enable = true;
+    virtualMidiPort.enable = true;
   };
 
   imports = [
@@ -237,6 +245,15 @@
   programs.captive-browser = {
     enable = true;
     interface = "wlp0s20f3";
+  };
+
+  # Splash, vimix, ossia score (Shmdata build, compiled locally),
+  # Blender with Splash's add-on, hap-encode and gphoto2. Meshroom and NDI
+  # stay at their default (off); on this AMD machine Meshroom could only
+  # run its draft pipeline, since dense meshing is CUDA-only.
+  programs.projection-mapping = {
+    enable = true;
+    users = [ config.hostParams.user.username ]; # camera group, for gphoto2
   };
 
   hardware.wirelessRegulatoryDatabase = true;

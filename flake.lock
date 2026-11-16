@@ -1291,6 +1291,28 @@
         "type": "github"
       }
     },
+    "leap-motion": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "ultraleap-nix": "ultraleap-nix"
+      },
+      "locked": {
+        "lastModified": 1794422700,
+        "narHash": "sha256-+CYhzWzo1vrchNl7QjpY1H0PdMKjV0s4+MZyfS0UKa0=",
+        "ref": "main",
+        "rev": "2dd42db809d4b416eff4a1283684b4fc315daeaa",
+        "revCount": 2,
+        "type": "git",
+        "url": "ssh://git@git.homefree.host:3022/erahhal/leap-motion.git"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@git.homefree.host:3022/erahhal/leap-motion.git"
+      }
+    },
     "mediaserver": {
       "inputs": {
         "nixos-hardware": [
@@ -1433,11 +1455,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794345580,
-        "narHash": "sha256-Xe1SZmFwLDK9/1eWOT4lo0Yabgxj8CnrJzzDTx3vw48=",
+        "lastModified": 1794776555,
+        "narHash": "sha256-bkWOlwr8sFgcGSG17fCgY5H4qbLDWtjTauZtKyRZdic=",
         "owner": "erahhal",
         "repo": "nixcfg-niri",
-        "rev": "e8b711b1d975d3b39b8586f3c1fba4d0d8fecfa4",
+        "rev": "f3aecbb97dd7951f4b938fbab6c640ed1366df4b",
         "type": "github"
       },
       "original": {
@@ -1960,6 +1982,27 @@
         "type": "github"
       }
     },
+    "projection-mapping": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794421650,
+        "narHash": "sha256-gK3RmR6seupjvKx5T/d8KliHvTCKZ2e3+w0SUbWGk2M=",
+        "ref": "main",
+        "rev": "acfea9047453a21a18d8312a36699df147fa23cb",
+        "revCount": 2,
+        "type": "git",
+        "url": "ssh://git@git.homefree.host:3022/erahhal/projection-mapping.git"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@git.homefree.host:3022/erahhal/projection-mapping.git"
+      }
+    },
     "root": {
       "inputs": {
         "brave-browser-nix": "brave-browser-nix",
@@ -1978,6 +2021,7 @@
         "import-tree": "import-tree",
         "lan-mouse": "lan-mouse",
         "lanzaboote": "lanzaboote",
+        "leap-motion": "leap-motion",
         "mediaserver": "mediaserver",
         "nix-colors": "nix-colors",
         "nix-flatpak": "nix-flatpak",
@@ -1991,11 +2035,11 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim-config": "nixvim-config",
         "plasma-manager": "plasma-manager",
+        "projection-mapping": "projection-mapping",
         "secrets": "secrets",
         "steam-loader": "steam-loader",
         "stylix": "stylix",
-        "switchyard": "switchyard",
-        "ultraleap-nix": "ultraleap-nix"
+        "switchyard": "switchyard"
       }
     },
     "rust-analyzer-src": {
@@ -2366,6 +2410,7 @@
     "ultraleap-nix": {
       "inputs": {
         "nixpkgs": [
+          "leap-motion",
           "nixpkgs"
         ]
       },

@@ -73,7 +73,8 @@ in
         ## Dev and tools
         # android-studio  # adb/fastboot come from android-tools (nixcfg.programs.android); unfree so never cached, re-unpacks GBs every nixpkgs bump
         bitwig-studio
-        blender
+        # blender comes from programs.projection-mapping (system profile),
+        # wrapped with Splash's add-on; a copy here would shadow it on PATH.
 
         ## Games
         atlauncher

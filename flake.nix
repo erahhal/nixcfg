@@ -163,12 +163,25 @@
       flake = false;
     };
 
-    # Leap Motion / Ultraleap hand tracking service, control panel and
-    # OpenXR layer, repackaged from Ultraleap's (now offline) Ubuntu .debs.
-    # Its fetch URLs are dead, so modules/hardware/leap-motion re-points
-    # them at Wayback Machine captures. Only its nixpkgs.lib is used.
-    ultraleap-nix = {
-      url = "github:Makesesama/ultraleap-nix";
+    # Leap Motion (Ultraleap) hand tracking as hardware.leap-motion: the
+    # rescued Gemini 5.17 service with fixes, on-demand start/stop, the
+    # leap-midi bridge and Theremotion. Its module builds against the host's
+    # pkgs; the follows also covers its ultraleap-nix input.
+    leap-motion = {
+      type = "git";
+      url = "ssh://git@git.homefree.host:3022/erahhal/leap-motion.git";
+      ref = "main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Projection-mapping / VJ pipeline (Splash, vimix, ossia score with
+    # Shmdata, Blender + Splash add-on, Meshroom, hap-encode) as
+    # programs.projection-mapping. Its module builds against the host's
+    # pkgs, so the follows only keeps a second nixpkgs out of the lock.
+    projection-mapping = {
+      type = "git";
+      url = "ssh://git@git.homefree.host:3022/erahhal/projection-mapping.git";
+      ref = "main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
