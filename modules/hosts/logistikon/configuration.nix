@@ -539,6 +539,38 @@
   ## the token-gated flux_nsfw checkpoint at startup. Without it those
   ## requests 503 ("checkpoint not downloaded").
   services.genai-server.civitaiTokenFile = config.age.secrets."civitai-token".path;
+  ## The model store's second copy, on homefree's pool. Filled 2026-11-17
+  ## (2.2TB, file counts verified per category) by
+  ## ~/bin/genai-archive-push.sh, and kept current by `backfill` from here on.
+  ##
+  ## WHY THIS IS ON. The 2026-11-17 catalog sweep found 26 private-catalog
+  ## models whose Civitai page AND download endpoint now answer 404 — one
+  ## author's account removed, plus a dozen others — and `fluxed-up`, whose
+  ## whole model went behind a permanent Buzz paywall. Those entries stay in
+  ## the catalog deliberately (the weights are here, and a render record that
+  ## names one still names the thing that made it), but until the mirror
+  ## existed every one of them was a file with exactly one copy on earth.
+  ## Resolution order is store → archive → torrent → catalog url, so this is
+  ## also what makes `enable = false` on a model recoverable instead of
+  ## final.
+  ##
+  ## Both halves, and they do different jobs:
+  ##   `url`  — read-only HTTP, tried BEFORE the internet on every fetch
+  ##            (`remoteStore.url`). Needs the HomeFree app enabled on the
+  ##            router: `homefree.services.genai-archive = { enable = true;
+  ##            path = "/mnt/storage/genai-archive"; allowed = "10.0.0.66"; }`.
+  ##            Until that is deployed this is inert rather than slow:
+  ##            `curl -fsI -m 15` against a refused port fails at once and the
+  ##            fetch falls through to the catalog url.
+  ##   `path` — the same archive as a filesystem, which is what `tier =
+  ##            "cold"` symlinks into and what the backfill unit writes. It is
+  ##            already mounted here via the automounted storage share, so no
+  ##            new mount is declared; root can write it, verified.
+  services.genai-server.remoteStore = {
+    enable = true;
+    url = "http://10.0.0.1:8898";
+    path = /mnt/storage/genai-archive;
+  };
   ## Hugging Face read token (shared agenix secret): unlocks the
   ## license-gated SAM 3 weights (segment-server / smart_edit). The
   ## token's account must have accepted the license at
