@@ -17,13 +17,20 @@
 #                             Runs hostParams.aiCoding.localModel and holds
 #                             agentReserve tokens of its window back for
 #                             background subagents; --no-reserve opts out.
+#   - zcode-local          -> ZCode (Z.ai's coding agent, built from source
+#                             in pkgs/zcode) via the genai-server control
+#                             plane (~/.zcode-local; the same windows,
+#                             reserve and compaction point as claude-local,
+#                             and the stack's web + knowledge tools)
 #
 # Hermes AI agent from Nous Research. Configured against the genai-server
 # control plane; provides isolated config dirs on other hosts:
 #
-#   - hermes               -> Hermes CLI with default OpenRouter provider
+#   - hermes               -> Hermes CLI, non-Netflix hosts only, with the
+#                             same genai-server config as hermes-local
+#                             (~/.hermes)
 #   - hermes-local         -> Hermes with the genai-server control plane
-#                             pre-configured
+#                             pre-configured (~/.hermes-local)
 #
 # Qwen Code (Alibaba's gemini-cli fork):
 #
@@ -529,7 +536,17 @@ ${claudeCompactCase}
         base_url = genaiApiUrl;
         api_key = "dummy";
         discover_models = false;
-        models = lib.mapAttrs (_: _: { }) genaiModels;
+        # EVERY WINDOW WRITTEN DOWN, rather than left to hermes to find. With
+        # none declared it probes the endpoint at startup and then falls back
+        # to a 256K default, and asked on 2026-11-17 it got three of four
+        # right and the one that matters wrong: localModel
+        # (qwen38-125b-a6b-q5-1m) resolved to 262144 against a served
+        # 1048576, so compression — which fires at a fraction of the window —
+        # ran a quarter of the way in. `providers.<p>.models.<id>.
+        # context_length` is the override hermes' own startup reads
+        # (agent_init.py -> get_custom_provider_context_length), and it beats
+        # every probe.
+        models = lib.mapAttrs (_: m: { context_length = m.context; }) genaiModels;
       };
     };
     # The stack's tools, from the same gateway claude-local and opencode
@@ -569,6 +586,212 @@ ${claudeCompactCase}
       };
     };
   };
+
+  # ZCode, Z.ai's coding agent, against the genai-server control plane.
+  # Upstream ships its CLI only inside the desktop app, so pkgs/zcode builds
+  # it from the Apache-2.0 source. Everything below was checked against a
+  # stub endpoint that records what ZCode sends (2026-11-17, 0.17.1) — no
+  # GPU — rather than read off its documentation.
+  zcode = pkgs.callPackage ../../../pkgs/zcode { };
+
+  # TWO CONFIG FILES, AND ONLY ONE OF THEM CAN MOVE. The provider file (which
+  # models, which endpoint, each model's window) and everything ZCode
+  # stores — sessions, logs, credentials — follow the ZCODE_* variables the
+  # wrapper sets, so they live in ~/.zcode-local. The RUNTIME file
+  # (~/.zcode/cli/config.json: MCP servers, features) is resolved against
+  # homedir() with no variable to redirect it (adapters/src/config/
+  # file-config.adapter.ts), so the two keys zcode-local needs there are
+  # merged into ZCode's default file. Nothing on these hosts runs a plain
+  # `zcode` — this module does not ship one and nflx-nixcfg defines none —
+  # so there is nothing for that file to be shared with today.
+  zcodeLocalDir = ".zcode-local";
+  zcodeProviderId = "local";
+
+  # THE WINDOW IS THE WHOLE JOB, and ZCode's default is the worst one here:
+  # its catch-all model rule says 1,000,000 tokens, so every model on this
+  # fleet would compact near 966k and overflow long before. Each model gets
+  # its window from the catalog instead — and the window DECLARED is chosen
+  # so ZCode compacts exactly where claude-local does for the same model.
+  #
+  # ZCode compacts at contextWindow - min(maxOutputTokens, 21000) - 13000
+  # (PREFLIGHT_AUTOCOMPACT_OUTPUT_RESERVE_TOKENS and AUTOCOMPACT_BUFFER_TOKENS,
+  # apps/zcode-cli/packages/core/src/compact/policy.ts) and takes no
+  # threshold of its own. So the point claude-local compacts at is worked
+  # out first — the window less agentReserve (same guard), less its 16384
+  # reply budget, clamped by claudeCompactAt or the model's entry — and the
+  # window declared is that point plus ZCode's margin, never more than the
+  # model is served with. Where the served window is too small for that
+  # (the 96k and 64k models) ZCode compacts earlier than claude-local
+  # rather than overflow. Both options are read despite their names because
+  # what they measure is the MODEL — a shared pool, and a summary that comes
+  # back empty past ~180k on this engine — and ZCode summarises on it too.
+  zcodeContextWindow = id: m:
+    let
+      reserve = if m.context > agentReserve + 2 * 16384 then agentReserve else 0;
+      derived = m.context - reserve - 16384;
+      cap = config.hostParams.aiCoding.claudeCompactAtModels.${id} or claudeCompactAt;
+      compactAt = if cap > 0 && derived > cap then cap else derived;
+    in
+    lib.min m.context (compactAt + lib.min m.output 21000 + 13000);
+
+  # The one fixed level each model is offered at; see reasoningLevel below.
+  zcodeReasoningLevel = m:
+    if lib.elem "thinking" (m.capabilities or [ ]) then "enabled" else "disabled";
+
+  zcodeProviderManaged = {
+    providerId = zcodeProviderId;
+    # THE LEVEL IS NOT OPTIONAL. A default with no options.reasoningLevel
+    # fails ZCode's validation (`reasoning-level-missing`) and it falls back,
+    # silently, to the first model in the list — deepseek4 here, whatever
+    # localModel says. Measured against the stub before this line existed.
+    defaultSelection = {
+      providerId = zcodeProviderId;
+      modelId = localModel;
+      options.reasoningLevel = zcodeReasoningLevel (genaiModels.${localModel} or { });
+    };
+    providerRules = [{
+      providerId = zcodeProviderId;
+      providerName = "Local fleet";
+      config = {
+        group = "standard-personal";
+        access = { type = "api-key"; apiKey = "dummy"; };
+        api = { type = "openai-chat-completions"; baseUrl = genaiApiUrl; };
+        personalModelIds = lib.attrNames genaiModels;
+      };
+    }];
+    modelRules = lib.mapAttrsToList (id: m: {
+      providerId = zcodeProviderId;
+      modelId = id;
+      config = {
+        properties = {
+          contextWindow = zcodeContextWindow id m;
+          inputFormat.supportsImage = lib.elem "vision" (m.capabilities or [ ]);
+        };
+        optionSpecs = {
+          # The built-in rule sends `max_completion_tokens: 128000`, past
+          # the whole window of the smaller models. max_tokens is what
+          # qwen-code and opencode send.
+          maxOutputTokens = { max = m.output; map = "{'max_tokens': maxOutputTokens}"; };
+          # NOTHING ABOUT THINKING IS SENT. The built-in rule for an OpenAI-
+          # compatible endpoint sends four spellings of a thinking switch at
+          # once (`thinking`, `enable_thinking`, `reasoning_effort` — "high"
+          # by default — and `reasoning`), and each model's serve.preset
+          # already decides that for every client on the box. One fixed
+          # level, named for what the model does, and an empty map.
+          reasoningLevel = { values = [ (zcodeReasoningLevel m) ]; map = "{}"; };
+        };
+      };
+    }) genaiModels;
+  };
+
+  # ZCode WRITES this file (a /model switch is saved into it), so it is
+  # merged, not linked: our provider and its model rules are replaced
+  # wholesale, anything else ZCode or a person put there is kept, and a
+  # manual rule for one of our models is dropped because ZCode refuses a
+  # file that has both kinds for one model. The default model is
+  # REASSERTED on every activation, as opencode-local's is: a /model choice
+  # lasts until the next rebuild, and localModel is what this fleet codes
+  # on until then.
+  mergeZcodeProviders = pkgs.writeShellScript "zcode-local-providers-merge" ''
+    set -eu
+    f="$HOME/${zcodeLocalDir}/.zcode/v2/provider_config.json"
+    mkdir -p "$(dirname "$f")"
+    [ -s "$f" ] || echo '{"schemaVersion":1,"config":{}}' > "$f"
+    tmp=$(mktemp)
+    ${pkgs.jq}/bin/jq --argjson m ${lib.escapeShellArg (builtins.toJSON zcodeProviderManaged)} '
+      def theirs: .providerId != $m.providerId;
+      .schemaVersion //= 1
+      | .config.providerConfigRules.providerRules =
+          [(.config.providerConfigRules.providerRules // [])[] | select(theirs)] + $m.providerRules
+      | .config.modelConfigRules.providerModelRules =
+          [(.config.modelConfigRules.providerModelRules // [])[] | select(theirs)] + $m.modelRules
+      | .config.modelConfigRules.manualProviderModelRules =
+          [(.config.modelConfigRules.manualProviderModelRules // [])[] | select(theirs)]
+      | .config.defaultModelSelection = $m.defaultSelection
+    ' "$f" > "$tmp"
+    mv "$tmp" "$f"
+  '';
+
+  # THE GATEWAY'S FAMILY ENDPOINTS, not /mcp. ZCode, like opencode, can
+  # only be told what to leave out, and the whole-gateway list it would
+  # leave out from has already gone stale: measured against the stub,
+  # /mcp handed ZCode 44 tools of which ten (fetch_url, start_workflow,
+  # run_template, job_status and six more) are in neither half of
+  # genaiCodingTools, because the gateway grew them after the list was
+  # written. Asking for the two families a coding session uses instead
+  # means a tool added to media or memory never arrives here, which is the
+  # property hermes gets from its allowlist. genaiCodingTools.drop is still
+  # applied, to each server, for the knowledge writes.
+  zcodeMcpFamilies = { genai-web = "/web"; genai-knowledge = "/knowledge"; };
+
+  zcodeCliManaged = {
+    mcp.servers = lib.mapAttrs (_: path: {
+      type = "http";
+      url = "${genaiMcpUrl}${path}";
+      # The gateway's own ceiling; see hermesConfig.
+      timeoutMs = 900000;
+    }) zcodeMcpFamilies;
+    # AUTOMATIC MEMORY OFF, for the reason opencode's title agent and
+    # qwen-code's follow-up suggestions are: after each turn the TUI starts
+    # a background memory-extraction agent (up to five model turns) on the
+    # session's own model, a second live stream on a server whose slots
+    # share one pool — and on Strata, a queue the next turn waits behind.
+    features.memory = false;
+  };
+
+  # `*` so a server added with ZCode's own tools survives.
+  mergeZcodeCli = pkgs.writeShellScript "zcode-local-cli-merge" ''
+    set -eu
+    f="$HOME/.zcode/cli/config.json"
+    mkdir -p "$(dirname "$f")"
+    [ -s "$f" ] || echo '{}' > "$f"
+    tmp=$(mktemp)
+    ${pkgs.jq}/bin/jq --argjson managed ${lib.escapeShellArg (builtins.toJSON zcodeCliManaged)} \
+      '. * $managed' "$f" > "$tmp"
+    mv "$tmp" "$f"
+  '';
+
+  # ZCode's counterpart of claudeBuiltinsOffForLocal, and its Workflow:
+  # the session family starts and drives OTHER WHOLE SESSIONS alongside
+  # this one, and ListModels exists to point them at a model ("so another
+  # tool can be pointed at one") — on this box a different model is a swap
+  # that evicts the conversation. TaskOutput describes itself as
+  # DEPRECATED, as Claude Code's does. Agent, SendMessage, TaskStop, Skill
+  # and the todo tools stay, for the reasons written at the Claude list.
+  #
+  # PASSED AS A FLAG, because only the flag REMOVES a tool. The config
+  # file's `permission.disallowedTools` refuses the call but leaves the
+  # schema in every request; `--disallowed-tools` filters the tool list the
+  # model is sent. It is lifted out of argv before subcommand parsing, so it
+  # is safe in front of `zcode-local plugins list` too. Exact names only.
+  # Measured: 68 tools (~25k tokens) -> 19 (~7k) per request.
+  zcodeBuiltinsOffForLocal = [
+    "ListSessions" "ReadSession" "CreateSession" "ForkSession" "SendToSession"
+    "WaitSessions" "InterruptSession" "RenameSession" "ListModels"
+    "TaskOutput"
+  ];
+  zcodeDisallowed = zcodeBuiltinsOffForLocal
+    ++ lib.concatMap (s: map (t: "mcp__${s}__${t}") genaiCodingTools.drop)
+      (lib.attrNames zcodeMcpFamilies);
+
+  zcode-local = pkgs.writeShellScriptBin "zcode-local" ''
+    #!${pkgs.bash}/bin/bash
+    base="$HOME/${zcodeLocalDir}"
+    export ZCODE_DATA_BASE_DIR="$base"
+    export ZCODE_STORAGE_DIR="$base/.zcode"
+    export ZCODE_SESSION_DB_PATH="$base/.zcode/cli/db/db.sqlite"
+    export ZCODE_LOG_DIR="$base/.zcode/cli/log"
+    export ZCODE_PERSONAL_PROVIDER_CONFIG_FILE="$base/.zcode/v2/provider_config.json"
+    # The packaged Built-in file, named explicitly. With both provider files
+    # explicit ZCode skips the refresh that would otherwise download a
+    # newer Built-in config from z.ai on every launch.
+    export ZCODE_BUILTIN_PROVIDER_CONFIG_FILE="${zcode}/lib/zcode/apps/zcode-cli/packages/cli/dist/provider/zcode-builtin.json"
+    # Already off unless an OTLP endpoint is set; this says so either way.
+    export ZCODE_MODEL_TELEMETRY_ENABLED=0
+    unset OTEL_EXPORTER_OTLP_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+    exec ${zcode}/bin/zcode \
+      ${lib.escapeShellArg "--disallowed-tools=${lib.concatStringsSep "," zcodeDisallowed}"} "$@"
+  '';
 
   # Claude Code reads these only from the mutable ~/.claude/settings.json
   # (no managed/system scope carries them), so declare them by merging the
@@ -1287,6 +1510,7 @@ in
       claude-local
       claude-statusbar
       hermes-local
+      zcode-local
       pkgs.qwen-code
     ]
     # ONLY THE UNSUFFIXED NAMES ARE EVER GATED, and that is the rule rather
@@ -1342,6 +1566,14 @@ in
 
     home.activation.qwenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run ${mergeQwenSettings}
+    '';
+
+    home.activation.zcodeLocalProviders = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeZcodeProviders}
+    '';
+
+    home.activation.zcodeLocalCli = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${mergeZcodeCli}
     '';
 
     # The local fleet's provider, in `opencode-local`'s OWN config dir.

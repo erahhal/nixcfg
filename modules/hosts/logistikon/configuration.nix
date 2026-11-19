@@ -149,7 +149,9 @@
   ## rebuild from scratch would have come up missing the models its
   ## workflow templates reference. Fetches are idempotent, so listing them
   ## costs nothing when the files are present.
-  services.genai-server.comfyui.modelSets = [ "comfy" "h3" ];
+  ## `phantom` (17GB): the Wan 2.1 VACE+Phantom merge behind the
+  ## up-to-four-people reference tool.
+  services.genai-server.comfyui.modelSets = [ "comfy" "h3" "phantom" ];
   ## SeedVR2, the video restorer, ships disabled in the flake for the same
   ## reason `comfy` and `h3` are opt-in: enabling the node pack is what
   ## fetches its weights, and that is 12GB (a 7B and a 3B restorer plus
@@ -556,20 +558,39 @@
   ##
   ## Both halves, and they do different jobs:
   ##   `url`  — read-only HTTP, tried BEFORE the internet on every fetch
-  ##            (`remoteStore.url`). Needs the HomeFree app enabled on the
-  ##            router: `homefree.services.genai-archive = { enable = true;
-  ##            path = "/mnt/storage/genai-archive"; allowed = "10.0.0.66"; }`.
+  ##            (`remoteStore.url`). Needs the GenAI Archive app enabled on
+  ##            the router, with path /mnt/storage/genai-archive and allowed
+  ##            10.0.0.66 (its card in the HomeFree admin UI).
   ##            Until that is deployed this is inert rather than slow:
   ##            `curl -fsI -m 15` against a refused port fails at once and the
   ##            fetch falls through to the catalog url.
   ##   `path` — the same archive as a filesystem, which is what `tier =
-  ##            "cold"` symlinks into and what the backfill unit writes. It is
-  ##            already mounted here via the automounted storage share, so no
-  ##            new mount is declared; root can write it, verified.
+  ##            "cold"` symlinks into and what the backfill unit writes.
+  ##
+  ## ITS OWN MOUNT, not a path through /mnt/storage. That share is a hard
+  ## mount, which is right for media and wrong here: the router reboots for
+  ## updates, and a hard mount makes anything touching the archive in that
+  ## window — the portal's health check, a backfill pass — sleep
+  ## uninterruptibly until it is back. Soft + a bounded mount means a failed
+  ## pass instead (genai-server's remoteStore.path docs ask for exactly
+  ## this). The router lets a client mount the subdirectory of its storage
+  ## export directly (verified 2026-11-17), and once the GenAI Archive app is
+  ## on it exports it on its own, squashed to the same owner as /mnt/storage
+  ## (1000:100) — so writes through either door land with one owner, which is
+  ## also why serviceUser does not need pinning here.
+  fileSystems."/mnt/genai-archive" = {
+    device = "10.0.0.1:/mnt/storage/genai-archive";
+    fsType = "nfs";
+    options = [
+      "nfsvers=3" "soft" "timeo=150" "retrans=2" "retry=0"
+      "nofail" "noauto" "x-systemd.automount"
+      "x-systemd.idle-timeout=600" "x-systemd.mount-timeout=20s"
+    ];
+  };
   services.genai-server.remoteStore = {
     enable = true;
     url = "http://10.0.0.1:8898";
-    path = /mnt/storage/genai-archive;
+    path = /mnt/genai-archive;
   };
   ## Hugging Face read token (shared agenix secret): unlocks the
   ## license-gated SAM 3 weights (segment-server / smart_edit). The

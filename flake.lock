@@ -735,11 +735,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1794908815,
-        "narHash": "sha256-ly6Tb28ruYUMA3XCIF4DSCozUMwvSJevMkdgBxWyTDs=",
+        "lastModified": 1794964096,
+        "narHash": "sha256-sIkXxMcJU+PkZNIrH1VGjMe3bmhZuLS9F4X/JGE/phk=",
         "ref": "main",
-        "rev": "8ace7712c5864e2848c897183758bd7ede73e69d",
-        "revCount": 613,
+        "rev": "40fc958b4704d4660f23a37a89420d6c4a5f489a",
+        "revCount": 620,
         "type": "git",
         "url": "ssh://git@git.homefree.host:3022/homefree/genai-server.git"
       },
