@@ -256,12 +256,23 @@ in
   # page cache it can thrash before the kill, but only that pane does.
   # Swap is bounded for the 2026-08-31 reason, and so one pane can't take
   # all of user.slice's swap.
+  #
+  # OOMPolicy=continue is what makes that kill take ONLY the offender. The
+  # default (DefaultOOMPolicy=stop) has systemd fail and stop the whole scope
+  # as soon as the kernel kills anything in it, so the pane, its shell and
+  # the agent die with the runaway child. Seen 2026-11-19: a 20 GB QEMU VM
+  # started from an agent's pane hit the 14.6 GiB ceiling, the kernel killed
+  # only QEMU, and systemd then stopped the scope ("Failed with result
+  # 'oom-kill'"), taking the session down. Reproduced with a 200M scope and
+  # a 400 MB hog: under stop a sibling sleeper died too, under continue only
+  # the hog (exit 137) and the shell carried on.
   systemd.user.units."tmux-spawn-.scope" = {
     overrideStrategy = "asDropin";
     text = ''
       [Scope]
       MemoryMax=25%
       MemorySwapMax=2G
+      OOMPolicy=continue
     '';
   };
 
