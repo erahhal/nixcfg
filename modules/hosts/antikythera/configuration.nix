@@ -574,20 +574,81 @@
     };
   };
 
-  # suspend-then-hibernate behavior (systemd >= 257):
-  # - On battery: the kernel low-battery alarm (ACPI _BTP, ~5%) wakes the
-  #   system and hibernates it, so it only hibernates when the battery is
-  #   actually getting low rather than on a fixed timer. HibernateDelaySec is
-  #   kept long purely as a fallback cap in case the _BTP alarm / discharge
-  #   estimation is unavailable.
-  # - On AC: HibernateOnACPower = false keeps it in plain suspend. The
-  #   HibernateDelaySec countdown only starts once AC is unplugged, so closing
-  #   the lid while plugged in never hibernates. (This option only takes effect
-  #   when HibernateDelaySec is also set.)
+  # suspend-then-hibernate, as it actually behaves here (systemd 262 sleep.c,
+  # checked 2026-11-16):
+  # - The battery's 5% alarm (ACPI _BTP, BAT0/alarm) is armed, so systemd
+  #   uses its alarm + HibernateDelaySec path, but neither half of "hibernate
+  #   on low battery" works: acpi.ec_no_wakeup=1 stops the EC (which raises
+  #   battery and AC events) from waking the system, and systemd decides
+  #   "battery alarm woke us" from the DMI wake-up type, which is a fixed
+  #   "Power Switch" on this firmware. Only the HibernateDelaySec timer
+  #   ever hibernates.
+  # - HibernateOnACPower = false restarts the countdown at each timer
+  #   wake-up that finds AC. Unplugging can't wake the system, so the first
+  #   timer wake-up after an unplug hibernates however recently it happened
+  #   (11-16: closed on AC, hibernated at the 12:53 wake-up).
+  # - s2h-battery-delay below sets the delay from the charge at lid close;
+  #   the 3h here is only its fallback.
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "3h";
     HibernateOnACPower = false;
   };
+
+  # Hibernate when the battery should be down to ~15%, assuming 3 %/h --
+  # 2.5x the 1.2 %/h (0.60 W of 49.5 Wh) measured after the 11-15 ASPM fix
+  # -- and never later than 12 h, so a normal night never hibernates:
+  # 80% -> 12 h, 40% -> 8.3 h, 20% -> 1.7 h, <= 15% -> 10 min. Runs before
+  # each suspend-then-hibernate (systemd-sleep reads sleep.conf once, at
+  # start, and a /run/systemd/sleep.conf.d drop-in overrides /etc's
+  # sleep.conf). On AC the battery can only gain charge, so the same rule
+  # stays safe if the charger is pulled while asleep.
+  systemd.services.s2h-battery-delay = {
+    description = "Set the suspend-then-hibernate delay from battery charge";
+    wantedBy = [ "systemd-suspend-then-hibernate.service" ];
+    before = [ "systemd-suspend-then-hibernate.service" ];
+    serviceConfig.Type = "oneshot";
+    path = [ pkgs.coreutils ];
+    script = ''
+      pct=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo 100)
+      mins=$(( (pct - 15) * 20 ))
+      mins=$(( mins > 720 ? 720 : mins < 10 ? 10 : mins ))
+      mkdir -p /run/systemd/sleep.conf.d
+      printf '[Sleep]\nHibernateDelaySec=%smin\n' "$mins" > /run/systemd/sleep.conf.d/90-battery-delay.conf
+      echo "battery $pct%: hibernate after $mins min"
+    '';
+  };
+
+  # User space (compositor, lock screen) stays frozen for the whole
+  # hibernate, which takes minutes here (preallocating the image took 343 s
+  # on 11-14), so the screen holds a stale frame and looks hung. That has
+  # twice ended in a hard reboot that threw the image away (09-23, 11-16).
+  # The kernel can still drive LEDs by itself, so for the hibernate phase
+  # this blanks the panel and blinks the keyboard backlight (ledtrig-timer),
+  # and restores both afterwards, also after a failed attempt.
+  # Blinking keyboard = hibernating, leave it alone.
+  environment.etc."systemd/system-sleep/hibernate-indicator".source = pkgs.writeShellScript "hibernate-indicator" ''
+    PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.kmod ]}
+    kbd=/sys/class/leds/tpacpi::kbd_backlight
+    bl=/sys/class/backlight/amdgpu_bl1
+    saved=/run/hibernate-indicator
+    case "$1/''${SYSTEMD_SLEEP_ACTION:-$2}" in
+      pre/hibernate)
+        echo "$(cat $kbd/brightness) $(cat $bl/brightness)" > $saved
+        modprobe -q ledtrig_timer
+        echo timer > $kbd/trigger
+        echo 0 > $bl/brightness
+        ;;
+      post/hibernate)
+        [ -r $saved ] || exit 0
+        read -r kb br < $saved
+        echo none > $kbd/trigger
+        echo "$kb" > $kbd/brightness
+        echo "$br" > $bl/brightness
+        rm -f $saved
+        ;;
+    esac
+    exit 0
+  '';
 
   # ── Sleep / hibernate diagnostics (added 2026-11-15) ────────────────
   # 2026-11-14: the hibernate step of suspend-then-hibernate failed in
@@ -613,17 +674,29 @@
     act=''${SYSTEMD_SLEEP_ACTION:-$2}
     now=$(date +%s)
     e_now=$(cat $bat/energy_now 2>/dev/null || echo 0)
+    ok=$(cat /sys/power/suspend_stats/success 2>/dev/null || echo 0)
     {
       echo "$1 $2 action=$act battery=$(( e_now / 1000 ))mWh $(cat $bat/status 2>/dev/null) ac=$(cat /sys/class/power_supply/AC/online 2>/dev/null)"
       if [ "$1" = post ] && [ -r $stamp ]; then
-        read -r t0 e0 < $stamp
-        hw=0
-        # last_hw_sleep is only refreshed by a suspend, not by hibernate
-        case $act in *suspend*) hw=$(cat /sys/power/suspend_stats/last_hw_sleep 2>/dev/null || echo 0) ;; esac
+        read -r t0 e0 ok0 < $stamp
+        hw=-1
+        # last_hw_sleep is only refreshed by a suspend that actually entered
+        # s2idle (suspend_stats/success went up), never by hibernate. A
+        # suspend that fails to freeze (e.g. a running btrfs balance) leaves
+        # the previous cycle's value behind.
+        case $act in
+          *suspend*)
+            if [ "$ok" -gt "''${ok0:-$ok}" ]; then
+              hw=$(cat /sys/power/suspend_stats/last_hw_sleep 2>/dev/null || echo -1)
+            else
+              echo "suspend did not complete: last_failed_step=$(cat /sys/power/suspend_stats/last_failed_step 2>/dev/null) errno=$(cat /sys/power/suspend_stats/last_failed_errno 2>/dev/null)"
+            fi ;;
+        esac
         awk -v dt=$(( now - t0 )) -v e0="$e0" -v e1="$e_now" -v hw="$hw" -v act="$act" 'BEGIN {
           if (dt <= 0) exit
-          printf "slept %.2f h (%s): hw sleep %.1f%% of it, battery %+.2f Wh, avg %.2f W\n",
-            dt / 3600, act, 100 * hw / 1e6 / dt, (e1 - e0) / 1e6, (e0 - e1) / 1e6 / (dt / 3600) }'
+          hws = hw < 0 ? "n/a" : sprintf("%.1f%% of it", 100 * hw / 1e6 / dt)
+          printf "slept %.2f h (%s): hw sleep %s, battery %+.2f Wh, avg %.2f W\n",
+            dt / 3600, act, hws, (e1 - e0) / 1e6, (e0 - e1) / 1e6 / (dt / 3600) }'
       fi
       awk '/^(MemFree|MemAvailable|Cached|Shmem|AnonPages|Unevictable|SwapFree|Zswap|Zswapped|Slab|SUnreclaim|PageTables):/ {
         printf "%s%d ", $1, $2 / 1024 } END { print "(MiB)" }' /proc/meminfo
@@ -636,7 +709,7 @@
       u=/sys/fs/cgroup/user.slice
       echo "user.slice current=$(( $(cat $u/memory.current) >> 20 ))MiB swap=$(( $(cat $u/memory.swap.current) >> 20 ))MiB swap.max=$(cat $u/memory.swap.max) image_size=$(( $(cat /sys/power/image_size) >> 20 ))MiB"
     } 2>&1 | logger -t sleep-diag
-    [ "$1" = pre ] && echo "$now $e_now" > $stamp
+    [ "$1" = pre ] && echo "$now $e_now $ok" > $stamp
     exit 0
   '';
   systemd.tmpfiles.rules = [ "w /sys/power/pm_debug_messages - - - - 1" ];

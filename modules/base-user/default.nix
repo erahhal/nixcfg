@@ -158,6 +158,7 @@ in
         ## the locked nixpkgs rev isn't fully built on Hydra yet
         # deno
         maven
+        netlify-cli
         nodejs
         tokei
         uv

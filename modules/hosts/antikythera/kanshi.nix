@@ -7,6 +7,56 @@ let
   home-monitor-right-hyprland = "LG Electronics LG HDR 4K 0x00020F5B";
   portable-monitor = "LG Electronics 16MQ70 204NZKZ005285";
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
+
+  # Scale fix-up for screens that no explicit profile covers.
+  #
+  # niri already guesses a scale for unconfigured outputs, but purely from
+  # DPI (135 DPI target under 20", 110 DPI above). That is right for desk
+  # monitors and always wrong for TVs: any 4K panel of 40" or more is under
+  # 110 DPI, so it lands on scale 1 even though it is viewed from much
+  # further away. EDID carries no viewing distance, so this assumes it:
+  #
+  #   - short edge >= 480 mm (16:9 from ~39"; a 40" ultrawide is 392 mm)
+  #     is treated as a TV, and
+  #   - an external output whose EDID size is missing or nonsense (diagonal
+  #     under 10": projectors, TVs that report only an aspect ratio) is
+  #     treated the same way,
+  #
+  # and both get the usual 10-foot-UI layout of ~1080 logical lines
+  # (4K -> 2, 1440p -> 1.25, 1080p -> 1). Everything else keeps niri's guess.
+  auto-scale-tv = pkgs.writeShellApplication {
+    name = "kanshi-auto-scale-tv";
+    runtimeInputs = [ pkgs.jq config.programs.niri.package ];
+    text = ''
+      niri msg --json outputs | jq -r '
+        def round25: (. * 4 | round) / 4;
+        to_entries[] | .value
+        | select(.current_mode != null and .logical != null)
+        | select(.name | test("^(eDP|LVDS|DSI)") | not)
+        | .modes[.current_mode] as $m
+        | (.physical_size // [0, 0]) as [$wmm, $hmm]
+        | (($wmm * $wmm + $hmm * $hmm) | sqrt / 25.4) as $diag
+        | select($diag < 10 or ([$wmm, $hmm] | min) >= 480)
+        | ([([$m.width, $m.height] | min) / 1080 | round25, 1] | max) as $scale
+        | select((.logical.scale - $scale) | fabs > 0.01)
+        | "\(.name) \($scale)"
+      ' | while read -r name scale; do
+        niri msg output "$name" scale "$scale"
+      done
+    '';
+  };
+
+  # Catch-all profile for any set of outputs. Written as a raw included file
+  # because it needs the variadic "...output *": a plain "*" matches exactly
+  # one output, kanshi refuses to parse two "*" in one profile (and then the
+  # whole daemon fails to start), and the home-manager module can only emit
+  # plain "output" lines.
+  auto-profile = pkgs.writeText "kanshi-auto-profile" ''
+    profile auto {
+      ...output *
+      exec ${auto-scale-tv}/bin/kanshi-auto-scale-tv
+    }
+  '';
 in
 {
   home-manager.users.${userParams.username} = {
@@ -451,6 +501,11 @@ in
             ];
           };
         }
+        # Catch-all for screens with no profile above. This MUST stay last:
+        # kanshi applies the first profile that matches, in file order. It
+        # sets nothing itself (niri keeps its own mode/position/scale
+        # guess); the exec only corrects the scale of TV-class screens.
+        { include = "${auto-profile}"; }
       ];
     };
   };

@@ -26,6 +26,13 @@ let
   sessionMemoryMin = "1G";
   sessionMemoryLow = "2G";
   systemctl = "${config.systemd.package}/bin/systemctl";
+  # Btrfs maintenance waits out a sleep in progress (see Btrfs maintenance).
+  # A shell in `sleep` freezes fine; a balance/scrub ioctl doesn't.
+  waitWhileAsleep = pkgs.writeShellScript "btrfs-wait-while-asleep" ''
+    while ${systemctl} is-active --quiet sleep.target; do
+      ${pkgs.coreutils}/bin/sleep 60
+    done
+  '';
 in
 {
   # ── Process priority daemon ─────────────────────────────────────────
@@ -277,14 +284,41 @@ in
   };
 
   # ── Btrfs maintenance ──────────────────────────────────────────────
-  # Weekly balance reclaims unallocated device space from partially-used
+  # Daily balance reclaims unallocated device space from partially-used
   # data chunks.  Without this, a COW filesystem gradually reaches 100%
   # device-allocated even with free space inside chunks, causing write
   # stalls under concurrent load.
+  #
+  # Neither balance nor scrub may run across a sleep. Each sits in one long
+  # btrfs ioctl the kernel can't freeze, so suspend/hibernate fails ("1
+  # tasks refusing to freeze") and the machine stays awake with the lid
+  # shut. On 2026-11-16 the Persistent daily timer fired during one of
+  # antikythera's 3-h suspend-then-hibernate wake-ups and blocked the
+  # re-suspend twice. So each job waits while sleep.target is active (it
+  # stays active through all of suspend-then-hibernate's wake-ups), and
+  # btrfs-maint-sleep cancels a running one before the system sleeps. A
+  # cancelled run happens again at the next timer.
+  systemd.services.btrfs-maint-sleep = {
+    description = "Cancel btrfs balance/scrub before sleep";
+    wantedBy = [ "sleep.target" ];
+    before = [ "sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      TimeoutStartSec = "2min";
+    };
+    # Each blocks until the kernel has stopped; "not in progress" is the
+    # normal case.
+    script = ''
+      ${pkgs.btrfs-progs}/bin/btrfs balance cancel / 2>/dev/null || true
+      ${pkgs.btrfs-progs}/bin/btrfs scrub cancel / 2>/dev/null || true
+    '';
+  };
+
   systemd.services.btrfs-balance = {
     description = "Btrfs balance - reclaim unallocated space from underused data chunks";
     serviceConfig = {
       Type = "oneshot";
+      ExecStartPre = waitWhileAsleep;
       ExecStart = "${pkgs.btrfs-progs}/bin/btrfs balance start -dusage=50 -musage=50 /";
       Nice = 19;
       IOSchedulingClass = "idle";
@@ -305,6 +339,7 @@ in
     description = "Btrfs scrub - verify data integrity";
     serviceConfig = {
       Type = "oneshot";
+      ExecStartPre = waitWhileAsleep;
       ExecStart = "${pkgs.btrfs-progs}/bin/btrfs scrub start -B /";
       Nice = 19;
       IOSchedulingClass = "idle";
