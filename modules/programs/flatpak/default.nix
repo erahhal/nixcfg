@@ -77,6 +77,10 @@ in {
               "~/.icons:ro"
               "~/.local/bin:ro"
               "/nix/store:ro"
+              # The containerized (steamrt64) client refuses every new library folder ("not a
+              # supported location") unless the host root is visible at /run/host/root.
+              # flathub/com.valvesoftware.Steam#1592
+              "host-root:ro"
             ];
           };
           Environment = {

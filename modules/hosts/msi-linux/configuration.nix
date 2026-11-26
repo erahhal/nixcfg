@@ -184,5 +184,22 @@
       Persistent = true;
     };
   };
+
+  # --------------------------------------------------------------------------------------
+  # Shared Steam library: NTFS partition "Games" (D: in Windows)
+  # --------------------------------------------------------------------------------------
+
+  # In-kernel ntfs3 driver. No "force" option on purpose: if Windows leaves the volume dirty
+  # (crash / forced power-off) it mounts read-only instead of risking damage.
+  # Proton prefixes (steamapps/compatdata) stay on btrfs via a symlink - see ~/STEAM-MIGRATION.md.
+  fileSystems."/mnt/games" = {
+    device = "/dev/disk/by-partlabel/Games";
+    fsType = "ntfs3";
+    options = [ "uid=1000" "gid=100" "umask=022" "windows_names" "nofail" "x-systemd.device-timeout=10s" ];
+  };
+
+  # Flatpak Steam only sees paths granted in its overrides; merged with the list in modules/programs/flatpak.
+  # Grant library drives one by one: the Flathub launcher refuses to start with "host", "home" or ~ access.
+  services.flatpak.overrides."com.valvesoftware.Steam".Context.filesystems = [ "/mnt/games" ];
 }
 

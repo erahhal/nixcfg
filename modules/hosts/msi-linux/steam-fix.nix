@@ -7,13 +7,16 @@ let userParams = config.hostParams.user; in
   ## Override the flatpak Steam desktop file to add -cef-force-gpu flag.
   ## Without it, Steam hardcodes --disable-gpu on the CEF webhelper,
   ## causing extremely slow Big Picture mode (software rendering).
+  ## The main entry (the one taking %U) also gets -gamepadui so Steam starts in Big Picture;
+  ## the desktop actions (Store, Library, ...) are left alone.
   home-manager.users.${userParams.username} = { lib, ... }: {
     home.activation.steam-flatpak-gpu-fix = lib.hm.dag.entryAfter [ "installPackages" ] ''
       FLATPAK_DESKTOP="/var/lib/flatpak/exports/share/applications/com.valvesoftware.Steam.desktop"
       LOCAL_DESKTOP="$HOME/.local/share/applications/com.valvesoftware.Steam.desktop"
       if [ -f "$FLATPAK_DESKTOP" ]; then
         mkdir -p "$HOME/.local/share/applications"
-        sed '/^Exec=/s/com.valvesoftware.Steam /com.valvesoftware.Steam -cef-force-gpu -no-cef-sandbox /' \
+        sed -e '/^Exec=/s/com.valvesoftware.Steam /com.valvesoftware.Steam -cef-force-gpu -no-cef-sandbox /' \
+            -e '/^Exec=.*%U/s/-no-cef-sandbox /-no-cef-sandbox -gamepadui /' \
           "$FLATPAK_DESKTOP" > "$LOCAL_DESKTOP"
       fi
     '';
