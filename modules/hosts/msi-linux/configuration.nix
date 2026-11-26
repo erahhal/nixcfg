@@ -83,9 +83,10 @@
         "windows" =
           let
             # To determine the name of the windows boot drive, boot into edk2 first, then run
-            # `map -c` to get drive aliases, and try out running `FS1:`, then `ls EFI` to check
-            # which alias corresponds to which EFI partition.
-            boot-drive = "FS1";
+            # `map -c` and find the handle whose device path is the Windows ESP's
+            # HD(1,GPT,5CB2EA4C-...). Use that consistent HDxy name, not an FSn alias: FS numbers
+            # shift when partitions are added (the Games partition turned FS1 into FS2).
+            boot-drive = "HD1b";
           in
           {
             title = "Windows";
