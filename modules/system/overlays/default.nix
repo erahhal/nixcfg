@@ -214,6 +214,23 @@ bool vulkan_remake_and_acquire( void );'
         '';
       });
 
+      # TEMPORARY: the vendor deletes old Devin Desktop tarballs, so nixpkgs'
+      # pinned 3.11.238 (and trunk's 3.12.59) now 404 and the fetch fails.
+      # Pinned to the current release from the update API that nixpkgs' own
+      # update script reads (windsurf-stable.codeium.com/api/update/linux-x64/
+      # stable/latest); sha256 is the API's sha256hash, checked against the
+      # download. nixpkgs master builds a vscode-1.141.2 Devin with the same
+      # buildVscode and package.nix as ours, so a src/version swap is enough.
+      # Drop once nixpkgs ships a version whose tarball still exists.
+      devin-desktop = prev.devin-desktop.overrideAttrs (old: {
+        version = "3.15.14";
+        src = prev.fetchurl {
+          url = "https://windsurf-stable.codeiumdata.com/linux-x64/stable/cfa79668e1a5e000e036cea74fc23449b0aedec3-c16c32bf7d9d42345cd0c798c527a68e/Devin-linux-x64-3.15.14.tar.gz";
+          sha256 = "6cd616eae9890237d2b77d0d410fc6f83151eacce0c862bfb707e2c5d9eac703";
+        };
+        passthru = old.passthru // { vscodeVersion = "1.141.2"; };
+      });
+
       # TEMPORARY: netwatch 0.39.0's parser_layer_leaves_fast_open_and_autobind_open
       # asserts that a TCP Fast Open sendto still slips past its own Landlock
       # sandbox. The build kernel's Landlock refuses it (EACCES), i.e. the
