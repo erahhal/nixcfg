@@ -2,6 +2,8 @@
 let
   userParams = config.hostParams.user;
   hyprctl="${pkgs.hyprland}/bin/hyprctl";
+  # No mode on tv outputs: a bare "3840x2160" jumps straight to 4K@120 on hotplug, and that
+  # first HDMI FRL link can fail to train (black screen). niri.nix links up at 60, then steps up.
   tv = "LG Electronics LG TV SSCR2 0x01010101";
   yamaha = "Yamaha Corporation * *";
   index = "Valve Corporation * *";
@@ -23,7 +25,6 @@ in
               {
                 criteria = tv;
                 status = "enable";
-                mode = "3840x2160";
                 position = "0,0";
                 scale = 2.666667;
               }
@@ -81,7 +82,6 @@ in
               {
                 criteria = tv;
                 status = "enable";
-                mode = "3840x2160";
                 position = "0,0";
                 scale = 2.666667;
               }
@@ -105,7 +105,6 @@ in
               {
                 criteria = tv;
                 status = "enable";
-                mode = "3840x2160";
                 position = "0,0";
                 scale = 2.666667;
               }
