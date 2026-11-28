@@ -1033,6 +1033,23 @@
       RADEON_POWER_PROFILE_ON_AC = "default";
       RADEON_POWER_PROFILE_ON_BAT = "low";
 
+      # amdgpu panel power savings (sysfs panel_power_savings): 0=off .. 4.
+      # Default: 0 (AC), 1 (BAT), 3 (SAV)
+      # Must stay 0 on this machine: a non-zero level is what caused the
+      # black screen after resuming from hibernation. On this OLED panel the
+      # level is sent to the display firmware (DMCUB) as CACP_SET_LEVEL. When
+      # amdgpu restores the display after hibernation (or a GPU reset) it has
+      # just reset that firmware and sends the level before the CACP config
+      # (CACP_INIT_CONFIG only goes out later, from dm_late_init); the
+      # firmware then hangs and answers nothing until it is reset again, so
+      # the panel stays dark while the system runs. Reproduced 2026-11-27 on
+      # kernel 7.3.4 / DMUB 8.0.101.0 with pm_test=core: level 1 dies every
+      # time, level 0 never. Suspend (s2idle) is unaffected. Revisit when the
+      # kernel sends the config first.
+      AMDGPU_ABM_LEVEL_ON_AC = 0;
+      AMDGPU_ABM_LEVEL_ON_BAT = 0;
+      AMDGPU_ABM_LEVEL_ON_SAV = 0;
+
       # Wi-Fi power saving mode: on=enable, off=disable.
       # Default: off (AC), on (BAT)
 
